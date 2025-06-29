@@ -294,8 +294,8 @@ class WMSTargetSingerPatterns:
 ### **PyAuto Ecosystem Integration**
 
 - **tap-oracle-wms**: Perfect companion for Oracle WMS data extraction and loading
-- **flx-oracle-wms**: Unified FLX orchestrator with Singer target integration
-- **flx-http-oracle-wms**: Direct WMS API integration for real-time operations
+- **flext-oracle-wms**: Unified FLX orchestrator with Singer target integration
+- **flext-http-oracle-wms**: Direct WMS API integration for real-time operations
 - **gruponos-poc-oic-wms**: POC integration reference implementation
 
 ### **Warehouse Management Integration**
