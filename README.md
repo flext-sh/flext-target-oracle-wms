@@ -427,8 +427,8 @@ poetry run pytest --cov=target_oracle_wms
 | Component                                      | Integration    | Purpose             |
 | ---------------------------------------------- | -------------- | ------------------- |
 | [tap-oracle-wms](../tap-oracle-wms/)           | Primary source | WMS data extraction |
-| [flx-oracle-wms](../flx-oracle-wms/)           | Orchestration  | Advanced workflows  |
-| [flx-http-oracle-wms](../flx-http-oracle-wms/) | HTTP client    | API operations      |
+| [flext-oracle-wms](../flext-oracle-wms/)           | Orchestration  | Advanced workflows  |
+| [flext-http-oracle-wms](../flext-http-oracle-wms/) | HTTP client    | API operations      |
 
 ### **Output Destinations**
 
