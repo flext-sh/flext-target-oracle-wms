@@ -105,7 +105,7 @@ class OracleWMSSink(SQLSink[Any]):
             if max_length and max_length <= 4000:
                 return sa.VARCHAR(max_length)
 
-        return cast(sa.types.TypeEngine[Any], type_mapping.get(property_type, sa.VARCHAR(4000)))
+        return cast("sa.types.TypeEngine[Any]", type_mapping.get(property_type, sa.VARCHAR(4000)))
 
     def create_table_with_records(
         self,

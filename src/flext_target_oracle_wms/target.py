@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Sequence
+from typing import TYPE_CHECKING, Any
 
 import sqlalchemy as sa
 from singer_sdk import Target
@@ -11,6 +11,8 @@ from singer_sdk import singer_typing as th
 from flext_target_oracle_wms.sinks import OracleWMSSink
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     import oracledb
 
 
