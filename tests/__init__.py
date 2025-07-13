@@ -1,1 +1,1 @@
-"""Tests for target-oracle-wms."""
+"""Tests for FLEXT Target Oracle WMS."""
