@@ -13,6 +13,7 @@ def test_no_dual_structure() -> None:
     """Test that old target_oracle_wms module doesn't exist."""
     try:
         import importlib.util
+
         spec = importlib.util.find_spec("target_oracle_wms")
         if spec is not None:
             msg = "target_oracle_wms module should not exist"
