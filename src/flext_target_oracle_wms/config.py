@@ -52,13 +52,13 @@ class TargetOracleWMSConfig(BaseConfig):
             # Validate target
             target_result = self.target.validate()
             if not target_result.success:
-                return ServiceResult.failure(
+                return ServiceResult.fail(
                     f"Target validation failed: {target_result.error}",
                 )
 
-            return ServiceResult.success(None)
+            return ServiceResult.ok(None)
         except Exception as e:
-            return ServiceResult.failure(f"Configuration validation failed: {e}")
+            return ServiceResult.fail(f"Configuration validation failed: {e}")
 
     def to_dict(self) -> dict[str, Any]:
         """Convert configuration to dictionary.
