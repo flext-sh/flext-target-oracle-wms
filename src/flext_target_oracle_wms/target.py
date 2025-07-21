@@ -5,8 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 import sqlalchemy as sa
-from singer_sdk import Target
-from singer_sdk import singer_typing as th
+from singer_sdk import Target, typing as th
 
 from flext_target_oracle_wms.sinks import OracleWMSSink
 
@@ -112,6 +111,7 @@ class TargetOracleWMS(Target):
     def __init__(
         self,
         config: dict[str, Any] | None = None,
+        *,
         parse_env_config: bool = False,
         validate_config: bool = True,
     ) -> None:
@@ -143,6 +143,10 @@ class TargetOracleWMS(Target):
 
         return self._engine
 
+    def build_connection_string(self) -> str:
+        """Build Oracle connection string from config."""
+        return self._build_connection_string()
+
     def _build_connection_string(self) -> str:
         """Build Oracle connection string from config."""
         host = self.config["host"]
@@ -158,7 +162,7 @@ class TargetOracleWMS(Target):
         self,
         stream_name: str,
         *,
-        record: dict[Any, Any] | None = None,
+        _record: dict[Any, Any] | None = None,
         schema: dict[Any, Any] | None = None,
         key_properties: Sequence[str] | None = None,
     ) -> OracleWMSSink:

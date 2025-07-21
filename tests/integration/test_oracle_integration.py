@@ -1,8 +1,15 @@
 """Integration tests for Oracle WMS target."""
 
+from __future__ import annotations
+
 import json
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 import pytest
+import sqlalchemy as sa
 from testcontainers.oracle import OracleDbContainer
 
 from flext_target_oracle_wms.target import TargetOracleWMS
@@ -14,13 +21,13 @@ class TestOracleIntegration:
     """Integration tests requiring Oracle database."""
 
     @pytest.fixture(scope="class")
-    def oracle_container(self):
+    def oracle_container(self) -> Generator[OracleDbContainer]:
         """Start Oracle container for integration tests."""
         with OracleDbContainer("gvenzl/oracle-xe:21-slim") as container:
             yield container
 
     @pytest.fixture
-    def oracle_config(self, oracle_container):
+    def oracle_config(self, oracle_container: OracleDbContainer) -> dict[str, Any]:
         """Oracle configuration from test container."""
         return {
             "host": oracle_container.get_container_host_ip(),
@@ -33,7 +40,7 @@ class TestOracleIntegration:
             "add_record_metadata": True,
         }
 
-    def test_target_connection(self, oracle_config) -> None:
+    def test_target_connection(self, oracle_config: dict[str, Any]) -> None:
         """Test target can connect to Oracle database."""
         target = TargetOracleWMS(config=oracle_config, validate_config=False)
 
@@ -46,7 +53,7 @@ class TestOracleIntegration:
             result = conn.execute(sa.text("SELECT 1 FROM DUAL"))
             assert result.fetchone()[0] == 1
 
-    def test_sink_table_creation(self, oracle_config) -> None:
+    def test_sink_table_creation(self, oracle_config: dict[str, Any]) -> None:
         """Test sink can create tables in Oracle."""
         target = TargetOracleWMS(config=oracle_config, validate_config=False)
 
@@ -95,13 +102,17 @@ class TestOracleIntegration:
             assert count == 2
 
             # Verify data content
-            result = conn.execute(sa.text("SELECT ID, NAME, IS_ACTIVE FROM SYSTEM.TEST_USERS ORDER BY ID"))
+            result = conn.execute(
+                sa.text(
+                    "SELECT ID, NAME, IS_ACTIVE FROM SYSTEM.TEST_USERS ORDER BY ID",
+                ),
+            )
             rows = result.fetchall()
 
             assert rows[0] == (1, "John Doe", "Y")
             assert rows[1] == (2, "Jane Smith", "N")
 
-    def test_batch_processing(self, oracle_config) -> None:
+    def test_batch_processing(self, oracle_config: dict[str, Any]) -> None:
         """Test batch processing with multiple records."""
         target = TargetOracleWMS(config=oracle_config, validate_config=False)
 
@@ -138,7 +149,7 @@ class TestOracleIntegration:
             assert count == 250
 
     @pytest.mark.slow
-    def test_complex_data_types(self, oracle_config) -> None:
+    def test_complex_data_types(self, oracle_config: dict[str, Any]) -> None:
         """Test handling of complex data types."""
         target = TargetOracleWMS(config=oracle_config, validate_config=False)
 
@@ -179,7 +190,9 @@ class TestOracleIntegration:
 
         # Verify complex data is stored as JSON
         with target.engine.connect() as conn:
-            result = conn.execute(sa.text("SELECT METADATA, TAGS FROM SYSTEM.TEST_COMPLEX WHERE ID = 1"))
+            result = conn.execute(
+                sa.text("SELECT METADATA, TAGS FROM SYSTEM.TEST_COMPLEX WHERE ID = 1"),
+            )
             row = result.fetchone()
 
             metadata = json.loads(row[0])

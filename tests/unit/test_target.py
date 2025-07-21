@@ -1,5 +1,7 @@
 """Unit tests for TargetOracleWMS."""
 
+from __future__ import annotations
+
 from unittest.mock import Mock, patch
 
 from flext_target_oracle_wms.target import TargetOracleWMS
@@ -36,13 +38,13 @@ class TestTargetOracleWMS:
         }
 
         target = TargetOracleWMS(config=config, validate_config=False)
-        connection_string = target._build_connection_string()
+        connection_string = target.build_connection_string()
 
         expected = "oracle+oracledb://wms_user:secret_password@oracle.example.com:1521/?service_name=WMSPROD"
         assert connection_string == expected
 
     @patch("flext_target_oracle_wms.target.sa.create_engine")
-    def test_engine_creation(self, mock_create_engine) -> None:
+    def test_engine_creation(self, mock_create_engine: Mock) -> None:
         """Test SQLAlchemy engine is created with correct parameters."""
         config = {
             "host": "localhost",
@@ -88,4 +90,4 @@ class TestTargetOracleWMS:
         )
 
         assert sink.stream_name == "test_stream"
-        assert sink._target == target
+        assert sink.target == target

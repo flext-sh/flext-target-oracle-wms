@@ -1,19 +1,30 @@
-"""Data validation for Oracle WMS target."""
+"""Data validation for Oracle WMS target.
+
+This module provides WMS-specific data validation using the centralized
+Oracle validation patterns from flext-core. Eliminates code duplication
+across Oracle projects.
+"""
 
 from __future__ import annotations
 
 import logging
-import re
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
+import structlog
+from flext_core.config.oracle import OracleWMSValidator
 from jsonschema import Draft7Validator
 
 logger = logging.getLogger(__name__)
+struct_logger = structlog.get_logger(__name__)
 
 
 class WMSDataValidator:
-    """Validate data according to WMS requirements and schema."""
+    """Validate data according to WMS requirements and schema.
+
+    Uses centralized Oracle WMS validation patterns from flext-core
+    to eliminate duplication while adding JSON schema validation.
+    """
 
     def __init__(self, schema: dict[str, Any]) -> None:
         """Initialize validator.
@@ -26,37 +37,8 @@ class WMSDataValidator:
         self.schema = schema
         self._validator = Draft7Validator(schema)
 
-        # WMS specific validations
-        self.wms_field_constraints = {
-            "company_code": {"max_length": 25, "pattern": r"^[A-Z0-9_]+$"},
-            "facility_code": {"max_length": 30, "pattern": r"^[A-Z0-9_]+$"},
-            "item_code": {"max_length": 50, "pattern": r"^[A-Z0-9_\-\.]+$"},
-            "location_barcode": {"max_length": 30, "pattern": r"^[A-Z0-9]+$"},
-            "order_nbr": {"max_length": 50},
-            "batch_nbr": {"max_length": 50},
-            "serial_nbr": {"max_length": 50},
-            "lpn": {"max_length": 30, "pattern": r"^[A-Z0-9]+$"},
-        }
-
-        # Date/time formats
-        self.datetime_fields = [
-            "create_ts",
-            "mod_ts",
-            "last_upd_ts",
-            "ship_date",
-            "receipt_date",
-            "expiry_date",
-            "manufactured_date",
-        ]
-
-        # Numeric precision requirements
-        self.decimal_fields = {
-            "quantity": {"precision": 15, "scale": 4},
-            "weight": {"precision": 15, "scale": 4},
-            "volume": {"precision": 15, "scale": 4},
-            "price": {"precision": 15, "scale": 2},
-            "cost": {"precision": 15, "scale": 2},
-        }
+        # Use centralized Oracle WMS validator
+        self._wms_validator = OracleWMSValidator("TARGET_ORACLE_WMS")
 
     def validate_record(self, record: dict[str, Any]) -> list[str]:
         """Validate a single record.
@@ -76,17 +58,13 @@ class WMSDataValidator:
         schema_errors = self._validate_schema(record)
         errors.extend(schema_errors)
 
-        # WMS specific validations
-        wms_errors = self._validate_wms_constraints(record)
-        errors.extend(wms_errors)
-
-        # Data type validations
-        type_errors = self._validate_data_types(record)
-        errors.extend(type_errors)
-
-        # Business logic validations
-        logic_errors = self._validate_business_logic(record)
-        errors.extend(logic_errors)
+        # Use centralized WMS validation from flext-core
+        wms_validation_result = self._wms_validator.validate_wms_record(record)
+        if wms_validation_result.is_success:
+            wms_errors = wms_validation_result.unwrap()
+            errors.extend(wms_errors)
+        else:
+            errors.append(f"WMS validation failed: {wms_validation_result.error}")
 
         return errors
 
@@ -100,95 +78,7 @@ class WMSDataValidator:
 
         return errors
 
-    def _validate_wms_constraints(self, record: dict[str, Any]) -> list[str]:
-        """Validate WMS-specific field constraints."""
-        errors: list[str] = []
-
-        for field, constraints in self.wms_field_constraints.items():
-            if field not in record:
-                continue
-
-            value = record[field]
-            if value is None:
-                continue
-
-            # Check max length
-            if "max_length" in constraints:
-                if len(str(value)) > constraints["max_length"]:
-                    errors.append(
-                        f"{field} exceeds max length of {constraints['max_length']}",
-                    )
-
-            # Check pattern
-            if "pattern" in constraints:
-                if not re.match(constraints["pattern"], str(value)):
-                    errors.append(
-                        f"{field} does not match required pattern: {constraints['pattern']}",
-                    )
-
-        return errors
-
-    def _validate_data_types(self, record: dict[str, Any]) -> list[str]:
-        """Validate data type requirements."""
-        errors: list[str] = []
-
-        # Validate date/time fields
-        for field in self.datetime_fields:
-            if field in record and record[field] is not None:
-                if not self._is_valid_datetime(record[field]):
-                    errors.append(f"{field} must be a valid ISO 8601 datetime string")
-
-        # Validate decimal precision
-        for field, constraints in self.decimal_fields.items():
-            if field in record and record[field] is not None:
-                if not self._is_valid_decimal(
-                    record[field],
-                    constraints["precision"],
-                    constraints["scale"],
-                ):
-                    errors.append(
-                        f"{field} must be a decimal with max {constraints['precision']} "
-                        f"digits and {constraints['scale']} decimal places",
-                    )
-
-        return errors
-
-    def _validate_business_logic(self, record: dict[str, Any]) -> list[str]:
-        """Validate business logic rules."""
-        errors: list[str] = []
-
-        # Quantity validations
-        if "quantity" in record and record["quantity"] is not None:
-            if float(record["quantity"]) < 0:
-                errors.append("Quantity cannot be negative")
-
-        # Date validations
-        if "expiry_date" in record and "manufactured_date" in record:
-            if record["expiry_date"] and record["manufactured_date"]:
-                try:
-                    expiry = datetime.fromisoformat(
-                        record["expiry_date"],
-                    )
-                    manufactured = datetime.fromisoformat(
-                        record["manufactured_date"],
-                    )
-                    if expiry <= manufactured:
-                        errors.append("Expiry date must be after manufactured date")
-                except Exception:
-                    pass  # Already validated format above
-
-        # Status validations
-        if "status" in record:
-            valid_statuses = self._get_valid_statuses(record)
-            if valid_statuses and record["status"] not in valid_statuses:
-                errors.append(
-                    f"Invalid status '{record['status']}'. "
-                    f"Valid values: {', '.join(valid_statuses)}",
-                )
-
-        return errors
-
-    def _is_valid_datetime(self, value: Any) -> bool:
+    def _is_valid_datetime(self, value: object) -> bool:
         """Check if value is a valid datetime string."""
         if not isinstance(value, str):
             return False
@@ -204,22 +94,29 @@ class WMSDataValidator:
 
         for fmt in formats:
             try:
-                datetime.strptime(value, fmt)
-                return True
+                # Parse as naive datetime, then make timezone aware
+                datetime.strptime(value, fmt).replace(tzinfo=UTC)
             except ValueError:
                 continue
+            else:
+                # If we reach here, parsing was successful
+                return True
 
-        # Try ISO format parsing
+        # Try ISO format parsing as fallback
         try:
             datetime.fromisoformat(value)
-            return True
-        except Exception:
+        except (ValueError, TypeError, AttributeError) as e:
+            logger.debug("ISO format validation failed: %s", e)
             return False
+        else:
+            return True
 
-    def _is_valid_decimal(self, value: Any, precision: int, scale: int) -> bool:
-        """Check if value meets decimal precision requirements."""
+    def _is_valid_decimal(self, value: object, precision: int, scale: int) -> bool:
+        """Check if value is a valid decimal with given precision and scale."""
         try:
             # Convert to string to check precision
+            if value is None:
+                return False
             str_value = str(float(value))
 
             # Remove negative sign for counting
@@ -239,7 +136,7 @@ class WMSDataValidator:
         except (ValueError, TypeError):
             return False
 
-    def _get_valid_statuses(self, record: dict[str, Any]) -> list[str]:
+    def _get_valid_statuses(self, _record: dict[str, Any]) -> list[str]:
         """Get valid status values based on record type."""
         # This would be customized based on entity type
         # For now, return common WMS statuses
@@ -266,12 +163,14 @@ class WMSDataValidator:
         sanitized = record.copy()
 
         # Convert datetime fields to ISO format
-        for field in self.datetime_fields:
+        datetime_fields = self._wms_validator.datetime_fields
+        for field in datetime_fields:
             if sanitized.get(field):
                 sanitized[field] = self._format_datetime(sanitized[field])
 
         # Ensure decimal values are properly formatted
-        for field in self.decimal_fields:
+        decimal_fields = self._wms_validator.decimal_fields
+        for field in decimal_fields:
             if field in sanitized and sanitized[field] is not None:
                 # WMS requires decimals as strings to preserve precision
                 sanitized[field] = str(sanitized[field])
@@ -288,18 +187,18 @@ class WMSDataValidator:
 
         return sanitized
 
-    def _format_datetime(self, value: Any) -> str:
+    def _format_datetime(self, value: object) -> str:
         """Format datetime value to ISO 8601."""
         if isinstance(value, str):
-            # Already a string, try to parse and reformat
             try:
                 dt = datetime.fromisoformat(value)
                 return dt.strftime("%Y-%m-%dT%H:%M:%S.%fZ")[:-3] + "Z"
-            except Exception:
+            except (ValueError, TypeError, AttributeError) as e:
+                logger.debug("Datetime formatting error: %s", e)
                 return value
-        elif isinstance(value, datetime):
+        if isinstance(value, datetime):
             return value.strftime("%Y-%m-%dT%H:%M:%S.%fZ")[:-3] + "Z"
-        elif value is not None:
+        if value is not None:
             return str(value)
         return ""
 

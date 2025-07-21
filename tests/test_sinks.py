@@ -2,6 +2,11 @@
 
 from __future__ import annotations
 
+import contextlib
+from typing import TYPE_CHECKING
+
+import pytest
+
 from target_oracle_wms.sinks import (
     GenericWMSSink,
     InventorySink,
@@ -10,11 +15,15 @@ from target_oracle_wms.sinks import (
     WMSBaseSink,
 )
 
+if TYPE_CHECKING:
+    from target_oracle_wms.config import Config
 
+
+@pytest.mark.usefixtures("sample_config")
 class TestWMSBaseSink:
     """Test WMS base sink functionality."""
 
-    def test_base_sink_initialization(self, sample_config) -> None:
+    def test_base_sink_initialization(self) -> None:
         """Test that base sink initializes properly."""
         sink = WMSBaseSink(
             target_name="target-oracle-wms",
@@ -27,7 +36,7 @@ class TestWMSBaseSink:
         assert sink.stream_name == "test_stream"
         assert hasattr(sink, "logger")
 
-    def test_base_sink_record_validation(self, sample_config) -> None:
+    def test_base_sink_record_validation(self) -> None:
         """Test that base sink validates records correctly."""
         schema = {
             "type": "object",
@@ -49,17 +58,15 @@ class TestWMSBaseSink:
         # Test invalid record
         invalid_record = {"id": "not_an_integer", "name": "test"}
         # Should handle gracefully
-        try:
+        with contextlib.suppress(Exception):
             sink._validate_record(invalid_record)
-        except Exception:
-            # Expected for invalid data
-            pass
 
 
+@pytest.mark.usefixtures("sample_config")
 class TestInventorySink:
     """Test inventory-specific sink functionality."""
 
-    def test_inventory_sink_initialization(self, sample_config) -> None:
+    def test_inventory_sink_initialization(self) -> None:
         """Test that inventory sink initializes with proper configuration."""
         schema = {
             "type": "object",
@@ -80,7 +87,7 @@ class TestInventorySink:
         assert sink.stream_name == "inventory"
         assert hasattr(sink, "business_logic")
 
-    def test_inventory_record_processing(self, sample_config) -> None:
+    def test_inventory_record_processing(self) -> None:
         """Test inventory record processing logic."""
         schema = {
             "type": "object",
@@ -105,10 +112,11 @@ class TestInventorySink:
         assert "item_id" in processed
 
 
+@pytest.mark.usefixtures("sample_config")
 class TestOrderSink:
     """Test order-specific sink functionality."""
 
-    def test_order_sink_initialization(self, sample_config) -> None:
+    def test_order_sink_initialization(self) -> None:
         """Test that order sink initializes properly."""
         schema = {
             "type": "object",
@@ -129,7 +137,7 @@ class TestOrderSink:
         assert sink.stream_name == "orders"
         assert hasattr(sink, "business_logic")
 
-    def test_order_record_transformation(self, sample_config) -> None:
+    def test_order_record_transformation(self) -> None:
         """Test order record transformation."""
         schema = {
             "type": "object",
@@ -154,10 +162,11 @@ class TestOrderSink:
         assert "order_id" in transformed
 
 
+@pytest.mark.usefixtures("sample_config")
 class TestWarehouseSink:
     """Test warehouse-specific sink functionality."""
 
-    def test_warehouse_sink_initialization(self, sample_config) -> None:
+    def test_warehouse_sink_initialization(self) -> None:
         """Test that warehouse sink initializes correctly."""
         schema = {
             "type": "object",
@@ -179,10 +188,11 @@ class TestWarehouseSink:
         assert hasattr(sink, "business_logic")
 
 
+@pytest.mark.usefixtures("sample_config")
 class TestGenericWMSSink:
     """Test generic WMS sink functionality."""
 
-    def test_generic_sink_initialization(self, sample_config) -> None:
+    def test_generic_sink_initialization(self) -> None:
         """Test that generic sink handles any stream type."""
         schema = {
             "type": "object",
@@ -198,7 +208,7 @@ class TestGenericWMSSink:
 
         assert sink.stream_name == "generic_stream"
 
-    def test_generic_sink_flexibility(self, sample_config) -> None:
+    def test_generic_sink_flexibility(self) -> None:
         """Test that generic sink handles various record types."""
         schema = {"type": "object", "properties": {}}
 
@@ -224,7 +234,7 @@ class TestGenericWMSSink:
 class TestSinkFactory:
     """Test sink factory and routing functionality."""
 
-    def test_sink_selection_logic(self, sample_config) -> None:
+    def test_sink_selection_logic(self, sample_config: Config) -> None:
         """Test that appropriate sinks are selected for stream types."""
         from target_oracle_wms.target import TargetOracleWMS
 
