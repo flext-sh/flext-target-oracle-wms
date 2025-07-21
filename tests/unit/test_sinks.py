@@ -1,5 +1,8 @@
 """Unit tests for OracleWMSSink."""
 
+from __future__ import annotations
+
+from typing import Any
 from unittest.mock import Mock
 
 import pytest
@@ -13,7 +16,7 @@ class TestOracleWMSSink:
     """Test cases for OracleWMSSink."""
 
     @pytest.fixture
-    def mock_target(self):
+    def mock_target(self) -> Mock:
         """Create a mock target for testing."""
         target = Mock(spec=TargetOracleWMS)
         target.config = {
@@ -24,7 +27,7 @@ class TestOracleWMSSink:
         return target
 
     @pytest.fixture
-    def sample_schema(self):
+    def sample_schema(self) -> dict[str, Any]:
         """Sample Singer schema for testing."""
         return {
             "type": "object",
@@ -37,7 +40,11 @@ class TestOracleWMSSink:
             },
         }
 
-    def test_sink_initialization(self, mock_target, sample_schema) -> None:
+    def test_sink_initialization(
+        self,
+        mock_target: Mock,
+        sample_schema: dict[str, Any],
+    ) -> None:
         """Test sink can be initialized."""
         sink = OracleWMSSink(
             target=mock_target,
@@ -47,10 +54,10 @@ class TestOracleWMSSink:
         )
 
         assert sink.stream_name == "test-stream"
-        assert sink._target == mock_target
+        assert sink.target == mock_target
         assert sink.schema == sample_schema
 
-    def test_conform_name(self, mock_target) -> None:
+    def test_conform_name(self, mock_target: Mock) -> None:
         """Test name conforming to Oracle conventions."""
         sink = OracleWMSSink(
             target=mock_target,
@@ -68,7 +75,7 @@ class TestOracleWMSSink:
         assert len(conformed) <= 30
         assert conformed == "VERY_LONG_TABLE_NAME_THAT_EXCE"
 
-    def test_table_name_property(self, mock_target) -> None:
+    def test_table_name_property(self, mock_target: Mock) -> None:
         """Test table name generation."""
         sink = OracleWMSSink(
             target=mock_target,
@@ -78,7 +85,7 @@ class TestOracleWMSSink:
 
         assert sink.table_name == "MY_TEST_STREAM"
 
-    def test_schema_name_property(self, mock_target) -> None:
+    def test_schema_name_property(self, mock_target: Mock) -> None:
         """Test schema name from config."""
         sink = OracleWMSSink(
             target=mock_target,
@@ -88,7 +95,7 @@ class TestOracleWMSSink:
 
         assert sink.schema_name == "WMS"
 
-    def test_get_column_type_string(self, mock_target) -> None:
+    def test_get_column_type_string(self, mock_target: Mock) -> None:
         """Test column type mapping for strings."""
         sink = OracleWMSSink(
             target=mock_target,
@@ -102,21 +109,25 @@ class TestOracleWMSSink:
         assert string_type.length == 4000
 
         # Test string with maxLength
-        string_with_length = sink.get_column_type({
-            "type": "string",
-            "maxLength": 255,
-        })
+        string_with_length = sink.get_column_type(
+            {
+                "type": "string",
+                "maxLength": 255,
+            },
+        )
         assert isinstance(string_with_length, sa.VARCHAR)
         assert string_with_length.length == 255
 
         # Test date-time format
-        datetime_type = sink.get_column_type({
-            "type": "string",
-            "format": "date-time",
-        })
+        datetime_type = sink.get_column_type(
+            {
+                "type": "string",
+                "format": "date-time",
+            },
+        )
         assert isinstance(datetime_type, sa.sql.sqltypes.TIMESTAMP)
 
-    def test_get_column_type_other_types(self, mock_target) -> None:
+    def test_get_column_type_other_types(self, mock_target: Mock) -> None:
         """Test column type mapping for other types."""
         sink = OracleWMSSink(
             target=mock_target,
@@ -144,7 +155,7 @@ class TestOracleWMSSink:
         object_type = sink.get_column_type({"type": "object"})
         assert isinstance(object_type, sa.CLOB)
 
-    def test_get_column_type_nullable(self, mock_target) -> None:
+    def test_get_column_type_nullable(self, mock_target: Mock) -> None:
         """Test column type mapping for nullable types."""
         sink = OracleWMSSink(
             target=mock_target,
@@ -160,7 +171,7 @@ class TestOracleWMSSink:
         nullable_int = sink.get_column_type({"type": ["null", "integer"]})
         assert isinstance(nullable_int, sa.INTEGER)
 
-    def test_prepare_record(self, mock_target) -> None:
+    def test_prepare_record(self, mock_target: Mock) -> None:
         """Test record preparation for Oracle insertion."""
         sink = OracleWMSSink(
             target=mock_target,
@@ -178,17 +189,18 @@ class TestOracleWMSSink:
             "null_field": None,
         }
 
-        prepared = sink._prepare_record(input_record)
+        prepared = sink.prepare_record(input_record)
 
         # Test basic field mapping
         assert prepared["ID"] == 123
         assert prepared["NAME"] == "Test User"
         assert prepared["IS_ACTIVE"] == "Y"  # Boolean to Y/N
-        assert prepared["INACTIVE"] == "N"   # Boolean to Y/N
+        assert prepared["INACTIVE"] == "N"  # Boolean to Y/N
         assert prepared["NULL_FIELD"] is None
 
         # Test complex types become JSON strings
         import json
+
         assert prepared["METADATA"] == json.dumps({"key": "value"}, ensure_ascii=False)
         assert prepared["TAGS"] == json.dumps(["tag1", "tag2"], ensure_ascii=False)
 

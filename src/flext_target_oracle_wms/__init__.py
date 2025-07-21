@@ -1,5 +1,7 @@
 """FLEXT Target Oracle WMS - Singer Target for Oracle WMS Data."""
 
+from __future__ import annotations
+
 __version__ = "0.7.0"
 __author__ = "FLEXT Team"
 __email__ = "team@flext.sh"

@@ -2,16 +2,21 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import pytest
 
 from target_oracle_wms.target import TargetOracleWMS
+
+if TYPE_CHECKING:
+    from target_oracle_wms.config import Config
 
 
 class TestTargetComplete:
     """End-to-end tests for complete target workflow."""
 
     @pytest.mark.e2e
-    def test_complete_target_initialization(self, sample_config) -> None:
+    def test_complete_target_initialization(self, sample_config: Config) -> None:
         """Test complete target initialization workflow."""
         target = TargetOracleWMS(config=sample_config)
 
@@ -24,7 +29,7 @@ class TestTargetComplete:
         assert hasattr(target, "get_sink_class")
 
     @pytest.mark.e2e
-    def test_sink_class_resolution(self, sample_config) -> None:
+    def test_sink_class_resolution(self, sample_config: Config) -> None:
         """Test that sink classes are resolved correctly for different streams."""
         target = TargetOracleWMS(config=sample_config)
 
@@ -46,7 +51,7 @@ class TestTargetComplete:
             assert hasattr(sink_class, "__init__")
 
     @pytest.mark.e2e
-    def test_record_processing_workflow(self, sample_config) -> None:
+    def test_record_processing_workflow(self, sample_config: Config) -> None:
         """Test complete record processing workflow."""
         target = TargetOracleWMS(config=sample_config)
 
@@ -77,12 +82,13 @@ class TestTargetComplete:
         }
 
         # Should be able to process record without errors
+        # Test private method access for testing purposes
         processed = sink._prepare_record(test_record)
         assert isinstance(processed, dict)
         assert "id" in processed
 
     @pytest.mark.e2e
-    def test_business_logic_integration(self, sample_config) -> None:
+    def test_business_logic_integration(self, sample_config: Config) -> None:
         """Test business logic integration across sinks."""
         target = TargetOracleWMS(config=sample_config)
 
@@ -102,7 +108,7 @@ class TestTargetComplete:
             assert hasattr(sink, "business_logic")
 
     @pytest.mark.e2e
-    def test_configuration_validation_complete(self, sample_config) -> None:
+    def test_configuration_validation_complete(self, sample_config: Config) -> None:
         """Test complete configuration validation."""
         # Test with valid config
         target = TargetOracleWMS(config=sample_config)
@@ -121,7 +127,7 @@ class TestTargetComplete:
         assert hasattr(sink, "config") or hasattr(sink, "_config")
 
     @pytest.mark.e2e
-    def test_error_handling_workflow(self, sample_config) -> None:
+    def test_error_handling_workflow(self, sample_config: Config) -> None:
         """Test error handling throughout the target workflow."""
         target = TargetOracleWMS(config=sample_config)
 
@@ -146,12 +152,12 @@ class TestTargetComplete:
                 test_record = {"test": "data"}
                 sink._prepare_record(test_record)
 
-            except Exception as e:
+            except (ValueError, KeyError, TypeError, RuntimeError):
                 # Errors should be handled gracefully
-                assert len(str(e)) > 0
+                pass  # Expected to raise exceptions with invalid configuration
 
     @pytest.mark.e2e
-    def test_multi_stream_handling(self, sample_config) -> None:
+    def test_multi_stream_handling(self, sample_config: Config) -> None:
         """Test handling multiple streams simultaneously."""
         target = TargetOracleWMS(config=sample_config)
 
@@ -178,7 +184,7 @@ class TestTargetComplete:
             assert isinstance(processed, dict)
 
     @pytest.mark.e2e
-    def test_memory_efficiency(self, sample_config) -> None:
+    def test_memory_efficiency(self, sample_config: Config) -> None:
         """Test that target operations are memory efficient."""
         # Test that multiple target instances don't accumulate memory
         for i in range(5):

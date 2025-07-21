@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from datetime import UTC
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, cast
 
 import sqlalchemy as sa
@@ -38,6 +38,11 @@ class OracleWMSSink(SQLSink[Any]):
         self._target = target
 
     @property
+    def target(self) -> TargetOracleWMS:
+        """Get the target instance."""
+        return self._target
+
+    @property
     def connection(self) -> sa.engine.Connection:
         """Get SQLAlchemy connection from target engine."""
         return self._target.engine.connect()
@@ -53,29 +58,30 @@ class OracleWMSSink(SQLSink[Any]):
         # Convert stream name to Oracle-compatible table name
         return self.stream_name.upper().replace("-", "_")
 
-    def conform_name(self, name: str, object_type: str | None = None) -> str:
+    def conform_name(self, name: str, _object_type: str | None = None) -> str:
         """Conform names to Oracle WMS naming conventions."""
         # Oracle identifiers are case-insensitive and limited to 30 chars (pre-12.2)
         # Convert to uppercase and replace hyphens with underscores
         conformed = name.upper().replace("-", "_").replace(".", "_")
 
         # Truncate if necessary (Oracle 11g/12.1 limit is 30 chars)
-        if len(conformed) > 30:
-            conformed = conformed[:30]
+        max_oracle_identifier_length = 30
+        if len(conformed) > max_oracle_identifier_length:
+            conformed = conformed[:max_oracle_identifier_length]
 
         return conformed
 
-    def get_column_type(self, property_schema: dict[str, Any]) -> sa.types.TypeEngine[Any]:
+    def get_column_type(
+        self,
+        property_schema: dict[str, Any],
+    ) -> sa.types.TypeEngine[Any]:
         """Get SQLAlchemy column type for a property schema."""
         property_type = property_schema.get("type", ["null"])
 
         if isinstance(property_type, list):
             # Handle nullable types like ["null", "string"]
             non_null_types = [t for t in property_type if t != "null"]
-            if non_null_types:
-                property_type = non_null_types[0]
-            else:
-                property_type = "string"  # Default fallback
+            property_type = non_null_types[0] if non_null_types else "string"
 
         # Map Singer types to Oracle types
         type_mapping = {
@@ -102,14 +108,18 @@ class OracleWMSSink(SQLSink[Any]):
 
             # Check maxLength for VARCHAR sizing
             max_length = property_schema.get("maxLength")
-            if max_length and max_length <= 4000:
+            max_varchar_length = 4000
+            if max_length and max_length <= max_varchar_length:
                 return sa.VARCHAR(max_length)
 
-        return cast("sa.types.TypeEngine[Any]", type_mapping.get(property_type, sa.VARCHAR(4000)))
+        return cast(
+            "sa.types.TypeEngine[Any]",
+            type_mapping.get(property_type, sa.VARCHAR(4000)),
+        )
 
     def create_table_with_records(
         self,
-        full_table_name: str,
+        _full_table_name: str,
         schema: dict[str, Any],
         records: list[dict[str, Any]],
     ) -> None:
@@ -125,14 +135,16 @@ class OracleWMSSink(SQLSink[Any]):
 
         # Add metadata columns if configured
         if self.config.get("add_record_metadata", True):
-            columns.extend([
-                sa.Column("_SDC_EXTRACTED_AT", oracle.TIMESTAMP(timezone=True)),
-                sa.Column("_SDC_RECEIVED_AT", oracle.TIMESTAMP(timezone=True)),
-                sa.Column("_SDC_BATCHED_AT", oracle.TIMESTAMP(timezone=True)),
-                sa.Column("_SDC_DELETED_AT", oracle.TIMESTAMP(timezone=True)),
-                sa.Column("_SDC_SEQUENCE", sa.INTEGER),
-                sa.Column("_SDC_TABLE_VERSION", sa.INTEGER),
-            ])
+            columns.extend(
+                [
+                    sa.Column("_SDC_EXTRACTED_AT", oracle.TIMESTAMP(timezone=True)),
+                    sa.Column("_SDC_RECEIVED_AT", oracle.TIMESTAMP(timezone=True)),
+                    sa.Column("_SDC_BATCHED_AT", oracle.TIMESTAMP(timezone=True)),
+                    sa.Column("_SDC_DELETED_AT", oracle.TIMESTAMP(timezone=True)),
+                    sa.Column("_SDC_SEQUENCE", sa.INTEGER),
+                    sa.Column("_SDC_TABLE_VERSION", sa.INTEGER),
+                ],
+            )
 
         # Create table
         table = sa.Table(
@@ -165,7 +177,7 @@ class OracleWMSSink(SQLSink[Any]):
         batch_size = self.config.get("batch_size", 1000)
 
         for i in range(0, len(records), batch_size):
-            batch = records[i:i + batch_size]
+            batch = records[i : i + batch_size]
             prepared_batch = []
 
             for record in batch:
@@ -176,7 +188,11 @@ class OracleWMSSink(SQLSink[Any]):
             connection.execute(table.insert().values(prepared_batch))
             connection.commit()
 
-            self.logger.info(f"Inserted batch of {len(prepared_batch)} records")
+            self.logger.info("Inserted batch of %d records", len(prepared_batch))
+
+    def prepare_record(self, record: dict[str, Any]) -> dict[str, Any]:
+        """Prepare record for Oracle insertion."""
+        return self._prepare_record(record)
 
     def _prepare_record(self, record: dict[str, Any]) -> dict[str, Any]:
         """Prepare record for Oracle insertion."""
@@ -199,17 +215,18 @@ class OracleWMSSink(SQLSink[Any]):
 
         # Add metadata if configured
         if self.config.get("add_record_metadata", True):
-            from datetime import datetime
             now = datetime.now(UTC)
 
-            prepared.update({
-                "_SDC_EXTRACTED_AT": record.get("_sdc_extracted_at", now),
-                "_SDC_RECEIVED_AT": record.get("_sdc_received_at", now),
-                "_SDC_BATCHED_AT": now,
-                "_SDC_DELETED_AT": record.get("_sdc_deleted_at"),
-                "_SDC_SEQUENCE": record.get("_sdc_sequence"),
-                "_SDC_TABLE_VERSION": record.get("_sdc_table_version", 1),
-            })
+            prepared.update(
+                {
+                    "_SDC_EXTRACTED_AT": record.get("_sdc_extracted_at", now),
+                    "_SDC_RECEIVED_AT": record.get("_sdc_received_at", now),
+                    "_SDC_BATCHED_AT": now,
+                    "_SDC_DELETED_AT": record.get("_sdc_deleted_at"),
+                    "_SDC_SEQUENCE": record.get("_sdc_sequence"),
+                    "_SDC_TABLE_VERSION": record.get("_sdc_table_version", 1),
+                },
+            )
 
         return prepared
 
