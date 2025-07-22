@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from collections.abc import Generator
-
 import pytest
 import sqlalchemy as sa
 from testcontainers.oracle import OracleDbContainer
@@ -43,20 +42,19 @@ class TestOracleIntegration:
     def test_target_connection(self, oracle_config: dict[str, Any]) -> None:
         """Test target can connect to Oracle database."""
         target = TargetOracleWMS(config=oracle_config, validate_config=False)
-
         # Test engine creation
         engine = target.engine
         assert engine is not None
-
         # Test connection
         with engine.connect() as conn:
             result = conn.execute(sa.text("SELECT 1 FROM DUAL"))
-            assert result.fetchone()[0] == 1
+            row = result.fetchone()
+            assert row is not None
+            assert row[0] == 1
 
     def test_sink_table_creation(self, oracle_config: dict[str, Any]) -> None:
         """Test sink can create tables in Oracle."""
         target = TargetOracleWMS(config=oracle_config, validate_config=False)
-
         schema = {
             "type": "object",
             "properties": {
@@ -66,13 +64,11 @@ class TestOracleIntegration:
                 "is_active": {"type": "boolean"},
             },
         }
-
         sink = target.get_sink(
             stream_name="test_users",
             schema=schema,
             key_properties=["id"],
         )
-
         # Test table creation with sample records
         records = [
             {
@@ -88,19 +84,18 @@ class TestOracleIntegration:
                 "is_active": False,
             },
         ]
-
         sink.create_table_with_records(
-            full_table_name="SYSTEM.TEST_USERS",
+            _full_table_name="SYSTEM.TEST_USERS",
             schema=schema,
             records=records,
         )
-
         # Verify table exists and has data
         with target.engine.connect() as conn:
             result = conn.execute(sa.text("SELECT COUNT(*) FROM SYSTEM.TEST_USERS"))
-            count = result.fetchone()[0]
+            row = result.fetchone()
+            assert row is not None
+            count = row[0]
             assert count == 2
-
             # Verify data content
             result = conn.execute(
                 sa.text(
@@ -108,14 +103,12 @@ class TestOracleIntegration:
                 ),
             )
             rows = result.fetchall()
-
             assert rows[0] == (1, "John Doe", "Y")
             assert rows[1] == (2, "Jane Smith", "N")
 
     def test_batch_processing(self, oracle_config: dict[str, Any]) -> None:
         """Test batch processing with multiple records."""
         target = TargetOracleWMS(config=oracle_config, validate_config=False)
-
         schema = {
             "type": "object",
             "properties": {
@@ -123,36 +116,33 @@ class TestOracleIntegration:
                 "value": {"type": "string"},
             },
         }
-
         sink = target.get_sink(
             stream_name="test_batch",
             schema=schema,
             key_properties=["id"],
         )
-
         # Create large batch of records
         records = [
             {"id": i, "value": f"value_{i}"}
             for i in range(250)  # Test batch processing
         ]
-
         sink.create_table_with_records(
-            full_table_name="SYSTEM.TEST_BATCH",
+            _full_table_name="SYSTEM.TEST_BATCH",
             schema=schema,
             records=records,
         )
-
         # Verify all records were inserted
         with target.engine.connect() as conn:
             result = conn.execute(sa.text("SELECT COUNT(*) FROM SYSTEM.TEST_BATCH"))
-            count = result.fetchone()[0]
+            row = result.fetchone()
+            assert row is not None
+            count = row[0]
             assert count == 250
 
     @pytest.mark.slow
     def test_complex_data_types(self, oracle_config: dict[str, Any]) -> None:
         """Test handling of complex data types."""
         target = TargetOracleWMS(config=oracle_config, validate_config=False)
-
         schema = {
             "type": "object",
             "properties": {
@@ -164,13 +154,11 @@ class TestOracleIntegration:
                 "price": {"type": "number"},
             },
         }
-
         sink = target.get_sink(
             stream_name="test_complex",
             schema=schema,
             key_properties=["id"],
         )
-
         records = [
             {
                 "id": 1,
@@ -181,22 +169,19 @@ class TestOracleIntegration:
                 "price": 29.99,
             },
         ]
-
         sink.create_table_with_records(
-            full_table_name="SYSTEM.TEST_COMPLEX",
+            _full_table_name="SYSTEM.TEST_COMPLEX",
             schema=schema,
             records=records,
         )
-
         # Verify complex data is stored as JSON
         with target.engine.connect() as conn:
             result = conn.execute(
                 sa.text("SELECT METADATA, TAGS FROM SYSTEM.TEST_COMPLEX WHERE ID = 1"),
             )
             row = result.fetchone()
-
+            assert row is not None
             metadata = json.loads(row[0])
             tags = json.loads(row[1])
-
             assert metadata == {"source": "api", "version": "1.0"}
             assert tags == ["important", "customer"]

@@ -242,7 +242,7 @@ class OracleWMSSink(SQLSink[Any]):
         if not table_exists:
             # Create table with first batch
             self.create_table_with_records(
-                full_table_name=f"{self.schema_name}.{self.table_name}",
+                _full_table_name=f"{self.schema_name}.{self.table_name}",
                 schema=self.schema,
                 records=records,
             )
