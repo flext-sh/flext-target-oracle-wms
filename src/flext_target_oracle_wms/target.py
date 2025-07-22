@@ -162,7 +162,7 @@ class TargetOracleWMS(Target):
         self,
         stream_name: str,
         *,
-        _record: dict[Any, Any] | None = None,
+        record: dict[Any, Any] | None = None,
         schema: dict[Any, Any] | None = None,
         key_properties: Sequence[str] | None = None,
     ) -> OracleWMSSink:

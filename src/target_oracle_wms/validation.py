@@ -1,29 +1,61 @@
-"""Data validation for Oracle WMS target.
+"""Data validation for Oracle WMS target using DI pattern.
 
-This module provides WMS-specific data validation using the centralized
-Oracle validation patterns from flext-core. Eliminates code duplication
-across Oracle projects.
+This module provides WMS-specific data validation using dependency injection
+to access Oracle validation services. Follows Clean Architecture principles.
 """
 
 from __future__ import annotations
 
 import logging
 from datetime import UTC, datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import structlog
-from flext_core.config.oracle import OracleWMSValidator
 from jsonschema import Draft7Validator
+
+if TYPE_CHECKING:
+    from flext_core import OracleValidationProvider
 
 logger = logging.getLogger(__name__)
 struct_logger = structlog.get_logger(__name__)
 
+# Oracle validation provider will be injected at runtime
+_validation_provider: OracleValidationProvider | None = None
+
+
+def set_validation_provider(provider: OracleValidationProvider) -> None:
+    """Set the Oracle validation provider via dependency injection.
+
+    Args:
+        provider: Oracle validation provider implementation
+
+    """
+    global _validation_provider
+    _validation_provider = provider
+
+
+def _get_validation_provider() -> OracleValidationProvider:
+    """Get validation provider or raise error if not set.
+
+    Returns:
+        Oracle validation provider
+
+    Raises:
+        RuntimeError: If no validation provider has been injected
+
+    """
+    if _validation_provider is None:
+        error_msg = "Oracle validation provider not injected - call set_validation_provider() first"
+        logger.error(error_msg)
+        raise RuntimeError(error_msg)
+    return _validation_provider
+
 
 class WMSDataValidator:
-    """Validate data according to WMS requirements and schema.
+    """Validate data according to WMS requirements and schema using DI pattern.
 
-    Uses centralized Oracle WMS validation patterns from flext-core
-    to eliminate duplication while adding JSON schema validation.
+    Uses dependency injection to access Oracle WMS validation patterns
+    while adding JSON schema validation capability.
     """
 
     def __init__(self, schema: dict[str, Any]) -> None:
@@ -37,11 +69,8 @@ class WMSDataValidator:
         self.schema = schema
         self._validator = Draft7Validator(schema)
 
-        # Use centralized Oracle WMS validator
-        self._wms_validator = OracleWMSValidator("TARGET_ORACLE_WMS")
-
     def validate_record(self, record: dict[str, Any]) -> list[str]:
-        """Validate a single record.
+        """Validate a single record using DI.
 
         Args:
         ----
@@ -53,36 +82,37 @@ class WMSDataValidator:
 
         """
         errors: list[str] = []
-
         # JSON schema validation
         schema_errors = self._validate_schema(record)
         errors.extend(schema_errors)
 
-        # Use centralized WMS validation from flext-core
-        wms_validation_result = self._wms_validator.validate_wms_record(record)
-        if wms_validation_result.is_success:
-            wms_errors = wms_validation_result.unwrap()
-            errors.extend(wms_errors)
-        else:
-            errors.append(f"WMS validation failed: {wms_validation_result.error}")
+        # Use injected Oracle WMS validation provider
+        try:
+            provider = _get_validation_provider()
+            wms_validation_result = provider.validate_wms_record(record)
+            if wms_validation_result.is_success:
+                wms_errors = wms_validation_result.data or []
+                errors.extend(wms_errors)
+            else:
+                errors.append(f"WMS validation failed: {wms_validation_result.error}")
+        except RuntimeError as e:
+            # Provider not injected - log warning but continue with schema validation only
+            logger.warning(f"Oracle validation provider not available: {e}")
 
         return errors
 
     def _validate_schema(self, record: dict[str, Any]) -> list[str]:
         """Validate against JSON schema."""
         errors: list[str] = []
-
         for error in self._validator.iter_errors(record):
             error_path = ".".join(str(p) for p in error.path)
             errors.append(f"Schema validation error at {error_path}: {error.message}")
-
         return errors
 
     def _is_valid_datetime(self, value: object) -> bool:
         """Check if value is a valid datetime string."""
         if not isinstance(value, str):
             return False
-
         # Try common ISO 8601 formats
         formats = [
             "%Y-%m-%dT%H:%M:%S.%fZ",
@@ -91,7 +121,6 @@ class WMSDataValidator:
             "%Y-%m-%d %H:%M:%S",
             "%Y-%m-%d",
         ]
-
         for fmt in formats:
             try:
                 # Parse as naive datetime, then make timezone aware
@@ -101,7 +130,6 @@ class WMSDataValidator:
             else:
                 # If we reach here, parsing was successful
                 return True
-
         # Try ISO format parsing as fallback
         try:
             datetime.fromisoformat(value)
@@ -118,21 +146,16 @@ class WMSDataValidator:
             if value is None:
                 return False
             str_value = str(float(value))
-
             # Remove negative sign for counting
             str_value = str_value.removeprefix("-")
-
             # Split by decimal point
             parts = str_value.split(".")
-
             # Check total digits
             total_digits = len(parts[0]) + (len(parts[1]) if len(parts) > 1 else 0)
             if total_digits > precision:
                 return False
-
             # Check decimal places
             return not (len(parts) > 1 and len(parts[1]) > scale)
-
         except (ValueError, TypeError):
             return False
 
@@ -149,7 +172,7 @@ class WMSDataValidator:
         return []
 
     def sanitize_record(self, record: dict[str, Any]) -> dict[str, Any]:
-        """Sanitize record data for WMS compatibility.
+        """Sanitize record data for WMS compatibility using DI.
 
         Args:
         ----
@@ -162,18 +185,27 @@ class WMSDataValidator:
         """
         sanitized = record.copy()
 
-        # Convert datetime fields to ISO format
-        datetime_fields = self._wms_validator.datetime_fields
-        for field in datetime_fields:
-            if sanitized.get(field):
-                sanitized[field] = self._format_datetime(sanitized[field])
+        try:
+            provider = _get_validation_provider()
 
-        # Ensure decimal values are properly formatted
-        decimal_fields = self._wms_validator.decimal_fields
-        for field in decimal_fields:
-            if field in sanitized and sanitized[field] is not None:
-                # WMS requires decimals as strings to preserve precision
-                sanitized[field] = str(sanitized[field])
+            # Convert datetime fields to ISO format
+            datetime_fields = provider.datetime_fields
+            for field in datetime_fields:
+                if sanitized.get(field):
+                    sanitized[field] = self._format_datetime(sanitized[field])
+
+            # Ensure decimal values are properly formatted
+            decimal_fields = provider.decimal_fields
+            for field in decimal_fields:
+                if field in sanitized and sanitized[field] is not None:
+                    # WMS requires decimals as strings to preserve precision
+                    sanitized[field] = str(sanitized[field])
+
+        except RuntimeError:
+            # Provider not injected - use fallback behavior
+            logger.warning(
+                "Oracle validation provider not available, using fallback sanitization",
+            )
 
         # Upper case certain fields
         uppercase_fields = ["company_code", "facility_code", "item_code", "lpn"]
@@ -221,14 +253,11 @@ class WMSDataValidator:
             "errors_by_record": {},
             "error_summary": {},
         }
-
         for i, record in enumerate(records):
             errors = self.validate_record(record)
-
             if errors:
                 report["invalid_records"] += 1
                 report["errors_by_record"][i] = errors
-
                 # Summarize errors
                 for error in errors:
                     error_type = error.split(":")[0]
@@ -237,5 +266,4 @@ class WMSDataValidator:
                     )
             else:
                 report["valid_records"] += 1
-
         return report

@@ -7,16 +7,26 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from target_oracle_wms.sinks import (
-    GenericWMSSink,
-    InventorySink,
-    OrderSink,
-    WarehouseSink,
+from flext_target_oracle_wms.sinks.base import (
     WMSBaseSink,
+)
+from flext_target_oracle_wms.sinks.generic import (
+    GenericWMSSink,
+)
+from flext_target_oracle_wms.sinks.inventory import (
+    InventorySink,
+)
+from flext_target_oracle_wms.sinks.orders import (
+    OrderSink,
+)
+from flext_target_oracle_wms.sinks.warehouse import (
+    WarehouseSink,
 )
 
 if TYPE_CHECKING:
-    from target_oracle_wms.config import Config
+    from flext_target_oracle_wms.models.config import (
+        Config,
+    )
 
 
 @pytest.mark.usefixtures("sample_config")
@@ -31,7 +41,6 @@ class TestWMSBaseSink:
             schema={},
             key_properties=[],
         )
-
         assert sink.target_name == "target-oracle-wms"
         assert sink.stream_name == "test_stream"
         assert hasattr(sink, "logger")
@@ -42,19 +51,16 @@ class TestWMSBaseSink:
             "type": "object",
             "properties": {"id": {"type": "integer"}, "name": {"type": "string"}},
         }
-
         sink = WMSBaseSink(
             target_name="target-oracle-wms",
             stream_name="test_stream",
             schema=schema,
             key_properties=["id"],
         )
-
         # Test valid record
         valid_record = {"id": 1, "name": "test"}
         # Should not raise exception
         sink._validate_record(valid_record)
-
         # Test invalid record
         invalid_record = {"id": "not_an_integer", "name": "test"}
         # Should handle gracefully
@@ -76,14 +82,12 @@ class TestInventorySink:
                 "location": {"type": "string"},
             },
         }
-
         sink = InventorySink(
             target_name="target-oracle-wms",
             stream_name="inventory",
             schema=schema,
             key_properties=["item_id"],
         )
-
         assert sink.stream_name == "inventory"
         assert hasattr(sink, "business_logic")
 
@@ -96,16 +100,13 @@ class TestInventorySink:
                 "quantity": {"type": "number"},
             },
         }
-
         sink = InventorySink(
             target_name="target-oracle-wms",
             stream_name="inventory",
             schema=schema,
             key_properties=["item_id"],
         )
-
         test_record = {"item_id": "ITEM001", "quantity": 100}
-
         # Should be able to process record without errors
         processed = sink._prepare_record(test_record)
         assert isinstance(processed, dict)
@@ -126,14 +127,12 @@ class TestOrderSink:
                 "items": {"type": "array"},
             },
         }
-
         sink = OrderSink(
             target_name="target-oracle-wms",
             stream_name="orders",
             schema=schema,
             key_properties=["order_id"],
         )
-
         assert sink.stream_name == "orders"
         assert hasattr(sink, "business_logic")
 
@@ -146,16 +145,13 @@ class TestOrderSink:
                 "status": {"type": "string"},
             },
         }
-
         sink = OrderSink(
             target_name="target-oracle-wms",
             stream_name="orders",
             schema=schema,
             key_properties=["order_id"],
         )
-
         test_record = {"order_id": "ORD001", "status": "pending"}
-
         # Should be able to transform record
         transformed = sink._prepare_record(test_record)
         assert isinstance(transformed, dict)
@@ -176,14 +172,12 @@ class TestWarehouseSink:
                 "location": {"type": "string"},
             },
         }
-
         sink = WarehouseSink(
             target_name="target-oracle-wms",
             stream_name="warehouse",
             schema=schema,
             key_properties=["facility_id"],
         )
-
         assert sink.stream_name == "warehouse"
         assert hasattr(sink, "business_logic")
 
@@ -198,34 +192,29 @@ class TestGenericWMSSink:
             "type": "object",
             "properties": {"id": {"type": "string"}, "data": {"type": "object"}},
         }
-
         sink = GenericWMSSink(
             target_name="target-oracle-wms",
             stream_name="generic_stream",
             schema=schema,
             key_properties=["id"],
         )
-
         assert sink.stream_name == "generic_stream"
 
     def test_generic_sink_flexibility(self) -> None:
         """Test that generic sink handles various record types."""
         schema = {"type": "object", "properties": {}}
-
         sink = GenericWMSSink(
             target_name="target-oracle-wms",
             stream_name="flexible",
             schema=schema,
             key_properties=[],
         )
-
         # Should handle various record structures
         test_records = [
             {"simple": "value"},
             {"complex": {"nested": "data"}},
             {"array_field": [1, 2, 3]},
         ]
-
         for record in test_records:
             processed = sink._prepare_record(record)
             assert isinstance(processed, dict)
@@ -236,10 +225,9 @@ class TestSinkFactory:
 
     def test_sink_selection_logic(self, sample_config: Config) -> None:
         """Test that appropriate sinks are selected for stream types."""
-        from target_oracle_wms.target import TargetOracleWMS
+        from flext_target_oracle_wms.target import TargetOracleWMS
 
         target = TargetOracleWMS(config=sample_config)
-
         # Test sink selection for different stream types
         stream_types = [
             ("inventory", InventorySink),
@@ -247,7 +235,6 @@ class TestSinkFactory:
             ("warehouse", WarehouseSink),
             ("unknown_stream", GenericWMSSink),
         ]
-
         for stream_name, expected_sink_class in stream_types:
             sink_class = target.get_sink_class(stream_name)
             assert (
