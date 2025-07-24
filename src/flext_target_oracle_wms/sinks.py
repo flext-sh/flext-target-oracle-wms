@@ -8,7 +8,11 @@ from typing import TYPE_CHECKING, Any, cast
 
 import sqlalchemy as sa
 from singer_sdk.sinks import SQLSink
-from sqlalchemy.dialects import oracle
+
+try:
+    from sqlalchemy.dialects import oracle
+except ImportError:
+    oracle = None
 
 if TYPE_CHECKING:
     from flext_target_oracle_wms.target import TargetOracleWMS
@@ -91,20 +95,28 @@ class OracleWMSSink(SQLSink[Any]):
             "boolean": sa.CHAR(1),  # Oracle doesn't have native BOOLEAN
             "array": sa.CLOB,  # Store arrays as JSON in CLOB
             "object": sa.CLOB,  # Store objects as JSON in CLOB
-            "date-time": oracle.TIMESTAMP(timezone=True),
-            "date": oracle.DATE,
-            "time": oracle.TIMESTAMP,
+            "date-time": (
+                oracle.TIMESTAMP(timezone=True)
+                if oracle
+                else sa.TIMESTAMP(timezone=True)
+            ),
+            "date": oracle.DATE if oracle else sa.DATE,
+            "time": oracle.TIMESTAMP if oracle else sa.TIMESTAMP,
         }
 
         # Handle format-specific types
         if property_type == "string":
             format_type = property_schema.get("format")
             if format_type == "date-time":
-                return oracle.TIMESTAMP(timezone=True)
+                return (
+                    oracle.TIMESTAMP(timezone=True)
+                    if oracle
+                    else sa.TIMESTAMP(timezone=True)
+                )
             if format_type == "date":
-                return oracle.DATE()
+                return oracle.DATE() if oracle else sa.DATE()
             if format_type == "time":
-                return oracle.TIMESTAMP()
+                return oracle.TIMESTAMP() if oracle else sa.TIMESTAMP()
 
             # Check maxLength for VARCHAR sizing
             max_length = property_schema.get("maxLength")
@@ -137,10 +149,38 @@ class OracleWMSSink(SQLSink[Any]):
         if self.config.get("add_record_metadata", True):
             columns.extend(
                 [
-                    sa.Column("_SDC_EXTRACTED_AT", oracle.TIMESTAMP(timezone=True)),
-                    sa.Column("_SDC_RECEIVED_AT", oracle.TIMESTAMP(timezone=True)),
-                    sa.Column("_SDC_BATCHED_AT", oracle.TIMESTAMP(timezone=True)),
-                    sa.Column("_SDC_DELETED_AT", oracle.TIMESTAMP(timezone=True)),
+                    sa.Column(
+                        "_SDC_EXTRACTED_AT",
+                        (
+                            oracle.TIMESTAMP(timezone=True)
+                            if oracle
+                            else sa.TIMESTAMP(timezone=True)
+                        ),
+                    ),
+                    sa.Column(
+                        "_SDC_RECEIVED_AT",
+                        (
+                            oracle.TIMESTAMP(timezone=True)
+                            if oracle
+                            else sa.TIMESTAMP(timezone=True)
+                        ),
+                    ),
+                    sa.Column(
+                        "_SDC_BATCHED_AT",
+                        (
+                            oracle.TIMESTAMP(timezone=True)
+                            if oracle
+                            else sa.TIMESTAMP(timezone=True)
+                        ),
+                    ),
+                    sa.Column(
+                        "_SDC_DELETED_AT",
+                        (
+                            oracle.TIMESTAMP(timezone=True)
+                            if oracle
+                            else sa.TIMESTAMP(timezone=True)
+                        ),
+                    ),
                     sa.Column("_SDC_SEQUENCE", sa.INTEGER),
                     sa.Column("_SDC_TABLE_VERSION", sa.INTEGER),
                 ],

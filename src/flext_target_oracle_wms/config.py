@@ -5,8 +5,34 @@ This module provides comprehensive configuration management for Oracle WMS targe
 
 from typing import Any
 
-from flext_core.config.base import BaseConfig
-from flext_core.domain.shared_types import ServiceResult
+# 🚨 ARCHITECTURAL COMPLIANCE: Using DI container
+from flext_target_oracle_wms.infrastructure.di_container import (
+    get_base_config,
+    get_domain_entity,
+    get_domain_value_object,
+    get_field,
+    get_service_result,
+)
+
+ServiceResult = get_service_result()
+DomainEntity = get_domain_entity()
+Field = get_field()
+DomainValueObject = get_domain_value_object()
+BaseConfig = get_base_config()
+# 🚨 ARCHITECTURAL COMPLIANCE: Using DI container
+from flext_target_oracle_wms.infrastructure.di_container import (
+    get_base_config,
+    get_domain_entity,
+    get_domain_value_object,
+    get_field,
+    get_service_result,
+)
+
+ServiceResult = get_service_result()
+DomainEntity = get_domain_entity()
+Field = get_field()
+DomainValueObject = get_domain_value_object()
+BaseConfig = get_base_config()
 from pydantic import Field
 
 # TODO: Create domain.value_objects module when implementing full WMS functionality
@@ -58,7 +84,8 @@ class TargetOracleWMSConfig(BaseConfig):
 
             return ServiceResult.ok(None)
         except Exception as e:
-            return ServiceResult.fail(f"Configuration validation failed: {e}",
+            return ServiceResult.fail(
+                f"Configuration validation failed: {e}",
             )
 
     def to_dict(self) -> dict[str, Any]:

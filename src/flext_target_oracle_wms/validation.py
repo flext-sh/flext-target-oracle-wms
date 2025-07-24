@@ -14,10 +14,12 @@ import structlog
 from jsonschema import Draft7Validator
 
 if TYPE_CHECKING:
-    from flext_core import OracleValidationProvider
+    from flext_db_oracle.patterns.oracle_patterns import (
+        OracleWMSValidator as OracleValidationProvider,
+    )
 
 logger = logging.getLogger(__name__)
-struct_logger = structlog.get_logger(__name__)
+struct_logger = structlog.logging.getLogger(__name__)
 
 # Oracle validation provider will be injected at runtime
 _validation_provider: OracleValidationProvider | None = None

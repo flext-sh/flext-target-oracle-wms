@@ -14,7 +14,20 @@ from pathlib import Path
 # Add flext-core to path for configuration generator
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "flext-core" / "src"))
 
-from flext_core.utils.config_generator import ProjectType, generate_project_config
+# 🚨 ARCHITECTURAL COMPLIANCE: Using DI container
+from flext_target_oracle_wms.infrastructure.di_container import (
+    get_base_config,
+    get_domain_entity,
+    get_domain_value_object,
+    get_field,
+    get_service_result,
+)
+
+ServiceResult = get_service_result()
+DomainEntity = get_domain_entity()
+Field = get_field()
+DomainValueObject = get_domain_value_object()
+BaseConfig = get_base_config()
 
 
 def main() -> None:

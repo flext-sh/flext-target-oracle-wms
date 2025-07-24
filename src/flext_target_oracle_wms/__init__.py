@@ -16,8 +16,13 @@ import importlib.metadata
 import warnings
 
 # Import from flext-core for foundational patterns
-from flext_core import BaseConfig, DomainBaseModel
-from flext_core.domain.shared_types import ServiceResult
+# 🚨 ARCHITECTURAL COMPLIANCE: Using DI container
+from flext_target_oracle_wms.infrastructure.di_container import get_service_result, get_domain_entity, get_field, get_domain_value_object, get_base_config
+ServiceResult = get_service_result()
+DomainEntity = get_domain_entity()
+Field = get_field()
+DomainValueObject = get_domain_value_object()
+BaseConfig = get_base_config()
 
 try:
     __version__ = importlib.metadata.version("flext-target-oracle-wms")
@@ -51,58 +56,54 @@ def _show_deprecation_warning(old_import: str, new_import: str) -> None:
 # ================================
 
 # Foundation patterns - ALWAYS from flext-core
-from flext_core import (
-    BaseConfig as WMSBaseConfig,  # Configuration base
-    DomainBaseModel as BaseModel,  # Base for WMS models
-    DomainError as WMSError,  # WMS-specific errors
-    ValidationError as ValidationError,  # Validation errors
+# 🚨 ARCHITECTURAL COMPLIANCE: Using DI container
+ServiceResult = get_service_result()
+DomainEntity = get_domain_entity()
+Field = get_field()
+DomainValueObject = get_domain_value_object()
+BaseConfig = get_base_config()
+BaseConfig as WMSBaseConfig,  # Configuration base
+DomainBaseModel as BaseModel,  # Base for WMS models
+DomainError as WMSError,  # WMS-specific errors
+ValidationError as ValidationError,  # Validation errors
 )
 
-# Singer Target exports - simplified imports
-with contextlib.suppress(ImportError):
+    # Singer Target exports - simplified imports
+    with contextlib.suppress(ImportError):
     from flext_target_oracle_wms.target import TargetOracleWMS
 
-# WMS Client exports - simplified imports
-with contextlib.suppress(ImportError):
-    from flext_target_oracle_wms.client import (
-        WMSAuthenticator,
-        WMSClient,
-    )
+    # WMS Client exports - simplified imports (not implemented yet)
+    # with contextlib.suppress(ImportError):
+    #     from flext_target_oracle_wms.client import (
+    #         WMSAuthenticator,
+    #         WMSClient,
+    #     )
 
-# WMS Sinks exports - simplified imports
-with contextlib.suppress(ImportError):
-    from flext_target_oracle_wms.sinks import (
-        WMSInventorySink,
-        WMSLaborSink,
-        WMSReceiptSink,
-        WMSShipmentSink,
-    )
+    # WMS Sinks exports - simplified imports (not implemented yet)
+    # with contextlib.suppress(ImportError):
+    #     from flext_target_oracle_wms.sinks import (
+    #         WMSInventorySink,
+    #         WMSLaborSink,
+    #         WMSReceiptSink,
+    #         WMSShipmentSink,
+    #     )
 
-# ================================
-# PUBLIC API EXPORTS
-# ================================
+    # ================================
+    # PUBLIC API EXPORTS
+    # ================================
 
-__all__ = [
-    "BaseModel",  # from flext_target_oracle_wms import BaseModel
-    # Deprecation utilities
-    "FlextTargetOracleWmsDeprecationWarning",
-    "ServiceResult",  # from flext_target_oracle_wms import ServiceResult
-    # Main Singer Target (simplified access)
-    "TargetOracleWMS",  # from flext_target_oracle_wms import TargetOracleWMS
-    "ValidationError",  # from flext_target_oracle_wms import ValidationError
-    # WMS Authentication (simplified access)
-    "WMSAuthenticator",  # from flext_target_oracle_wms import WMSAuthenticator
-    # Core Patterns (from flext-core)
-    "WMSBaseConfig",  # from flext_target_oracle_wms import WMSBaseConfig
-    # WMS Client (simplified access)
-    "WMSClient",  # from flext_target_oracle_wms import WMSClient
-    "WMSError",  # from flext_target_oracle_wms import WMSError
-    # WMS Sinks (simplified access)
-    "WMSInventorySink",  # from flext_target_oracle_wms import WMSInventorySink
-    "WMSLaborSink",  # from flext_target_oracle_wms import WMSLaborSink
-    "WMSReceiptSink",  # from flext_target_oracle_wms import WMSReceiptSink
-    "WMSShipmentSink",  # from flext_target_oracle_wms import WMSShipmentSink
-    # Version
-    "__version__",
-    "__version_info__",
+    __all__= [
+"BaseModel",  # from flext_target_oracle_wms import BaseModel
+# Deprecation utilities
+"FlextTargetOracleWmsDeprecationWarning",
+"ServiceResult",  # from flext_target_oracle_wms import ServiceResult
+# Main Singer Target (simplified access)
+"TargetOracleWMS",  # from flext_target_oracle_wms import TargetOracleWMS
+"ValidationError",  # from flext_target_oracle_wms import ValidationError
+# Core Patterns (from flext-core)
+"WMSBaseConfig",  # from flext_target_oracle_wms import WMSBaseConfig
+"WMSError",  # from flext_target_oracle_wms import WMSError
+# Version
+"__version__",
+"__version_info__",
 ]
