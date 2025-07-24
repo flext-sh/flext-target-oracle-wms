@@ -12,7 +12,10 @@ from flext_target_oracle_wms.sinks import OracleWMSSink
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
+try:
     import oracledb
+except ImportError:
+    oracledb = None
 
 
 class TargetOracleWMS(Target):
@@ -116,6 +119,20 @@ class TargetOracleWMS(Target):
         validate_config: bool = True,
     ) -> None:
         """Initialize the target."""
+        # Handle nested oracle_config structure from Meltano
+        if config and "oracle_config" in config:
+            oracle_config = config.pop("oracle_config")
+            # Map username to user for compatibility
+            if "username" in oracle_config:
+                oracle_config["user"] = oracle_config.pop("username")
+            # Convert port to int if it's a string
+            if "port" in oracle_config and isinstance(oracle_config["port"], str):
+                try:
+                    oracle_config["port"] = int(oracle_config["port"])
+                except ValueError:
+                    oracle_config["port"] = 1521
+            config.update(oracle_config)
+
         super().__init__(
             config=config,
             parse_env_config=parse_env_config,

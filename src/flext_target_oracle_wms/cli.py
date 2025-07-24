@@ -28,7 +28,7 @@ from flext_target_oracle_wms.target import TargetOracleWMS
 @click.version_option(version="0.7.0", prog_name="target-oracle-wms")
 def main(
     config: str | None = None,
-    _output_format: str = "singer",
+    output_format: str = "singer",
 ) -> None:
     """FLEXT Target Oracle WMS - Singer target for Oracle WMS data loading.
 
