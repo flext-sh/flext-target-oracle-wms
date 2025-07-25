@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [project]
 name = "flext-target-oracle-wms"
-version = "0.7.0"
+version = "0.8.0"
 description = "FLEXT Target Oracle WMS - Singer Target for Oracle WMS Data"
 readme = "README.md"
 requires-python = ">=3.13,<3.14"
@@ -31,13 +31,12 @@ classifiers = [
     "Topic :: System :: Archiving",
 ]
 dependencies = [
-    "singer-sdk>=0.47.0",
-    "sqlalchemy>=2.0.41",
-    "oracledb>=2.0.0",
-    "click>=8.0.0",
-    "structlog>=25.4.0",
-    "jsonschema>=4.23.0",
-    "python-dotenv>=1.0.0",
+    "flext-core @ file:///home/marlonsc/flext/flext-core",
+    "flext-meltano @ file:///home/marlonsc/flext/flext-meltano",
+    "flext-oracle-wms @ file:///home/marlonsc/flext/flext-oracle-wms",
+    "flext-observability @ file:///home/marlonsc/flext/flext-observability",
+    "pydantic>=2.11.7",
+    "pydantic-settings>=2.10.1",
 ]
 [[project.authors]]
 name = "FLEXT Team"
@@ -78,6 +77,7 @@ extend-exclude = [
     "dist",
     "htmlcov",
 ]
+extend = "../.ruff-shared.toml"
 
 [tool.mypy]
 python_version = "3.13"
@@ -241,7 +241,7 @@ output = "reports/coverage.xml"
 
 [tool.poetry.dependencies]
 python = ">=3.13,<3.14"
-singer-sdk = ">=0.47.0"
+# MIGRATED TO flext-meltano: \1
 
 
 [tool.ruff.lint.isort]

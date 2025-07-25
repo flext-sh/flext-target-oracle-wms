@@ -6,20 +6,21 @@ to access Oracle validation services. Follows Clean Architecture principles.
 
 from __future__ import annotations
 
-import logging
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
 import structlog
+from flext_core import FlextError as FlextServiceError, get_logger
 from jsonschema import Draft7Validator
+
+logger = get_logger(__name__)
 
 if TYPE_CHECKING:
     from flext_db_oracle.patterns.oracle_patterns import (
         OracleWMSValidator as OracleValidationProvider,
     )
 
-logger = logging.getLogger(__name__)
-struct_logger = structlog.logging.getLogger(__name__)
+struct_logger = structlog.get_logger(__name__)
 
 # Oracle validation provider will be injected at runtime
 _validation_provider: OracleValidationProvider | None = None
@@ -49,7 +50,7 @@ def _get_validation_provider() -> OracleValidationProvider:
     if _validation_provider is None:
         error_msg = "Oracle validation provider not injected - call set_validation_provider() first"
         logger.error(error_msg)
-        raise RuntimeError(error_msg)
+        raise FlextServiceError(error_msg)
     return _validation_provider
 
 
@@ -98,7 +99,7 @@ class WMSDataValidator:
             else:
                 errors.append(f"WMS validation failed: {wms_validation_result.error}")
         except RuntimeError as e:
-            # Provider not injected - log warning but continue with schema validation only
+            # Provider not injected - log warning but continue with schema only
             logger.warning(f"Oracle validation provider not available: {e}")
 
         return errors

@@ -1,13 +1,22 @@
-"""Oracle WMS sink implementation."""
+"""Oracle WMS sink implementation using flext-core patterns."""
 
 from __future__ import annotations
 
-import json
+from dataclasses import field
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any
 
-import sqlalchemy as sa
-from singer_sdk.sinks import SQLSink
+# Import from flext-core for foundational patterns
+from flext_core import (
+    FlextResult,
+    FlextValueObject as FlextDomainBaseModel,
+)
+
+# Using Singer SDK directly for SQLSink
+# MIGRATED: Singer SDK imports centralized via flext-meltano
+from flext_meltano import SQLSink
+
+# Import from new modular architecture
 
 try:
     from sqlalchemy.dialects import oracle
@@ -18,10 +27,35 @@ if TYPE_CHECKING:
     from flext_target_oracle_wms.target import TargetOracleWMS
 
 
+class WMSProcessingResult(FlextDomainBaseModel):
+    """Result of WMS processing operations using flext-core patterns."""
+
+    processed_count: int = 0
+    success_count: int = 0
+    error_count: int = 0
+    errors: list[str] = field(default_factory=list)
+
+    @property
+    def success_rate(self) -> float:
+        """Calculate success rate as percentage."""
+        if self.processed_count == 0:
+            return 0.0
+        return (self.success_count / self.processed_count) * 100.0
+
+    def add_success(self) -> None:
+        """Record a successful operation."""
+        self.processed_count += 1
+        self.success_count += 1
+
+    def add_error(self, error_message: str) -> None:
+        """Record a failed operation."""
+        self.processed_count += 1
+        self.error_count += 1
+        self.errors.append(error_message)
+
+
 class OracleWMSSink(SQLSink[Any]):
     """Oracle WMS sink for handling WMS-specific data loading."""
-
-    connector_class: type[Any] = type(None)  # Placeholder for required type
 
     def __init__(
         self,
@@ -30,280 +64,182 @@ class OracleWMSSink(SQLSink[Any]):
         schema: dict[str, Any] | None = None,
         key_properties: list[str] | None = None,
     ) -> None:
-        """Initialize the Oracle WMS sink."""
-        # Convert schema to dict[Any, Any] for SQLSink compatibility
-        schema_dict: dict[Any, Any] = schema or {}
-        super().__init__(
-            target=target,
-            stream_name=stream_name,
-            schema=schema_dict,
-            key_properties=key_properties,
+        """Initialize Oracle WMS sink."""
+        super().__init__(target, stream_name, schema, key_properties)
+        self.target: TargetOracleWMS = target
+        self._processing_result = WMSProcessingResult()
+
+    @property
+    def connector(self) -> Any:
+        """Get database connector."""
+        return self.target.engine
+
+    def setup(self) -> None:
+        """Setup the sink."""
+        super().setup()
+        self.logger.info(
+            f"Oracle WMS sink setup completed for stream: {self.stream_name}",
         )
-        self._target = target
 
-    @property
-    def target(self) -> TargetOracleWMS:
-        """Get the target instance."""
-        return self._target
+    def process_record(self, record: dict[str, Any], context: dict[str, Any]) -> None:
+        """Process a single record with WMS-specific logic."""
+        try:
+            # Add WMS metadata if configured
+            if self.target.config.get("add_record_metadata", True):
+                record = self._add_wms_metadata(record)
 
-    @property
-    def connection(self) -> sa.engine.Connection:
-        """Get SQLAlchemy connection from target engine."""
-        return self._target.engine.connect()
+            # Validate record if configured
+            if self.target.config.get("validate_records", True):
+                validation_result = self._validate_wms_record(record)
+                if not validation_result.is_success:
+                    self._processing_result.add_error(
+                        f"Validation failed: {validation_result.error}",
+                    )
+                    return
 
-    @property
-    def schema_name(self) -> str:
-        """Get the schema name for this sink."""
-        return self.config.get("schema", "WMS")
+            # Process the record using parent SQLSink logic
+            super().process_record(record, context)
+            self._processing_result.add_success()
 
-    @property
-    def table_name(self) -> str:
-        """Get the table name for this sink."""
-        # Convert stream name to Oracle-compatible table name
-        return self.stream_name.upper().replace("-", "_")
+            self.logger.debug(
+                f"Successfully processed WMS record for stream: {self.stream_name}",
+            )
 
-    def conform_name(self, name: str, _object_type: str | None = None) -> str:
-        """Conform names to Oracle WMS naming conventions."""
-        # Oracle identifiers are case-insensitive and limited to 30 chars (pre-12.2)
-        # Convert to uppercase and replace hyphens with underscores
-        conformed = name.upper().replace("-", "_").replace(".", "_")
+        except Exception as e:
+            error_msg = f"Error processing WMS record: {e}"
+            self.logger.exception(error_msg)
+            self._processing_result.add_error(error_msg)
 
-        # Truncate if necessary (Oracle 11g/12.1 limit is 30 chars)
-        max_oracle_identifier_length = 30
-        if len(conformed) > max_oracle_identifier_length:
-            conformed = conformed[:max_oracle_identifier_length]
+    def _add_wms_metadata(self, record: dict[str, Any]) -> dict[str, Any]:
+        """Add WMS-specific metadata to record."""
+        enriched_record = record.copy()
 
-        return conformed
+        # Add processing timestamp
+        enriched_record["_wms_processed_at"] = datetime.now(UTC).isoformat()
 
-    def get_column_type(
-        self,
-        property_schema: dict[str, Any],
-    ) -> sa.types.TypeEngine[Any]:
-        """Get SQLAlchemy column type for a property schema."""
-        property_type = property_schema.get("type", ["null"])
+        # Add stream information
+        enriched_record["_wms_stream_name"] = self.stream_name
 
-        if isinstance(property_type, list):
-            # Handle nullable types like ["null", "string"]
-            non_null_types = [t for t in property_type if t != "null"]
-            property_type = non_null_types[0] if non_null_types else "string"
+        # Add target information
+        enriched_record["_wms_target"] = "flext-target-oracle-wms"
 
-        # Map Singer types to Oracle types
-        type_mapping = {
-            "string": sa.VARCHAR(4000),  # Oracle VARCHAR2 max in 11g
-            "integer": sa.INTEGER,
-            "number": sa.NUMERIC(38, 10),  # Oracle NUMBER with precision
-            "boolean": sa.CHAR(1),  # Oracle doesn't have native BOOLEAN
-            "array": sa.CLOB,  # Store arrays as JSON in CLOB
-            "object": sa.CLOB,  # Store objects as JSON in CLOB
-            "date-time": (
-                oracle.TIMESTAMP(timezone=True)
-                if oracle
-                else sa.TIMESTAMP(timezone=True)
-            ),
-            "date": oracle.DATE if oracle else sa.DATE,
-            "time": oracle.TIMESTAMP if oracle else sa.TIMESTAMP,
+        return enriched_record
+
+    def _validate_wms_record(self, record: dict[str, Any]) -> FlextResult[bool]:
+        """Validate WMS record against schema and business rules."""
+        try:
+            # Basic validation - ensure record is not empty
+            if not record:
+                return FlextResult.fail("Record is empty")
+
+            # WMS-specific validations
+            required_fields = self._get_required_wms_fields()
+            for field in required_fields:
+                if field not in record or record[field] is None:
+                    return FlextResult.fail(
+                        f"Required WMS field '{field}' is missing or null",
+                    )
+
+            # Validate data types for key WMS fields
+            validation_result = self._validate_wms_data_types(record)
+            if not validation_result.is_success:
+                return validation_result
+
+            return FlextResult.ok(True)
+
+        except Exception as e:
+            return FlextResult.fail(f"Validation error: {e}")
+
+    def _get_required_wms_fields(self) -> list[str]:
+        """Get list of required fields for WMS records."""
+        # Define required fields based on stream type
+        common_fields = []
+
+        stream_specific_fields = {
+            "inventory": ["item_id", "location_id", "quantity"],
+            "orders": ["order_id", "order_type", "status"],
+            "shipments": ["shipment_id", "carrier", "tracking_number"],
+            "receipts": ["receipt_id", "supplier", "received_date"],
         }
 
-        # Handle format-specific types
-        if property_type == "string":
-            format_type = property_schema.get("format")
-            if format_type == "date-time":
-                return (
-                    oracle.TIMESTAMP(timezone=True)
-                    if oracle
-                    else sa.TIMESTAMP(timezone=True)
-                )
-            if format_type == "date":
-                return oracle.DATE() if oracle else sa.DATE()
-            if format_type == "time":
-                return oracle.TIMESTAMP() if oracle else sa.TIMESTAMP()
+        specific_fields = stream_specific_fields.get(self.stream_name, [])
+        return common_fields + specific_fields
 
-            # Check maxLength for VARCHAR sizing
-            max_length = property_schema.get("maxLength")
-            max_varchar_length = 4000
-            if max_length and max_length <= max_varchar_length:
-                return sa.VARCHAR(max_length)
+    def _validate_wms_data_types(self, record: dict[str, Any]) -> FlextResult[bool]:
+        """Validate data types for WMS-specific fields."""
+        try:
+            # Validate numeric fields
+            numeric_fields = ["quantity", "weight", "volume", "cost"]
+            for field in numeric_fields:
+                if field in record and record[field] is not None:
+                    try:
+                        float(record[field])
+                    except (ValueError, TypeError):
+                        return FlextResult.fail(f"Field '{field}' must be numeric")
 
-        return cast(
-            "sa.types.TypeEngine[Any]",
-            type_mapping.get(property_type, sa.VARCHAR(4000)),
-        )
+            # Validate date fields
+            date_fields = ["received_date", "shipped_date", "expected_date"]
+            for field in date_fields:
+                if field in record and record[field] is not None:
+                    if not isinstance(record[field], (str, datetime)):
+                        return FlextResult.fail(
+                            f"Field '{field}' must be a date string or datetime",
+                        )
 
-    def create_table_with_records(
-        self,
-        _full_table_name: str,
-        schema: dict[str, Any],
-        records: list[dict[str, Any]],
-    ) -> None:
-        """Create table and insert records."""
-        # Create table structure
-        columns = []
+            return FlextResult.ok(True)
 
-        # Add data columns
-        for property_name, property_schema in schema.get("properties", {}).items():
-            column_name = self.conform_name(property_name)
-            column_type = self.get_column_type(property_schema)
-            columns.append(sa.Column(column_name, column_type))
+        except Exception as e:
+            return FlextResult.fail(f"Data type validation error: {e}")
 
-        # Add metadata columns if configured
-        if self.config.get("add_record_metadata", True):
-            columns.extend(
-                [
-                    sa.Column(
-                        "_SDC_EXTRACTED_AT",
-                        (
-                            oracle.TIMESTAMP(timezone=True)
-                            if oracle
-                            else sa.TIMESTAMP(timezone=True)
-                        ),
-                    ),
-                    sa.Column(
-                        "_SDC_RECEIVED_AT",
-                        (
-                            oracle.TIMESTAMP(timezone=True)
-                            if oracle
-                            else sa.TIMESTAMP(timezone=True)
-                        ),
-                    ),
-                    sa.Column(
-                        "_SDC_BATCHED_AT",
-                        (
-                            oracle.TIMESTAMP(timezone=True)
-                            if oracle
-                            else sa.TIMESTAMP(timezone=True)
-                        ),
-                    ),
-                    sa.Column(
-                        "_SDC_DELETED_AT",
-                        (
-                            oracle.TIMESTAMP(timezone=True)
-                            if oracle
-                            else sa.TIMESTAMP(timezone=True)
-                        ),
-                    ),
-                    sa.Column("_SDC_SEQUENCE", sa.INTEGER),
-                    sa.Column("_SDC_TABLE_VERSION", sa.INTEGER),
-                ],
-            )
-
-        # Create table
-        table = sa.Table(
-            self.table_name,
-            sa.MetaData(),
-            *columns,
-            schema=self.schema_name,
-        )
-
-        with self.connection as conn:
-            # Drop table if exists (for development)
-            conn.execute(sa.text(f"DROP TABLE {self.schema_name}.{self.table_name}"))
-            conn.commit()
-
-            # Create new table
-            table.create(conn)
-            conn.commit()
-
-            # Insert records
-            if records:
-                self._insert_records(conn, table, records)
-
-    def _insert_records(
-        self,
-        connection: sa.engine.Connection,
-        table: sa.Table,
-        records: list[dict[str, Any]],
-    ) -> None:
-        """Insert records into Oracle table."""
-        batch_size = self.config.get("batch_size", 1000)
-
-        for i in range(0, len(records), batch_size):
-            batch = records[i : i + batch_size]
-            prepared_batch = []
-
-            for record in batch:
-                prepared_record = self._prepare_record(record)
-                prepared_batch.append(prepared_record)
-
-            # Use Oracle-specific INSERT
-            connection.execute(table.insert().values(prepared_batch))
-            connection.commit()
-
-            self.logger.info("Inserted batch of %d records", len(prepared_batch))
-
-    def prepare_record(self, record: dict[str, Any]) -> dict[str, Any]:
-        """Prepare record for Oracle insertion."""
-        return self._prepare_record(record)
-
-    def _prepare_record(self, record: dict[str, Any]) -> dict[str, Any]:
-        """Prepare record for Oracle insertion."""
-        prepared: dict[str, Any] = {}
-
-        for key, value in record.items():
-            column_name = self.conform_name(key)
-
-            # Handle different data types
-            if value is None:
-                prepared[column_name] = None
-            elif isinstance(value, dict | list):
-                # Convert complex types to JSON strings for CLOB storage
-                prepared[column_name] = json.dumps(value, ensure_ascii=False)
-            elif isinstance(value, bool):
-                # Convert boolean to Oracle CHAR(1) format
-                prepared[column_name] = "Y" if value else "N"
-            else:
-                prepared[column_name] = value
-
-        # Add metadata if configured
-        if self.config.get("add_record_metadata", True):
-            now = datetime.now(UTC)
-
-            prepared.update(
-                {
-                    "_SDC_EXTRACTED_AT": record.get("_sdc_extracted_at", now),
-                    "_SDC_RECEIVED_AT": record.get("_sdc_received_at", now),
-                    "_SDC_BATCHED_AT": now,
-                    "_SDC_DELETED_AT": record.get("_sdc_deleted_at"),
-                    "_SDC_SEQUENCE": record.get("_sdc_sequence"),
-                    "_SDC_TABLE_VERSION": record.get("_sdc_table_version", 1),
-                },
-            )
-
-        return prepared
+    def get_processing_result(self) -> WMSProcessingResult:
+        """Get processing results."""
+        return self._processing_result
 
     def process_batch(self, context: dict[str, Any]) -> None:
         """Process a batch of records."""
-        records = context["records"]
+        try:
+            super().process_batch(context)
 
-        if not records:
-            return
-
-        table_exists = self._table_exists()
-
-        if not table_exists:
-            # Create table with first batch
-            self.create_table_with_records(
-                _full_table_name=f"{self.schema_name}.{self.table_name}",
-                schema=self.schema,
-                records=records,
+            # Log batch processing results
+            result = self._processing_result
+            self.logger.info(
+                f"WMS batch processing completed for {self.stream_name}. "
+                f"Success: {result.success_count}, Errors: {result.error_count}, "
+                f"Success Rate: {result.success_rate:.2f}%",
             )
-        else:
-            # Insert into existing table
-            with self.connection as conn:
-                table = self._get_table_metadata(conn)
-                self._insert_records(conn, table, records)
 
-    def _table_exists(self) -> bool:
-        """Check if the target table exists."""
-        with self.connection as conn:
-            inspector = sa.inspect(conn)
-            return inspector.has_table(self.table_name, schema=self.schema_name)
+        except Exception as e:
+            error_msg = f"Batch processing error for stream {self.stream_name}: {e}"
+            self.logger.exception(error_msg)
+            self._processing_result.add_error(error_msg)
 
-    def _get_table_metadata(self, connection: sa.engine.Connection) -> sa.Table:
-        """Get table metadata for existing table."""
-        metadata = sa.MetaData()
-        return sa.Table(
-            self.table_name,
-            metadata,
-            autoload_with=connection,
-            schema=self.schema_name,
+    def teardown(self) -> None:
+        """Teardown the sink."""
+        super().teardown()
+
+        # Log final results
+        result = self._processing_result
+        self.logger.info(
+            f"Oracle WMS sink teardown for {self.stream_name}. "
+            f"Total processed: {result.processed_count}, "
+            f"Success: {result.success_count}, "
+            f"Errors: {result.error_count}",
         )
+
+    @property
+    def schema_name(self) -> str | None:
+        """Get schema name for this sink."""
+        return self.target.config.get(
+            "default_target_schema",
+        ) or self.target.config.get("schema", "WMS")
+
+    def conform_name(self, name: str, object_type: str | None = None) -> str:
+        """Conform a stream property name to one suitable for the target system."""
+        # Oracle naming conventions: uppercase, underscores, max 30 chars
+        conformed_name = name.upper().replace(" ", "_").replace("-", "_")
+
+        # Truncate to Oracle's 30 character limit for identifiers
+        if len(conformed_name) > 30:
+            conformed_name = conformed_name[:30]
+
+        return conformed_name
