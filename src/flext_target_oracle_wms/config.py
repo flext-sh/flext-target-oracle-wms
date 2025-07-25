@@ -1,106 +1,96 @@
-"""Configuration for FLEXT target-oracle-wms using flext-core patterns with structured value objects.
+"""Configuration for FLEXT target-oracle-wms using flext-core patterns.
 
-This module provides comprehensive configuration management for Oracle WMS target integration.
+This module provides configuration management for Oracle WMS target integration.
 """
+
+from __future__ import annotations
 
 from typing import Any
 
-# 🚨 ARCHITECTURAL COMPLIANCE: Using DI container
-from flext_target_oracle_wms.infrastructure.di_container import (
-    get_base_config,
-    get_domain_entity,
-    get_domain_value_object,
-    get_field,
-    get_service_result,
+# Import from flext-core for foundational patterns
+from flext_core import (
+    FlextResult,
+    FlextValueObject,
 )
 
-ServiceResult = get_service_result()
-DomainEntity = get_domain_entity()
-Field = get_field()
-DomainValueObject = get_domain_value_object()
-BaseConfig = get_base_config()
-# 🚨 ARCHITECTURAL COMPLIANCE: Using DI container
-from flext_target_oracle_wms.infrastructure.di_container import (
-    get_base_config,
-    get_domain_entity,
-    get_domain_value_object,
-    get_field,
-    get_service_result,
+# MIGRATED: Singer SDK imports centralized via flext-meltano
+from flext_meltano.common import (
+    validate_oracle_host_for_database,
+    validate_oracle_service_name_for_database,
 )
-
-ServiceResult = get_service_result()
-DomainEntity = get_domain_entity()
-Field = get_field()
-DomainValueObject = get_domain_value_object()
-BaseConfig = get_base_config()
-from pydantic import Field
-
-# TODO: Create domain.value_objects module when implementing full WMS functionality
-# from flext_target_oracle_wms.domain.value_objects import (
-#     OracleWMSConnectionConfig,
-#     OracleWMSTargetConfig,
-# )
+from pydantic import BaseSettings, Field, field_validator
 
 
-class TargetOracleWMSConfig(BaseConfig):
-    """Complete configuration for target-oracle-wms using flext-core patterns.
+class TargetOracleWMSConfig(BaseSettings):
+    """Configuration for Oracle WMS target."""
 
-    Uses flext-core patterns with structured value objects. Zero tolerance for
-    legacy patterns or code duplication.
-    """
+    # Oracle Database connection settings
+    host: str = Field(..., description="Oracle database host")
+    port: int = Field(1521, description="Oracle database port")
+    service_name: str = Field(..., description="Oracle service name")
+    username: str = Field(..., description="Database username")
+    password: str = Field(..., description="Database password")
 
-    # Connection configuration
-    host: str = Field(..., description="Oracle WMS server hostname")
-    port: int = Field(1521, description="Oracle WMS server port")
-    service_name: str = Field(..., description="Oracle WMS service name")
-    user: str = Field(..., description="Oracle WMS username")
-    password: str = Field(..., description="Oracle WMS password")
+    # WMS-specific settings
+    batch_size: int = Field(1000, description="Batch size for bulk operations")
+    max_connections: int = Field(10, description="Maximum database connections")
+    connection_timeout: int = Field(30, description="Connection timeout in seconds")
 
-    # Target configuration
-    schema_name: str = Field(
-        "WMS",
-        description="Oracle WMS schema name",
-        alias="schema",
+    # Target behavior settings
+    create_tables: bool = Field(True, description="Create tables if they don't exist")
+    truncate_before_load: bool = Field(
+        False,
+        description="Truncate tables before loading",
     )
-    batch_size: int = Field(1000, ge=1, description="Batch size for WMS operations")
 
-    def validate_config(self) -> ServiceResult[Any]:
-        """Validate the complete configuration.
+    @field_validator("host")
+    @classmethod
+    def validate_host_field(cls, v: str) -> str:
+        """Use consolidated Oracle host validation."""
+        return validate_oracle_host_for_database(v, "database")
 
-        Returns:
-            ServiceResult[None]: Success if valid, error details if invalid
+    @field_validator("service_name")
+    @classmethod
+    def validate_service_name_field(cls, v: str) -> str:
+        """Use consolidated Oracle service name validation."""
+        return validate_oracle_service_name_for_database(v, "database")
 
-        """
-        try:
-            # Basic validation
-            if not self.host:
-                return ServiceResult.fail("Host is required")
-            if not self.service_name:
-                return ServiceResult.fail("Service name is required")
-            if not self.user:
-                return ServiceResult.fail("User is required")
-            if not self.password:
-                return ServiceResult.fail("Password is required")
+    class Config:
+        """Pydantic configuration."""
 
-            return ServiceResult.ok(None)
-        except Exception as e:
-            return ServiceResult.fail(
-                f"Configuration validation failed: {e}",
-            )
+        env_prefix = "TARGET_ORACLE_WMS_"
+        case_sensitive = False
 
-    def to_dict(self) -> dict[str, Any]:
-        """Convert configuration to dictionary.
 
-        Returns:
-            dict[str, Any]: Configuration as dictionary
+class WMSConnectionSettings(FlextValueObject):
+    """WMS connection settings value object."""
 
-        """
-        return {
-            "host": self.host,
-            "port": self.port,
-            "service_name": self.service_name,
-            "user": self.user,
-            "password": self.password,
-            "schema": self.schema,
-            "batch_size": self.batch_size,
-        }
+    host: str = Field(..., description="Oracle database host")
+    port: int = Field(1521, description="Oracle database port")
+    service_name: str = Field(..., description="Oracle service name")
+    username: str = Field(..., description="Database username")
+    password: str = Field(..., description="Database password")
+
+
+class WMSOperationSettings(FlextValueObject):
+    """WMS operation settings value object."""
+
+    batch_size: int = Field(1000, description="Batch size for operations")
+    max_connections: int = Field(10, description="Maximum connections")
+    connection_timeout: int = Field(30, description="Connection timeout")
+    create_tables: bool = Field(True, description="Create tables if needed")
+    truncate_before_load: bool = Field(False, description="Truncate before load")
+
+
+def create_wms_config(**kwargs: object) -> TargetOracleWMSConfig:
+    """Create WMS configuration with validation."""
+    return TargetOracleWMSConfig(**kwargs)
+
+
+def validate_wms_config(config: dict[str, Any]) -> FlextResult[TargetOracleWMSConfig]:
+    """Validate WMS configuration."""
+    try:
+        validated_config = create_wms_config(**config)
+        return FlextResult.ok(validated_config)
+    except Exception as e:
+        return FlextResult.fail(f"Configuration validation failed: {e}")

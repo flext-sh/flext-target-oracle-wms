@@ -4,7 +4,7 @@ Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 
 Version 0.7.0 - Target Oracle WMS with simplified public API:
-- All common imports available from root: from flext_target_oracle_wms import TargetOracleWMS
+- All common imports available from root
 - Built on flext-core foundation for robust Oracle WMS data loading
 - Deprecation warnings for internal imports
 """
@@ -16,13 +16,18 @@ import importlib.metadata
 import warnings
 
 # Import from flext-core for foundational patterns
-# 🚨 ARCHITECTURAL COMPLIANCE: Using DI container
-from flext_target_oracle_wms.infrastructure.di_container import get_service_result, get_domain_entity, get_field, get_domain_value_object, get_base_config
-ServiceResult = get_service_result()
-DomainEntity = get_domain_entity()
-Field = get_field()
-DomainValueObject = get_domain_value_object()
-BaseConfig = get_base_config()
+from flext_core import (
+    FlextResult as FlextResult,
+    FlextValueObject as BaseModel,
+    FlextValueObject as FlextValueObject,
+)
+
+# Import consolidated orchestrator from flext-meltano
+try:
+    from flext_meltano.orchestration.targets import FlextOracleTargetOrchestrator
+except ImportError:
+    # Fallback if flext-meltano not available
+    FlextOracleTargetOrchestrator = None
 
 try:
     __version__ = importlib.metadata.version("flext-target-oracle-wms")
@@ -55,55 +60,49 @@ def _show_deprecation_warning(old_import: str, new_import: str) -> None:
 # SIMPLIFIED PUBLIC API EXPORTS
 # ================================
 
-# Foundation patterns - ALWAYS from flext-core
-# 🚨 ARCHITECTURAL COMPLIANCE: Using DI container
-ServiceResult = get_service_result()
-DomainEntity = get_domain_entity()
-Field = get_field()
-DomainValueObject = get_domain_value_object()
-BaseConfig = get_base_config()
-BaseConfig as WMSBaseConfig,  # Configuration base
-DomainBaseModel as BaseModel,  # Base for WMS models
-DomainError as WMSError,  # WMS-specific errors
-ValidationError as ValidationError,  # Validation errors
-)
+# Create aliases for WMS-specific usage
+WMSBaseConfig = BaseModel  # Configuration base
+WMSError = Exception  # WMS-specific errors (placeholder)
+ValidationError = ValueError  # Validation errors (placeholder)
 
-    # Singer Target exports - simplified imports
-    with contextlib.suppress(ImportError):
+# Singer Target exports - simplified imports
+with contextlib.suppress(ImportError):
     from flext_target_oracle_wms.target import TargetOracleWMS
 
-    # WMS Client exports - simplified imports (not implemented yet)
-    # with contextlib.suppress(ImportError):
-    #     from flext_target_oracle_wms.client import (
-    #         WMSAuthenticator,
-    #         WMSClient,
-    #     )
+# WMS Client exports - simplified imports (not implemented yet)
+# with contextlib.suppress(ImportError):
+#     from flext_target_oracle_wms.client import (
+#         WMSAuthenticator,
+#         WMSClient,
+#     )
 
-    # WMS Sinks exports - simplified imports (not implemented yet)
-    # with contextlib.suppress(ImportError):
-    #     from flext_target_oracle_wms.sinks import (
-    #         WMSInventorySink,
-    #         WMSLaborSink,
-    #         WMSReceiptSink,
-    #         WMSShipmentSink,
-    #     )
+# WMS Sinks exports - simplified imports (not implemented yet)
+# with contextlib.suppress(ImportError):
+#     from flext_target_oracle_wms.sinks import (
+#         WMSInventorySink,
+#         WMSLaborSink,
+#         WMSReceiptSink,
+#         WMSShipmentSink,
+#     )
 
-    # ================================
-    # PUBLIC API EXPORTS
-    # ================================
+# ================================
+# PUBLIC API EXPORTS
+# ================================
 
-    __all__= [
-"BaseModel",  # from flext_target_oracle_wms import BaseModel
-# Deprecation utilities
-"FlextTargetOracleWmsDeprecationWarning",
-"ServiceResult",  # from flext_target_oracle_wms import ServiceResult
-# Main Singer Target (simplified access)
-"TargetOracleWMS",  # from flext_target_oracle_wms import TargetOracleWMS
-"ValidationError",  # from flext_target_oracle_wms import ValidationError
-# Core Patterns (from flext-core)
-"WMSBaseConfig",  # from flext_target_oracle_wms import WMSBaseConfig
-"WMSError",  # from flext_target_oracle_wms import WMSError
-# Version
-"__version__",
-"__version_info__",
+__all__ = [
+    "BaseModel",  # from flext_target_oracle_wms import BaseModel
+    # Consolidated Orchestrator (from flext-meltano)
+    "FlextOracleTargetOrchestrator",  # Replaces application.orchestrator
+    "FlextResult",  # from flext_target_oracle_wms import FlextResult
+    # Deprecation utilities
+    "FlextTargetOracleWmsDeprecationWarning",
+    # Main Singer Target (simplified access)
+    "TargetOracleWMS",  # from flext_target_oracle_wms import TargetOracleWMS
+    "ValidationError",  # from flext_target_oracle_wms import ValidationError
+    # Core Patterns (from flext-core)
+    "WMSBaseConfig",  # from flext_target_oracle_wms import WMSBaseConfig
+    "WMSError",  # from flext_target_oracle_wms import WMSError
+    # Version
+    "__version__",
+    "__version_info__",
 ]
