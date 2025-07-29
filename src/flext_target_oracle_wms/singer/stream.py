@@ -62,7 +62,7 @@ class SingerWMSStreamProcessor:
 
             return FlextResult.ok(None)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception(f"WMS stream initialization failed: {stream_name}")
             return FlextResult.fail(f"Stream initialization failed: {e}")
 
@@ -96,7 +96,7 @@ class SingerWMSStreamProcessor:
 
             return FlextResult.ok(transform_result.data)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception(f"WMS record processing failed for stream: {stream_name}")
             if stream_name in self._stream_stats:
                 self._stream_stats[stream_name].records_failed += 1
@@ -137,7 +137,7 @@ class SingerWMSStreamProcessor:
 
             return FlextResult.ok(processed_records)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception(f"WMS batch processing failed for stream: {stream_name}")
             return FlextResult.fail(f"Batch processing failed: {e}")
 
@@ -156,7 +156,7 @@ class SingerWMSStreamProcessor:
         try:
             return FlextResult.ok(self._stream_stats.copy())
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Failed to get WMS stream statistics")
             return FlextResult.fail(f"Statistics retrieval failed: {e}")
 
@@ -171,7 +171,7 @@ class SingerWMSStreamProcessor:
 
             return FlextResult.ok(None)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception(f"Failed to reset WMS stream statistics: {stream_name}")
             return FlextResult.fail(f"Statistics reset failed: {e}")
 
@@ -193,7 +193,7 @@ class SingerWMSStreamProcessor:
 
             return FlextResult.ok(stats)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception(f"WMS stream finalization failed: {stream_name}")
             return FlextResult.fail(f"Stream finalization failed: {e}")
 
@@ -216,7 +216,7 @@ class SingerWMSStreamProcessor:
             # Basic type validation could be added here
             return FlextResult.ok(True)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("WMS schema validation failed")
             return FlextResult.fail(f"Schema validation failed: {e}")
 
@@ -246,6 +246,6 @@ class SingerWMSStreamProcessor:
 
             return FlextResult.ok(None)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception(f"WMS schema change handling failed: {stream_name}")
             return FlextResult.fail(f"Schema change handling failed: {e}")

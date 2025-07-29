@@ -54,7 +54,7 @@ class SingerWMSCatalogManager:
 
             return FlextResult.ok(None)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception(f"Failed to add WMS stream to catalog: {stream_name}")
             return FlextResult.fail(f"Stream addition failed: {e}")
 
@@ -71,7 +71,7 @@ class SingerWMSCatalogManager:
             streams = list(self._catalog_entries.keys())
             return FlextResult.ok(streams)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Failed to list WMS streams")
             return FlextResult.fail(f"Stream listing failed: {e}")
 
@@ -84,7 +84,7 @@ class SingerWMSCatalogManager:
 
             return FlextResult.ok(None)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception(f"Failed to remove WMS stream: {stream_name}")
             return FlextResult.fail(f"Stream removal failed: {e}")
 
@@ -119,7 +119,7 @@ class SingerWMSCatalogManager:
 
             return FlextResult.ok(None)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception(f"Failed to update WMS stream metadata: {stream_name}")
             return FlextResult.fail(f"Metadata update failed: {e}")
 
@@ -154,7 +154,7 @@ class SingerWMSCatalogManager:
 
             return FlextResult.ok(catalog)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Failed to convert to Singer WMS catalog")
             return FlextResult.fail(f"Catalog conversion failed: {e}")
 
@@ -187,6 +187,6 @@ class SingerWMSCatalogManager:
 
             return FlextResult.ok(None)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Failed to load Singer WMS catalog")
             return FlextResult.fail(f"Catalog loading failed: {e}")

@@ -20,7 +20,7 @@ class WMSTypeConverter:
     def convert_singer_to_oracle(
         self,
         singer_type: str,
-        value: Any,
+        value: object,
     ) -> FlextResult[Any]:
         """Convert Singer type to Oracle-compatible type."""
         try:
@@ -37,7 +37,7 @@ class WMSTypeConverter:
                 return FlextResult.ok(json.dumps(value))
             return FlextResult.ok(str(value))
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.warning(f"Type conversion failed for {singer_type}: {e}")
             return FlextResult.ok(str(value))  # Fallback to string
 
@@ -81,7 +81,7 @@ class WMSDataTransformer:
 
             return FlextResult.ok(transformed)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("WMS record transformation failed")
             return FlextResult.fail(f"Record transformation failed: {e}")
 
@@ -123,7 +123,7 @@ class WMSDataTransformer:
 
             return FlextResult.ok(batch_params)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Batch parameter preparation failed")
             return FlextResult.fail(f"Parameter preparation failed: {e}")
 
@@ -154,7 +154,7 @@ class WMSSchemaMapper:
 
             return FlextResult.ok(oracle_columns)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Schema mapping failed")
             return FlextResult.fail(f"Schema mapping failed: {e}")
 
@@ -186,7 +186,7 @@ class WMSSchemaMapper:
                 return FlextResult.ok("CLOB")
             return FlextResult.ok("VARCHAR2(4000)")
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.warning(f"Type mapping failed: {e}")
             return FlextResult.ok("VARCHAR2(4000)")
 
@@ -252,7 +252,7 @@ class WMSTableManager:
 
             return FlextResult.ok(create_sql)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("CREATE TABLE SQL generation failed")
             return FlextResult.fail(f"SQL generation failed: {e}")
 
@@ -269,13 +269,13 @@ class WMSTableManager:
 
             # Build parametrized INSERT SQL (safe - uses placeholders)
             insert_sql = (
-                f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" '  # noqa: S608
+                f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" '
                 f"({', '.join(quoted_columns)}) "
                 f"VALUES ({', '.join(placeholders)})"
             )
 
             return FlextResult.ok(insert_sql)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("INSERT SQL generation failed")
             return FlextResult.fail(f"SQL generation failed: {e}")

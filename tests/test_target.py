@@ -27,7 +27,8 @@ class TestTargetOracleWMS:
     def test_target_initialization(self, config: dict[str, Any]) -> None:
         """Test target can be initialized with config."""
         target = TargetOracleWMS(config=config)
-        assert target.name == "target-oracle-wms"
+        if target.name != "target-oracle-wms":
+            raise AssertionError(f"Expected {"target-oracle-wms"}, got {target.name}")
         assert target.config == config
 
     def test_get_sink_class_inventory_streams(self) -> None:
@@ -36,7 +37,8 @@ class TestTargetOracleWMS:
         inventory_streams = ["inventory", "lots", "locations", "cycle_counts"]
         for stream_name in inventory_streams:
             sink_class = target.get_sink_class(stream_name)
-            assert sink_class == InventorySink
+            if sink_class != InventorySink:
+                raise AssertionError(f"Expected {InventorySink}, got {sink_class}")
 
     def test_get_sink_class_order_streams(self) -> None:
         """Test that order streams return OrderSink."""
@@ -44,7 +46,8 @@ class TestTargetOracleWMS:
         order_streams = ["orders", "order_lines", "shipments", "allocations"]
         for stream_name in order_streams:
             sink_class = target.get_sink_class(stream_name)
-            assert sink_class == OrderSink
+            if sink_class != OrderSink:
+                raise AssertionError(f"Expected {OrderSink}, got {sink_class}")
 
     def test_get_sink_class_warehouse_streams(self) -> None:
         """Test that warehouse streams return WarehouseSink."""
@@ -52,7 +55,8 @@ class TestTargetOracleWMS:
         warehouse_streams = ["tasks", "workers", "equipment", "zones"]
         for stream_name in warehouse_streams:
             sink_class = target.get_sink_class(stream_name)
-            assert sink_class == WarehouseSink
+            if sink_class != WarehouseSink:
+                raise AssertionError(f"Expected {WarehouseSink}, got {sink_class}")
 
     def test_get_sink_class_generic_streams(self) -> None:
         """Test that unknown streams return GenericWMSSink."""
@@ -60,12 +64,14 @@ class TestTargetOracleWMS:
         generic_streams = ["unknown", "custom_entity", "some_other_stream"]
         for stream_name in generic_streams:
             sink_class = target.get_sink_class(stream_name)
-            assert sink_class == GenericWMSSink
+            if sink_class != GenericWMSSink:
+                raise AssertionError(f"Expected {GenericWMSSink}, got {sink_class}")
 
     def test_max_parallelism(self) -> None:
         """Test max parallelism property."""
         target = TargetOracleWMS(config={})
-        assert target.max_parallelism == 4
+        if target.max_parallelism != 4:
+            raise AssertionError(f"Expected {4}, got {target.max_parallelism}")
 
     def test_config_validation_required_fields(self) -> None:
         """Test that required config fields are validated."""
@@ -79,24 +85,32 @@ class TestTargetOracleWMS:
             "password": "pass",
         }
         target = TargetOracleWMS(config=valid_config, validate_config=True)
-        assert target.config == valid_config
+        if target.config != valid_config:
+            raise AssertionError(f"Expected {valid_config}, got {target.config}")
 
     def test_config_schema(self) -> None:
         """Test config schema is properly defined."""
         schema = TargetOracleWMS.config_jsonschema
         # Check required properties
-        assert "properties" in schema
+        if "properties" not in schema:
+            raise AssertionError(f"Expected {"properties"} in {schema}")
         assert "base_url" in schema["properties"]
-        assert "username" in schema["properties"]
+        if "username" not in schema["properties"]:
+            raise AssertionError(f"Expected {"username"} in {schema["properties"]}")
         assert "password" in schema["properties"]
         # Check optional properties
-        assert "timeout" in schema["properties"]
+        if "timeout" not in schema["properties"]:
+            raise AssertionError(f"Expected {"timeout"} in {schema["properties"]}")
         assert "enable_kpi_calculation" in schema["properties"]
-        assert "enable_alerts" in schema["properties"]
+        if "enable_alerts" not in schema["properties"]:
+            raise AssertionError(f"Expected {"enable_alerts"} in {schema["properties"]}")
         assert "output_path" in schema["properties"]
-        assert "output_format" in schema["properties"]
+        if "output_format" not in schema["properties"]:
+            raise AssertionError(f"Expected {"output_format"} in {schema["properties"]}")
         # Check required fields
-        assert schema["required"] == ["base_url", "username", "password"]
+        if schema["required"] != ["base_url", "username", "password"]:
+            raise AssertionError(f"Expected {["base_url", "username", "password"]}, got {schema["required"]}")
         # Check secret fields
-        assert schema["properties"]["password"]["secret"] is True
+        if not (schema["properties"]["password"]["secret"]):
+            raise AssertionError(f"Expected True, got {schema["properties"]["password"]["secret"]}")
         assert schema["properties"]["database_url"]["secret"] is True

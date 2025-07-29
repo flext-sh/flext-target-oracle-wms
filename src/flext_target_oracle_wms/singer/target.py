@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+import sys
 from typing import Any
 
 # Import from flext-core for foundational patterns
@@ -67,7 +69,7 @@ class SingerTargetOracleWMS:
 
             return FlextResult.ok(None)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Singer Target Oracle WMS setup failed")
             return FlextResult.fail(f"Setup failed: {e}")
 
@@ -129,7 +131,7 @@ class SingerTargetOracleWMS:
 
             return FlextResult.ok(None)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("WMS SCHEMA message processing failed")
             return FlextResult.fail(f"SCHEMA processing failed: {e}")
 
@@ -165,7 +167,7 @@ class SingerTargetOracleWMS:
 
             return FlextResult.ok(None)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("WMS RECORD message processing failed")
             return FlextResult.fail(f"RECORD processing failed: {e}")
 
@@ -177,8 +179,6 @@ class SingerTargetOracleWMS:
 
             # Singer targets should output STATE messages to stdout
             # This allows for incremental processing resumption
-            import json
-            import sys
 
             state_line = json.dumps(message)
             sys.stdout.write(state_line + "\n")
@@ -188,7 +188,7 @@ class SingerTargetOracleWMS:
 
             return FlextResult.ok(None)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("WMS STATE message processing failed")
             return FlextResult.fail(f"STATE processing failed: {e}")
 
@@ -236,7 +236,7 @@ class SingerTargetOracleWMS:
 
             return FlextResult.ok(None)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception(f"WMS table management failed: {table_name}")
             return FlextResult.fail(f"Table management failed: {e}")
 
@@ -261,7 +261,7 @@ class SingerTargetOracleWMS:
 
             # Build parametrized INSERT SQL (safe - uses placeholders)
             insert_sql = (
-                f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" '  # noqa: S608
+                f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" '
                 f"({', '.join(quoted_columns)}) "
                 f"VALUES ({', '.join(placeholders)})"
             )
@@ -280,7 +280,7 @@ class SingerTargetOracleWMS:
 
             return FlextResult.ok(None)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception(f"WMS record insertion failed: {stream_name}")
             return FlextResult.fail(f"Record insertion failed: {e}")
 
@@ -326,7 +326,7 @@ class SingerTargetOracleWMS:
 
             return FlextResult.ok(summary)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Oracle WMS Target finalization failed")
             return FlextResult.fail(f"Finalization failed: {e}")
 
@@ -344,6 +344,6 @@ class SingerTargetOracleWMS:
 
             return FlextResult.ok(None)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Oracle WMS Target cleanup failed")
             return FlextResult.fail(f"Cleanup failed: {e}")

@@ -70,7 +70,7 @@ class OracleWMSSink(SQLSink[Any]):
         self._processing_result = WMSProcessingResult()
 
     @property
-    def connector(self) -> Any:
+    def connector(self) -> object:
         """Get database connector."""
         return self.target.engine
 
@@ -105,7 +105,7 @@ class OracleWMSSink(SQLSink[Any]):
                 f"Successfully processed WMS record for stream: {self.stream_name}",
             )
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             error_msg = f"Error processing WMS record: {e}"
             self.logger.exception(error_msg)
             self._processing_result.add_error(error_msg)
@@ -147,7 +147,7 @@ class OracleWMSSink(SQLSink[Any]):
 
             return FlextResult.ok(True)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             return FlextResult.fail(f"Validation error: {e}")
 
     def _get_required_wms_fields(self) -> list[str]:
@@ -188,7 +188,7 @@ class OracleWMSSink(SQLSink[Any]):
 
             return FlextResult.ok(True)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             return FlextResult.fail(f"Data type validation error: {e}")
 
     def get_processing_result(self) -> WMSProcessingResult:
@@ -208,7 +208,7 @@ class OracleWMSSink(SQLSink[Any]):
                 f"Success Rate: {result.success_rate:.2f}%",
             )
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             error_msg = f"Batch processing error for stream {self.stream_name}: {e}"
             self.logger.exception(error_msg)
             self._processing_result.add_error(error_msg)
