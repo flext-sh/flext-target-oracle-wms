@@ -23,7 +23,9 @@ from flext_core import (
 )
 
 # Use local application orchestrator
-from flext_target_oracle_wms.application import OracleWMSTargetOrchestrator as FlextOracleTargetOrchestrator
+from flext_target_oracle_wms.application import (
+    OracleWMSTargetOrchestrator as FlextOracleTargetOrchestrator,
+)
 
 try:
     __version__ = importlib.metadata.version("flext-target-oracle-wms")

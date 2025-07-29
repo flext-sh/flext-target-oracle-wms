@@ -217,7 +217,6 @@ class OracleWMSSink(SQLSink[Any]):
 
     def teardown(self) -> None:
         """Teardown the sink."""
-
         # Log final results
         result = self._processing_result
         self.logger.info(
