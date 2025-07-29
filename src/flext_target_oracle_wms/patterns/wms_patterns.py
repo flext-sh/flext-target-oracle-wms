@@ -30,7 +30,11 @@ class WMSTypeConverter:
             if singer_type in {"string", "text"}:
                 return FlextResult.ok(str(value))
             if singer_type in {"integer", "number"}:
-                return FlextResult.ok(float(value) if "." in str(value) else int(value))
+                try:
+                    str_val = str(value)
+                    return FlextResult.ok(float(str_val) if "." in str_val else int(str_val))
+                except (ValueError, TypeError):
+                    return FlextResult.fail(f"Cannot convert {value} to number")
             if singer_type == "boolean":
                 return FlextResult.ok(1 if value else 0)
             if singer_type in {"object", "array"}:
@@ -147,7 +151,7 @@ class WMSSchemaMapper:
                 oracle_name = self._normalize_column_name(prop_name)
                 oracle_type_result = self._map_singer_type_to_oracle(prop_def)
 
-                if oracle_type_result.is_success:
+                if oracle_type_result.is_success and oracle_type_result.data is not None:
                     oracle_columns[oracle_name] = oracle_type_result.data
                 else:
                     oracle_columns[oracle_name] = "VARCHAR2(4000)"  # Fallback
@@ -228,6 +232,8 @@ class WMSTableManager:
                 )
 
             columns = columns_result.data
+            if columns is None:
+                return FlextResult.fail("Column mapping returned None")
 
             # Build column definitions
             column_defs = []

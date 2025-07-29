@@ -22,12 +22,8 @@ from flext_core import (
     FlextValueObject as FlextValueObject,
 )
 
-# Import consolidated orchestrator from flext-meltano
-try:
-    from flext_meltano.orchestration.targets import FlextOracleTargetOrchestrator
-except ImportError:
-    # Fallback if flext-meltano not available
-    FlextOracleTargetOrchestrator = None
+# Use local application orchestrator
+from flext_target_oracle_wms.application import OracleWMSTargetOrchestrator as FlextOracleTargetOrchestrator
 
 try:
     __version__ = importlib.metadata.version("flext-target-oracle-wms")
