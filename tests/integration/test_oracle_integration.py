@@ -5,6 +5,9 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING, Any
 
+# Constants
+EXPECTED_BULK_SIZE = 2
+
 if TYPE_CHECKING:
     from collections.abc import Generator
 import pytest
@@ -50,7 +53,8 @@ class TestOracleIntegration:
             result = conn.execute(sa.text("SELECT 1 FROM DUAL"))
             row = result.fetchone()
             assert row is not None
-            assert row[0] == 1
+            if row[0] != 1:
+                raise AssertionError(f"Expected {1}, got {row[0]}")
 
     def test_sink_table_creation(self, oracle_config: dict[str, Any]) -> None:
         """Test sink can create tables in Oracle."""
@@ -95,7 +99,8 @@ class TestOracleIntegration:
             row = result.fetchone()
             assert row is not None
             count = row[0]
-            assert count == 2
+            if count != EXPECTED_BULK_SIZE:
+                raise AssertionError(f"Expected {2}, got {count}")
             # Verify data content
             result = conn.execute(
                 sa.text(
@@ -103,7 +108,8 @@ class TestOracleIntegration:
                 ),
             )
             rows = result.fetchall()
-            assert rows[0] == (1, "John Doe", "Y")
+            if rows[0] != (1, "John Doe", "Y"):
+                raise AssertionError(f"Expected {(1, "John Doe", "Y")}, got {rows[0]}")
             assert rows[1] == (2, "Jane Smith", "N")
 
     def test_batch_processing(self, oracle_config: dict[str, Any]) -> None:
@@ -137,7 +143,8 @@ class TestOracleIntegration:
             row = result.fetchone()
             assert row is not None
             count = row[0]
-            assert count == 250
+            if count != 250:
+                raise AssertionError(f"Expected {250}, got {count}")
 
     @pytest.mark.slow
     def test_complex_data_types(self, oracle_config: dict[str, Any]) -> None:
@@ -183,5 +190,6 @@ class TestOracleIntegration:
             assert row is not None
             metadata = json.loads(row[0])
             tags = json.loads(row[1])
-            assert metadata == {"source": "api", "version": "1.0"}
+            if metadata != {"source": "api", "version": "1.0"}:
+                raise AssertionError(f"Expected {{"source": "api", "version": "1.0"}}, got {metadata}")
             assert tags == ["important", "customer"]

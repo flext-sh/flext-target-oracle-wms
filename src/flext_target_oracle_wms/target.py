@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 from typing import TYPE_CHECKING, Any
 
 import sqlalchemy as sa
@@ -129,7 +130,7 @@ class TargetOracleWMS(Target):
                 self.logger.info("Oracle WMS connection validated successfully")
                 return FlextResult.ok(True)
 
-        except Exception as e:
+        except (RuntimeError, ValueError, TypeError) as e:
             error_msg = f"Oracle WMS connection validation failed: {e}"
             self.logger.exception(error_msg)
             return FlextResult.fail(error_msg)
@@ -201,13 +202,10 @@ class TargetOracleWMS(Target):
 
 def main() -> None:
     """CLI entry point for target-oracle-wms."""
-    import sys
-
     # from flext_meltano import target_test_runner  # Not available
 
     # Basic CLI support
     if len(sys.argv) > 1 and sys.argv[1] == "--help":
-        import sys
 
         sys.stdout.write("Usage: target-oracle-wms [--help] [--config CONFIG_FILE]\n")
         sys.stdout.write("\nOracle WMS target for Singer\n")

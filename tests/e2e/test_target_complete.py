@@ -22,7 +22,8 @@ class TestTargetComplete:
         """Test complete target initialization workflow."""
         target = TargetOracleWMS(config=sample_config)
         # Validate target properties
-        assert target.name == "target-oracle-wms"
+        if target.name != "target-oracle-wms":
+            raise AssertionError(f"Expected {"target-oracle-wms"}, got {target.name}")
         assert target.config == sample_config
         assert hasattr(target, "logger")
         # Validate sink classes are available
@@ -78,7 +79,8 @@ class TestTargetComplete:
         # Test private method access for testing purposes
         processed = sink.preprocess_record(test_record, {})
         assert isinstance(processed, dict)
-        assert "id" in processed
+        if "id" not in processed:
+            raise AssertionError(f"Expected {"id"} in {processed}")
 
     @pytest.mark.e2e
     def test_business_logic_integration(self, sample_config: Config) -> None:
@@ -102,7 +104,8 @@ class TestTargetComplete:
         """Test complete configuration validation."""
         # Test with valid config
         target = TargetOracleWMS(config=sample_config)
-        assert target.config == sample_config
+        if target.config != sample_config:
+            raise AssertionError(f"Expected {sample_config}, got {target.config}")
         # Test config access from sinks
         sink_class = target.get_sink_class("facility")
         sink = sink_class(
@@ -157,7 +160,8 @@ class TestTargetComplete:
             )
         # Each sink should be independent
         for sink in sinks.values():
-            assert sink.stream_name == stream_name
+            if sink.stream_name != stream_name:
+                raise AssertionError(f"Expected {stream_name}, got {sink.stream_name}")
             # Test record processing
             test_record = {"id": f"{stream_name}_001"}
             processed = sink.preprocess_record(test_record, {})

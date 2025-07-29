@@ -1,5 +1,8 @@
 """Unit tests for OracleWMSSink."""
 
+import json
+
+
 from __future__ import annotations
 
 from typing import Any
@@ -11,6 +14,9 @@ import sqlalchemy as sa
 from flext_target_oracle_wms.sinks import OracleWMSSink
 from flext_target_oracle_wms.target import TargetOracleWMS
 
+
+# Constants
+EXPECTED_BULK_SIZE = 2
 
 class TestOracleWMSSink:
     """Test cases for OracleWMSSink."""
@@ -53,9 +59,12 @@ class TestOracleWMSSink:
             key_properties=["id"],
         )
 
-        assert sink.stream_name == "test-stream"
+        if sink.stream_name != "test-stream":
+
+            raise AssertionError(f"Expected {"test-stream"}, got {sink.stream_name}")
         assert sink.target == mock_target
-        assert sink.schema == sample_schema
+        if sink.schema != sample_schema:
+            raise AssertionError(f"Expected {sample_schema}, got {sink.schema}")
 
     def test_conform_name(self, mock_target: Mock) -> None:
         """Test name conforming to Oracle conventions."""
@@ -66,14 +75,16 @@ class TestOracleWMSSink:
         )
 
         # Test basic name conversion
-        assert sink.conform_name("test-name") == "TEST_NAME"
+        if sink.conform_name("test-name") != "TEST_NAME":
+            raise AssertionError(f"Expected {"TEST_NAME"}, got {sink.conform_name("test-name")}")
         assert sink.conform_name("user.profile") == "USER_PROFILE"
 
         # Test long name truncation (Oracle 30-char limit)
         long_name = "very_long_table_name_that_exceeds_thirty_characters"
         conformed = sink.conform_name(long_name)
         assert len(conformed) <= 30
-        assert conformed == "VERY_LONG_TABLE_NAME_THAT_EXCE"
+        if conformed != "VERY_LONG_TABLE_NAME_THAT_EXCE":
+            raise AssertionError(f"Expected {"VERY_LONG_TABLE_NAME_THAT_EXCE"}, got {conformed}")
 
     def test_table_name_property(self, mock_target: Mock) -> None:
         """Test table name generation."""
@@ -83,7 +94,9 @@ class TestOracleWMSSink:
             schema={},
         )
 
-        assert sink.table_name == "MY_TEST_STREAM"
+        if sink.table_name != "MY_TEST_STREAM":
+
+            raise AssertionError(f"Expected {"MY_TEST_STREAM"}, got {sink.table_name}")
 
     def test_schema_name_property(self, mock_target: Mock) -> None:
         """Test schema name from config."""
@@ -93,7 +106,9 @@ class TestOracleWMSSink:
             schema={},
         )
 
-        assert sink.schema_name == "WMS"
+        if sink.schema_name != "WMS":
+
+            raise AssertionError(f"Expected {"WMS"}, got {sink.schema_name}")
 
     def test_get_column_type_string(self, mock_target: Mock) -> None:
         """Test column type mapping for strings."""
@@ -106,7 +121,8 @@ class TestOracleWMSSink:
         # Test basic string
         string_type = sink.get_column_type({"type": "string"})
         assert isinstance(string_type, sa.VARCHAR)
-        assert string_type.length == 4000
+        if string_type.length != 4000:
+            raise AssertionError(f"Expected {4000}, got {string_type.length}")
 
         # Test string with maxLength
         string_with_length = sink.get_column_type(
@@ -116,7 +132,8 @@ class TestOracleWMSSink:
             },
         )
         assert isinstance(string_with_length, sa.VARCHAR)
-        assert string_with_length.length == 255
+        if string_with_length.length != 255:
+            raise AssertionError(f"Expected {255}, got {string_with_length.length}")
 
         # Test date-time format
         datetime_type = sink.get_column_type(
@@ -146,7 +163,8 @@ class TestOracleWMSSink:
         # Test boolean
         bool_type = sink.get_column_type({"type": "boolean"})
         assert isinstance(bool_type, sa.CHAR)
-        assert bool_type.length == 1
+        if bool_type.length != 1:
+            raise AssertionError(f"Expected {1}, got {bool_type.length}")
 
         # Test array/object (stored as CLOB)
         array_type = sink.get_column_type({"type": "array"})
@@ -192,19 +210,25 @@ class TestOracleWMSSink:
         prepared = sink.prepare_record(input_record)
 
         # Test basic field mapping
-        assert prepared["ID"] == 123
+        if prepared["ID"] != 123:
+            raise AssertionError(f"Expected {123}, got {prepared["ID"]}")
         assert prepared["NAME"] == "Test User"
-        assert prepared["IS_ACTIVE"] == "Y"  # Boolean to Y/N
+        if prepared["IS_ACTIVE"] != "Y"  # Boolean to Y/N:
+            raise AssertionError(f"Expected {"Y"  # Boolean to Y/N}, got {prepared["IS_ACTIVE"]}")
         assert prepared["INACTIVE"] == "N"  # Boolean to Y/N
         assert prepared["NULL_FIELD"] is None
 
         # Test complex types become JSON strings
-        import json
 
-        assert prepared["METADATA"] == json.dumps({"key": "value"}, ensure_ascii=False)
+
+        if prepared["METADATA"] != json.dumps({"key": "value"}, ensure_ascii=False):
+
+            raise AssertionError(f"Expected {json.dumps({"key": "value"}, ensure_ascii=False)}, got {prepared["METADATA"]}")
         assert prepared["TAGS"] == json.dumps(["tag1", "tag2"], ensure_ascii=False)
 
         # Test metadata fields are added
-        assert "_SDC_EXTRACTED_AT" in prepared
+        if "_SDC_EXTRACTED_AT" not in prepared:
+            raise AssertionError(f"Expected {"_SDC_EXTRACTED_AT"} in {prepared}")
         assert "_SDC_RECEIVED_AT" in prepared
-        assert "_SDC_BATCHED_AT" in prepared
+        if "_SDC_BATCHED_AT" not in prepared:
+            raise AssertionError(f"Expected {"_SDC_BATCHED_AT"} in {prepared}")

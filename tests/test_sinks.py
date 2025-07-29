@@ -1,5 +1,8 @@
 """Tests for target sinks."""
 
+from flext_target_oracle_wms.target import TargetOracleWMS
+
+
 from __future__ import annotations
 
 import contextlib
@@ -41,7 +44,8 @@ class TestWMSBaseSink:
             schema={},
             key_properties=[],
         )
-        assert sink.target_name == "target-oracle-wms"
+        if sink.target_name != "target-oracle-wms":
+            raise AssertionError(f"Expected {"target-oracle-wms"}, got {sink.target_name}")
         assert sink.stream_name == "test_stream"
         assert hasattr(sink, "logger")
 
@@ -88,7 +92,8 @@ class TestInventorySink:
             schema=schema,
             key_properties=["item_id"],
         )
-        assert sink.stream_name == "inventory"
+        if sink.stream_name != "inventory":
+            raise AssertionError(f"Expected {"inventory"}, got {sink.stream_name}")
         assert hasattr(sink, "business_logic")
 
     def test_inventory_record_processing(self) -> None:
@@ -110,7 +115,8 @@ class TestInventorySink:
         # Should be able to process record without errors
         processed = sink._prepare_record(test_record)
         assert isinstance(processed, dict)
-        assert "item_id" in processed
+        if "item_id" not in processed:
+            raise AssertionError(f"Expected {"item_id"} in {processed}")
 
 
 @pytest.mark.usefixtures("sample_config")
@@ -133,7 +139,8 @@ class TestOrderSink:
             schema=schema,
             key_properties=["order_id"],
         )
-        assert sink.stream_name == "orders"
+        if sink.stream_name != "orders":
+            raise AssertionError(f"Expected {"orders"}, got {sink.stream_name}")
         assert hasattr(sink, "business_logic")
 
     def test_order_record_transformation(self) -> None:
@@ -155,7 +162,8 @@ class TestOrderSink:
         # Should be able to transform record
         transformed = sink._prepare_record(test_record)
         assert isinstance(transformed, dict)
-        assert "order_id" in transformed
+        if "order_id" not in transformed:
+            raise AssertionError(f"Expected {"order_id"} in {transformed}")
 
 
 @pytest.mark.usefixtures("sample_config")
@@ -178,7 +186,8 @@ class TestWarehouseSink:
             schema=schema,
             key_properties=["facility_id"],
         )
-        assert sink.stream_name == "warehouse"
+        if sink.stream_name != "warehouse":
+            raise AssertionError(f"Expected {"warehouse"}, got {sink.stream_name}")
         assert hasattr(sink, "business_logic")
 
 
@@ -198,7 +207,8 @@ class TestGenericWMSSink:
             schema=schema,
             key_properties=["id"],
         )
-        assert sink.stream_name == "generic_stream"
+        if sink.stream_name != "generic_stream":
+            raise AssertionError(f"Expected {"generic_stream"}, got {sink.stream_name}")
 
     def test_generic_sink_flexibility(self) -> None:
         """Test that generic sink handles various record types."""
@@ -225,7 +235,7 @@ class TestSinkFactory:
 
     def test_sink_selection_logic(self, sample_config: Config) -> None:
         """Test that appropriate sinks are selected for stream types."""
-        from flext_target_oracle_wms.target import TargetOracleWMS
+
 
         target = TargetOracleWMS(config=sample_config)
         # Test sink selection for different stream types

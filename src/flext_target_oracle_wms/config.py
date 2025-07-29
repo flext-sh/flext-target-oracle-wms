@@ -92,5 +92,5 @@ def validate_wms_config(config: dict[str, Any]) -> FlextResult[TargetOracleWMSCo
     try:
         validated_config = create_wms_config(**config)
         return FlextResult.ok(validated_config)
-    except Exception as e:
+    except (RuntimeError, ValueError, TypeError) as e:
         return FlextResult.fail(f"Configuration validation failed: {e}")
