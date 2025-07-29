@@ -122,7 +122,7 @@ class SingerTargetOracleWMS:
             table_result = self._ensure_table_exists(
                 table_name,
                 schema_name,
-                create_sql_result.data,
+                create_sql_result.data or "",
             )
             if not table_result.is_success:
                 return FlextResult.fail(f"Table creation failed: {table_result.error}")
@@ -159,7 +159,7 @@ class SingerTargetOracleWMS:
             transformed_record = process_result.data
 
             # Insert into Oracle (this could be batched for performance)
-            insert_result = self._insert_record(stream_name, transformed_record)
+            insert_result = self._insert_record(stream_name, transformed_record or {})
             if not insert_result.is_success:
                 return FlextResult.fail(
                     f"Record insertion failed: {insert_result.error}",
@@ -294,7 +294,7 @@ class SingerTargetOracleWMS:
                     f"Failed to get statistics: {stats_result.error}",
                 )
 
-            all_stats = stats_result.data
+            all_stats = stats_result.data or {}
 
             # Calculate totals
             total_processed = sum(

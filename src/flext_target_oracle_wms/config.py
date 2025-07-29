@@ -13,15 +13,11 @@ from flext_core import (
     FlextValueObject,
 )
 
-# MIGRATED: Singer SDK imports centralized via flext-meltano
-from flext_meltano.common import (
-    validate_oracle_host_for_database,
-    validate_oracle_service_name_for_database,
-)
-from pydantic import BaseSettings, Field, field_validator
+# Import flext-core patterns for configuration
+from pydantic import Field, field_validator
 
 
-class TargetOracleWMSConfig(BaseSettings):
+class TargetOracleWMSConfig(FlextValueObject):
     """Configuration for Oracle WMS target."""
 
     # Oracle Database connection settings
@@ -46,14 +42,39 @@ class TargetOracleWMSConfig(BaseSettings):
     @field_validator("host")
     @classmethod
     def validate_host_field(cls, v: str) -> str:
-        """Use consolidated Oracle host validation."""
-        return validate_oracle_host_for_database(v, "database")
+        """Validate Oracle host."""
+        if not isinstance(v, str) or not v.strip():
+            msg = "Host must be a non-empty string"
+            raise ValueError(msg)
+        return v.strip()
 
     @field_validator("service_name")
     @classmethod
     def validate_service_name_field(cls, v: str) -> str:
-        """Use consolidated Oracle service name validation."""
-        return validate_oracle_service_name_for_database(v, "database")
+        """Validate Oracle service name."""
+        if not isinstance(v, str) or not v.strip():
+            msg = "Service name must be a non-empty string"
+            raise ValueError(msg)
+        return v.strip()
+
+    def validate_domain_rules(self) -> FlextResult[None]:
+        """Validate domain-specific business rules."""
+        try:
+            # Validate host is reachable (basic format check)
+            if not self.host or not self.host.strip():
+                return FlextResult.fail("Host is required")
+
+            # Validate service name
+            if not self.service_name or not self.service_name.strip():
+                return FlextResult.fail("Service name is required")
+
+            # Validate port range
+            if not (1 <= self.port <= 65535):
+                return FlextResult.fail("Port must be between 1 and 65535")
+
+            return FlextResult.ok(None)
+        except Exception as e:
+            return FlextResult.fail(f"Configuration validation failed: {e}")
 
     class Config:
         """Pydantic configuration."""
@@ -82,7 +103,7 @@ class WMSOperationSettings(FlextValueObject):
     truncate_before_load: bool = Field(False, description="Truncate before load")
 
 
-def create_wms_config(**kwargs: object) -> TargetOracleWMSConfig:
+def create_wms_config(**kwargs: Any) -> TargetOracleWMSConfig:
     """Create WMS configuration with validation."""
     return TargetOracleWMSConfig(**kwargs)
 

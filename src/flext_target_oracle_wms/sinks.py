@@ -27,13 +27,15 @@ if TYPE_CHECKING:
     from flext_target_oracle_wms.target import TargetOracleWMS
 
 
-class WMSProcessingResult(FlextDomainBaseModel):
-    """Result of WMS processing operations using flext-core patterns."""
+class WMSProcessingResult:
+    """Result of WMS processing operations - mutable for performance."""
 
-    processed_count: int = 0
-    success_count: int = 0
-    error_count: int = 0
-    errors: list[str] = field(default_factory=list)
+    def __init__(self) -> None:
+        """Initialize WMS processing result."""
+        self.processed_count = 0
+        self.success_count = 0
+        self.error_count = 0
+        self.errors: list[str] = []
 
     @property
     def success_rate(self) -> float:
@@ -65,7 +67,7 @@ class OracleWMSSink(SQLSink[Any]):
         key_properties: list[str] | None = None,
     ) -> None:
         """Initialize Oracle WMS sink."""
-        super().__init__(target, stream_name, schema, key_properties)
+        super().__init__(target, stream_name, schema or {}, key_properties)
         self.target: TargetOracleWMS = target
         self._processing_result = WMSProcessingResult()
 
@@ -153,7 +155,7 @@ class OracleWMSSink(SQLSink[Any]):
     def _get_required_wms_fields(self) -> list[str]:
         """Get list of required fields for WMS records."""
         # Define required fields based on stream type
-        common_fields = []
+        common_fields: list[str] = []
 
         stream_specific_fields = {
             "inventory": ["item_id", "location_id", "quantity"],
@@ -215,7 +217,6 @@ class OracleWMSSink(SQLSink[Any]):
 
     def teardown(self) -> None:
         """Teardown the sink."""
-        super().teardown()
 
         # Log final results
         result = self._processing_result
@@ -229,9 +230,8 @@ class OracleWMSSink(SQLSink[Any]):
     @property
     def schema_name(self) -> str | None:
         """Get schema name for this sink."""
-        return self.target.config.get(
-            "default_target_schema",
-        ) or self.target.config.get("schema", "WMS")
+        result = self.target.config.get("default_target_schema") or self.target.config.get("schema", "WMS")
+        return str(result) if result is not None else "WMS"
 
     def conform_name(self, name: str, object_type: str | None = None) -> str:
         """Conform a stream property name to one suitable for the target system."""

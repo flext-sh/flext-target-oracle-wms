@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, ClassVar
+from typing import Any
 
 # Import from flext-core for foundational patterns
 from flext_core import (
@@ -10,6 +10,7 @@ from flext_core import (
     FlextValueObject as FlextDomainBaseModel,
     get_logger,
 )
+from pydantic import Field
 
 logger = get_logger(__name__)
 
@@ -20,11 +21,24 @@ class SingerWMSCatalogEntry(FlextDomainBaseModel):
     tap_stream_id: str
     stream: str
     schema_info: dict[str, Any]
-    metadata: ClassVar[list[dict[str, Any]]] = []
-    key_properties: ClassVar[list[str]] = []
-    bookmark_properties: ClassVar[list[str]] = []
+    metadata: list[dict[str, Any]] = Field(default_factory=list)
+    key_properties: list[str] = []
+    bookmark_properties: list[str] = []
     replication_method: str = "FULL_TABLE"
     replication_key: str | None = None
+
+    def validate_domain_rules(self) -> FlextResult[None]:
+        """Validate catalog entry domain rules."""
+        try:
+            if not self.tap_stream_id.strip():
+                return FlextResult.fail("tap_stream_id cannot be empty")
+            if not self.stream.strip():
+                return FlextResult.fail("stream cannot be empty")
+            if not self.schema_info:
+                return FlextResult.fail("schema_info cannot be empty")
+            return FlextResult.ok(None)
+        except Exception as e:
+            return FlextResult.fail(f"Catalog entry validation failed: {e}")
 
 
 class SingerWMSCatalogManager:
@@ -92,17 +106,23 @@ class SingerWMSCatalogManager:
         """Get schema for specific WMS stream."""
         stream_result = self.get_stream(stream_name)
         if not stream_result.is_success:
-            return FlextResult.fail(stream_result.error)
+            return FlextResult.fail(stream_result.error or "Stream not found")
 
-        return FlextResult.ok(stream_result.data.schema_info)
+        stream_entry = stream_result.data
+        if stream_entry is None:
+            return FlextResult.fail("Stream entry is None")
+        return FlextResult.ok(stream_entry.schema_info)
 
     def get_key_properties(self, stream_name: str) -> FlextResult[list[str]]:
         """Get key properties for WMS stream."""
         stream_result = self.get_stream(stream_name)
         if not stream_result.is_success:
-            return FlextResult.fail(stream_result.error)
+            return FlextResult.fail(stream_result.error or "Stream not found")
 
-        return FlextResult.ok(stream_result.data.key_properties)
+        stream_entry = stream_result.data
+        if stream_entry is None:
+            return FlextResult.fail("Stream entry is None")
+        return FlextResult.ok(stream_entry.key_properties)
 
     def update_stream_metadata(
         self,
@@ -114,7 +134,19 @@ class SingerWMSCatalogManager:
             if stream_name not in self._catalog_entries:
                 return FlextResult.fail(f"WMS stream not found: {stream_name}")
 
-            self._catalog_entries[stream_name].metadata = metadata
+            # Create updated entry with new metadata (FlextValueObject is immutable)
+            current_entry = self._catalog_entries[stream_name]
+            updated_entry = SingerWMSCatalogEntry(
+                tap_stream_id=current_entry.tap_stream_id,
+                stream=current_entry.stream,
+                schema_info=current_entry.schema_info,
+                metadata=metadata,
+                key_properties=current_entry.key_properties,
+                bookmark_properties=current_entry.bookmark_properties,
+                replication_method=current_entry.replication_method,
+                replication_key=current_entry.replication_key,
+            )
+            self._catalog_entries[stream_name] = updated_entry
             logger.info(f"Updated metadata for WMS stream: {stream_name}")
 
             return FlextResult.ok(None)

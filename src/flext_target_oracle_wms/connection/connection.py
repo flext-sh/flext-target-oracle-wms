@@ -17,4 +17,7 @@ logger = get_logger(__name__)
 # Use library client instead of reimplementing connection
 FlextOracleOracleWMSConnection = FlextOracleWmsClient
 
-__all__ = ["FlextOracleOracleWMSConnection"]
+# Alias for backward compatibility
+OracleWMSConnection = FlextOracleWmsClient
+
+__all__ = ["FlextOracleOracleWMSConnection", "OracleWMSConnection"]

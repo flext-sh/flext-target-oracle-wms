@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, ClassVar
+from typing import TYPE_CHECKING, Any
 
 # Import from flext-core for foundational patterns
 from flext_core import (
     FlextResult,
-    FlextValueObject as FlextDomainBaseModel,
     get_logger,
 )
 
@@ -17,15 +16,17 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
-class WMSStreamProcessingStats(FlextDomainBaseModel):
-    """WMS stream processing statistics using flext-core patterns."""
+class WMSStreamProcessingStats:
+    """WMS stream processing statistics - mutable for performance."""
 
-    stream_name: str
-    records_processed: int = 0
-    records_success: int = 0
-    records_failed: int = 0
-    batches_processed: int = 0
-    errors: ClassVar[list[str]] = []
+    def __init__(self, stream_name: str) -> None:
+        """Initialize stream processing statistics."""
+        self.stream_name = stream_name
+        self.records_processed = 0
+        self.records_success = 0
+        self.records_failed = 0
+        self.batches_processed = 0
+        self.errors: list[str] = []
 
     @property
     def success_rate(self) -> float:
@@ -55,9 +56,7 @@ class SingerWMSStreamProcessor:
     ) -> FlextResult[None]:
         """Initialize WMS stream processing."""
         try:
-            self._stream_stats[stream_name] = WMSStreamProcessingStats(
-                stream_name=stream_name,
-            )
+            self._stream_stats[stream_name] = WMSStreamProcessingStats(stream_name)
             logger.info(f"Initialized WMS stream processing: {stream_name}")
 
             return FlextResult.ok(None)
@@ -89,12 +88,12 @@ class SingerWMSStreamProcessor:
                 stats.errors.append(
                     f"Record transformation failed: {transform_result.error}",
                 )
-                return FlextResult.fail(transform_result.error)
+                return FlextResult.fail(transform_result.error or "Transform failed")
 
             stats.records_processed += 1
             stats.records_success += 1
 
-            return FlextResult.ok(transform_result.data)
+            return FlextResult.ok(transform_result.data or {})
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception(f"WMS record processing failed for stream: {stream_name}")
@@ -122,7 +121,7 @@ class SingerWMSStreamProcessor:
 
             for record in records:
                 process_result = self.process_record(stream_name, record)
-                if process_result.is_success:
+                if process_result.is_success and process_result.data is not None:
                     processed_records.append(process_result.data)
                 else:
                     logger.warning(

@@ -16,17 +16,15 @@ from jsonschema import Draft7Validator
 logger = get_logger(__name__)
 
 if TYPE_CHECKING:
-    from flext_db_oracle.patterns.oracle_patterns import (
-        OracleWMSValidator as OracleValidationProvider,
-    )
+    from collections.abc import Mapping
 
 struct_logger = structlog.get_logger(__name__)
 
 # Oracle validation provider will be injected at runtime
-_validation_provider: OracleValidationProvider | None = None
+_validation_provider: Any | None = None
 
 
-def set_validation_provider(provider: OracleValidationProvider) -> None:
+def set_validation_provider(provider: Any) -> None:
     """Set the Oracle validation provider via dependency injection.
 
     Args:
@@ -37,7 +35,7 @@ def set_validation_provider(provider: OracleValidationProvider) -> None:
     _validation_provider = provider
 
 
-def _get_validation_provider() -> OracleValidationProvider:
+def _get_validation_provider() -> Any:
     """Get validation provider or raise error if not set.
 
     Returns:
@@ -148,7 +146,7 @@ class WMSDataValidator:
             # Convert to string to check precision
             if value is None:
                 return False
-            str_value = str(float(value))
+            str_value = str(float(value)) if isinstance(value, (int, float, str)) else str(value)
             # Remove negative sign for counting
             str_value = str_value.removeprefix("-")
             # Split by decimal point
@@ -249,7 +247,7 @@ class WMSDataValidator:
             Validation report
 
         """
-        report = {
+        report: dict[str, Any] = {
             "total_records": len(records),
             "valid_records": 0,
             "invalid_records": 0,

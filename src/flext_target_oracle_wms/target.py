@@ -16,16 +16,13 @@ from flext_meltano.singer import FlextMeltanoTarget as Target
 # Import from new modular architecture
 from flext_target_oracle_wms.application import OracleWMSTargetOrchestrator
 from flext_target_oracle_wms.config import TargetOracleWMSConfig
-from flext_target_oracle_wms.infrastructure import get_target_oracle_wms_container
+from flext_target_oracle_wms.infrastructure import get_target_oracle_wms_container, TargetOracleWMSContainer
 from flext_target_oracle_wms.sinks import OracleWMSSink
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-try:
-    import oracledb
-except ImportError:
-    oracledb = None
+import oracledb
 
 
 class TargetOracleWMS(Target):
@@ -69,7 +66,7 @@ class TargetOracleWMS(Target):
 
         # Initialize orchestrator with new modular architecture
         self._orchestrator: OracleWMSTargetOrchestrator | None = None
-        self._container = None
+        self._container: TargetOracleWMSContainer | None = None
 
     @property
     def engine(self) -> sa.Engine:
