@@ -72,7 +72,7 @@ class WMSTypeConverter:
                 try:
                     str_val = str(value)
                     return FlextResult.ok(
-                        float(str_val) if "." in str_val else int(str_val)
+                        float(str_val) if "." in str_val else int(str_val),
                     )
                 except (ValueError, TypeError):
                     return FlextResult.fail(f"Cannot convert {value} to number")
@@ -117,7 +117,7 @@ class WMSDataTransformer:
                         singer_type,
                         value,
                     )
-                    # Type assertion for MyPy - we know convert_singer_to_oracle returns FlextResult
+                    # Type assertion for MyPy - convert_singer_to_oracle returns FlextResult
                     if (
                         isinstance(convert_result, FlextResult)
                         and convert_result.is_success
@@ -298,10 +298,14 @@ class WMSTableManager:
             placeholders = [f":{col.lower().lstrip('_')}" for col in columns]
 
             # Build parametrized INSERT SQL (safe - uses placeholders)
-            # Note: SQL injection is not possible here as all table/column names are controlled
+            # Note: SQL injection not possible - table/column names are controlled
             # and parameters use proper placeholders
 
-            insert_sql = f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" ({", ".join(quoted_columns)}) VALUES ({", ".join(placeholders)})'  # noqa: S608
+            # Build INSERT SQL with proper quoting
+            insert_sql = (
+                f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" '  # noqa: S608
+                f'({", ".join(quoted_columns)}) VALUES ({", ".join(placeholders)})'
+            )
 
             return FlextResult.ok(insert_sql)
 

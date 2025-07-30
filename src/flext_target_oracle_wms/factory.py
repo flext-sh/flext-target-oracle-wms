@@ -121,7 +121,9 @@ class FlextTargetFactory:
             # Create target with final configuration
             target = SingerTargetOracleWMS(config)
 
-            logger.info(f"Created Oracle WMS target for {environment} with preset {preset}")
+            logger.info(
+                f"Created Oracle WMS target for {environment} with preset {preset}",
+            )
             return FlextResult.ok(target)
 
         except Exception as e:
@@ -294,7 +296,9 @@ class FlextTargetMonitoringFactory:
                 return FlextResult.ok(target)
 
             # Add basic monitoring through logging - KISS approach
-            logger.info(f"Created monitored target for {environment} with observability integration")
+            logger.info(
+                f"Created monitored target for {environment} with observability integration",
+            )
             return FlextResult.ok(target)
 
         except Exception as e:
