@@ -19,14 +19,16 @@ logger = get_logger(__name__)
 class WMSStreamProcessingStats:
     """WMS stream processing statistics - mutable for performance."""
 
-    def __init__(self, stream_name: str) -> None:
+    def __init__(self, stream_name: str, schema: dict[str, Any] | None = None) -> None:
         """Initialize stream processing statistics."""
         self.stream_name = stream_name
+        self.schema = schema or {}
         self.records_processed = 0
         self.records_success = 0
         self.records_failed = 0
         self.batches_processed = 0
         self.errors: list[str] = []
+        self.schema_validation_enabled = bool(schema and schema.get("properties"))
 
     @property
     def success_rate(self) -> float:
@@ -52,12 +54,26 @@ class SingerWMSStreamProcessor:
     def initialize_stream(
         self,
         stream_name: str,
-        schema: dict[str, Any],
+        schema: Any,
     ) -> FlextResult[None]:
-        """Initialize WMS stream processing."""
+        """Initialize WMS stream processing with schema validation."""
         try:
-            self._stream_stats[stream_name] = WMSStreamProcessingStats(stream_name)
-            logger.info(f"Initialized WMS stream processing: {stream_name}")
+            # Validate schema structure
+            if not isinstance(schema, dict):
+                return FlextResult.fail(f"Invalid schema for {stream_name}: expected dict")
+
+            if "type" not in schema:
+                return FlextResult.fail(
+                    f"Schema missing 'type' field for stream {stream_name}",
+                )
+
+            # Store stream stats with schema for validation
+            self._stream_stats[stream_name] = WMSStreamProcessingStats(
+                stream_name, schema,
+            )
+            logger.info(
+                f"Initialized WMS stream processing: {stream_name} with schema validation",
+            )
 
             return FlextResult.ok(None)
 
@@ -131,7 +147,8 @@ class SingerWMSStreamProcessor:
             stats.batches_processed += 1
 
             logger.info(
-                f"Processed WMS batch for {stream_name}: {len(processed_records)}/{len(records)} records",
+                f"Processed WMS batch for {stream_name}: "
+                f"{len(processed_records)}/{len(records)} records",
             )
 
             return FlextResult.ok(processed_records)
