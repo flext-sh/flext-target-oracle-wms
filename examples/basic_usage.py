@@ -47,7 +47,7 @@ async def run_basic_example() -> None:
         "schema_name": "WMS_DEMO",
     }
 
-# OPTION 1: Traditional direct instantiation
+    # OPTION 1: Traditional direct instantiation
     target = SingerTargetOracleWMS(config)
 
     # OPTION 2: Factory pattern for easier usage (alternative approach)

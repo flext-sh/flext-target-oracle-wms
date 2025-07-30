@@ -9,13 +9,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import asyncio
 import io
 import json
-import os
-import sys
-from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, mock_open, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -46,22 +42,24 @@ class TestComprehensiveCLICoverage:
         # Mock stdin with JSON input
         stdin_data = json.dumps(schema_message) + "\n"
 
-        with patch("sys.stdin", io.StringIO(stdin_data)):
-            with patch(
-                "flext_target_oracle_wms.singer.target.SingerTargetOracleWMS"
-            ) as mock_target_class:
-                mock_target = AsyncMock()
-                mock_target_class.return_value = mock_target
-                mock_target.setup.return_value = MagicMock(is_success=True)
-                mock_target.process_schema_message.return_value = MagicMock(
-                    is_success=True
-                )
-                mock_target.cleanup.return_value = MagicMock(is_success=True)
-                mock_target.finalize.return_value = MagicMock(is_success=True, data={})
+        with (
+            patch("sys.stdin", io.StringIO(stdin_data)),
+            patch(
+                "flext_target_oracle_wms.singer.target.SingerTargetOracleWMS",
+            ) as mock_target_class,
+        ):
+            mock_target = AsyncMock()
+            mock_target_class.return_value = mock_target
+            mock_target.setup.return_value = MagicMock(is_success=True)
+            mock_target.process_schema_message.return_value = MagicMock(
+                is_success=True,
+            )
+            mock_target.cleanup.return_value = MagicMock(is_success=True)
+            mock_target.finalize.return_value = MagicMock(is_success=True, data={})
 
-                # Execute should read from stdin and process message
-                result = await cli.execute()
-                assert result.is_success
+            # Execute should read from stdin and process message
+            result = await cli.execute()
+            assert result.is_success
 
     def test_cli_load_config_from_file(self) -> None:
         """Test CLI config loading from file."""
@@ -104,27 +102,29 @@ class TestComprehensiveCLICoverage:
 
         stdin_data = "\n".join(json.dumps(msg) for msg in messages) + "\n"
 
-        with patch("sys.stdin", io.StringIO(stdin_data)):
-            with patch(
-                "flext_target_oracle_wms.singer.target.SingerTargetOracleWMS"
-            ) as mock_target_class:
-                mock_target = AsyncMock()
-                mock_target_class.return_value = mock_target
-                mock_target.setup.return_value = MagicMock(is_success=True)
-                mock_target.process_schema_message.return_value = MagicMock(
-                    is_success=True
-                )
-                mock_target.process_record_message.return_value = MagicMock(
-                    is_success=True
-                )
-                mock_target.process_state_message.return_value = MagicMock(
-                    is_success=True
-                )
-                mock_target.finalize.return_value = MagicMock(is_success=True, data={})
-                mock_target.cleanup.return_value = MagicMock(is_success=True)
+        with (
+            patch("sys.stdin", io.StringIO(stdin_data)),
+            patch(
+                "flext_target_oracle_wms.singer.target.SingerTargetOracleWMS",
+            ) as mock_target_class,
+        ):
+            mock_target = AsyncMock()
+            mock_target_class.return_value = mock_target
+            mock_target.setup.return_value = MagicMock(is_success=True)
+            mock_target.process_schema_message.return_value = MagicMock(
+                is_success=True,
+            )
+            mock_target.process_record_message.return_value = MagicMock(
+                is_success=True,
+            )
+            mock_target.process_state_message.return_value = MagicMock(
+                is_success=True,
+            )
+            mock_target.finalize.return_value = MagicMock(is_success=True, data={})
+            mock_target.cleanup.return_value = MagicMock(is_success=True)
 
-                result = await cli.execute()
-                assert result.is_success
+            result = await cli.execute()
+            assert result.is_success
 
     def test_main_function_comprehensive_scenarios(self) -> None:
         """Test main function with various command line scenarios."""
@@ -176,7 +176,8 @@ class TestComprehensiveTargetCoverage:
         }
 
     def test_target_initialization_comprehensive(
-        self, target_config: dict[str, str]
+        self,
+        target_config: dict[str, str],
     ) -> None:
         """Test target initialization with all configuration options."""
         # Test with plugin system enabled
@@ -204,7 +205,8 @@ class TestComprehensiveTargetCoverage:
 
     @pytest.mark.asyncio
     async def test_target_setup_failure_scenarios(
-        self, target_config: dict[str, str]
+        self,
+        target_config: dict[str, str],
     ) -> None:
         """Test target setup with various failure scenarios."""
         # Test setup with Oracle client start failure
@@ -229,14 +231,13 @@ class TestComprehensiveTargetCoverage:
                 result = await target.setup()
 
                 assert not result.is_success
-                assert (
-                    result.error is not None
-                    and "Oracle WMS connection failed" in result.error
-                )
+                assert result.error is not None
+                assert "Oracle WMS connection failed" in result.error
 
     @pytest.mark.asyncio
     async def test_target_message_processing_edge_cases(
-        self, target_config: dict[str, str]
+        self,
+        target_config: dict[str, str],
     ) -> None:
         """Test message processing edge cases and error paths."""
         with patch("flext_oracle_wms.FlextOracleWmsClient"):
@@ -246,27 +247,27 @@ class TestComprehensiveTargetCoverage:
             incomplete_schema = {"type": "SCHEMA", "stream": "test"}
             result = await target.process_schema_message(incomplete_schema)
             assert not result.is_success
-            assert (
-                result.error is not None and "missing stream or schema" in result.error
-            )
+            assert result.error is not None
+            assert "missing stream or schema" in result.error
 
             # Test RECORD message with missing fields
             incomplete_record = {"type": "RECORD", "stream": "test"}
             result = await target.process_record_message(incomplete_record)
             assert not result.is_success
-            assert (
-                result.error is not None and "missing stream or record" in result.error
-            )
+            assert result.error is not None
+            assert "missing stream or record" in result.error
 
             # Test STATE message with invalid type
             invalid_state = {"type": "INVALID", "value": {}}
             result = target.process_state_message(invalid_state)
             assert not result.is_success
-            assert result.error is not None and "Not a STATE message" in result.error
+            assert result.error is not None
+            assert "Not a STATE message" in result.error
 
     @pytest.mark.asyncio
     async def test_target_table_management_coverage(
-        self, target_config: dict[str, str]
+        self,
+        target_config: dict[str, str],
     ) -> None:
         """Test table management methods for full coverage."""
         with patch("flext_oracle_wms.FlextOracleWmsClient") as mock_client_class:
@@ -278,31 +279,37 @@ class TestComprehensiveTargetCoverage:
             # Test _ensure_table_exists with no client
             target.oracle_client = None  # Test scenario
             result = await target._ensure_table_exists(
-                "test_table", "test_schema", "CREATE TABLE..."
+                "test_table",
+                "test_schema",
+                "CREATE TABLE...",
             )
             assert not result.is_success
-            assert (
-                result.error is not None
-                and "Oracle WMS client not initialized" in result.error
-            )
+            assert result.error is not None
+            assert "Oracle WMS client not initialized" in result.error
 
             # Test _ensure_table_exists with exception - patch the method itself
             target.oracle_client = mock_client
             with patch.object(
-                target, "_ensure_table_exists", side_effect=RuntimeError("Test error")
+                target,
+                "_ensure_table_exists",
+                side_effect=RuntimeError("Test error"),
             ):
                 try:
                     result = await target._ensure_table_exists(
-                        "test_table", "test_schema", "CREATE TABLE..."
+                        "test_table",
+                        "test_schema",
+                        "CREATE TABLE...",
                     )
                     # Should not reach here due to exception
-                    assert False, "Expected RuntimeError but method succeeded"
+                    msg = "Expected RuntimeError but method succeeded"
+                    raise AssertionError(msg)
                 except RuntimeError as e:
                     assert "Test error" in str(e)
 
     @pytest.mark.asyncio
     async def test_target_record_insertion_comprehensive(
-        self, target_config: dict[str, str]
+        self,
+        target_config: dict[str, str],
     ) -> None:
         """Test record insertion with comprehensive data types."""
         with patch("flext_oracle_wms.FlextOracleWmsClient"):
@@ -327,7 +334,8 @@ class TestComprehensiveTargetCoverage:
 
     @pytest.mark.asyncio
     async def test_target_cleanup_scenarios(
-        self, target_config: dict[str, str]
+        self,
+        target_config: dict[str, str],
     ) -> None:
         """Test cleanup with various scenarios."""
         with patch("flext_oracle_wms.FlextOracleWmsClient") as mock_client_class:
@@ -364,7 +372,9 @@ class TestComprehensiveTargetCoverage:
             mock_result.data = stats_data
 
             with patch.object(
-                target.stream_processor, "get_all_stats", return_value=mock_result
+                target.stream_processor,
+                "get_all_stats",
+                return_value=mock_result,
             ):
                 result = target.finalize()
 

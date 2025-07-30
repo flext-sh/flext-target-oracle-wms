@@ -154,7 +154,7 @@ class TestSingerWMSStreamProcessorComprehensive:
         # Mock data transformer to always fail
         mock_transformer = MagicMock()
         mock_transformer.transform_record.return_value = FlextResult.fail(
-            "Transform failed"
+            "Transform failed",
         )
 
         processor = SingerWMSStreamProcessor(
@@ -379,7 +379,8 @@ class TestSingerWMSStreamProcessorComprehensive:
         mixed_transformer = MagicMock()
 
         def mixed_transform(
-            record: dict[str, Any], schema: dict[str, Any] | None = None
+            record: dict[str, Any],
+            schema: dict[str, Any] | None = None,
         ) -> FlextResult[dict[str, Any]]:
             """Transform that fails for even IDs."""
             if record.get("id", 0) % 2 == 0:
@@ -456,7 +457,7 @@ class TestSingerWMSStreamProcessorComprehensive:
         # Mock transformer that raises exceptions
         mock_transformer = MagicMock()
         mock_transformer.transform_record.side_effect = RuntimeError(
-            "Transform exception"
+            "Transform exception",
         )
 
         processor = SingerWMSStreamProcessor(table_manager, mock_transformer)
@@ -469,7 +470,8 @@ class TestSingerWMSStreamProcessorComprehensive:
         record = {"id": 123}
         result = processor.process_record("exception_stream", record)
         assert not result.is_success
-        assert result.error is not None and "Record processing failed" in result.error
+        assert result.error is not None
+        assert "Record processing failed" in result.error
 
         # Verify stats reflect the failure
         stats_result = processor.get_stream_stats("exception_stream")
@@ -518,7 +520,7 @@ class TestSingerWMSStreamProcessorComprehensive:
         schema = {"type": "object", "properties": {"id": {"type": "integer"}}}
         init_result = stream_processor.initialize_stream("batch_auto_init", schema)
         assert init_result.is_success
-        
+
         result = stream_processor.process_batch("batch_auto_init", records)
         assert result.is_success
 
@@ -537,7 +539,8 @@ class TestSingerWMSStreamProcessorComprehensive:
         mock_transformer = MagicMock()
 
         def selective_transform(
-            record: dict[str, Any], schema: dict[str, Any] | None = None
+            record: dict[str, Any],
+            schema: dict[str, Any] | None = None,
         ) -> FlextResult[dict[str, Any]]:
             if record.get("id", 0) % 2 == 0:
                 return FlextResult.fail("Even ID failed")
@@ -644,7 +647,8 @@ class TestSingerWMSStreamProcessorComprehensive:
         """Test finalizing non-existent stream."""
         result = stream_processor.finalize_stream("nonexistent_stream")
         assert not result.is_success
-        assert result.error is not None and "not found" in result.error.lower()
+        assert result.error is not None
+        assert "not found" in result.error.lower()
 
     def test_finalize_stream_exception_handling(
         self,
@@ -754,7 +758,9 @@ class TestSingerWMSStreamProcessorComprehensive:
         }
 
         result = stream_processor.handle_schema_change(
-            "schema_change_test", old_schema, new_schema
+            "schema_change_test",
+            old_schema,
+            new_schema,
         )
         assert result.is_success
 
@@ -784,7 +790,9 @@ class TestSingerWMSStreamProcessorComprehensive:
         good_schema = {"type": "object", "properties": {"id": {"type": "integer"}}}
 
         result = stream_processor.handle_schema_change(
-            "exception_test", bad_schema, good_schema
+            "exception_test",
+            bad_schema,
+            good_schema,
         )
         # Should handle gracefully
         assert result.is_success or (

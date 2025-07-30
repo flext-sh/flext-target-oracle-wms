@@ -9,22 +9,18 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import asyncio
 import io
 import json
-import sys
-from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, mock_open, patch
+import math
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 # DRY: Import REAL flext-* APIs
-from flext_core import FlextResult
 
 # Import target modules for comprehensive testing - with import protection
 try:
     from flext_target_oracle_wms.cli import OracleWMSTargetCli, main
-    from flext_target_oracle_wms.singer.target import SingerTargetOracleWMS
     from flext_target_oracle_wms.patterns.wms_patterns import (
         WMSDataTransformer,
         WMSSchemaMapper,
@@ -33,17 +29,20 @@ try:
     )
     from flext_target_oracle_wms.singer.catalog import SingerWMSCatalogManager
     from flext_target_oracle_wms.singer.stream import SingerWMSStreamProcessor
+    from flext_target_oracle_wms.singer.target import SingerTargetOracleWMS
+
     IMPORTS_AVAILABLE = True
 except ImportError as import_error:
     IMPORTS_AVAILABLE = False
     import warnings
-    warnings.warn(f"Some imports failed: {import_error}", RuntimeWarning)
+
+    warnings.warn(f"Some imports failed: {import_error}", RuntimeWarning, stacklevel=2)
 
 
 @pytest.mark.skipif(not IMPORTS_AVAILABLE, reason="Target imports not available")
 class TestCompleteTargetCoverage:
     """Complete target coverage tests."""
-    
+
     @pytest.fixture
     def target_config(self) -> dict[str, str]:
         """Complete target configuration for testing."""
@@ -59,26 +58,28 @@ class TestCompleteTargetCoverage:
             "load_method": "REPLACE",
             "verify_ssl": "true",
             "timeout": "30.0",
-            "max_retries": "5"
+            "max_retries": "5",
         }
 
     @pytest.mark.asyncio
-    async def test_target_complete_workflow(self, target_config: dict[str, str]) -> None:
+    async def test_target_complete_workflow(
+        self, target_config: dict[str, str],
+    ) -> None:
         """Test complete target workflow with all operations."""
-        with patch('flext_oracle_wms.FlextOracleWmsClient') as mock_client_class:
+        with patch("flext_oracle_wms.FlextOracleWmsClient") as mock_client_class:
             # Setup complete mock client
             mock_client = AsyncMock()
             mock_client_class.return_value = mock_client
             mock_client.start.return_value = MagicMock(is_success=True)
             mock_client.stop.return_value = MagicMock(is_success=True)
             mock_client.execute_query.return_value = MagicMock(is_success=True, data=[])
-            
+
             target = SingerTargetOracleWMS(target_config)
-            
+
             # Test complete initialization
             setup_result = await target.setup()
             assert setup_result.is_success
-            
+
             # Test schema processing with complex schema
             complex_schema = {
                 "type": "SCHEMA",
@@ -100,16 +101,16 @@ class TestCompleteTargetCoverage:
                         "supplier_id": {"type": "string"},
                         "metadata": {"type": "object"},
                         "tags": {"type": "array"},
-                        "active": {"type": "boolean"}
-                    }
+                        "active": {"type": "boolean"},
+                    },
                 },
                 "key_properties": ["item_id", "location_id"],
-                "bookmark_properties": ["last_updated"]
+                "bookmark_properties": ["last_updated"],
             }
-            
+
             schema_result = await target.process_schema_message(complex_schema)
             assert schema_result.is_success
-            
+
             # Test multiple record processing
             records = [
                 {
@@ -127,7 +128,7 @@ class TestCompleteTargetCoverage:
                     "supplier_id": "SUP_001",
                     "metadata": {"batch": "B001", "quality": "A"},
                     "tags": ["premium", "electronics"],
-                    "active": True
+                    "active": True,
                 },
                 {
                     "item_id": "ITEM_002",
@@ -144,26 +145,26 @@ class TestCompleteTargetCoverage:
                     "supplier_id": "SUP_002",
                     "metadata": {"batch": "B002", "quality": "B"},
                     "tags": ["standard", "mechanical"],
-                    "active": True
-                }
+                    "active": True,
+                },
             ]
-            
+
             for record_data in records:
                 record_message = {
                     "type": "RECORD",
                     "stream": "complex_inventory",
                     "record": record_data,
-                    "time_extracted": "2024-01-15T16:00:00Z"
+                    "time_extracted": "2024-01-15T16:00:00Z",
                 }
-                
+
                 record_result = await target.process_record_message(record_message)
                 assert record_result.is_success
-            
+
             # Test finalization
             finalize_result = target.finalize()
             assert finalize_result.is_success
             assert finalize_result.data is not None
-            
+
             # Test cleanup
             cleanup_result = await target.cleanup()
             assert cleanup_result.is_success
@@ -175,7 +176,7 @@ class TestCompleteTargetCoverage:
             {
                 "base_url": "https://minimal.wms.oracle.com",
                 "username": "min_user",
-                "password": "min_password"
+                "password": "min_password",
             },
             # Complete config with all options
             {
@@ -194,7 +195,7 @@ class TestCompleteTargetCoverage:
                 "timeout": "120.0",
                 "max_retries": "10",
                 "connection_pool_size": "20",
-                "retry_delay": "5.0"
+                "retry_delay": "5.0",
             },
             # Development config
             {
@@ -204,30 +205,34 @@ class TestCompleteTargetCoverage:
                 "environment": "development",
                 "batch_size": "100",
                 "verify_ssl": "false",
-                "enable_logging": "true"
-            }
+                "enable_logging": "true",
+            },
         ]
-        
+
         for config in configs:
-            with patch('flext_oracle_wms.FlextOracleWmsClient'):
+            with patch("flext_oracle_wms.FlextOracleWmsClient"):
                 target = SingerTargetOracleWMS(config)
-                
+
                 # Verify configuration was processed
                 assert target.config == config
-                
+
                 # Verify defaults and type conversions
                 # batch_size might be string from config, check if it can be converted
-                if hasattr(target, 'batch_size'):
+                if hasattr(target, "batch_size"):
                     try:
-                        batch_size = int(target.batch_size) if isinstance(target.batch_size, str) else target.batch_size
+                        batch_size = (
+                            int(target.batch_size)
+                            if isinstance(target.batch_size, str)
+                            else target.batch_size
+                        )
                         assert batch_size > 0
                     except (ValueError, TypeError):
                         # Skip if not convertible - this is expected for some configs
                         pass
-                
+
                 if "table_prefix" in config:
                     assert target.table_prefix == config["table_prefix"]
-                
+
                 if "load_method" in config:
                     assert target.load_method == config["load_method"]
 
@@ -235,39 +240,39 @@ class TestCompleteTargetCoverage:
 @pytest.mark.skipif(not IMPORTS_AVAILABLE, reason="Target imports not available")
 class TestCompletePatternsMetworkCoverage:
     """Complete patterns coverage tests."""
-    
+
     def test_wms_data_transformer_comprehensive(self) -> None:
         """Test WMS data transformer with various data types."""
         transformer = WMSDataTransformer()
-        
+
         # Test with complex nested data
         complex_data = {
             "simple_string": "test",
             "nested_object": {
                 "inner_string": "inner_test",
                 "inner_number": 42,
-                "inner_array": [1, 2, 3]
+                "inner_array": [1, 2, 3],
             },
             "array_of_objects": [
                 {"id": 1, "name": "Item 1"},
-                {"id": 2, "name": "Item 2"}
+                {"id": 2, "name": "Item 2"},
             ],
             "null_value": None,
             "boolean_value": True,
-            "float_value": 123.456
+            "float_value": 123.456,
         }
-        
+
         # Use correct method signature from actual implementation
         result = transformer.transform_record(complex_data, None)
         assert result.is_success
         transformed_data = result.data
         assert transformed_data is not None
         assert "SIMPLE_STRING" in transformed_data  # Oracle normalizes to uppercase
-        
+
     def test_wms_schema_mapper_comprehensive(self) -> None:
         """Test WMS schema mapper with complex schemas."""
         mapper = WMSSchemaMapper()
-        
+
         # Test with complex schema including all JSON Schema types
         complex_schema = {
             "type": "object",
@@ -281,32 +286,32 @@ class TestCompletePatternsMetworkCoverage:
                 "object_field": {
                     "type": "object",
                     "properties": {
-                        "nested_string": {"type": "string"}
-                    }
+                        "nested_string": {"type": "string"},
+                    },
                 },
                 "enum_field": {"type": "string", "enum": ["ACTIVE", "INACTIVE"]},
-                "nullable_field": {"type": ["string", "null"]}
+                "nullable_field": {"type": ["string", "null"]},
             },
-            "required": ["string_field", "integer_field"]
+            "required": ["string_field", "integer_field"],
         }
-        
+
         # Use the correct method name from actual implementation
         result = mapper.map_singer_schema_to_oracle(complex_schema)
         assert result.is_success
         table_schema = result.data
         assert table_schema is not None
         assert "STRING_FIELD" in table_schema  # Oracle normalizes to uppercase
-        
+
     def test_wms_table_manager_comprehensive(self) -> None:
         """Test WMS table manager with various table operations."""
         manager = WMSTableManager()
-        
+
         # Test table name generation
         table_name = manager.generate_table_name("test_stream", "PREFIX")
         assert table_name is not None
         assert "PREFIX" in table_name
         assert "TEST_STREAM" in table_name
-        
+
         # Test CREATE TABLE SQL generation
         complex_schema = {
             "type": "object",
@@ -314,51 +319,52 @@ class TestCompletePatternsMetworkCoverage:
                 "id": {"type": "string"},
                 "name": {"type": "string"},
                 "value": {"type": "number"},
-                "created_at": {"type": "string", "format": "date-time"}
-            }
+                "created_at": {"type": "string", "format": "date-time"},
+            },
         }
-        
+
         create_result = manager.generate_create_table_sql(
-            "complex_table", 
-            "test_schema", 
-            complex_schema
+            "complex_table",
+            "test_schema",
+            complex_schema,
         )
         assert create_result.is_success
         create_sql = create_result.data
         assert create_sql is not None
         assert "CREATE TABLE" in create_sql
         assert "COMPLEX_TABLE" in create_sql.upper()
-        
+
         # Test INSERT SQL generation
         columns = ["id", "name", "value", "created_at"]
-        insert_result = manager.generate_insert_sql("test_table", "test_schema", columns)
+        insert_result = manager.generate_insert_sql(
+            "test_table", "test_schema", columns,
+        )
         assert insert_result.is_success
         insert_sql = insert_result.data
         assert insert_sql is not None
         assert "INSERT INTO" in insert_sql
         assert "VALUES" in insert_sql
-            
+
     def test_wms_type_converter_comprehensive(self) -> None:
         """Test WMS type converter with all supported types."""
         converter = WMSTypeConverter()
-        
+
         # Test all Singer types to Oracle types
         type_mappings = [
             ("string", "test_string"),
             ("integer", 42),
-            ("number", 3.14),
+            ("number", math.pi),
             ("boolean", True),
             ("array", [1, 2, 3]),
             ("object", {"key": "value"}),
-            ("null", None)
+            ("null", None),
         ]
-        
+
         for singer_type, test_value in type_mappings:
             result = converter.convert_singer_to_oracle(singer_type, test_value)
             assert result.is_success
-            converted_value = result.data
             # Just verify conversion doesn't fail - actual type mapping depends on implementation
-            
+
         # Test with edge cases
         edge_cases = [
             ("string", ""),  # Empty string
@@ -367,7 +373,7 @@ class TestCompletePatternsMetworkCoverage:
             ("number", 0.0),  # Zero float
             ("boolean", False),  # False boolean
         ]
-        
+
         for singer_type, test_value in edge_cases:
             result = converter.convert_singer_to_oracle(singer_type, test_value)
             assert result.is_success
@@ -376,19 +382,19 @@ class TestCompletePatternsMetworkCoverage:
 @pytest.mark.skipif(not IMPORTS_AVAILABLE, reason="Target imports not available")
 class TestCompleteStreamCoverage:
     """Complete stream processor coverage tests."""
-    
+
     def test_stream_processor_comprehensive_scenarios(self) -> None:
         """Test stream processor with comprehensive scenarios."""
         # Create dependencies
         table_manager = WMSTableManager()
         data_transformer = WMSDataTransformer()
         processor = SingerWMSStreamProcessor(table_manager, data_transformer)
-        
+
         # Test initialization with various stream types
         stream_configs = [
             {
                 "stream": "simple_stream",
-                "schema": {"type": "object", "properties": {"id": {"type": "string"}}}
+                "schema": {"type": "object", "properties": {"id": {"type": "string"}}},
             },
             {
                 "stream": "complex_stream",
@@ -397,27 +403,27 @@ class TestCompleteStreamCoverage:
                     "properties": {
                         "id": {"type": "string"},
                         "data": {"type": "object"},
-                        "items": {"type": "array"}
-                    }
-                }
-            }
+                        "items": {"type": "array"},
+                    },
+                },
+            },
         ]
-        
+
         for config in stream_configs:
             result = processor.initialize_stream(config["stream"], config["schema"])
             assert result.is_success
-            
+
         # Test batch processing with mixed success/failure
         records = [
             {"id": "1", "valid": True},
             {"id": "2", "valid": True},
             {"invalid": "record"},  # This should be handled gracefully
-            {"id": "3", "valid": True}
+            {"id": "3", "valid": True},
         ]
-        
+
         result = processor.process_batch("simple_stream", records)
         assert result.is_success
-        
+
         # Test stats collection
         stats_result = processor.get_all_stats()
         assert stats_result.is_success
@@ -427,11 +433,11 @@ class TestCompleteStreamCoverage:
 @pytest.mark.skipif(not IMPORTS_AVAILABLE, reason="Target imports not available")
 class TestCompleteCatalogCoverage:
     """Complete catalog manager coverage tests."""
-    
+
     def test_catalog_manager_comprehensive_operations(self) -> None:
         """Test catalog manager with comprehensive operations."""
         manager = SingerWMSCatalogManager()
-        
+
         # Test with complex catalog entries
         catalog_entries = [
             {
@@ -441,11 +447,11 @@ class TestCompleteCatalogCoverage:
                     "properties": {
                         "item_id": {"type": "string"},
                         "quantity": {"type": "number"},
-                        "metadata": {"type": "object"}
-                    }
+                        "metadata": {"type": "object"},
+                    },
                 },
                 "key_properties": ["item_id"],
-                "bookmark_properties": ["updated_at"]
+                "bookmark_properties": ["updated_at"],
             },
             {
                 "stream": "orders",
@@ -454,45 +460,51 @@ class TestCompleteCatalogCoverage:
                     "properties": {
                         "order_id": {"type": "string"},
                         "customer_id": {"type": "string"},
-                        "items": {"type": "array"}
-                    }
+                        "items": {"type": "array"},
+                    },
                 },
-                "key_properties": ["order_id"]
-            }
+                "key_properties": ["order_id"],
+            },
         ]
-        
+
         for entry in catalog_entries:
             # Create metadata from key and bookmark properties
             metadata = []
             if "key_properties" in entry:
-                metadata.append({
-                    "breadcrumb": [],
-                    "metadata": {
-                        "table-key-properties": entry["key_properties"]
-                    }
-                })
+                metadata.append(
+                    {
+                        "breadcrumb": [],
+                        "metadata": {
+                            "table-key-properties": entry["key_properties"],
+                        },
+                    },
+                )
             if "bookmark_properties" in entry:
-                metadata.append({
-                    "breadcrumb": [],
-                    "metadata": {
-                        "replication-key": entry["bookmark_properties"][0] if entry["bookmark_properties"] else None
-                    }
-                })
-            
+                metadata.append(
+                    {
+                        "breadcrumb": [],
+                        "metadata": {
+                            "replication-key": entry["bookmark_properties"][0]
+                            if entry["bookmark_properties"]
+                            else None,
+                        },
+                    },
+                )
+
             result = manager.add_stream(
                 entry["stream"],
                 entry["schema"],
-                metadata
+                metadata,
             )
             assert result.is_success
-            
+
         # Test catalog conversion
         singer_catalog_result = manager.to_singer_catalog()
         assert singer_catalog_result.is_success
         catalog = singer_catalog_result.data
         assert catalog is not None
         assert len(catalog.get("streams", [])) == 2
-        
+
         # Test metadata operations - use correct signature (list of metadata dicts)
         metadata_result = manager.update_stream_metadata(
             "inventory",
@@ -500,11 +512,11 @@ class TestCompleteCatalogCoverage:
                 {
                     "breadcrumb": [],
                     "metadata": {
-                        "selected": True, 
-                        "replication-method": "INCREMENTAL"
-                    }
-                }
-            ]
+                        "selected": True,
+                        "replication-method": "INCREMENTAL",
+                    },
+                },
+            ],
         )
         assert metadata_result.is_success
 
@@ -512,73 +524,79 @@ class TestCompleteCatalogCoverage:
 @pytest.mark.skipif(not IMPORTS_AVAILABLE, reason="Target imports not available")
 class TestCompleteCLIEdgeCases:
     """Complete CLI edge cases and error handling."""
-    
+
     @pytest.mark.asyncio
     async def test_cli_stdin_edge_cases(self) -> None:
         """Test CLI with various stdin edge cases."""
         cli = OracleWMSTargetCli()
-        
+
         # Test with empty stdin
-        with patch('sys.stdin', io.StringIO("")):
-            with patch('flext_target_oracle_wms.cli.SingerTargetOracleWMS') as mock_target_class:
-                # Create a proper mock target
-                mock_target = MagicMock()
-                mock_target_class.return_value = mock_target
-                
-                # Mock all methods correctly - avoid async confusion
-                mock_target.setup = AsyncMock(return_value=MagicMock(is_success=True))
-                mock_target.finalize.return_value = MagicMock(is_success=True, data={})
-                mock_target.cleanup = AsyncMock(return_value=MagicMock(is_success=True))
-                
-                result = await cli.execute()
-                assert result.is_success
-    
+        with patch("sys.stdin", io.StringIO("")), patch(
+            "flext_target_oracle_wms.cli.SingerTargetOracleWMS",
+        ) as mock_target_class:
+            # Create a proper mock target
+            mock_target = MagicMock()
+            mock_target_class.return_value = mock_target
+
+            # Mock all methods correctly - avoid async confusion
+            mock_target.setup = AsyncMock(return_value=MagicMock(is_success=True))
+            mock_target.finalize.return_value = MagicMock(is_success=True, data={})
+            mock_target.cleanup = AsyncMock(return_value=MagicMock(is_success=True))
+
+            result = await cli.execute()
+            assert result.is_success
+
     @pytest.mark.asyncio
     async def test_cli_malformed_json_handling(self) -> None:
         """Test CLI with malformed JSON inputs."""
         cli = OracleWMSTargetCli()
-        
+
         malformed_inputs = [
             '{"type": "SCHEMA", "incomplete": true',  # Incomplete JSON
             '{"type": "RECORD", "stream": "test", "record":}',  # Syntax error
             '{"type": "STATE" "value": {}}',  # Missing comma
-            'not json at all',  # Not JSON
-            '[]',  # Wrong type (array instead of object)
+            "not json at all",  # Not JSON
+            "[]",  # Wrong type (array instead of object)
         ]
-        
+
         for malformed_input in malformed_inputs:
-            with patch('sys.stdin', io.StringIO(malformed_input)):
-                with patch('flext_target_oracle_wms.cli.SingerTargetOracleWMS') as mock_target_class:
-                    mock_target = AsyncMock()
-                    mock_target_class.return_value = mock_target
-                    mock_target.setup = AsyncMock(return_value=MagicMock(is_success=True))
-                    
-                    result = await cli.execute()
-                    # Should handle malformed JSON gracefully
-                    assert not result.is_success
-                    assert result.error is not None
-                    # Error message should indicate JSON or execution failure
-                    assert ("Invalid JSON" in result.error or 
-                           "CLI execution failed" in result.error or
-                           "object has no attribute" in result.error)
+            with patch("sys.stdin", io.StringIO(malformed_input)), patch(
+                "flext_target_oracle_wms.cli.SingerTargetOracleWMS",
+            ) as mock_target_class:
+                mock_target = AsyncMock()
+                mock_target_class.return_value = mock_target
+                mock_target.setup = AsyncMock(
+                    return_value=MagicMock(is_success=True),
+                )
+
+                result = await cli.execute()
+                # Should handle malformed JSON gracefully
+                assert not result.is_success
+                assert result.error is not None
+                # Error message should indicate JSON or execution failure
+                assert (
+                    "Invalid JSON" in result.error
+                    or "CLI execution failed" in result.error
+                    or "object has no attribute" in result.error
+                )
 
     def test_cli_config_file_edge_cases(self) -> None:
         """Test CLI config file edge cases."""
         cli = OracleWMSTargetCli()
-        
+
         # Test with non-existent file
         with pytest.raises(FileNotFoundError):
             cli._load_config("non_existent_file.json")
-        
+
         # Test with directory instead of file
-        with patch('pathlib.Path.exists', return_value=True):
-            with patch('pathlib.Path.read_text', side_effect=IsADirectoryError()):
+        with patch("pathlib.Path.exists", return_value=True):
+            with patch("pathlib.Path.read_text", side_effect=IsADirectoryError()):
                 with pytest.raises(IsADirectoryError):
                     cli._load_config("directory_path")
-        
+
         # Test with permission denied
-        with patch('pathlib.Path.exists', return_value=True):
-            with patch('pathlib.Path.read_text', side_effect=PermissionError()):
+        with patch("pathlib.Path.exists", return_value=True):
+            with patch("pathlib.Path.read_text", side_effect=PermissionError()):
                 with pytest.raises(PermissionError):
                     cli._load_config("permission_denied.json")
 
@@ -590,14 +608,20 @@ class TestCompleteCLIEdgeCases:
             ["target-oracle-wms", "--config"],  # Missing config file
             ["target-oracle-wms", "--config", "test.json"],  # Normal config
             ["target-oracle-wms", "--unknown-arg"],  # Unknown argument
-            ["target-oracle-wms", "--config", "file1.json", "--config", "file2.json"],  # Multiple configs
+            [
+                "target-oracle-wms",
+                "--config",
+                "file1.json",
+                "--config",
+                "file2.json",
+            ],  # Multiple configs
         ]
-        
+
         for test_args in test_cases:
-            with patch('sys.argv', test_args):
-                with patch('asyncio.run') as mock_run:
+            with patch("sys.argv", test_args):
+                with patch("asyncio.run") as mock_run:
                     mock_run.return_value = MagicMock(is_success=True)
-                    with patch('sys.exit') as mock_exit:
+                    with patch("sys.exit") as mock_exit:
                         main()
                         # Should not exit with success
                         mock_exit.assert_not_called()
@@ -606,7 +630,7 @@ class TestCompleteCLIEdgeCases:
 @pytest.mark.skipif(not IMPORTS_AVAILABLE, reason="Target imports not available")
 class TestCompleteIntegrationWorkflows:
     """Complete integration workflows testing all components."""
-    
+
     @pytest.mark.asyncio
     async def test_end_to_end_data_pipeline(self) -> None:
         """Test complete end-to-end data pipeline."""
@@ -615,23 +639,23 @@ class TestCompleteIntegrationWorkflows:
             "username": "e2e_user",
             "password": "e2e_password",
             "environment": "e2e_test",
-            "batch_size": "500"
+            "batch_size": "500",
         }
-        
-        with patch('flext_oracle_wms.FlextOracleWmsClient') as mock_client_class:
+
+        with patch("flext_oracle_wms.FlextOracleWmsClient") as mock_client_class:
             # Setup comprehensive mock client
             mock_client = AsyncMock()
             mock_client_class.return_value = mock_client
             mock_client.start.return_value = MagicMock(is_success=True)
             mock_client.stop.return_value = MagicMock(is_success=True)
             mock_client.execute_query.return_value = MagicMock(is_success=True, data=[])
-            
+
             target = SingerTargetOracleWMS(config)
-            
+
             # 1. Setup phase
             setup_result = await target.setup()
             assert setup_result.is_success
-            
+
             # 2. Schema processing phase - multiple schemas
             schemas = [
                 {
@@ -642,94 +666,102 @@ class TestCompleteIntegrationWorkflows:
                         "properties": {
                             "product_id": {"type": "string"},
                             "name": {"type": "string"},
-                            "price": {"type": "number"}
-                        }
+                            "price": {"type": "number"},
+                        },
                     },
-                    "key_properties": ["product_id"]
+                    "key_properties": ["product_id"],
                 },
                 {
-                    "type": "SCHEMA", 
+                    "type": "SCHEMA",
                     "stream": "customers",
                     "schema": {
                         "type": "object",
                         "properties": {
                             "customer_id": {"type": "string"},
                             "name": {"type": "string"},
-                            "email": {"type": "string"}
-                        }
+                            "email": {"type": "string"},
+                        },
                     },
-                    "key_properties": ["customer_id"]
-                }
+                    "key_properties": ["customer_id"],
+                },
             ]
-            
+
             for schema in schemas:
                 schema_result = await target.process_schema_message(schema)
                 assert schema_result.is_success
-            
+
             # 3. Data processing phase - batch of records
             product_records = [
                 {"product_id": "P001", "name": "Widget A", "price": 19.99},
                 {"product_id": "P002", "name": "Widget B", "price": 29.99},
-                {"product_id": "P003", "name": "Widget C", "price": 39.99}
+                {"product_id": "P003", "name": "Widget C", "price": 39.99},
             ]
-            
+
             customer_records = [
-                {"customer_id": "C001", "name": "John Doe", "email": "john@example.com"},
-                {"customer_id": "C002", "name": "Jane Smith", "email": "jane@example.com"}
+                {
+                    "customer_id": "C001",
+                    "name": "John Doe",
+                    "email": "john@example.com",
+                },
+                {
+                    "customer_id": "C002",
+                    "name": "Jane Smith",
+                    "email": "jane@example.com",
+                },
             ]
-            
+
             # Process product records
             for record_data in product_records:
                 record_message = {
                     "type": "RECORD",
                     "stream": "products",
                     "record": record_data,
-                    "time_extracted": "2024-01-15T12:00:00Z"
+                    "time_extracted": "2024-01-15T12:00:00Z",
                 }
-                
+
                 record_result = await target.process_record_message(record_message)
                 assert record_result.is_success
-            
+
             # Process customer records
             for record_data in customer_records:
                 record_message = {
                     "type": "RECORD",
                     "stream": "customers",
                     "record": record_data,
-                    "time_extracted": "2024-01-15T12:00:00Z"
+                    "time_extracted": "2024-01-15T12:00:00Z",
                 }
-                
+
                 record_result = await target.process_record_message(record_message)
                 assert record_result.is_success
-            
+
             # 4. State management phase
             state_message = {
                 "type": "STATE",
                 "value": {
                     "bookmarks": {
                         "products": {"last_id": "P003"},
-                        "customers": {"last_id": "C002"}
-                    }
-                }
+                        "customers": {"last_id": "C002"},
+                    },
+                },
             }
-            
-            with patch('sys.stdout', new_callable=io.StringIO) as mock_stdout:
+
+            with patch("sys.stdout", new_callable=io.StringIO) as mock_stdout:
                 state_result = target.process_state_message(state_message)
                 assert state_result.is_success
                 # Verify STATE was written to stdout
                 output = mock_stdout.getvalue().strip()
                 if output:  # Only check if output was produced
                     assert json.loads(output) == state_message
-            
+
             # 5. Finalization phase
             finalize_result = target.finalize()
             assert finalize_result.is_success
             assert finalize_result.data is not None
-            
+
             summary = finalize_result.data
             assert "total_records_processed" in summary
             assert summary["total_records_processed"] >= 5  # 3 products + 2 customers
-            
+
             # 6. Cleanup phase
             cleanup_result = await target.cleanup()
             assert cleanup_result.is_success
@@ -738,28 +770,29 @@ class TestCompleteIntegrationWorkflows:
         """Test factory integration with real pattern usage."""
         if not IMPORTS_AVAILABLE:
             pytest.skip("Target imports not available")
-            
+
         from flext_target_oracle_wms import (
-            FlextTargetFactory,
-            create_oracle_wms_target,
             WMSDataTransformer,
-            WMSSchemaMapper
+            WMSSchemaMapper,
+            create_oracle_wms_target,
         )
-        
+
         # Test factory with patterns integration
         result = create_oracle_wms_target(
             base_url="https://factory-integration.wms.oracle.com",
             username="factory_user",
             password="factory_password",
-            preset="development"
+            preset="development",
         )
-        
+
         # Should succeed even with mocked backend
-        assert result.is_success or "Failed to create Oracle WMS target" in (result.error or "")
-        
+        assert result.is_success or "Failed to create Oracle WMS target" in (
+            result.error or ""
+        )
+
         # Test pattern classes are accessible
         transformer = WMSDataTransformer()
         mapper = WMSSchemaMapper()
-        
+
         assert transformer is not None
         assert mapper is not None

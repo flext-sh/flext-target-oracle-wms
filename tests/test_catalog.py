@@ -42,10 +42,8 @@ class TestSingerWMSCatalogEntry:
 
         validation_result = entry.validate_domain_rules()
         assert not validation_result.is_success
-        assert (
-            validation_result.error is not None
-            and "tap_stream_id cannot be empty" in validation_result.error
-        )
+        assert validation_result.error is not None
+        assert "tap_stream_id cannot be empty" in validation_result.error
 
     def test_catalog_entry_whitespace_tap_stream_id(self) -> None:
         """Test catalog entry validation with whitespace-only tap_stream_id."""
@@ -57,10 +55,8 @@ class TestSingerWMSCatalogEntry:
 
         validation_result = entry.validate_domain_rules()
         assert not validation_result.is_success
-        assert (
-            validation_result.error is not None
-            and "tap_stream_id cannot be empty" in validation_result.error
-        )
+        assert validation_result.error is not None
+        assert "tap_stream_id cannot be empty" in validation_result.error
 
     def test_catalog_entry_empty_stream(self) -> None:
         """Test catalog entry validation with empty stream."""
@@ -72,10 +68,8 @@ class TestSingerWMSCatalogEntry:
 
         validation_result = entry.validate_domain_rules()
         assert not validation_result.is_success
-        assert (
-            validation_result.error is not None
-            and "stream cannot be empty" in validation_result.error
-        )
+        assert validation_result.error is not None
+        assert "stream cannot be empty" in validation_result.error
 
     def test_catalog_entry_empty_schema_info(self) -> None:
         """Test catalog entry validation with empty schema_info."""
@@ -87,10 +81,8 @@ class TestSingerWMSCatalogEntry:
 
         validation_result = entry.validate_domain_rules()
         assert not validation_result.is_success
-        assert (
-            validation_result.error is not None
-            and "schema_info cannot be empty" in validation_result.error
-        )
+        assert validation_result.error is not None
+        assert "schema_info cannot be empty" in validation_result.error
 
     def test_catalog_entry_default_values(self) -> None:
         """Test catalog entry uses correct default values."""
@@ -354,14 +346,16 @@ class TestSingerWMSCatalogManager:
     def test_add_stream_exception_handling(self) -> None:
         """Test add_stream exception handling."""
         from unittest.mock import patch
-        
+
         manager = SingerWMSCatalogManager()
 
         # Use proper mock to simulate catalog entry creation failure - SOLID DRY pattern
-        with patch('flext_target_oracle_wms.singer.catalog.SingerWMSCatalogEntry') as mock_entry:
+        with patch(
+            "flext_target_oracle_wms.singer.catalog.SingerWMSCatalogEntry",
+        ) as mock_entry:
             mock_entry.side_effect = RuntimeError("Catalog entry creation failed")
             result = manager.add_stream("test_stream", {"type": "object"})
-            
+
         assert not result.is_success
         assert result.error is not None
         assert "Stream addition failed" in result.error
@@ -369,32 +363,32 @@ class TestSingerWMSCatalogManager:
     def test_list_streams_exception_handling(self) -> None:
         """Test list_streams exception handling."""
         from unittest.mock import patch
-        
+
         manager = SingerWMSCatalogManager()
 
         # Use proper mock to simulate catalog entries access failure - SOLID pattern
-        with patch.object(manager, '_catalog_entries') as mock_entries:
+        with patch.object(manager, "_catalog_entries") as mock_entries:
             mock_entries.keys.side_effect = RuntimeError("keys() failed")
             result = manager.list_streams()
-            
+
         assert not result.is_success
         assert result.error is not None
         assert "Stream listing failed" in result.error
 
     def test_remove_stream_exception_handling(self) -> None:
         """Test remove_stream exception handling."""
-        from unittest.mock import patch, MagicMock
-        
+        from unittest.mock import MagicMock, patch
+
         manager = SingerWMSCatalogManager()
 
         # Use proper mock to simulate dict deletion failure - SOLID pattern
         mock_entries = MagicMock()
         mock_entries.__contains__.return_value = True
         mock_entries.__delitem__.side_effect = RuntimeError("__delitem__ failed")
-        
-        with patch.object(manager, '_catalog_entries', mock_entries):
+
+        with patch.object(manager, "_catalog_entries", mock_entries):
             result = manager.remove_stream("test_stream")
-        
+
         assert not result.is_success
         assert result.error is not None
         assert "Stream removal failed" in result.error
@@ -510,8 +504,8 @@ class TestSingerWMSCatalogManager:
 
     def test_update_stream_metadata_exception_handling(self) -> None:
         """Test update_stream_metadata exception handling."""
-        from unittest.mock import patch, MagicMock
-        
+        from unittest.mock import patch
+
         manager = SingerWMSCatalogManager()
 
         # Add a stream first so it exists
@@ -519,10 +513,12 @@ class TestSingerWMSCatalogManager:
         manager.add_stream("test_stream", schema)
 
         # Use proper mock to simulate metadata processing failure - SOLID pattern
-        with patch.object(manager, '_validate_metadata') as mock_validate:
+        with patch.object(manager, "_validate_metadata") as mock_validate:
             mock_validate.side_effect = RuntimeError("Metadata validation failed")
-            result = manager.update_stream_metadata("test_stream", [{"metadata": "test"}])
-            
+            result = manager.update_stream_metadata(
+                "test_stream", [{"metadata": "test"}],
+            )
+
         assert not result.is_success
         assert result.error is not None
         assert "Metadata update failed" in result.error
@@ -560,14 +556,14 @@ class TestSingerWMSCatalogManager:
     def test_to_singer_catalog_exception_handling(self) -> None:
         """Test to_singer_catalog exception handling."""
         from unittest.mock import patch
-        
+
         manager = SingerWMSCatalogManager()
 
         # Use proper mock to simulate catalog entries access failure - SOLID pattern
-        with patch.object(manager, '_catalog_entries') as mock_entries:
+        with patch.object(manager, "_catalog_entries") as mock_entries:
             mock_entries.values.side_effect = RuntimeError("values() failed")
             result = manager.to_singer_catalog()
-            
+
         assert not result.is_success
         assert result.error is not None
         assert "Catalog conversion failed" in result.error
@@ -587,7 +583,7 @@ class TestSingerWMSCatalogManager:
                         "properties": {"id": {"type": "integer"}},
                     },
                     "metadata": [
-                        {"breadcrumb": [], "metadata": {"inclusion": "available"}}
+                        {"breadcrumb": [], "metadata": {"inclusion": "available"}},
                     ],
                     "key_properties": ["id"],
                     "bookmark_properties": ["updated_at"],
@@ -603,7 +599,7 @@ class TestSingerWMSCatalogManager:
                     },
                     # Missing optional fields to test defaults
                 },
-            ]
+            ],
         }
 
         result = manager.load_from_singer_catalog(catalog)
@@ -639,13 +635,13 @@ class TestSingerWMSCatalogManager:
     def test_load_from_singer_catalog_exception_handling(self) -> None:
         """Test load_from_singer_catalog exception handling."""
         from unittest.mock import MagicMock
-        
+
         manager = SingerWMSCatalogManager()
 
         # Use proper mock to simulate catalog access failure - SOLID pattern
         bad_catalog = MagicMock()
         bad_catalog.get.side_effect = RuntimeError("get() failed")
-        
+
         result = manager.load_from_singer_catalog(bad_catalog)
         assert not result.is_success
         assert result.error is not None

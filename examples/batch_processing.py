@@ -61,19 +61,16 @@ async def run_performance_batch_example() -> None:
         "username": "batch_user",
         "password": "batch_password",
         "environment": "batch_demo",
-
         # Performance optimizations
         "batch_size": 5000,  # Large batch size for performance
         "connection_timeout": 60,
         "request_timeout": 300,  # Extended timeout for large batches
         "max_retries": 5,
         "retry_delay": 2,
-
         # Schema configuration for performance
         "table_prefix": "BATCH_",
         "schema_name": "WMS_BATCH",
         "create_schema": True,
-
         # Batch-specific optimizations
         "enable_compression": True,
         "bulk_insert_mode": True,
@@ -146,7 +143,7 @@ async def run_performance_batch_example() -> None:
             chunk_size = min(batch_size, 1000)
 
             for i in range(0, len(test_data), chunk_size):
-                chunk = test_data[i:i + chunk_size]
+                chunk = test_data[i : i + chunk_size]
                 chunk_start = time.time()
 
                 # Process chunk records
@@ -168,17 +165,21 @@ async def run_performance_batch_example() -> None:
 
                 chunk_time = time.time() - chunk_start
                 chunk_rate = len(chunk) / chunk_time if chunk_time > 0 else 0
-                logger.info(f"Processed chunk {i // chunk_size + 1}: "
-                           f"{len(chunk)} records in {chunk_time:.2f}s "
-                           f"({chunk_rate:.1f} records/sec)")
+                logger.info(
+                    f"Processed chunk {i // chunk_size + 1}: "
+                    f"{len(chunk)} records in {chunk_time:.2f}s "
+                    f"({chunk_rate:.1f} records/sec)",
+                )
 
             # Calculate performance metrics
             total_time = time.time() - batch_start
             total_rate = batch_size / total_time if total_time > 0 else 0
 
-            logger.info(f"Batch {batch_size} completed: "
-                       f"{success_count} success, {error_count} errors "
-                       f"in {total_time:.2f}s ({total_rate:.1f} records/sec)")
+            logger.info(
+                f"Batch {batch_size} completed: "
+                f"{success_count} success, {error_count} errors "
+                f"in {total_time:.2f}s ({total_rate:.1f} records/sec)",
+            )
 
             # Memory cleanup between batches
             await asyncio.sleep(1)
@@ -190,9 +191,11 @@ async def run_performance_batch_example() -> None:
 
         if final_result.is_success and final_result.data:
             stats = final_result.data
-            logger.info(f"Batch processing finalized in {finalize_time:.2f}s - "
-                       f"Total records: {stats.get('total_records', 0)}, "
-                       f"Total errors: {stats.get('total_errors', 0)}")
+            logger.info(
+                f"Batch processing finalized in {finalize_time:.2f}s - "
+                f"Total records: {stats.get('total_records', 0)}, "
+                f"Total errors: {stats.get('total_errors', 0)}",
+            )
 
     except Exception as e:
         logger.exception(f"Performance batch example failed: {e}")
@@ -245,17 +248,21 @@ async def demonstrate_stream_processor_batching() -> None:
     if batch_result.is_success and batch_result.data:
         processed_count = len(batch_result.data)
         rate = processed_count / batch_time if batch_time > 0 else 0
-        logger.info(f"Stream batch processed: {processed_count} records "
-                   f"in {batch_time:.2f}s ({rate:.1f} records/sec)")
+        logger.info(
+            f"Stream batch processed: {processed_count} records "
+            f"in {batch_time:.2f}s ({rate:.1f} records/sec)",
+        )
 
     # Get final statistics
     stats_result = stream_processor.get_stream_stats("batch_test")
     if stats_result.is_success and stats_result.data:
         stats = stats_result.data
-        logger.info(f"Final stats: {stats.records_processed} processed, "
-                   f"{stats.records_success} successful, "
-                   f"{stats.records_failed} failed, "
-                   f"{stats.success_rate:.1f}% success rate")
+        logger.info(
+            f"Final stats: {stats.records_processed} processed, "
+            f"{stats.records_success} successful, "
+            f"{stats.records_failed} failed, "
+            f"{stats.success_rate:.1f}% success rate",
+        )
 
     # Finalize stream
     final_result = stream_processor.finalize_stream("batch_test")
@@ -346,8 +353,10 @@ async def demonstrate_concurrent_batching() -> None:
 
             elapsed = time.time() - start_time
             rate = len(records) / elapsed if elapsed > 0 else 0
-            logger.info(f"Stream {stream_name}: {len(records)} records "
-                       f"in {elapsed:.2f}s ({rate:.1f} records/sec)")
+            logger.info(
+                f"Stream {stream_name}: {len(records)} records "
+                f"in {elapsed:.2f}s ({rate:.1f} records/sec)",
+            )
 
         # Execute concurrent stream processing
         concurrent_tasks = [
@@ -362,9 +371,11 @@ async def demonstrate_concurrent_batching() -> None:
         total_records = len(successful_streams) * 1000
         total_rate = total_records / concurrent_time if concurrent_time > 0 else 0
 
-        logger.info(f"Concurrent processing completed: {total_records} total records "
-                   f"across {len(successful_streams)} streams "
-                   f"in {concurrent_time:.2f}s ({total_rate:.1f} records/sec)")
+        logger.info(
+            f"Concurrent processing completed: {total_records} total records "
+            f"across {len(successful_streams)} streams "
+            f"in {concurrent_time:.2f}s ({total_rate:.1f} records/sec)",
+        )
 
     except Exception as e:
         logger.exception(f"Concurrent batch processing failed: {e}")
@@ -381,5 +392,7 @@ if __name__ == "__main__":
         from collections.abc import Coroutine
 
     asyncio.run(cast("Coroutine[Any, Any, None]", run_performance_batch_example()))
-    asyncio.run(cast("Coroutine[Any, Any, None]", demonstrate_stream_processor_batching()))
+    asyncio.run(
+        cast("Coroutine[Any, Any, None]", demonstrate_stream_processor_batching()),
+    )
     asyncio.run(cast("Coroutine[Any, Any, None]", demonstrate_concurrent_batching()))

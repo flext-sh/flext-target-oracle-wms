@@ -97,7 +97,8 @@ class TestSingerWMSStreamProcessor:
         assert processor.data_transformer is data_transformer
 
     def test_initialize_stream_basic(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test basic stream initialization."""
         schema = {
@@ -136,7 +137,8 @@ class TestSingerWMSStreamProcessor:
         # Note: initialize_stream may return None as data for successful initialization
 
     def test_process_record_basic(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test basic record processing."""
         schema = {
@@ -242,10 +244,12 @@ class TestSingerWMSStreamProcessor:
         """Test getting statistics for non-existent stream."""
         result = stream_processor.get_stream_stats("nonexistent_stream")
         assert not result.is_success
-        assert result.error is not None and "not found" in result.error.lower()
+        assert result.error is not None
+        assert "not found" in result.error.lower()
 
     def test_get_all_stats_empty(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test getting all statistics when no streams exist."""
         result = stream_processor.get_all_stats()
@@ -281,7 +285,8 @@ class TestSingerWMSStreamProcessor:
             assert stats.records_failed == 0
 
     def test_reset_stream_stats(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test resetting stream statistics."""
         schema = {"type": "object", "properties": {"id": {"type": "integer"}}}
@@ -294,9 +299,8 @@ class TestSingerWMSStreamProcessor:
         # Verify stats before reset
         stats_result = stream_processor.get_stream_stats("reset_stream")
         assert stats_result.is_success
-        assert (
-            stats_result.data is not None and stats_result.data.records_processed == 5
-        )
+        assert stats_result.data is not None
+        assert stats_result.data.records_processed == 5
 
         # Reset stats
         reset_result = stream_processor.reset_stream_stats("reset_stream")
@@ -305,16 +309,15 @@ class TestSingerWMSStreamProcessor:
         # Verify stats after reset
         stats_result = stream_processor.get_stream_stats("reset_stream")
         assert stats_result.is_success
-        assert (
-            stats_result.data is not None and stats_result.data.records_processed == 0
-        )
+        assert stats_result.data is not None
+        assert stats_result.data.records_processed == 0
 
     def test_reset_stream_stats_nonexistent(
         self,
         stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test resetting statistics for non-existent stream."""
-        result = stream_processor.reset_stream_stats("nonexistent_stream")
+        stream_processor.reset_stream_stats("nonexistent_stream")
         # Note: The current implementation may succeed silently for non-existent streams
         # This is idempotent behavior which is acceptable
 
@@ -326,7 +329,7 @@ class TestSingerWMSStreamProcessor:
         # Mock data transformer to return error
         mock_transformer = MagicMock()
         mock_transformer.transform_record.return_value = FlextResult.fail(
-            "Transformation failed"
+            "Transformation failed",
         )
 
         processor = SingerWMSStreamProcessor(
@@ -340,7 +343,8 @@ class TestSingerWMSStreamProcessor:
         record = {"id": 123}
         result = processor.process_record("error_stream", record)
         assert not result.is_success
-        assert result.error is not None and "Transformation failed" in result.error
+        assert result.error is not None
+        assert "Transformation failed" in result.error
 
     @pytest.mark.parametrize(
         ("records_count", "expected_processed"),
@@ -372,13 +376,12 @@ class TestSingerWMSStreamProcessor:
         # Verify statistics
         stats_result = stream_processor.get_stream_stats("batch_stream")
         assert stats_result.is_success
-        assert (
-            stats_result.data is not None
-            and stats_result.data.records_processed == expected_processed
-        )
+        assert stats_result.data is not None
+        assert stats_result.data.records_processed == expected_processed
 
     def test_finalize_stream_existing(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test finalizing existing stream."""
         # Initialize stream first
@@ -387,13 +390,16 @@ class TestSingerWMSStreamProcessor:
 
         # Process some records to have statistics using proper mocking - SOLID pattern
         from unittest.mock import patch
-        
+
         def transform_mock(
-            record: dict[str, Any], schema: dict[str, Any] | None = None
+            record: dict[str, Any],
+            schema: dict[str, Any] | None = None,
         ) -> FlextResult[dict[str, Any]]:
             return FlextResult.ok({"id": record.get("id")})
 
-        with patch.object(stream_processor.data_transformer, 'transform_record', transform_mock):
+        with patch.object(
+            stream_processor.data_transformer, "transform_record", transform_mock,
+        ):
             # Process a few records
             for i in range(3):
                 record = {"id": i, "name": f"item_{i}"}
@@ -413,7 +419,8 @@ class TestSingerWMSStreamProcessor:
         assert final_stats.success_rate == 100.0
 
     def test_finalize_stream_nonexistent(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test finalizing non-existent stream returns error."""
         finalize_result = stream_processor.finalize_stream("nonexistent_stream")
@@ -422,7 +429,8 @@ class TestSingerWMSStreamProcessor:
         assert "not found" in finalize_result.error.lower()
 
     def test_process_batch_functionality(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test batch processing functionality."""
         # Mock transformer to return successful results
@@ -430,7 +438,8 @@ class TestSingerWMSStreamProcessor:
 
         # Use proper function signature - DRY REAL approach
         def transform_mock(
-            record: dict[str, Any], schema: dict[str, Any] | None = None
+            record: dict[str, Any],
+            schema: dict[str, Any] | None = None,
         ) -> FlextResult[dict[str, Any]]:
             return FlextResult.ok({"transformed": record.get("id")})
 
@@ -461,7 +470,8 @@ class TestSingerWMSStreamProcessor:
         assert stats.batches_processed == 1
 
     def test_process_batch_with_failures(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test batch processing with some record failures."""
         # Create a mock transformer class that fails on certain records
@@ -469,7 +479,9 @@ class TestSingerWMSStreamProcessor:
 
         class FailingMockTransformer(WMSDataTransformer):
             def transform_record(
-                self, record: dict[str, Any], schema: dict[str, Any] | None = None
+                self,
+                record: dict[str, Any],
+                schema: dict[str, Any] | None = None,
             ) -> FlextResult[dict[str, Any]]:
                 if record.get("id") == 2:
                     return FlextResult.fail("Transform failed for record 2")
@@ -507,7 +519,8 @@ class TestSingerWMSStreamProcessor:
         assert "Transform failed for record 2" in stats.errors[0]
 
     def test_stream_stats_success_rate_calculation(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test success rate calculation with mixed results."""
         # Initialize stream
@@ -518,10 +531,12 @@ class TestSingerWMSStreamProcessor:
 
         class SelectiveFailingTransformer(WMSDataTransformer):
             def transform_record(
-                self, record: dict[str, Any], schema: dict[str, Any] | None = None
+                self,
+                record: dict[str, Any],
+                schema: dict[str, Any] | None = None,
             ) -> FlextResult[dict[str, Any]]:
                 record_id = record.get("id")
-                if record_id in [2, 4]:  # Fail on records 2 and 4
+                if record_id in {2, 4}:  # Fail on records 2 and 4
                     return FlextResult.fail(f"Transform failed for record {record_id}")
                 return FlextResult.ok({"transformed": record_id})
 
@@ -546,7 +561,8 @@ class TestSingerWMSStreamProcessor:
         assert len(stats.errors) == 2
 
     def test_get_all_stats_functionality(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test getting all stream statistics."""
         # Initialize multiple streams
@@ -573,7 +589,8 @@ class TestSingerWMSStreamProcessor:
             assert stats.records_processed == 0  # No records processed yet
 
     def test_reset_stream_stats_existing(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test resetting statistics for existing stream."""
         # Initialize and process some records
@@ -583,7 +600,8 @@ class TestSingerWMSStreamProcessor:
 
         # Use proper function signature - DRY REAL approach
         def transform_mock(
-            record: dict[str, Any], schema: dict[str, Any] | None = None
+            record: dict[str, Any],
+            schema: dict[str, Any] | None = None,
         ) -> FlextResult[dict[str, Any]]:
             return FlextResult.ok({"id": record.get("id")})
 
@@ -616,14 +634,16 @@ class TestSingerWMSStreamProcessor:
         assert len(stats_after.errors) == 0
 
     def test_reset_stream_stats_nonexistent_idempotent(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test resetting statistics for non-existent stream succeeds (idempotent)."""
         reset_result = stream_processor.reset_stream_stats("nonexistent_stream")
         assert reset_result.is_success  # Should succeed even if stream doesn't exist
 
     def test_validate_record_schema_success(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test successful record schema validation."""
         record = {"id": 123, "name": "test item", "price": 99.99}
@@ -632,7 +652,7 @@ class TestSingerWMSStreamProcessor:
                 "id": {"type": "integer"},
                 "name": {"type": "string"},
                 "price": {"type": "number"},
-            }
+            },
         }
 
         validation_result = stream_processor.validate_record_schema(record, schema)
@@ -640,7 +660,8 @@ class TestSingerWMSStreamProcessor:
         assert validation_result.data is True
 
     def test_validate_record_schema_missing_required_field(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test record schema validation with missing required field."""
         record = {"name": "test item"}  # Missing 'id' field
@@ -648,7 +669,7 @@ class TestSingerWMSStreamProcessor:
             "properties": {
                 "id": {"anyOf": [{"type": "integer"}]},  # Required field (not nullable)
                 "name": {"type": "string"},
-            }
+            },
         }
 
         validation_result = stream_processor.validate_record_schema(record, schema)
@@ -657,7 +678,8 @@ class TestSingerWMSStreamProcessor:
         assert "Missing required field: id" in validation_result.error
 
     def test_validate_record_schema_nullable_field(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test record schema validation with nullable field missing."""
         record = {"id": 123}  # Missing 'description' but it's nullable
@@ -665,9 +687,9 @@ class TestSingerWMSStreamProcessor:
             "properties": {
                 "id": {"type": "integer"},
                 "description": {
-                    "anyOf": [{"type": "null"}, {"type": "string"}]
+                    "anyOf": [{"type": "null"}, {"type": "string"}],
                 },  # Nullable field
-            }
+            },
         }
 
         validation_result = stream_processor.validate_record_schema(record, schema)
@@ -675,7 +697,8 @@ class TestSingerWMSStreamProcessor:
         assert validation_result.data is True
 
     def test_initialize_stream_runtime_error_handling(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test initialize_stream with RuntimeError, ValueError, TypeError handling."""
         # Mock the WMSStreamProcessingStats to raise an exception - triggers lines 64-66
@@ -691,19 +714,23 @@ class TestSingerWMSStreamProcessor:
             assert "Stream initialization failed" in result.error
 
     def test_process_record_auto_init_failure_handling(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test process_record when auto-initialization fails - triggers line 78."""
         # Mock initialize_stream to always fail
         import unittest.mock
 
         def failing_initialize(
-            stream_name: str, schema: dict[str, Any]
+            stream_name: str,
+            schema: dict[str, Any],
         ) -> FlextResult[None]:
             return FlextResult.fail("Mocked initialization failure")
 
         with unittest.mock.patch.object(
-            stream_processor, "initialize_stream", side_effect=failing_initialize
+            stream_processor,
+            "initialize_stream",
+            side_effect=failing_initialize,
         ):
             result = stream_processor.process_record("auto_init_fail_stream", {"id": 1})
             assert not result.is_success
@@ -711,7 +738,8 @@ class TestSingerWMSStreamProcessor:
             assert "Stream initialization failed" in result.error
 
     def test_process_record_exception_handling_with_stats(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test process_record exception handling that updates stats - covers lines 100-103."""
         # Initialize stream first
@@ -720,9 +748,12 @@ class TestSingerWMSStreamProcessor:
         # Create a failing transformer that raises RuntimeError - DRY REAL approach
         class ErrorTransformer(WMSDataTransformer):
             def transform_record(
-                self, record: dict[str, Any], schema: dict[str, Any] | None = None
+                self,
+                record: dict[str, Any],
+                schema: dict[str, Any] | None = None,
             ) -> FlextResult[dict[str, Any]]:
-                raise RuntimeError("Simulated transform error")
+                msg = "Simulated transform error"
+                raise RuntimeError(msg)
 
         # Replace transformer with error-producing one
         stream_processor.data_transformer = ErrorTransformer()
@@ -743,7 +774,8 @@ class TestSingerWMSStreamProcessor:
         assert "Simulated transform error" in stats.errors[0]
 
     def test_process_batch_exception_handling_runtime_error(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test process_batch RuntimeError exception handling - covers lines 139-141."""
         # Create a problematic batch that will cause RuntimeError during processing
@@ -751,34 +783,39 @@ class TestSingerWMSStreamProcessor:
         import unittest.mock
 
         def failing_process_record(
-            stream_name: str, record: dict[str, Any]
+            stream_name: str,
+            record: dict[str, Any],
         ) -> FlextResult[dict[str, Any]]:
-            raise RuntimeError("Simulated batch processing error")
+            msg = "Simulated batch processing error"
+            raise RuntimeError(msg)
 
         with unittest.mock.patch.object(
-            stream_processor, "process_record", side_effect=failing_process_record
+            stream_processor,
+            "process_record",
+            side_effect=failing_process_record,
         ):
             result = stream_processor.process_batch(
-                "batch_error_stream", [{"id": 1}, {"id": 2}]
+                "batch_error_stream",
+                [{"id": 1}, {"id": 2}],
             )
             assert not result.is_success
             assert result.error is not None
             assert "Batch processing failed" in result.error
 
     def test_get_all_stats_exception_handling_runtime_error(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test get_all_stats RuntimeError exception handling - covers lines 158-160."""
         # Mock _stream_stats to raise exception when copy() is called
-        import unittest.mock
 
         # Use proper mock to simulate stats copy failure - SOLID pattern
-        from unittest.mock import patch, MagicMock
-        
+        from unittest.mock import MagicMock, patch
+
         mock_stats = MagicMock()
         mock_stats.copy.side_effect = RuntimeError("Stats copy failed")
-        
-        with patch.object(stream_processor, '_stream_stats', mock_stats):
+
+        with patch.object(stream_processor, "_stream_stats", mock_stats):
             result = stream_processor.get_all_stats()
             assert not result.is_success
             assert result.error is not None
@@ -787,20 +824,20 @@ class TestSingerWMSStreamProcessor:
             stream_processor._stream_stats = original_stats
 
     def test_reset_stream_stats_exception_handling(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test reset_stream_stats RuntimeError exception handling - covers lines 173-175."""
         # Mock _stream_stats to raise exception when accessed
-        import unittest.mock
 
         # Use proper mock to simulate stats assignment failure - SOLID pattern
-        from unittest.mock import patch, MagicMock
-        
+        from unittest.mock import MagicMock, patch
+
         mock_stats = MagicMock()
         mock_stats.__contains__.return_value = True  # Pretend stream exists
         mock_stats.__setitem__.side_effect = RuntimeError("Set item failed")
-        
-        with patch.object(stream_processor, '_stream_stats', mock_stats):
+
+        with patch.object(stream_processor, "_stream_stats", mock_stats):
             result = stream_processor.reset_stream_stats("test_stream")
             assert not result.is_success
             assert result.error is not None
@@ -808,26 +845,27 @@ class TestSingerWMSStreamProcessor:
             stream_processor._stream_stats = original_stats
 
     def test_finalize_stream_exception_handling(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test finalize_stream RuntimeError exception handling - covers lines 195-197."""
         # Mock _stream_stats to raise exception when accessed
-        import unittest.mock
 
         # Use proper mock to simulate stats get failure - SOLID pattern
-        from unittest.mock import patch, MagicMock
-        
+        from unittest.mock import MagicMock, patch
+
         mock_stats = MagicMock()
         mock_stats.get.side_effect = RuntimeError("Get stats failed")
-        
-        with patch.object(stream_processor, '_stream_stats', mock_stats):
+
+        with patch.object(stream_processor, "_stream_stats", mock_stats):
             result = stream_processor.finalize_stream("test_stream")
             assert not result.is_success
             assert result.error is not None
             assert "Stream finalization failed" in result.error
 
     def test_handle_schema_change_functionality(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test schema change handling functionality."""
         old_schema = {
@@ -835,7 +873,7 @@ class TestSingerWMSStreamProcessor:
                 "id": {"type": "integer"},
                 "name": {"type": "string"},
                 "old_field": {"type": "string"},
-            }
+            },
         }
 
         new_schema = {
@@ -843,32 +881,38 @@ class TestSingerWMSStreamProcessor:
                 "id": {"type": "integer"},
                 "name": {"type": "string"},
                 "new_field": {"type": "string"},
-            }
+            },
         }
 
         schema_change_result = stream_processor.handle_schema_change(
-            "schema_change_stream", old_schema, new_schema
+            "schema_change_stream",
+            old_schema,
+            new_schema,
         )
         assert schema_change_result.is_success
 
     def test_handle_schema_change_no_changes(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test schema change handling with identical schemas."""
         schema = {
             "properties": {
                 "id": {"type": "integer"},
                 "name": {"type": "string"},
-            }
+            },
         }
 
         schema_change_result = stream_processor.handle_schema_change(
-            "no_change_stream", schema, schema
+            "no_change_stream",
+            schema,
+            schema,
         )
         assert schema_change_result.is_success
 
     def test_process_record_auto_initialization(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test process_record automatically initializes stream if needed."""
         # Mock transformer
@@ -876,7 +920,8 @@ class TestSingerWMSStreamProcessor:
 
         # Use proper function signature - DRY REAL approach
         def transform_mock(
-            record: dict[str, Any], schema: dict[str, Any] | None = None
+            record: dict[str, Any],
+            schema: dict[str, Any] | None = None,
         ) -> FlextResult[dict[str, Any]]:
             return FlextResult.ok({"transformed": record.get("id")})
 
@@ -899,7 +944,8 @@ class TestSingerWMSStreamProcessor:
         assert stats.records_processed == 1
 
     def test_process_batch_auto_initialization(
-        self, stream_processor: SingerWMSStreamProcessor
+        self,
+        stream_processor: SingerWMSStreamProcessor,
     ) -> None:
         """Test process_batch automatically initializes stream if needed."""
         # Mock transformer
@@ -907,7 +953,8 @@ class TestSingerWMSStreamProcessor:
 
         # Use proper function signature - DRY REAL approach
         def transform_mock(
-            record: dict[str, Any], schema: dict[str, Any] | None = None
+            record: dict[str, Any],
+            schema: dict[str, Any] | None = None,
         ) -> FlextResult[dict[str, Any]]:
             return FlextResult.ok({"transformed": record.get("id")})
 

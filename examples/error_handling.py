@@ -46,7 +46,6 @@ async def demonstrate_error_handling() -> None:
         "username": "error_demo_user",
         "password": "error_demo_password",
         "environment": "error_demo",
-
         # Error handling configuration
         "max_retries": 3,
         "retry_delay": 2,
@@ -54,18 +53,15 @@ async def demonstrate_error_handling() -> None:
         "circuit_breaker_enabled": True,
         "circuit_breaker_threshold": 5,
         "circuit_breaker_timeout": 30,
-
         # Resilience features
         "connection_timeout": 30,
         "request_timeout": 60,
         "health_check_interval": 10,
         "auto_recovery": True,
-
         # Error reporting
         "detailed_error_logging": True,
         "error_aggregation": True,
         "alert_on_errors": True,
-
         # Data integrity
         "validate_on_insert": True,
         "rollback_on_error": True,
@@ -153,9 +149,14 @@ async def demonstrate_error_handling() -> None:
         for i, invalid_schema in enumerate(invalid_schemas):
             logger.info(f"Testing invalid schema {i + 1}")
             from typing import cast
-            schema_result = await target.process_schema_message(cast("dict[str, Any]", invalid_schema))
+
+            schema_result = await target.process_schema_message(
+                cast("dict[str, Any]", invalid_schema),
+            )
             if not schema_result.is_success:
-                logger.info(f"Invalid schema {i + 1} correctly rejected: {schema_result.error}")
+                logger.info(
+                    f"Invalid schema {i + 1} correctly rejected: {schema_result.error}",
+                )
             else:
                 logger.warning(f"Invalid schema {i + 1} was unexpectedly accepted")
 
@@ -192,6 +193,7 @@ async def demonstrate_error_handling() -> None:
             if record_result.is_success:
                 valid_count += 1
                 from typing import cast
+
                 record_dict = cast("dict[str, Any]", record)
                 logger.info(f"Valid record processed: {record_dict['record']['id']}")
             else:
@@ -252,7 +254,9 @@ async def demonstrate_error_handling() -> None:
             record_result = await target.process_record_message(record)
             if not record_result.is_success:
                 error_count += 1
-                logger.info(f"Invalid record {i + 1} correctly rejected: {record_result.error}")
+                logger.info(
+                    f"Invalid record {i + 1} correctly rejected: {record_result.error}",
+                )
             else:
                 logger.warning(f"Invalid record {i + 1} was unexpectedly accepted")
 
@@ -283,6 +287,7 @@ async def demonstrate_error_handling() -> None:
         for record in stress_records:
             # Simulate intermittent processing delays
             from typing import cast
+
             record_dict = cast("dict[str, Any]", record)
             if int(record_dict["record"]["id"].split("_")[1]) % 20 == 0:
                 await asyncio.sleep(0.1)  # Simulate network delay
@@ -298,8 +303,10 @@ async def demonstrate_error_handling() -> None:
         stress_time = time.time() - stress_start
         stress_rate = len(stress_records) / stress_time if stress_time > 0 else 0
 
-        logger.info(f"Stress test completed: {stress_success} success, {stress_errors} errors "
-                   f"in {stress_time:.2f}s ({stress_rate:.1f} records/sec)")
+        logger.info(
+            f"Stress test completed: {stress_success} success, {stress_errors} errors "
+            f"in {stress_time:.2f}s ({stress_rate:.1f} records/sec)",
+        )
 
         # Test 5: Recovery and cleanup
         logger.info("Test 5: Recovery and cleanup scenarios")
@@ -337,10 +344,12 @@ async def demonstrate_error_handling() -> None:
         finalize_result = target.finalize()
         if finalize_result.is_success and finalize_result.data:
             stats = finalize_result.data
-            logger.info(f"Error handling demo completed - "
-                       f"Total records: {stats.get('total_records', 0)}, "
-                       f"Total errors: {stats.get('total_errors', 0)}, "
-                       f"Error rate: {stats.get('error_rate', 0):.2%}")
+            logger.info(
+                f"Error handling demo completed - "
+                f"Total records: {stats.get('total_records', 0)}, "
+                f"Total errors: {stats.get('total_errors', 0)}, "
+                f"Error rate: {stats.get('error_rate', 0):.2%}",
+            )
         else:
             logger.error(f"Finalization failed: {finalize_result.error}")
 
@@ -388,7 +397,9 @@ async def demonstrate_resilience_patterns() -> None:
     CircuitBreakerState()
 
     # Retry with exponential backoff
-    async def retry_with_backoff(operation: Any, max_retries: int = 3) -> FlextResult[Any]:
+    async def retry_with_backoff(
+        operation: Any, max_retries: int = 3,
+    ) -> FlextResult[Any]:
         """Implement retry with exponential backoff for resilient operations.
 
         This function demonstrates production-grade retry logic with exponential
@@ -416,9 +427,10 @@ async def demonstrate_resilience_patterns() -> None:
                 if attempt == max_retries - 1:
                     return FlextResult.fail(f"All {max_retries} attempts failed: {e}")
 
-                backoff_time = 2 ** attempt  # Exponential backoff
-                logger.warning(f"Attempt {attempt + 1} failed: {e}. "
-                              f"Retrying in {backoff_time}s...")
+                backoff_time = 2**attempt  # Exponential backoff
+                logger.warning(
+                    f"Attempt {attempt + 1} failed: {e}. Retrying in {backoff_time}s...",
+                )
                 await asyncio.sleep(backoff_time)
 
         return FlextResult.fail("Unexpected retry loop exit")
@@ -445,8 +457,9 @@ async def demonstrate_resilience_patterns() -> None:
         current_load = 75  # Simulated current load
 
         if current_load > load_threshold:
-            logger.warning(f"High load detected ({current_load}%). "
-                          "Activating degraded mode...")
+            logger.warning(
+                f"High load detected ({current_load}%). Activating degraded mode...",
+            )
 
             # Degraded mode: reduced functionality but continued operation
             degraded_config = {
