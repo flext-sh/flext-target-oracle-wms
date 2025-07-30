@@ -142,10 +142,16 @@ addopts = [
 testpaths = ["tests"]
 markers = [
     "unit: Unit tests",
-    "integration: Integration tests",
+    "integration: Integration tests", 
+    "oracle: Oracle WMS specific tests",
     "slow: Slow tests",
     "smoke: Smoke tests",
     "e2e: End-to-end tests",
+    "performance: Performance tests",
+    "stress: Stress tests",
+    "resilience: Resilience tests",
+    "integrity: Data integrity tests",
+    "edge_cases: Edge case tests",
 ]
 filterwarnings = ["error", "ignore::UserWarning", "ignore::DeprecationWarning"]
 

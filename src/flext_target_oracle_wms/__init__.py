@@ -1,106 +1,67 @@
-"""FLEXT Target Oracle WMS - Oracle WMS Data Loading with simplified imports.
+"""Oracle WMS target implementation - DRY PRODUCTION IMPLEMENTATION.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 
-Version 0.7.0 - Target Oracle WMS with simplified public API:
-- All common imports available from root
-- Built on flext-core foundation for robust Oracle WMS data loading
-- Deprecation warnings for internal imports
+DRY REFACTORING: Single source of truth using REAL flext-oracle-wms API.
+NO DUPLICATION - uses newer, better implementation via SingerTargetOracleWMS.
 """
 
 from __future__ import annotations
 
-import contextlib
-import importlib.metadata
-import warnings
+# RE-EXPORT real flext-core types - NO DUPLICATION
+from flext_core import FlextResult, FlextValueObject
 
-# Import from flext-core for foundational patterns
-from flext_core import (
-    FlextResult as FlextResult,
-    FlextValueObject as BaseModel,
-    FlextValueObject as FlextValueObject,
+# Factory patterns for easier library usage - SOLID principles
+from flext_target_oracle_wms.factory import (
+    FlextTargetFactory,
+    FlextTargetMonitoringFactory,
+    create_monitored_oracle_wms_target,
+    create_oracle_wms_target,
 )
 
-# Use local application orchestrator
-from flext_target_oracle_wms.application import (
-    OracleWMSTargetOrchestrator as FlextOracleTargetOrchestrator,
+# Import patterns and singer modules
+from flext_target_oracle_wms.patterns import (
+    WMSDataTransformer,
+    WMSSchemaMapper,
+    WMSTableManager,
+    WMSTypeConverter,
 )
+from flext_target_oracle_wms.singer.catalog import SingerWMSCatalogManager
+from flext_target_oracle_wms.singer.stream import SingerWMSStreamProcessor
 
+# DRY PRINCIPLE: Use ONLY the production-ready implementation
+# This eliminates ALL duplication and uses REAL flext-oracle-wms API
+from flext_target_oracle_wms.singer.target import SingerTargetOracleWMS
+
+# BACKWARD COMPATIBILITY: Alias to prevent API breakage
+# Uses the newer, better code path without changing the interface
+TargetOracleWMS = SingerTargetOracleWMS
+
+# Version info
 try:
+    import importlib.metadata
+
     __version__ = importlib.metadata.version("flext-target-oracle-wms")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "0.7.0"
+except ImportError:
+    __version__ = "1.0.0"
 
-__version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
-
-
-class FlextTargetOracleWmsDeprecationWarning(DeprecationWarning):
-    """Custom deprecation warning for FLEXT TARGET ORACLE WMS import changes."""
-
-
-def _show_deprecation_warning(old_import: str, new_import: str) -> None:
-    """Show deprecation warning for import paths."""
-    message_parts = [
-        f"⚠️  DEPRECATED IMPORT: {old_import}",
-        f"✅ USE INSTEAD: {new_import}",
-        "🔗 This will be removed in version 1.0.0",
-        "📖 See FLEXT TARGET ORACLE WMS docs for migration guide",
-    ]
-    warnings.warn(
-        "\n".join(message_parts),
-        FlextTargetOracleWmsDeprecationWarning,
-        stacklevel=3,
-    )
-
-
-# ================================
-# SIMPLIFIED PUBLIC API EXPORTS
-# ================================
-
-# Create aliases for WMS-specific usage
-WMSBaseConfig = BaseModel  # Configuration base
-WMSError = Exception  # WMS-specific errors (placeholder)
-ValidationError = ValueError  # Validation errors (placeholder)
-
-# Singer Target exports - simplified imports
-with contextlib.suppress(ImportError):
-    from flext_target_oracle_wms.target import TargetOracleWMS
-
-# WMS Client exports - simplified imports (not implemented yet)
-# with contextlib.suppress(ImportError):
-#     from flext_target_oracle_wms.client import (
-#         WMSAuthenticator,
-#         WMSClient,
-#     )
-
-# WMS Sinks exports - simplified imports (not implemented yet)
-# with contextlib.suppress(ImportError):
-#     from flext_target_oracle_wms.sinks import (
-#         WMSInventorySink,
-#         WMSLaborSink,
-#         WMSReceiptSink,
-#         WMSShipmentSink,
-#     )
-
-# ================================
-# PUBLIC API EXPORTS
-# ================================
-
+# DRY EXPORTS: Single implementation, multiple access patterns
 __all__ = [
-    "BaseModel",  # from flext_target_oracle_wms import BaseModel
-    # Consolidated Orchestrator (from flext-meltano)
-    "FlextOracleTargetOrchestrator",  # Replaces application.orchestrator
-    "FlextResult",  # from flext_target_oracle_wms import FlextResult
-    # Deprecation utilities
-    "FlextTargetOracleWmsDeprecationWarning",
-    # Main Singer Target (simplified access)
-    "TargetOracleWMS",  # from flext_target_oracle_wms import TargetOracleWMS
-    "ValidationError",  # from flext_target_oracle_wms import ValidationError
-    # Core Patterns (from flext-core)
-    "WMSBaseConfig",  # from flext_target_oracle_wms import WMSBaseConfig
-    "WMSError",  # from flext_target_oracle_wms import WMSError
-    # Version
+    # Sorted alphabetically as required by RUF022
+    "FlextResult",
+    "FlextTargetFactory",
+    "FlextTargetMonitoringFactory",
+    "FlextValueObject",
+    "SingerTargetOracleWMS",
+    "SingerWMSCatalogManager",
+    "SingerWMSStreamProcessor",
+    "TargetOracleWMS",
+    "WMSDataTransformer",
+    "WMSSchemaMapper",
+    "WMSTableManager",
+    "WMSTypeConverter",
     "__version__",
-    "__version_info__",
+    "create_monitored_oracle_wms_target",
+    "create_oracle_wms_target",
 ]

@@ -1,0 +1,282 @@
+"""End-to-end tests for complete target functionality - DRY REFACTORED."""
+
+from __future__ import annotations
+
+from typing import Any
+from unittest.mock import AsyncMock
+
+import pytest
+
+# DRY: Import from REAL implementation - NO DUPLICATION
+from flext_core import FlextResult
+from flext_target_oracle_wms import SingerTargetOracleWMS
+
+
+class TestTargetComplete:
+    """End-to-end tests for complete target workflow - REAL implementation."""
+
+    @pytest.fixture
+    def sample_config(self) -> dict[str, Any]:
+        """Sample configuration for testing."""
+        return {
+            "base_url": "https://test.wms.oracle.com",
+            "username": "test_user",
+            "password": "test_password",
+            "environment": "test",
+            "batch_size": 1000,
+            "table_prefix": "TEST_"
+        }
+
+    @pytest.mark.e2e
+    def test_complete_target_initialization(self, sample_config: dict[str, Any]) -> None:
+        """Test complete target initialization workflow - REAL implementation."""
+        target = SingerTargetOracleWMS(sample_config)
+        
+        # Validate Singer protocol compliance
+        assert target.name == "target-oracle-wms"
+        assert target.config == sample_config
+        
+        # Validate components are initialized
+        assert target.oracle_client is not None
+        assert target.catalog_manager is not None
+        assert target.table_manager is not None
+        assert target.data_transformer is not None
+        assert target.stream_processor is not None
+
+    @pytest.mark.e2e
+    async def test_stream_processing_workflow(self, sample_config: dict[str, Any]) -> None:
+        """Test complete stream processing workflow - REAL implementation."""
+        target = SingerTargetOracleWMS(sample_config)
+        
+        # Test various stream types
+        stream_types = ["inventory", "orders", "warehouse", "facility", "company"]
+        
+        for stream_name in stream_types:
+            # Test schema message processing
+            schema_message = {
+                "type": "SCHEMA",
+                "stream": stream_name,
+                "schema": {
+                    "type": "object",
+                    "properties": {"id": {"type": "string"}}
+                },
+                "key_properties": ["id"]
+            }
+            
+            schema_result = await target.process_schema_message(schema_message)
+            assert schema_result.is_success
+
+    @pytest.mark.e2e
+    async def test_record_processing_workflow(self, sample_config: dict[str, Any]) -> None:
+        """Test complete record processing workflow - REAL implementation."""
+        target = SingerTargetOracleWMS(sample_config)
+        
+        # Mock Oracle WMS client using patch
+        from unittest.mock import patch
+        
+        with patch.object(target.oracle_client, 'start', new_callable=AsyncMock) as mock_start:
+            mock_start.return_value = FlextResult.ok(None)
+        
+        # Test schema for a common stream
+        test_schema = {
+            "type": "object",
+            "properties": {
+                "id": {"type": "string"},
+                "name": {"type": "string"},
+                "created_at": {"type": "string", "format": "date-time"},
+            },
+        }
+        
+        # Initialize stream with schema
+        schema_message = {
+            "type": "SCHEMA",
+            "stream": "facility",
+            "schema": test_schema,
+            "key_properties": ["id"]
+        }
+        
+        schema_result = await target.process_schema_message(schema_message)
+        assert schema_result.is_success
+        
+        # Process record
+        record_message = {
+            "type": "RECORD",
+            "stream": "facility",
+            "record": {
+                "id": "FAC001",
+                "name": "Test Facility",
+                "created_at": "2024-01-01T00:00:00Z",
+            },
+            "time_extracted": "2024-01-01T12:00:00Z"
+        }
+        
+        record_result = await target.process_record_message(record_message)
+        assert record_result.is_success
+
+    @pytest.mark.e2e
+    async def test_business_logic_integration(self, sample_config: dict[str, Any]) -> None:
+        """Test business logic integration - REAL implementation."""
+        target = SingerTargetOracleWMS(sample_config)
+        
+        # Mock Oracle WMS client using patch
+        from unittest.mock import patch
+        
+        with patch.object(target.oracle_client, 'start', new_callable=AsyncMock) as mock_start:
+            mock_start.return_value = FlextResult.ok(None)
+        
+        # Test different business logic modules
+        business_streams = ["inventory", "orders", "warehouse"]
+        
+        for stream_name in business_streams:
+            # Test that each stream can be processed with business-specific data
+            business_schemas = {
+                "inventory": {
+                    "properties": {"item_id": {"type": "string"}, "quantity": {"type": "integer"}}
+                },
+                "orders": {
+                    "properties": {"order_id": {"type": "string"}, "status": {"type": "string"}}
+                },
+                "warehouse": {
+                    "properties": {"facility_id": {"type": "string"}, "location": {"type": "string"}}
+                }
+            }
+            
+            schema_message = {
+                "type": "SCHEMA",
+                "stream": stream_name,
+                "schema": {"type": "object", **business_schemas[stream_name]},
+                "key_properties": [list(business_schemas[stream_name]["properties"].keys())[0]]
+            }
+            
+            result = await target.process_schema_message(schema_message)
+            assert result.is_success
+
+    @pytest.mark.e2e
+    def test_configuration_validation_complete(self, sample_config: dict[str, Any]) -> None:
+        """Test complete configuration validation - REAL implementation."""
+        # Test with valid config
+        target = SingerTargetOracleWMS(sample_config)
+        assert target.config == sample_config
+        
+        # Test configuration is properly applied to components
+        assert target.batch_size == sample_config["batch_size"]
+        assert target.table_prefix == sample_config["table_prefix"]
+        
+        # Test Oracle WMS client configuration
+        assert target.oracle_client is not None
+        
+        # Test that components can access configuration
+        assert target.catalog_manager is not None
+        assert target.table_manager is not None
+        assert target.data_transformer is not None
+        assert target.stream_processor is not None
+
+    @pytest.mark.e2e
+    async def test_error_handling_workflow(self, sample_config: dict[str, Any]) -> None:
+        """Test error handling throughout the target workflow - REAL implementation."""
+        target = SingerTargetOracleWMS(sample_config)
+        
+        # Mock Oracle WMS client using patch
+        from unittest.mock import patch
+        
+        with patch.object(target.oracle_client, 'start', new_callable=AsyncMock) as mock_start:
+            mock_start.return_value = FlextResult.ok(None)
+        
+        # Test with invalid message types
+        invalid_messages = [
+            {"type": "INVALID"},  # Invalid message type
+            {},  # Empty message
+            {"type": "SCHEMA"},  # Missing required fields
+        ]
+        
+        for invalid_message in invalid_messages:
+            # Test that invalid messages are handled gracefully
+            if invalid_message.get("type") == "SCHEMA":
+                result = await target.process_schema_message(invalid_message)
+                assert not result.is_success  # Should fail gracefully
+            elif invalid_message.get("type") == "INVALID":
+                result = target.process_state_message(invalid_message)
+                assert not result.is_success  # Should fail gracefully
+
+    @pytest.mark.e2e
+    async def test_multi_stream_handling(self, sample_config: dict[str, Any]) -> None:
+        """Test handling multiple streams simultaneously - REAL implementation."""
+        target = SingerTargetOracleWMS(sample_config)
+        
+        # Mock Oracle WMS client using patch
+        from unittest.mock import patch
+        
+        with patch.object(target.oracle_client, 'start', new_callable=AsyncMock) as mock_start:
+            mock_start.return_value = FlextResult.ok(None)
+        
+        # Test multiple streams can be processed
+        streams = ["inventory", "orders", "facility"]
+        
+        # Initialize all streams
+        for stream_name in streams:
+            schema_message = {
+                "type": "SCHEMA",
+                "stream": stream_name,
+                "schema": {"type": "object", "properties": {"id": {"type": "string"}}},
+                "key_properties": ["id"]
+            }
+            
+            schema_result = await target.process_schema_message(schema_message)
+            assert schema_result.is_success
+        
+        # Process records for each stream
+        for stream_name in streams:
+            record_message = {
+                "type": "RECORD",
+                "stream": stream_name,
+                "record": {"id": f"{stream_name}_001"},
+                "time_extracted": "2024-01-01T12:00:00Z"
+            }
+            
+            record_result = await target.process_record_message(record_message)
+            assert record_result.is_success
+
+    @pytest.mark.e2e
+    async def test_memory_efficiency(self, sample_config: dict[str, Any]) -> None:
+        """Test that target operations are memory efficient - REAL implementation."""
+        # Test that multiple target instances don't accumulate memory
+        for i in range(5):
+            target = SingerTargetOracleWMS(sample_config)
+            
+            # Mock Oracle WMS client using patch
+            from unittest.mock import patch
+            
+            with patch.object(target.oracle_client, 'start', new_callable=AsyncMock) as mock_start, \
+                 patch.object(target.oracle_client, 'stop', new_callable=AsyncMock) as mock_stop:
+                
+                mock_start.return_value = FlextResult.ok(None)
+                mock_stop.return_value = FlextResult.ok(None)
+                
+                # Test complete lifecycle
+                setup_result = await target.setup()
+                assert setup_result.is_success
+                
+                # Process a minimal schema and record
+                schema_message = {
+                    "type": "SCHEMA",
+                    "stream": "test_stream",
+                    "schema": {"type": "object", "properties": {"id": {"type": "string"}}},
+                    "key_properties": ["id"]
+                }
+                
+                await target.process_schema_message(schema_message)
+                
+                record_message = {
+                    "type": "RECORD",
+                    "stream": "test_stream",
+                    "record": {"id": f"test_{i}"},
+                    "time_extracted": "2024-01-01T12:00:00Z"
+                }
+                
+                await target.process_record_message(record_message)
+                
+                # Clean up
+                cleanup_result = await target.cleanup()
+                assert cleanup_result.is_success
+                
+                del target
