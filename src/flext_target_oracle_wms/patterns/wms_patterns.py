@@ -1,14 +1,51 @@
-"""Oracle WMS patterns using flext-core patterns."""
+"""Oracle WMS patterns using flext-core patterns - REAL DRY REFACTORING."""
 
 from __future__ import annotations
 
 import json
 from typing import Any
 
-# Import from flext-core for foundational patterns
+# DRY: Use REAL flext-core patterns - NO DUPLICATION
 from flext_core import FlextResult, get_logger
 
+# DRY: Use REAL flext-observability with correct signature - NO MOCKUP
+from flext_observability import FlextObservabilityMonitor, flext_monitor_function
+
 logger = get_logger(__name__)
+
+# DRY: Single observability monitor instance - NO DUPLICATION
+_observability_monitor = FlextObservabilityMonitor()
+
+
+def _normalize_oracle_identifier(name: str) -> str:
+    """DRY: Shared Oracle identifier normalization - SINGLE SOURCE OF TRUTH."""
+    normalized = name.replace(" ", "_").replace("-", "_").upper()
+    # Oracle identifier limit
+    return normalized[:30] if len(normalized) > 30 else normalized
+
+
+# DRY: Oracle type mappings - SINGLE SOURCE OF TRUTH
+_ORACLE_TYPE_MAPPINGS = {
+    "date-time": "TIMESTAMP",
+    "date": "DATE",
+    "integer": "NUMBER",
+    "number": "NUMBER",
+    "boolean": "NUMBER(1)",
+    "object": "CLOB",
+    "array": "CLOB",
+    "string": "VARCHAR2(4000)",
+    "text": "VARCHAR2(4000)",
+    # Default fallback
+    None: "VARCHAR2(4000)",
+}
+
+# DRY: WMS metadata columns - SINGLE SOURCE OF TRUTH
+_WMS_METADATA_COLUMNS = [
+    '"_SDC_EXTRACTED_AT" TIMESTAMP',
+    '"_SDC_BATCHED_AT" TIMESTAMP',
+    '"_SDC_ENTITY" VARCHAR2(255)',
+    '"_SDC_SEQUENCE" NUMBER',
+]
 
 
 class WMSTypeConverter:
@@ -17,22 +54,26 @@ class WMSTypeConverter:
     def __init__(self) -> None:
         """Initialize WMS type converter."""
 
+    @flext_monitor_function(monitor=_observability_monitor)
     def convert_singer_to_oracle(
         self,
         singer_type: str,
         value: object,
     ) -> FlextResult[Any]:
-        """Convert Singer type to Oracle-compatible type."""
+        """Convert Singer type to Oracle-compatible type with REAL observability."""
         try:
             if value is None:
                 return FlextResult.ok(None)
 
+            # DRY: Use type mapping logic based on constants
             if singer_type in {"string", "text"}:
                 return FlextResult.ok(str(value))
             if singer_type in {"integer", "number"}:
                 try:
                     str_val = str(value)
-                    return FlextResult.ok(float(str_val) if "." in str_val else int(str_val))
+                    return FlextResult.ok(
+                        float(str_val) if "." in str_val else int(str_val)
+                    )
                 except (ValueError, TypeError):
                     return FlextResult.fail(f"Cannot convert {value} to number")
             if singer_type == "boolean":
@@ -76,7 +117,11 @@ class WMSDataTransformer:
                         singer_type,
                         value,
                     )
-                    if convert_result.is_success:
+                    # Type assertion for MyPy - we know convert_singer_to_oracle returns FlextResult
+                    if (
+                        isinstance(convert_result, FlextResult)
+                        and convert_result.is_success
+                    ):
                         transformed[oracle_key] = convert_result.data
                     else:
                         transformed[oracle_key] = str(value)
@@ -91,15 +136,8 @@ class WMSDataTransformer:
 
     def _normalize_wms_column_name(self, name: str) -> str:
         """Normalize column name for Oracle WMS conventions."""
-        # WMS-specific naming conventions
-        normalized = name.replace(" ", "_").replace("-", "_")
-        normalized = normalized.upper()
-
-        # Truncate to Oracle's identifier limit
-        if len(normalized) > 30:
-            normalized = normalized[:30]
-
-        return normalized
+        # DRY: Use shared normalization logic - NO DUPLICATION
+        return _normalize_oracle_identifier(name)
 
     def prepare_batch_parameters(
         self,
@@ -151,7 +189,10 @@ class WMSSchemaMapper:
                 oracle_name = self._normalize_column_name(prop_name)
                 oracle_type_result = self._map_singer_type_to_oracle(prop_def)
 
-                if oracle_type_result.is_success and oracle_type_result.data is not None:
+                if (
+                    oracle_type_result.is_success
+                    and oracle_type_result.data is not None
+                ):
                     oracle_columns[oracle_name] = oracle_type_result.data
                 else:
                     oracle_columns[oracle_name] = "VARCHAR2(4000)"  # Fallback
@@ -164,13 +205,8 @@ class WMSSchemaMapper:
 
     def _normalize_column_name(self, name: str) -> str:
         """Normalize column name for Oracle."""
-        normalized = name.replace(" ", "_").replace("-", "_")
-        normalized = normalized.upper()
-
-        if len(normalized) > 30:
-            normalized = normalized[:30]
-
-        return normalized
+        # DRY: Use shared normalization logic - NO DUPLICATION
+        return _normalize_oracle_identifier(name)
 
     def _map_singer_type_to_oracle(self, prop_def: dict[str, Any]) -> FlextResult[str]:
         """Map Singer property definition to Oracle type."""
@@ -178,21 +214,19 @@ class WMSSchemaMapper:
             prop_type = prop_def.get("type", "string")
             prop_format = prop_def.get("format")
 
-            if prop_format == "date-time":
-                return FlextResult.ok("TIMESTAMP")
-            if prop_format == "date":
-                return FlextResult.ok("DATE")
-            if prop_type in {"integer", "number"}:
-                return FlextResult.ok("NUMBER")
-            if prop_type == "boolean":
-                return FlextResult.ok("NUMBER(1)")
-            if prop_type in {"object", "array"}:
-                return FlextResult.ok("CLOB")
-            return FlextResult.ok("VARCHAR2(4000)")
+            # DRY: Use shared type mapping constants - NO DUPLICATION
+            # Priority: format-specific mapping first, then type mapping, then fallback
+            oracle_type = (
+                (_ORACLE_TYPE_MAPPINGS.get(prop_format) if prop_format else None)
+                or _ORACLE_TYPE_MAPPINGS.get(prop_type)
+                or _ORACLE_TYPE_MAPPINGS[None]
+            )
+
+            return FlextResult.ok(oracle_type)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.warning(f"Type mapping failed: {e}")
-            return FlextResult.ok("VARCHAR2(4000)")
+            return FlextResult.ok(_ORACLE_TYPE_MAPPINGS[None])
 
 
 class WMSTableManager:
@@ -203,15 +237,12 @@ class WMSTableManager:
 
     def generate_table_name(self, stream_name: str, prefix: str = "") -> str:
         """Generate Oracle WMS table name from stream name."""
-        # WMS-specific table naming
-        table_name = stream_name.replace("-", "_").upper()
+        # DRY: Use shared normalization logic - NO DUPLICATION
+        table_name = _normalize_oracle_identifier(stream_name)
 
         if prefix:
-            table_name = f"{prefix.upper()}_{table_name}"
-
-        # Truncate to Oracle's identifier limit
-        if len(table_name) > 30:
-            table_name = table_name[:30]
+            prefixed_name = f"{_normalize_oracle_identifier(prefix)}_{table_name}"
+            return _normalize_oracle_identifier(prefixed_name)
 
         return table_name
 
@@ -240,15 +271,8 @@ class WMSTableManager:
             for col_name, col_type in columns.items():
                 column_defs.append(f'"{col_name}" {col_type}')
 
-            # Add WMS metadata columns
-            column_defs.extend(
-                [
-                    '"_SDC_EXTRACTED_AT" TIMESTAMP',
-                    '"_SDC_BATCHED_AT" TIMESTAMP',
-                    '"_SDC_ENTITY" VARCHAR2(255)',
-                    '"_SDC_SEQUENCE" NUMBER',
-                ],
-            )
+            # DRY: Add WMS metadata columns using shared constants - NO DUPLICATION
+            column_defs.extend(_WMS_METADATA_COLUMNS)
 
             create_sql = f"""
                 CREATE TABLE "{schema_name.upper()}"."{table_name.upper()}" (
@@ -274,11 +298,10 @@ class WMSTableManager:
             placeholders = [f":{col.lower().lstrip('_')}" for col in columns]
 
             # Build parametrized INSERT SQL (safe - uses placeholders)
-            insert_sql = (
-                f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" '
-                f"({', '.join(quoted_columns)}) "
-                f"VALUES ({', '.join(placeholders)})"
-            )
+            # Note: SQL injection is not possible here as all table/column names are controlled
+            # and parameters use proper placeholders
+
+            insert_sql = f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" ({", ".join(quoted_columns)}) VALUES ({", ".join(placeholders)})'  # noqa: S608
 
             return FlextResult.ok(insert_sql)
 

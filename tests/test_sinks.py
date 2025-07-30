@@ -1,253 +1,183 @@
-"""Tests for target sinks."""
-
-from flext_target_oracle_wms.target import TargetOracleWMS
-
+"""Tests for Singer Target components - DRY REFACTORED."""
 
 from __future__ import annotations
 
-import contextlib
-from typing import TYPE_CHECKING
+from typing import Any
 
 import pytest
 
-from flext_target_oracle_wms.sinks.base import (
-    WMSBaseSink,
-)
-from flext_target_oracle_wms.sinks.generic import (
-    GenericWMSSink,
-)
-from flext_target_oracle_wms.sinks.inventory import (
-    InventorySink,
-)
-from flext_target_oracle_wms.sinks.orders import (
-    OrderSink,
-)
-from flext_target_oracle_wms.sinks.warehouse import (
-    WarehouseSink,
-)
-
-if TYPE_CHECKING:
-    from flext_target_oracle_wms.models.config import (
-        Config,
-    )
+# DRY: Import from REAL implementation - NO DUPLICATION
+from flext_target_oracle_wms import SingerTargetOracleWMS
 
 
-@pytest.mark.usefixtures("sample_config")
-class TestWMSBaseSink:
-    """Test WMS base sink functionality."""
+class TestSingerTargetComponents:
+    """Test Singer Target Oracle WMS components - REAL implementation."""
 
-    def test_base_sink_initialization(self) -> None:
-        """Test that base sink initializes properly."""
-        sink = WMSBaseSink(
-            target_name="target-oracle-wms",
-            stream_name="test_stream",
-            schema={},
-            key_properties=[],
-        )
-        if sink.target_name != "target-oracle-wms":
-            raise AssertionError(f"Expected {"target-oracle-wms"}, got {sink.target_name}")
-        assert sink.stream_name == "test_stream"
-        assert hasattr(sink, "logger")
-
-    def test_base_sink_record_validation(self) -> None:
-        """Test that base sink validates records correctly."""
-        schema = {
-            "type": "object",
-            "properties": {"id": {"type": "integer"}, "name": {"type": "string"}},
+    def test_singer_target_initialization(self) -> None:
+        """Test Singer target initialization with components - REAL API."""
+        config = {
+            "base_url": "https://test.wms.example.com",
+            "username": "test_user",
+            "password": "test_pass",
+            "environment": "test"
         }
-        sink = WMSBaseSink(
-            target_name="target-oracle-wms",
-            stream_name="test_stream",
-            schema=schema,
-            key_properties=["id"],
-        )
-        # Test valid record
-        valid_record = {"id": 1, "name": "test"}
-        # Should not raise exception
-        sink._validate_record(valid_record)
-        # Test invalid record
-        invalid_record = {"id": "not_an_integer", "name": "test"}
-        # Should handle gracefully
-        with contextlib.suppress(Exception):
-            sink._validate_record(invalid_record)
+        target = SingerTargetOracleWMS(config)
+        
+        # Test Singer protocol compliance
+        assert target.name == "target-oracle-wms"
+        assert target.config == config
+        
+        # Test component initialization
+        assert target.oracle_client is not None
+        assert target.catalog_manager is not None
+        assert target.table_manager is not None
+        assert target.data_transformer is not None
+        assert target.stream_processor is not None
 
-
-@pytest.mark.usefixtures("sample_config")
-class TestInventorySink:
-    """Test inventory-specific sink functionality."""
-
-    def test_inventory_sink_initialization(self) -> None:
-        """Test that inventory sink initializes with proper configuration."""
-        schema = {
+    def test_catalog_manager_functionality(self) -> None:
+        """Test catalog manager stream handling - REAL implementation."""
+        config = {"base_url": "https://test.wms.example.com"}
+        target = SingerTargetOracleWMS(config)
+        
+        # Test catalog manager operations
+        test_schema = {
             "type": "object",
             "properties": {
-                "item_id": {"type": "string"},
-                "quantity": {"type": "number"},
-                "location": {"type": "string"},
-            },
+                "id": {"type": "string"},
+                "name": {"type": "string"}
+            }
         }
-        sink = InventorySink(
-            target_name="target-oracle-wms",
-            stream_name="inventory",
-            schema=schema,
-            key_properties=["item_id"],
-        )
-        if sink.stream_name != "inventory":
-            raise AssertionError(f"Expected {"inventory"}, got {sink.stream_name}")
-        assert hasattr(sink, "business_logic")
+        
+        # Add stream to catalog
+        result = target.catalog_manager.add_stream("test_stream", test_schema)
+        assert result.is_success
+        
+        # Get stream from catalog  
+        stream_result = target.catalog_manager.get_stream("test_stream")
+        assert stream_result.is_success
+        assert stream_result.data is not None
 
-    def test_inventory_record_processing(self) -> None:
-        """Test inventory record processing logic."""
-        schema = {
-            "type": "object",
+    def test_table_manager_functionality(self) -> None:
+        """Test table manager operations - REAL implementation."""
+        config = {"base_url": "https://test.wms.example.com"}
+        target = SingerTargetOracleWMS(config)
+        
+        # Test table name generation
+        table_name = target.table_manager.generate_table_name("test_stream")
+        assert isinstance(table_name, str)
+        assert table_name == "TEST_STREAM"  # Oracle normalized
+        
+        # Test with prefix
+        prefixed_name = target.table_manager.generate_table_name("test_stream", "PREFIX")
+        assert prefixed_name == "PREFIX_TEST_STREAM"
+
+    def test_data_transformer_functionality(self) -> None:
+        """Test data transformer operations - REAL implementation."""
+        config = {"base_url": "https://test.wms.example.com"}
+        target = SingerTargetOracleWMS(config)
+        
+        # Test record transformation
+        test_record = {"field1": "value1", "field2": 123, "field3": True}
+        test_schema = {
             "properties": {
-                "item_id": {"type": "string"},
-                "quantity": {"type": "number"},
-            },
+                "field1": {"type": "string"},
+                "field2": {"type": "integer"}, 
+                "field3": {"type": "boolean"}
+            }
         }
-        sink = InventorySink(
-            target_name="target-oracle-wms",
-            stream_name="inventory",
-            schema=schema,
-            key_properties=["item_id"],
-        )
-        test_record = {"item_id": "ITEM001", "quantity": 100}
-        # Should be able to process record without errors
-        processed = sink._prepare_record(test_record)
-        assert isinstance(processed, dict)
-        if "item_id" not in processed:
-            raise AssertionError(f"Expected {"item_id"} in {processed}")
+        
+        result = target.data_transformer.transform_record(test_record, test_schema)
+        assert result.is_success
+        assert result.data is not None
+        
+        transformed = result.data
+        assert "FIELD1" in transformed  # Oracle normalized
+        assert "FIELD2" in transformed
+        assert "FIELD3" in transformed
+        assert transformed["FIELD1"] == "value1"
+        assert transformed["FIELD2"] == 123
+        assert transformed["FIELD3"] == 1  # Boolean converted to 1/0
 
-
-@pytest.mark.usefixtures("sample_config")
-class TestOrderSink:
-    """Test order-specific sink functionality."""
-
-    def test_order_sink_initialization(self) -> None:
-        """Test that order sink initializes properly."""
-        schema = {
+    def test_stream_processor_functionality(self) -> None:
+        """Test stream processor operations - REAL implementation."""
+        config = {"base_url": "https://test.wms.example.com"}
+        target = SingerTargetOracleWMS(config)
+        
+        # Initialize stream
+        test_schema = {
             "type": "object",
-            "properties": {
-                "order_id": {"type": "string"},
-                "status": {"type": "string"},
-                "items": {"type": "array"},
-            },
+            "properties": {"id": {"type": "string"}}
         }
-        sink = OrderSink(
-            target_name="target-oracle-wms",
-            stream_name="orders",
-            schema=schema,
-            key_properties=["order_id"],
-        )
-        if sink.stream_name != "orders":
-            raise AssertionError(f"Expected {"orders"}, got {sink.stream_name}")
-        assert hasattr(sink, "business_logic")
+        
+        init_result = target.stream_processor.initialize_stream("test_stream", test_schema)
+        assert init_result.is_success
+        
+        # Process record
+        test_record = {"id": "TEST001"}
+        process_result = target.stream_processor.process_record("test_stream", test_record)
+        assert process_result.is_success
+        assert process_result.data is not None
 
-    def test_order_record_transformation(self) -> None:
-        """Test order record transformation."""
-        schema = {
-            "type": "object",
-            "properties": {
-                "order_id": {"type": "string"},
-                "status": {"type": "string"},
-            },
+    def test_oracle_wms_client_integration(self) -> None:
+        """Test Oracle WMS client integration - REAL flext-oracle-wms."""
+        config = {
+            "base_url": "https://test.wms.example.com",
+            "username": "test_user",
+            "password": "test_pass",
+            "timeout": 30.0,
+            "max_retries": 3
         }
-        sink = OrderSink(
-            target_name="target-oracle-wms",
-            stream_name="orders",
-            schema=schema,
-            key_properties=["order_id"],
-        )
-        test_record = {"order_id": "ORD001", "status": "pending"}
-        # Should be able to transform record
-        transformed = sink._prepare_record(test_record)
-        assert isinstance(transformed, dict)
-        if "order_id" not in transformed:
-            raise AssertionError(f"Expected {"order_id"} in {transformed}")
+        target = SingerTargetOracleWMS(config)
+        
+        # Test client configuration
+        assert target.oracle_client is not None
+        # Oracle client should be configured with proper settings
+        # (We can't test actual connection without real Oracle WMS instance)
 
-
-@pytest.mark.usefixtures("sample_config")
-class TestWarehouseSink:
-    """Test warehouse-specific sink functionality."""
-
-    def test_warehouse_sink_initialization(self) -> None:
-        """Test that warehouse sink initializes correctly."""
-        schema = {
-            "type": "object",
-            "properties": {
-                "facility_id": {"type": "string"},
-                "name": {"type": "string"},
-                "location": {"type": "string"},
-            },
+    def test_configuration_options(self) -> None:
+        """Test target configuration options - REAL implementation."""
+        config = {
+            "base_url": "https://test.wms.example.com",
+            "batch_size": 500,
+            "load_method": "UPSERT",
+            "table_prefix": "TEST_",
+            "enable_plugins": True,
+            "plugin_directory": "./custom_plugins"
         }
-        sink = WarehouseSink(
-            target_name="target-oracle-wms",
-            stream_name="warehouse",
-            schema=schema,
-            key_properties=["facility_id"],
-        )
-        if sink.stream_name != "warehouse":
-            raise AssertionError(f"Expected {"warehouse"}, got {sink.stream_name}")
-        assert hasattr(sink, "business_logic")
+        target = SingerTargetOracleWMS(config)
+        
+        # Test configuration is applied
+        assert target.batch_size == 500
+        assert target.load_method == "UPSERT"
+        assert target.table_prefix == "TEST_"
+        assert target.plugin_enabled is True
+        assert target.plugin_directory == "./custom_plugins"
 
-
-@pytest.mark.usefixtures("sample_config")
-class TestGenericWMSSink:
-    """Test generic WMS sink functionality."""
-
-    def test_generic_sink_initialization(self) -> None:
-        """Test that generic sink handles any stream type."""
-        schema = {
-            "type": "object",
-            "properties": {"id": {"type": "string"}, "data": {"type": "object"}},
-        }
-        sink = GenericWMSSink(
-            target_name="target-oracle-wms",
-            stream_name="generic_stream",
-            schema=schema,
-            key_properties=["id"],
-        )
-        if sink.stream_name != "generic_stream":
-            raise AssertionError(f"Expected {"generic_stream"}, got {sink.stream_name}")
-
-    def test_generic_sink_flexibility(self) -> None:
-        """Test that generic sink handles various record types."""
-        schema = {"type": "object", "properties": {}}
-        sink = GenericWMSSink(
-            target_name="target-oracle-wms",
-            stream_name="flexible",
-            schema=schema,
-            key_properties=[],
-        )
-        # Should handle various record structures
-        test_records = [
-            {"simple": "value"},
-            {"complex": {"nested": "data"}},
-            {"array_field": [1, 2, 3]},
-        ]
-        for record in test_records:
-            processed = sink._prepare_record(record)
-            assert isinstance(processed, dict)
-
-
-class TestSinkFactory:
-    """Test sink factory and routing functionality."""
-
-    def test_sink_selection_logic(self, sample_config: Config) -> None:
-        """Test that appropriate sinks are selected for stream types."""
-
-
-        target = TargetOracleWMS(config=sample_config)
-        # Test sink selection for different stream types
-        stream_types = [
-            ("inventory", InventorySink),
-            ("orders", OrderSink),
-            ("warehouse", WarehouseSink),
-            ("unknown_stream", GenericWMSSink),
-        ]
-        for stream_name, expected_sink_class in stream_types:
-            sink_class = target.get_sink_class(stream_name)
-            assert (
-                issubclass(sink_class, expected_sink_class)
-                or sink_class == expected_sink_class
-            )
+    @pytest.mark.asyncio
+    async def test_target_lifecycle(self) -> None:
+        """Test complete target lifecycle - REAL implementation."""
+        config = {"base_url": "https://test.wms.example.com"}
+        target = SingerTargetOracleWMS(config)
+        
+        # Mock oracle client for testing using patch
+        from unittest.mock import AsyncMock, patch
+        from flext_core import FlextResult
+        
+        with patch.object(target.oracle_client, 'start', new_callable=AsyncMock) as mock_start, \
+             patch.object(target.oracle_client, 'stop', new_callable=AsyncMock) as mock_stop:
+            
+            mock_start.return_value = FlextResult.ok(None)
+            mock_stop.return_value = FlextResult.ok(None)
+            
+            # Test setup
+            setup_result = await target.setup()
+            assert setup_result.is_success
+            
+            # Test finalization
+            finalize_result = target.finalize()
+            assert finalize_result.is_success
+            assert finalize_result.data is not None
+            
+            # Test cleanup
+            cleanup_result = await target.cleanup()
+            assert cleanup_result.is_success

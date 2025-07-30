@@ -22,8 +22,8 @@ class SingerWMSCatalogEntry(FlextDomainBaseModel):
     stream: str
     schema_info: dict[str, Any]
     metadata: list[dict[str, Any]] = Field(default_factory=list)
-    key_properties: list[str] = []
-    bookmark_properties: list[str] = []
+    key_properties: list[str] = Field(default_factory=list)
+    bookmark_properties: list[str] = Field(default_factory=list)
     replication_method: str = "FULL_TABLE"
     replication_key: str | None = None
 
