@@ -32,10 +32,10 @@ class SimulatedOracleWMSError(Exception):
 
 
 logger = get_logger(__name__)
-monitor = FlextObservabilityMonitor("error_handling")
+monitor = FlextObservabilityMonitor()
 
 
-@flext_monitor_function("error_handling_demo")
+@flext_monitor_function(monitor)
 async def demonstrate_error_handling() -> None:
     """Demonstrate comprehensive error handling and recovery."""
     logger.info("Starting error handling demonstration")
@@ -152,7 +152,8 @@ async def demonstrate_error_handling() -> None:
 
         for i, invalid_schema in enumerate(invalid_schemas):
             logger.info(f"Testing invalid schema {i + 1}")
-            schema_result = await target.process_schema_message(invalid_schema)
+            from typing import cast
+            schema_result = await target.process_schema_message(cast("dict[str, Any]", invalid_schema))
             if not schema_result.is_success:
                 logger.info(f"Invalid schema {i + 1} correctly rejected: {schema_result.error}")
             else:
@@ -190,7 +191,9 @@ async def demonstrate_error_handling() -> None:
             record_result = await target.process_record_message(record)
             if record_result.is_success:
                 valid_count += 1
-                logger.info(f"Valid record processed: {record['record']['id']}")
+                from typing import cast
+                record_dict = cast("dict[str, Any]", record)
+                logger.info(f"Valid record processed: {record_dict['record']['id']}")
             else:
                 logger.error(f"Valid record failed: {record_result.error}")
 
@@ -279,7 +282,9 @@ async def demonstrate_error_handling() -> None:
 
         for record in stress_records:
             # Simulate intermittent processing delays
-            if int(record["record"]["id"].split("_")[1]) % 20 == 0:
+            from typing import cast
+            record_dict = cast("dict[str, Any]", record)
+            if int(record_dict["record"]["id"].split("_")[1]) % 20 == 0:
                 await asyncio.sleep(0.1)  # Simulate network delay
 
             record_result = await target.process_record_message(record)
@@ -329,7 +334,7 @@ async def demonstrate_error_handling() -> None:
         logger.info(f"Recovery test completed in {recovery_time:.2f}s")
 
         # Test finalization with error summary
-        finalize_result = await target.finalize()
+        finalize_result = target.finalize()
         if finalize_result.is_success and finalize_result.data:
             stats = finalize_result.data
             logger.info(f"Error handling demo completed - "
@@ -365,7 +370,7 @@ async def demonstrate_error_handling() -> None:
             logger.exception(f"Final cleanup error: {final_error}")
 
 
-@flext_monitor_function("resilience_patterns")
+@flext_monitor_function(monitor)
 async def demonstrate_resilience_patterns() -> None:
     """Demonstrate advanced resilience patterns."""
     logger.info("Demonstrating resilience patterns")
@@ -465,7 +470,10 @@ async def demonstrate_resilience_patterns() -> None:
 
 if __name__ == "__main__":
     """Run error handling examples."""
+    from typing import TYPE_CHECKING, Any, cast
 
-    asyncio.run(demonstrate_error_handling())
+    if TYPE_CHECKING:
+        from collections.abc import Coroutine
 
-    asyncio.run(demonstrate_resilience_patterns())
+    asyncio.run(cast("Coroutine[Any, Any, None]", demonstrate_error_handling()))
+    asyncio.run(cast("Coroutine[Any, Any, None]", demonstrate_resilience_patterns()))

@@ -28,10 +28,10 @@ from flext_target_oracle_wms import (
 logger = get_logger(__name__)
 
 # Monitor using flext-observability
-monitor = FlextObservabilityMonitor("basic_usage_example")
+monitor = FlextObservabilityMonitor()
 
 
-@flext_monitor_function("example_basic_usage")
+@flext_monitor_function(monitor)
 async def run_basic_example() -> None:
     """Run basic Oracle WMS target example with REAL configuration."""
     logger.info("Starting basic Oracle WMS target example")
@@ -168,7 +168,7 @@ async def run_basic_example() -> None:
             logger.info("State processed successfully")
 
         # Finalize target - REAL cleanup
-        finalize_result = await target.finalize()
+        finalize_result = target.finalize()
         if not finalize_result.is_success:
             logger.error(f"Target finalization failed: {finalize_result.error}")
         else:
@@ -248,7 +248,10 @@ def run_from_singer_files() -> None:
 
 if __name__ == "__main__":
     """Run the basic usage example."""
+    from typing import TYPE_CHECKING, Any, cast
 
-    asyncio.run(run_basic_example())
+    if TYPE_CHECKING:
+        from collections.abc import Coroutine
 
+    asyncio.run(cast("Coroutine[Any, Any, None]", run_basic_example()))
     run_from_singer_files()

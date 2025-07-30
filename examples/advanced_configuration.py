@@ -29,7 +29,7 @@ from flext_target_oracle_wms import (
 )
 
 logger = get_logger(__name__)
-monitor = FlextObservabilityMonitor("advanced_configuration")
+monitor = FlextObservabilityMonitor()
 
 
 class CustomWMSTypeConverter(WMSTypeConverter):
@@ -69,8 +69,11 @@ class CustomWMSTypeConverter(WMSTypeConverter):
             mapped_status = status_mapping.get(value.lower(), value)
             return FlextResult.ok(mapped_status)
 
-        # Delegate to parent for standard types
-        return super().convert_singer_to_oracle(singer_type, value)
+        # Delegate to parent for standard types - ensure proper typing
+        parent_result = super().convert_singer_to_oracle(singer_type, value)
+        # Type cast to ensure MyPy understands this returns FlextResult[Any]
+        from typing import cast
+        return cast("FlextResult[Any]", parent_result)
 
 
 class CustomWMSDataTransformer(WMSDataTransformer):
@@ -116,7 +119,7 @@ class CustomWMSDataTransformer(WMSDataTransformer):
             return FlextResult.fail(f"Business transformation failed: {e}")
 
 
-@flext_monitor_function("advanced_config_example")
+@flext_monitor_function(monitor)
 async def run_advanced_configuration_example() -> None:
     """Demonstrate advanced configuration with custom components."""
     logger.info("Starting advanced configuration example")
@@ -313,7 +316,7 @@ async def run_advanced_configuration_example() -> None:
             logger.warning("Invalid record was unexpectedly accepted")
 
         # Finalize with statistics
-        final_result = await target.finalize()
+        final_result = target.finalize()
         if final_result.is_success and final_result.data:
             stats = final_result.data
             logger.info(f"Processing completed - Records: {stats.get('total_records', 0)}, "
@@ -326,7 +329,7 @@ async def run_advanced_configuration_example() -> None:
         await target.cleanup()
 
 
-@flext_monitor_function("custom_components_demo")
+@flext_monitor_function(monitor)
 async def demonstrate_custom_components() -> None:
     """Demonstrate usage of custom WMS components."""
     logger.info("Demonstrating custom WMS components")
@@ -371,7 +374,10 @@ async def demonstrate_custom_components() -> None:
 
 if __name__ == "__main__":
     """Run advanced configuration examples."""
+    from typing import TYPE_CHECKING, Any, cast
 
-    asyncio.run(run_advanced_configuration_example())
+    if TYPE_CHECKING:
+        from collections.abc import Coroutine
 
-    asyncio.run(demonstrate_custom_components())
+    asyncio.run(cast("Coroutine[Any, Any, None]", run_advanced_configuration_example()))
+    asyncio.run(cast("Coroutine[Any, Any, None]", demonstrate_custom_components()))
