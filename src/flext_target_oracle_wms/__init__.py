@@ -9,6 +9,9 @@ NO DUPLICATION - uses newer, better implementation via SingerTargetOracleWMS.
 
 from __future__ import annotations
 
+# Version info - use standard importlib.metadata
+import importlib.metadata
+
 # RE-EXPORT real flext-core types - NO DUPLICATION
 from flext_core import FlextResult, FlextValueObject
 
@@ -38,13 +41,7 @@ from flext_target_oracle_wms.singer.target import SingerTargetOracleWMS
 # Uses the newer, better code path without changing the interface
 TargetOracleWMS = SingerTargetOracleWMS
 
-# Version info
-try:
-    import importlib.metadata
-
-    __version__ = importlib.metadata.version("flext-target-oracle-wms")
-except ImportError:
-    __version__ = "1.0.0"
+__version__ = importlib.metadata.version("flext-target-oracle-wms")
 
 # DRY EXPORTS: Single implementation, multiple access patterns
 __all__ = [

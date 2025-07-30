@@ -30,10 +30,10 @@ from flext_target_oracle_wms import (
 logger = get_logger(__name__)
 
 # Monitor using flext-observability
-monitor = FlextObservabilityMonitor("factory_usage_example")
+monitor = FlextObservabilityMonitor()
 
 
-@flext_monitor_function("example_factory_usage")
+@flext_monitor_function(monitor)
 async def demonstrate_factory_patterns() -> None:
     """Demonstrate various factory patterns for easier library usage."""
     logger.info("🏭 Starting Oracle WMS Target Factory Usage Examples")
@@ -47,12 +47,12 @@ async def demonstrate_factory_patterns() -> None:
         environment="demo",
     )
 
-    if simple_target_result.is_success:
+    if simple_target_result.is_success and simple_target_result.data:
         logger.info("✅ Simple target created successfully")
         simple_target = simple_target_result.data
         logger.info(f"Target config: {simple_target.config}")
     else:
-        logger.error(f"❌ Simple target creation failed: {simple_target_result.error}")
+        logger.error(f"❌ Simple target creation failed: {simple_target_result.error or 'Unknown error'}")
 
     # Example 2: Development target with preset
     logger.info("\n🔧 Example 2: Development Target with Preset")
@@ -63,7 +63,7 @@ async def demonstrate_factory_patterns() -> None:
         custom_debug_mode=True,
     )
 
-    if dev_target_result.is_success:
+    if dev_target_result.is_success and dev_target_result.data:
         logger.info("✅ Development target created with optimized settings")
         dev_target = dev_target_result.data
         # Development preset automatically sets dev-friendly options
@@ -84,7 +84,7 @@ async def demonstrate_factory_patterns() -> None:
         enable_audit_logging=True,
     )
 
-    if prod_target_result.is_success:
+    if prod_target_result.is_success and prod_target_result.data:
         logger.info("✅ Production target created with strict settings")
         prod_target = prod_target_result.data
         # Production preset automatically sets production-grade options
@@ -103,7 +103,7 @@ async def demonstrate_factory_patterns() -> None:
         fast_execution=True,
     )
 
-    if test_target_result.is_success:
+    if test_target_result.is_success and test_target_result.data:
         logger.info("✅ Testing target created with minimal settings")
         test_target = test_target_result.data
         # Testing preset optimized for fast test execution
@@ -127,7 +127,7 @@ async def demonstrate_factory_patterns() -> None:
 
     config_target_result = FlextTargetFactory.create_from_config_dict(config_dict)
 
-    if config_target_result.is_success:
+    if config_target_result.is_success and config_target_result.data:
         logger.info("✅ Configuration-based target created successfully")
         config_target = config_target_result.data
         logger.info(f"Environment: {config_target.config.get('environment')}")
@@ -182,7 +182,7 @@ async def demonstrate_factory_patterns() -> None:
         logger.error(f"❌ Advanced monitored target creation failed: {advanced_monitored_result.error}")
 
 
-@flext_monitor_function("example_preset_comparison")
+@flext_monitor_function(monitor)
 async def demonstrate_preset_differences() -> None:
     """Demonstrate differences between environment presets."""
     logger.info("\n🔍 Preset Comparison - How Factory Makes Configuration Easy")
@@ -207,7 +207,7 @@ async def demonstrate_preset_differences() -> None:
             logger.info("  💡 Optimized for: Fast test execution, minimal resources")
 
 
-@flext_monitor_function("example_error_handling")
+@flext_monitor_function(monitor)
 async def demonstrate_error_handling() -> None:
     """Demonstrate factory error handling patterns."""
     logger.info("\n⚠️  Error Handling Examples")
@@ -278,13 +278,18 @@ async def main() -> None:
 
     try:
         # Demonstrate core factory patterns
-        await demonstrate_factory_patterns()
+        from typing import TYPE_CHECKING, Any, cast
+
+        if TYPE_CHECKING:
+            from collections.abc import Coroutine
+
+        await cast("Coroutine[Any, Any, Any]", demonstrate_factory_patterns())
 
         # Show preset differences
-        await demonstrate_preset_differences()
+        await cast("Coroutine[Any, Any, Any]", demonstrate_preset_differences())
 
         # Demonstrate error handling
-        await demonstrate_error_handling()
+        await cast("Coroutine[Any, Any, Any]", demonstrate_error_handling())
 
         # Show configuration flexibility
         demonstrate_configuration_flexibility()

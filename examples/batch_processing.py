@@ -22,7 +22,7 @@ from flext_observability import FlextObservabilityMonitor, flext_monitor_functio
 from flext_target_oracle_wms import SingerTargetOracleWMS, SingerWMSStreamProcessor
 
 logger = get_logger(__name__)
-monitor = FlextObservabilityMonitor("batch_processing")
+monitor = FlextObservabilityMonitor()
 
 
 def generate_test_data(num_records: int) -> list[dict[str, Any]]:
@@ -50,7 +50,7 @@ def generate_test_data(num_records: int) -> list[dict[str, Any]]:
     return records
 
 
-@flext_monitor_function("batch_processing_performance")
+@flext_monitor_function(monitor)
 async def run_performance_batch_example() -> None:
     """Demonstrate high-performance batch processing."""
     logger.info("Starting performance batch processing example")
@@ -185,7 +185,7 @@ async def run_performance_batch_example() -> None:
 
         # Finalize with statistics
         finalize_start = time.time()
-        final_result = await target.finalize()
+        final_result = target.finalize()
         finalize_time = time.time() - finalize_start
 
         if final_result.is_success and final_result.data:
@@ -204,7 +204,7 @@ async def run_performance_batch_example() -> None:
         logger.info(f"Batch cleanup completed in {cleanup_time:.2f}s")
 
 
-@flext_monitor_function("stream_processor_batch")
+@flext_monitor_function(monitor)
 async def demonstrate_stream_processor_batching() -> None:
     """Demonstrate direct stream processor batch capabilities."""
     logger.info("Demonstrating stream processor batch processing")
@@ -263,7 +263,7 @@ async def demonstrate_stream_processor_batching() -> None:
         logger.info("Stream processing finalized successfully")
 
 
-@flext_monitor_function("concurrent_batch_processing")
+@flext_monitor_function(monitor)
 async def demonstrate_concurrent_batching() -> None:
     """Demonstrate concurrent batch processing with multiple streams."""
     logger.info("Demonstrating concurrent batch processing")
@@ -314,7 +314,7 @@ async def demonstrate_concurrent_batching() -> None:
         for i, result in enumerate(schema_results):
             if isinstance(result, Exception):
                 logger.error(f"Schema setup failed for {streams[i]}: {result}")
-            elif result.is_success:
+            elif hasattr(result, "is_success") and result.is_success:
                 successful_streams.append(streams[i])
                 logger.info(f"Schema setup successful for {streams[i]}")
 
@@ -375,9 +375,11 @@ async def demonstrate_concurrent_batching() -> None:
 
 if __name__ == "__main__":
     """Run batch processing examples."""
+    from typing import TYPE_CHECKING, Any, cast
 
-    asyncio.run(run_performance_batch_example())
+    if TYPE_CHECKING:
+        from collections.abc import Coroutine
 
-    asyncio.run(demonstrate_stream_processor_batching())
-
-    asyncio.run(demonstrate_concurrent_batching())
+    asyncio.run(cast("Coroutine[Any, Any, None]", run_performance_batch_example()))
+    asyncio.run(cast("Coroutine[Any, Any, None]", demonstrate_stream_processor_batching()))
+    asyncio.run(cast("Coroutine[Any, Any, None]", demonstrate_concurrent_batching()))

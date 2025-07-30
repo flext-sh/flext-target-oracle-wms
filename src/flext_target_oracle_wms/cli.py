@@ -24,7 +24,7 @@ class OracleWMSTargetCli:
         self.description = (
             "Oracle WMS Singer Target - Production Ready using REAL flext-oracle-wms API"
         )
-        self.version = "1.0.0"
+        self.version = "0.9.0"
 
     async def execute(self, **kwargs: Any) -> FlextResult[None]:
         """Execute target using REAL implementation - NO DUPLICATION."""
