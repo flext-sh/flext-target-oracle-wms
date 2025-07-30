@@ -36,7 +36,9 @@ class CustomWMSTypeConverter(WMSTypeConverter):
     """Custom type converter with business-specific transformations."""
 
     def convert_singer_to_oracle(
-        self, singer_type: str, value: object,
+        self,
+        singer_type: str,
+        value: object,
     ) -> FlextResult[Any]:
         """Custom conversion with business rules."""
         # Handle custom business types
@@ -88,7 +90,9 @@ class CustomWMSDataTransformer(WMSDataTransformer):
         super().__init__(CustomWMSTypeConverter())
 
     def transform_record(
-        self, record: dict[str, Any], schema: dict[str, Any] | None = None,
+        self,
+        record: dict[str, Any],
+        schema: dict[str, Any] | None = None,
     ) -> FlextResult[dict[str, Any]]:
         """Transform record with business validations."""
         # Apply standard transformation first
@@ -343,13 +347,15 @@ async def demonstrate_custom_components() -> None:
 
     # Test business date conversion
     date_result = custom_converter.convert_singer_to_oracle(
-        "business_date", "2024-01-15",
+        "business_date",
+        "2024-01-15",
     )
     logger.info(f"Business date conversion: {date_result.data}")
 
     # Test currency conversion
     currency_result = custom_converter.convert_singer_to_oracle(
-        "business_currency", 123.456789,
+        "business_currency",
+        123.456789,
     )
     logger.info(f"Currency conversion: {currency_result.data}")
 

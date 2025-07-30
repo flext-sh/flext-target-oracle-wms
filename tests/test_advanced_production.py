@@ -116,7 +116,8 @@ class TestProductionLoadTesting:
     @pytest.mark.asyncio
     @pytest.mark.performance
     async def test_high_volume_record_processing(
-        self, production_target: SingerTargetOracleWMS,
+        self,
+        production_target: SingerTargetOracleWMS,
     ) -> None:
         """Test processing of high-volume records for production scalability."""
         # Setup schema for load testing
@@ -244,7 +245,8 @@ class TestProductionLoadTesting:
     @pytest.mark.asyncio
     @pytest.mark.stress
     async def test_concurrent_stream_processing(
-        self, production_target: SingerTargetOracleWMS,
+        self,
+        production_target: SingerTargetOracleWMS,
     ) -> None:
         """Test concurrent processing of multiple streams under load."""
         stream_count = 5
@@ -358,7 +360,8 @@ class TestProductionLoadTesting:
     @pytest.mark.asyncio
     @pytest.mark.resilience
     async def test_error_recovery_and_resilience(
-        self, production_target: SingerTargetOracleWMS,
+        self,
+        production_target: SingerTargetOracleWMS,
     ) -> None:
         """Test error recovery and system resilience under adverse conditions."""
         # Setup schema
@@ -489,7 +492,8 @@ class TestProductionLoadTesting:
     @pytest.mark.asyncio
     @pytest.mark.performance
     async def test_memory_efficiency_large_records(
-        self, production_target: SingerTargetOracleWMS,
+        self,
+        production_target: SingerTargetOracleWMS,
     ) -> None:
         """Test memory efficiency with large records and data sets."""
         # Setup schema for large records
@@ -606,7 +610,8 @@ class TestProductionDataIntegrity:
     @pytest.mark.asyncio
     @pytest.mark.integrity
     async def test_transactional_consistency(
-        self, production_target: SingerTargetOracleWMS,
+        self,
+        production_target: SingerTargetOracleWMS,
     ) -> None:
         """Test transactional consistency and data integrity."""
         # Setup schema with complex relationships
@@ -701,7 +706,8 @@ class TestProductionDataIntegrity:
     @pytest.mark.asyncio
     @pytest.mark.integrity
     async def test_duplicate_handling_and_idempotency(
-        self, production_target: SingerTargetOracleWMS,
+        self,
+        production_target: SingerTargetOracleWMS,
     ) -> None:
         """Test duplicate record handling and operation idempotency."""
         # Setup schema
@@ -796,7 +802,8 @@ class TestProductionEdgeCases:
     @pytest.mark.asyncio
     @pytest.mark.edge_cases
     async def test_extreme_data_values(
-        self, production_target: SingerTargetOracleWMS,
+        self,
+        production_target: SingerTargetOracleWMS,
     ) -> None:
         """Test handling of extreme data values and boundary conditions."""
         # Setup schema with various data types
@@ -900,7 +907,8 @@ class TestProductionEdgeCases:
     @pytest.mark.asyncio
     @pytest.mark.edge_cases
     async def test_malformed_messages(
-        self, production_target: SingerTargetOracleWMS,
+        self,
+        production_target: SingerTargetOracleWMS,
     ) -> None:
         """Test handling of malformed and invalid Singer messages."""
         # Setup valid schema first
@@ -1018,7 +1026,8 @@ class TestProductionEdgeCases:
     @pytest.mark.asyncio
     @pytest.mark.edge_cases
     async def test_resource_exhaustion_scenarios(
-        self, production_target: SingerTargetOracleWMS,
+        self,
+        production_target: SingerTargetOracleWMS,
     ) -> None:
         """Test behavior under resource exhaustion scenarios."""
         # Setup schema
@@ -1090,7 +1099,9 @@ class TestProductionEdgeCases:
 
                 # Mock setup to avoid real connections
                 with patch.object(
-                    temp_target, "setup", return_value=FlextResult.ok(True),
+                    temp_target,
+                    "setup",
+                    return_value=FlextResult.ok(True),
                 ):
                     setup_result = await temp_target.setup()
                     return setup_result.is_success
@@ -1101,7 +1112,8 @@ class TestProductionEdgeCases:
         connection_tasks = [simulate_connection_load() for i in range(50)]
 
         connection_results = await asyncio.gather(
-            *connection_tasks, return_exceptions=True,
+            *connection_tasks,
+            return_exceptions=True,
         )
         successful_connections = sum(
             1 for result in connection_results if result is True

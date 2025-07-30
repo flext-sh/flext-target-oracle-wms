@@ -48,7 +48,9 @@ class TestOracleWMSIntegration:
         from unittest.mock import patch
 
         with patch.object(
-            target.oracle_client, "start", new_callable=AsyncMock,
+            target.oracle_client,
+            "start",
+            new_callable=AsyncMock,
         ) as mock_start:
             mock_start.return_value = FlextResult.ok(None)
 
@@ -59,7 +61,8 @@ class TestOracleWMSIntegration:
 
     @pytest.mark.asyncio
     async def test_schema_message_processing(
-        self, oracle_wms_config: dict[str, Any],
+        self,
+        oracle_wms_config: dict[str, Any],
     ) -> None:
         """Test Singer SCHEMA message processing using REAL flext-core patterns."""
         # DRY: Use REAL implementation - NO DUPLICATION
@@ -88,7 +91,8 @@ class TestOracleWMSIntegration:
 
     @pytest.mark.asyncio
     async def test_record_message_processing(
-        self, oracle_wms_config: dict[str, Any],
+        self,
+        oracle_wms_config: dict[str, Any],
     ) -> None:
         """Test Singer RECORD message processing using REAL flext-core patterns."""
         # DRY: Use REAL implementation - NO DUPLICATION
@@ -127,7 +131,8 @@ class TestOracleWMSIntegration:
 
     @pytest.mark.asyncio
     async def test_state_message_processing(
-        self, oracle_wms_config: dict[str, Any],
+        self,
+        oracle_wms_config: dict[str, Any],
     ) -> None:
         """Test Singer STATE message processing using REAL flext-core patterns."""
         # DRY: Use REAL implementation - NO DUPLICATION
@@ -162,10 +167,14 @@ class TestOracleWMSIntegration:
 
         with (
             patch.object(
-                target.oracle_client, "start", new_callable=AsyncMock,
+                target.oracle_client,
+                "start",
+                new_callable=AsyncMock,
             ) as mock_start,
             patch.object(
-                target.oracle_client, "stop", new_callable=AsyncMock,
+                target.oracle_client,
+                "stop",
+                new_callable=AsyncMock,
             ) as mock_stop,
         ):
             mock_start.return_value = FlextResult.ok(None)

@@ -254,7 +254,9 @@ async def test_table_management() -> bool | None:
         }
 
         sql_result = manager.generate_create_table_sql(
-            "TEST_TABLE", "TEST_SCHEMA", test_schema,
+            "TEST_TABLE",
+            "TEST_SCHEMA",
+            test_schema,
         )
         if not sql_result.is_success:
             return False
@@ -266,7 +268,9 @@ async def test_table_management() -> bool | None:
         # Test INSERT SQL generation
         columns = ["ID", "NAME", "AGE", "ACTIVE"]
         insert_result = manager.generate_insert_sql(
-            "TEST_TABLE", "TEST_SCHEMA", columns,
+            "TEST_TABLE",
+            "TEST_SCHEMA",
+            columns,
         )
         if not insert_result.is_success:
             return False

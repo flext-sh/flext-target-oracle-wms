@@ -67,7 +67,8 @@ class TestSingerTargetComponents:
 
         # Test with prefix
         prefixed_name = target.table_manager.generate_table_name(
-            "test_stream", "PREFIX",
+            "test_stream",
+            "PREFIX",
         )
         assert prefixed_name == "PREFIX_TEST_STREAM"
 
@@ -110,14 +111,16 @@ class TestSingerTargetComponents:
         }
 
         init_result = target.stream_processor.initialize_stream(
-            "test_stream", test_schema,
+            "test_stream",
+            test_schema,
         )
         assert init_result.is_success
 
         # Process record
         test_record = {"id": "TEST001"}
         process_result = target.stream_processor.process_record(
-            "test_stream", test_record,
+            "test_stream",
+            test_record,
         )
         assert process_result.is_success
         assert process_result.data is not None
@@ -170,10 +173,14 @@ class TestSingerTargetComponents:
 
         with (
             patch.object(
-                target.oracle_client, "start", new_callable=AsyncMock,
+                target.oracle_client,
+                "start",
+                new_callable=AsyncMock,
             ) as mock_start,
             patch.object(
-                target.oracle_client, "stop", new_callable=AsyncMock,
+                target.oracle_client,
+                "stop",
+                new_callable=AsyncMock,
             ) as mock_stop,
         ):
             mock_start.return_value = FlextResult.ok(None)

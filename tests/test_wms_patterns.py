@@ -267,7 +267,8 @@ class TestWMSDataTransformer:
         with patch.object(transformer, "_validate_batch_parameters") as mock_validate:
             mock_validate.side_effect = RuntimeError("Parameter validation failed")
             result = transformer.prepare_batch_parameters(
-                [{"ID": 1, "NAME": "test"}], ["ID", "NAME"],
+                [{"ID": 1, "NAME": "test"}],
+                ["ID", "NAME"],
             )
 
         assert not result.is_success
@@ -524,7 +525,9 @@ class TestWMSTableManager:
         with patch("builtins.str.upper", side_effect=RuntimeError("upper() failed")):
             schema = {"properties": {"id": {"type": "integer"}}}
             result = manager.generate_create_table_sql(
-                "TEST_TABLE", "WMS_SCHEMA", schema,
+                "TEST_TABLE",
+                "WMS_SCHEMA",
+                schema,
             )
 
         assert not result.is_success
@@ -541,7 +544,9 @@ class TestWMSTableManager:
         with patch.object(manager, "_validate_columns") as mock_validate:
             mock_validate.side_effect = RuntimeError("Column validation failed")
             result = manager.generate_insert_sql(
-                "TEST_TABLE", "WMS_SCHEMA", ["ID", "NAME"],
+                "TEST_TABLE",
+                "WMS_SCHEMA",
+                ["ID", "NAME"],
             )
 
         assert not result.is_success
@@ -562,7 +567,9 @@ class TestWMSTableManager:
 
             schema = {"properties": {"id": {"type": "integer"}}}
             result = manager.generate_create_table_sql(
-                "TEST_TABLE", "WMS_SCHEMA", schema,
+                "TEST_TABLE",
+                "WMS_SCHEMA",
+                schema,
             )
 
         assert not result.is_success

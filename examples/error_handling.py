@@ -398,7 +398,8 @@ async def demonstrate_resilience_patterns() -> None:
 
     # Retry with exponential backoff
     async def retry_with_backoff(
-        operation: Any, max_retries: int = 3,
+        operation: Any,
+        max_retries: int = 3,
     ) -> FlextResult[Any]:
         """Implement retry with exponential backoff for resilient operations.
 

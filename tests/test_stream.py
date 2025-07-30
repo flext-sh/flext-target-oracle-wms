@@ -398,7 +398,9 @@ class TestSingerWMSStreamProcessor:
             return FlextResult.ok({"id": record.get("id")})
 
         with patch.object(
-            stream_processor.data_transformer, "transform_record", transform_mock,
+            stream_processor.data_transformer,
+            "transform_record",
+            transform_mock,
         ):
             # Process a few records
             for i in range(3):

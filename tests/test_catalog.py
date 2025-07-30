@@ -516,7 +516,8 @@ class TestSingerWMSCatalogManager:
         with patch.object(manager, "_validate_metadata") as mock_validate:
             mock_validate.side_effect = RuntimeError("Metadata validation failed")
             result = manager.update_stream_metadata(
-                "test_stream", [{"metadata": "test"}],
+                "test_stream",
+                [{"metadata": "test"}],
             )
 
         assert not result.is_success

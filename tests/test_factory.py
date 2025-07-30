@@ -120,7 +120,8 @@ class TestFlextTargetFactory:
 
     @patch("flext_target_oracle_wms.factory.SingerTargetOracleWMS")
     def test_create_target_exception_handling(
-        self, mock_target_class: MagicMock,
+        self,
+        mock_target_class: MagicMock,
     ) -> None:
         """Test target creation exception handling."""
         mock_target_class.side_effect = RuntimeError("Target creation failed")
@@ -265,7 +266,8 @@ class TestFlextTargetMonitoringFactory:
 
     @patch("flext_target_oracle_wms.factory.FlextObservabilityMonitor")
     def test_monitoring_factory_initialization(
-        self, mock_monitor_class: MagicMock,
+        self,
+        mock_monitor_class: MagicMock,
     ) -> None:
         """Test monitoring factory initialization."""
         mock_monitor = MagicMock()
@@ -324,7 +326,8 @@ class TestFlextTargetMonitoringFactory:
 
     @patch("flext_target_oracle_wms.factory.FlextObservabilityMonitor")
     def test_create_monitored_target_base_failure(
-        self, mock_monitor_class: MagicMock,
+        self,
+        mock_monitor_class: MagicMock,
     ) -> None:
         """Test monitored target creation when base target creation fails."""
         mock_monitor = MagicMock()
@@ -362,7 +365,9 @@ class TestFlextTargetMonitoringFactory:
         factory = FlextTargetMonitoringFactory()
 
         with patch.object(
-            factory.factory, "create_target", side_effect=RuntimeError("Monitor error"),
+            factory.factory,
+            "create_target",
+            side_effect=RuntimeError("Monitor error"),
         ):
             result = factory.create_monitored_target(
                 base_url="https://error.wms.oracle.com",
@@ -407,7 +412,8 @@ class TestFactoryConvenienceFunctions:
 
     @patch("flext_target_oracle_wms.factory.FlextTargetMonitoringFactory")
     def test_create_monitored_oracle_wms_target(
-        self, mock_factory_class: MagicMock,
+        self,
+        mock_factory_class: MagicMock,
     ) -> None:
         """Test convenience function for creating monitored Oracle WMS target."""
         mock_factory = MagicMock()
