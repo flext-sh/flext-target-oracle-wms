@@ -1,17 +1,16 @@
 """Test basic structure is correct after fixing dual structure."""
 
-from flext_target_oracle_wms import TargetOracleWMS
 import importlib.util
 
+from flext_target_oracle_wms import TargetOracleWMS
 
 
 def test_import_from_correct_module() -> None:
     """Test that we can import from the correct module."""
-
-
     assert TargetOracleWMS is not None
     if TargetOracleWMS.name != "target-oracle-wms":
-        raise AssertionError(f"Expected {"target-oracle-wms"}, got {TargetOracleWMS.name}")
+        msg = f"Expected {'target-oracle-wms'}, got {TargetOracleWMS.name}"
+        raise AssertionError(msg)
 
 
 def test_no_dual_structure() -> None:

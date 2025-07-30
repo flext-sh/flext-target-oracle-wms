@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 from typing import Any
 
 import pytest
@@ -81,7 +80,8 @@ class TestWMSTypeConverter:
 
         assert isinstance(result, FlextResult)
         assert not result.is_success
-        assert result.error is not None and "Cannot convert" in result.error
+        assert result.error is not None
+        assert "Cannot convert" in result.error
 
     def test_convert_with_exception_handling(self) -> None:
         """Test type conversion with exception handling fallback."""
@@ -182,7 +182,7 @@ class TestWMSDataTransformer:
                 "name": {"type": "string"},
                 "is_active": {"type": "boolean"},
                 "price": {"type": "number"},
-            }
+            },
         }
 
         result = transformer.transform_record(record, schema)
@@ -226,7 +226,9 @@ class TestWMSDataTransformer:
         # Create a mock type converter that fails - USE REAL INHERITANCE
         class FailingTypeConverter(WMSTypeConverter):
             def convert_singer_to_oracle(
-                self, singer_type: str, value: object
+                self,
+                singer_type: str,
+                value: object,
             ) -> FlextResult[Any]:
                 return FlextResult.fail("Type conversion failed")
 
@@ -243,14 +245,14 @@ class TestWMSDataTransformer:
     def test_transform_record_exception_handling(self) -> None:
         """Test record transformation exception handling."""
         from unittest.mock import patch
-        
+
         transformer = WMSDataTransformer()
 
         # Use proper mock to simulate record processing failure - SOLID pattern
-        with patch.object(transformer, '_validate_record') as mock_validate:
+        with patch.object(transformer, "_validate_record") as mock_validate:
             mock_validate.side_effect = RuntimeError("Record validation failed")
             result = transformer.transform_record({"test": "data"}, {})
-            
+
         assert not result.is_success
         assert result.error is not None
         assert "Record transformation failed" in result.error
@@ -258,14 +260,16 @@ class TestWMSDataTransformer:
     def test_prepare_batch_parameters_exception_handling(self) -> None:
         """Test batch parameter preparation exception handling."""
         from unittest.mock import patch
-        
+
         transformer = WMSDataTransformer()
 
         # Use proper mock to simulate parameter processing failure - SOLID pattern
-        with patch.object(transformer, '_validate_batch_parameters') as mock_validate:
+        with patch.object(transformer, "_validate_batch_parameters") as mock_validate:
             mock_validate.side_effect = RuntimeError("Parameter validation failed")
-            result = transformer.prepare_batch_parameters([{"ID": 1, "NAME": "test"}], ["ID", "NAME"])
-            
+            result = transformer.prepare_batch_parameters(
+                [{"ID": 1, "NAME": "test"}], ["ID", "NAME"],
+            )
+
         assert not result.is_success
         assert result.error is not None
         assert "Parameter preparation failed" in result.error
@@ -311,7 +315,7 @@ class TestWMSSchemaMapper:
                 "created_at": {"type": "string", "format": "date-time"},
                 "is_active": {"type": "boolean"},
                 "metadata": {"type": "object"},
-            }
+            },
         }
 
         result = mapper.map_singer_schema_to_oracle(schema)
@@ -327,20 +331,20 @@ class TestWMSSchemaMapper:
 
         # Note: The type mappings depend on the actual implementation
         # These assertions verify the mapping is working correctly
-        assert columns["ID"] in [
+        assert columns["ID"] in {
             "NUMBER",
             "VARCHAR2(4000)",
-        ]  # May vary based on implementation
+        }  # May vary based on implementation
         assert columns["NAME"] == "VARCHAR2(4000)"
         assert columns["CREATED_AT"] == "TIMESTAMP"
-        assert columns["IS_ACTIVE"] in [
+        assert columns["IS_ACTIVE"] in {
             "NUMBER(1)",
             "VARCHAR2(4000)",
-        ]  # May vary based on implementation
-        assert columns["METADATA"] in [
+        }  # May vary based on implementation
+        assert columns["METADATA"] in {
             "CLOB",
             "VARCHAR2(4000)",
-        ]  # May vary based on implementation
+        }  # May vary based on implementation
 
     def test_map_schema_with_unknown_types(self) -> None:
         """Test schema mapping with unknown types."""
@@ -349,7 +353,7 @@ class TestWMSSchemaMapper:
             "properties": {
                 "unknown_field": {"type": "unknown_type"},
                 "no_type_field": {},
-            }
+            },
         }
 
         result = mapper.map_singer_schema_to_oracle(schema)
@@ -372,13 +376,13 @@ class TestWMSSchemaMapper:
     def test_map_singer_schema_to_oracle_exception_handling(self) -> None:
         """Test schema mapping exception handling."""
         from unittest.mock import MagicMock
-        
+
         mapper = WMSSchemaMapper()
 
         # Use proper mock to simulate schema access failure - SOLID pattern
         bad_schema = MagicMock()
         bad_schema.get.side_effect = RuntimeError("get() failed")
-        
+
         result = mapper.map_singer_schema_to_oracle(bad_schema)
         assert not result.is_success
         assert result.error is not None
@@ -387,13 +391,13 @@ class TestWMSSchemaMapper:
     def test_map_singer_type_to_oracle_exception_handling(self) -> None:
         """Test type mapping exception handling."""
         from unittest.mock import MagicMock
-        
+
         mapper = WMSSchemaMapper()
 
         # Use proper mock to simulate property definition access failure - SOLID pattern
         bad_prop_def = MagicMock()
         bad_prop_def.get.side_effect = RuntimeError("get() failed")
-        
+
         # This should trigger the exception handling path in _map_singer_type_to_oracle
         result = mapper._map_singer_type_to_oracle(bad_prop_def)
         assert result.is_success  # Should fallback to default
@@ -445,7 +449,7 @@ class TestWMSTableManager:
                 "id": {"type": "integer"},
                 "name": {"type": "string"},
                 "created_at": {"type": "string", "format": "date-time"},
-            }
+            },
         }
 
         result = manager.generate_create_table_sql("TEST_TABLE", "WMS_SCHEMA", schema)
@@ -491,17 +495,21 @@ class TestWMSTableManager:
 
     def test_generate_create_table_sql_schema_mapping_failure(self) -> None:
         """Test CREATE TABLE SQL generation with schema mapping failure."""
-        from unittest.mock import patch, MagicMock
-        
+        from unittest.mock import patch
+
         manager = WMSTableManager()
 
         # Use proper mock to simulate schema mapping failure - SOLID pattern
-        with patch.object(manager, 'schema_mapper') as mock_schema_mapper:
-            mock_schema_mapper.map_singer_schema_to_oracle.return_value = FlextResult.fail("Schema mapping failed")
-            result = manager.generate_create_table_sql(
-                "TEST_TABLE", "WMS_SCHEMA", {"properties": {"id": {"type": "integer"}}}
+        with patch.object(manager, "schema_mapper") as mock_schema_mapper:
+            mock_schema_mapper.map_singer_schema_to_oracle.return_value = (
+                FlextResult.fail("Schema mapping failed")
             )
-            
+            result = manager.generate_create_table_sql(
+                "TEST_TABLE",
+                "WMS_SCHEMA",
+                {"properties": {"id": {"type": "integer"}}},
+            )
+
         assert not result.is_success
         assert result.error is not None
         assert "Schema mapping failed" in result.error
@@ -509,14 +517,16 @@ class TestWMSTableManager:
     def test_generate_create_table_sql_exception_handling(self) -> None:
         """Test CREATE TABLE SQL generation exception handling."""
         from unittest.mock import patch
-        
+
         manager = WMSTableManager()
 
         # Use proper mock to simulate table name processing failure - SOLID pattern
-        with patch('builtins.str.upper', side_effect=RuntimeError("upper() failed")):
+        with patch("builtins.str.upper", side_effect=RuntimeError("upper() failed")):
             schema = {"properties": {"id": {"type": "integer"}}}
-            result = manager.generate_create_table_sql("TEST_TABLE", "WMS_SCHEMA", schema)
-            
+            result = manager.generate_create_table_sql(
+                "TEST_TABLE", "WMS_SCHEMA", schema,
+            )
+
         assert not result.is_success
         assert result.error is not None
         assert "SQL generation failed" in result.error
@@ -524,14 +534,16 @@ class TestWMSTableManager:
     def test_generate_insert_sql_exception_handling(self) -> None:
         """Test INSERT SQL generation exception handling."""
         from unittest.mock import patch
-        
+
         manager = WMSTableManager()
 
         # Use proper mock to simulate column processing failure - SOLID pattern
-        with patch.object(manager, '_validate_columns') as mock_validate:
+        with patch.object(manager, "_validate_columns") as mock_validate:
             mock_validate.side_effect = RuntimeError("Column validation failed")
-            result = manager.generate_insert_sql("TEST_TABLE", "WMS_SCHEMA", ["ID", "NAME"])
-            
+            result = manager.generate_insert_sql(
+                "TEST_TABLE", "WMS_SCHEMA", ["ID", "NAME"],
+            )
+
         assert not result.is_success
         assert result.error is not None
         assert "SQL generation failed" in result.error
@@ -539,16 +551,20 @@ class TestWMSTableManager:
     def test_generate_create_table_sql_with_none_columns(self) -> None:
         """Test CREATE TABLE SQL generation when column mapping returns None."""
         from unittest.mock import patch
-        
+
         manager = WMSTableManager()
 
         # Use proper mock to simulate None columns return - SOLID pattern
-        with patch.object(manager, 'schema_mapper') as mock_schema_mapper:
-            mock_schema_mapper.map_singer_schema_to_oracle.return_value = FlextResult.ok(None)
-            
+        with patch.object(manager, "schema_mapper") as mock_schema_mapper:
+            mock_schema_mapper.map_singer_schema_to_oracle.return_value = (
+                FlextResult.ok(None)
+            )
+
             schema = {"properties": {"id": {"type": "integer"}}}
-            result = manager.generate_create_table_sql("TEST_TABLE", "WMS_SCHEMA", schema)
-            
+            result = manager.generate_create_table_sql(
+                "TEST_TABLE", "WMS_SCHEMA", schema,
+            )
+
         assert not result.is_success
         assert result.error is not None
         assert "Column mapping returned None" in result.error

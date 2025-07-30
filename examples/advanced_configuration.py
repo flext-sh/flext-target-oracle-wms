@@ -35,7 +35,9 @@ monitor = FlextObservabilityMonitor()
 class CustomWMSTypeConverter(WMSTypeConverter):
     """Custom type converter with business-specific transformations."""
 
-    def convert_singer_to_oracle(self, singer_type: str, value: object) -> FlextResult[Any]:
+    def convert_singer_to_oracle(
+        self, singer_type: str, value: object,
+    ) -> FlextResult[Any]:
         """Custom conversion with business rules."""
         # Handle custom business types
         if singer_type == "business_date":
@@ -44,6 +46,7 @@ class CustomWMSTypeConverter(WMSTypeConverter):
                 # Business logic: convert YYYY-MM-DD to DD-MON-YYYY
                 try:
                     from datetime import datetime
+
                     dt = datetime.strptime(value, "%Y-%m-%d").replace(tzinfo=UTC)
                     oracle_date = dt.strftime("%d-%b-%Y").upper()
                     return FlextResult.ok(oracle_date)
@@ -73,6 +76,7 @@ class CustomWMSTypeConverter(WMSTypeConverter):
         parent_result = super().convert_singer_to_oracle(singer_type, value)
         # Type cast to ensure MyPy understands this returns FlextResult[Any]
         from typing import cast
+
         return cast("FlextResult[Any]", parent_result)
 
 
@@ -83,7 +87,9 @@ class CustomWMSDataTransformer(WMSDataTransformer):
         """Initialize with custom type converter."""
         super().__init__(CustomWMSTypeConverter())
 
-    def transform_record(self, record: dict[str, Any], schema: dict[str, Any] | None = None) -> FlextResult[dict[str, Any]]:
+    def transform_record(
+        self, record: dict[str, Any], schema: dict[str, Any] | None = None,
+    ) -> FlextResult[dict[str, Any]]:
         """Transform record with business validations."""
         # Apply standard transformation first
         base_result = super().transform_record(record, schema)
@@ -104,7 +110,11 @@ class CustomWMSDataTransformer(WMSDataTransformer):
             if "ITEM_ID" in transformed:
                 item_id = str(transformed["ITEM_ID"]).upper().strip()
                 # Ensure item ID follows business format (3 letters + 6 digits)
-                if len(item_id) >= 9 and item_id[:3].isalpha() and item_id[3:9].isdigit():
+                if (
+                    len(item_id) >= 9
+                    and item_id[:3].isalpha()
+                    and item_id[3:9].isdigit()
+                ):
                     transformed["ITEM_ID"] = item_id[:9]  # Truncate to standard length
 
             # Validate required business fields
@@ -131,32 +141,27 @@ async def run_advanced_configuration_example() -> None:
         "username": os.getenv("WMS_USERNAME", "advanced_user"),
         "password": os.getenv("WMS_PASSWORD", "secure_password"),
         "environment": os.getenv("WMS_ENV", "production"),
-
         # Performance tuning
         "batch_size": 2000,
         "connection_timeout": 30,
         "request_timeout": 120,
         "max_retries": 3,
         "retry_delay": 5,
-
         # Schema configuration
         "table_prefix": "ADV_",
         "schema_name": "WMS_ADVANCED",
         "create_schema": True,
         "drop_existing_tables": False,
-
         # Data handling
         "null_value_handling": "empty_string",
         "date_format": "YYYY-MM-DD HH24:MI:SS",
         "numeric_precision": 10,
         "numeric_scale": 2,
-
         # Advanced features
         "enable_compression": True,
         "enable_encryption": True,
         "audit_trail": True,
         "conflict_resolution": "last_write_wins",
-
         # Custom transformations
         "custom_type_mappings": {
             "business_date": "DATE",
@@ -191,12 +196,10 @@ async def run_advanced_configuration_example() -> None:
                     "item_id": {"type": "string"},
                     "item_name": {"type": "string"},
                     "location_id": {"type": "string"},
-
                     # Business-specific types
                     "effective_date": {"type": "business_date"},
                     "unit_cost": {"type": "business_currency"},
                     "status": {"type": "wms_status"},
-
                     # Complex nested data
                     "attributes": {
                         "type": "object",
@@ -213,7 +216,6 @@ async def run_advanced_configuration_example() -> None:
                             "tags": {"type": "array"},
                         },
                     },
-
                     # Audit fields
                     "created_by": {"type": "string"},
                     "created_at": {"type": "string", "format": "date-time"},
@@ -319,8 +321,10 @@ async def run_advanced_configuration_example() -> None:
         final_result = target.finalize()
         if final_result.is_success and final_result.data:
             stats = final_result.data
-            logger.info(f"Processing completed - Records: {stats.get('total_records', 0)}, "
-                       f"Errors: {stats.get('total_errors', 0)}")
+            logger.info(
+                f"Processing completed - Records: {stats.get('total_records', 0)}, "
+                f"Errors: {stats.get('total_errors', 0)}",
+            )
 
     except Exception as e:
         logger.exception(f"Advanced configuration example failed: {e}")
@@ -338,11 +342,15 @@ async def demonstrate_custom_components() -> None:
     custom_converter = CustomWMSTypeConverter()
 
     # Test business date conversion
-    date_result = custom_converter.convert_singer_to_oracle("business_date", "2024-01-15")
+    date_result = custom_converter.convert_singer_to_oracle(
+        "business_date", "2024-01-15",
+    )
     logger.info(f"Business date conversion: {date_result.data}")
 
     # Test currency conversion
-    currency_result = custom_converter.convert_singer_to_oracle("business_currency", 123.456789)
+    currency_result = custom_converter.convert_singer_to_oracle(
+        "business_currency", 123.456789,
+    )
     logger.info(f"Currency conversion: {currency_result.data}")
 
     # Test status mapping

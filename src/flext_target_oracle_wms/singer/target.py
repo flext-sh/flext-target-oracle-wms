@@ -84,7 +84,8 @@ class SingerTargetOracleWMS:
             return FlextResult.fail(f"Setup failed: {e}")
 
     async def process_schema_message(
-        self, message: dict[str, Any],
+        self,
+        message: dict[str, Any],
     ) -> FlextResult[None]:
         """Process Singer SCHEMA message."""
         try:
@@ -149,7 +150,8 @@ class SingerTargetOracleWMS:
             return FlextResult.fail(f"SCHEMA processing failed: {e}")
 
     async def process_record_message(
-        self, message: dict[str, Any],
+        self,
+        message: dict[str, Any],
     ) -> FlextResult[None]:
         """Process Singer RECORD message."""
         try:
@@ -175,7 +177,8 @@ class SingerTargetOracleWMS:
 
             # Insert into Oracle (this could be batched for performance)
             insert_result = await self._insert_record(
-                stream_name, transformed_record or {},
+                stream_name,
+                transformed_record or {},
             )
             if not insert_result.is_success:
                 return FlextResult.fail(
@@ -235,7 +238,9 @@ class SingerTargetOracleWMS:
                 validation_query = f"SELECT 1 FROM {full_entity_name} WHERE ROWNUM = 1"  # noqa: S608
                 # Use generic method or skip validation if method doesn't exist
                 if hasattr(self.oracle_client, "execute_query"):
-                    query_result = await self.oracle_client.execute_query(validation_query)
+                    query_result = await self.oracle_client.execute_query(
+                        validation_query,
+                    )
                 else:
                     # Skip validation if client doesn't support queries
                     query_result = FlextResult.ok(None)
@@ -244,12 +249,18 @@ class SingerTargetOracleWMS:
                     logger.info(f"Oracle WMS entity validated: {full_entity_name}")
                 else:
                     # Entity might not exist or no access - log but don't fail
-                    logger.warning(f"Oracle WMS entity validation failed for {full_entity_name}: {query_result.error}")
-                    logger.info(f"Assuming entity {full_entity_name} will be available during data insertion")
+                    logger.warning(
+                        f"Oracle WMS entity validation failed for {full_entity_name}: {query_result.error}",
+                    )
+                    logger.info(
+                        f"Assuming entity {full_entity_name} will be available during data insertion",
+                    )
 
             except Exception as query_error:
                 # Client might not support validation queries - log and continue
-                logger.debug(f"Entity validation query failed (expected for some WMS configurations): {query_error}")
+                logger.debug(
+                    f"Entity validation query failed (expected for some WMS configurations): {query_error}",
+                )
                 logger.info(f"Oracle WMS entity assumed available: {full_entity_name}")
 
             return FlextResult.ok(None)

@@ -304,7 +304,7 @@ class WMSTableManager:
             # Build INSERT SQL with proper quoting
             insert_sql = (
                 f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" '  # noqa: S608
-                f'({", ".join(quoted_columns)}) VALUES ({", ".join(placeholders)})'
+                f"({', '.join(quoted_columns)}) VALUES ({', '.join(placeholders)})"
             )
 
             return FlextResult.ok(insert_sql)

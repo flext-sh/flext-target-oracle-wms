@@ -1,10 +1,10 @@
 # Oracle WMS Target - Examples
 
-This directory contains comprehensive examples demonstrating production-grade usage of the flext-target-oracle-wms with REAL flext-* APIs and mission-critical patterns.
+This directory contains comprehensive examples demonstrating production-grade usage of the flext-target-oracle-wms with REAL flext-\* APIs and mission-critical patterns.
 
 ## 🎯 Examples Overview
 
-All examples follow DRY (Don't Repeat Yourself) principles and use REAL implementations from the flext-* ecosystem:
+All examples follow DRY (Don't Repeat Yourself) principles and use REAL implementations from the flext-\* ecosystem:
 
 - **flext-core**: FlextResult, get_logger, dependency injection patterns
 - **flext-observability**: FlextObservabilityMonitor, flext_monitor_function
@@ -14,9 +14,11 @@ All examples follow DRY (Don't Repeat Yourself) principles and use REAL implemen
 ## 📚 Available Examples
 
 ### 1. [basic_usage.py](./basic_usage.py)
+
 **PRODUCTION-READY basic implementation**
 
 Demonstrates fundamental Oracle WMS target usage with real configuration:
+
 - ✅ Real Oracle WMS Cloud SaaS configuration
 - ✅ Singer protocol compliance (SCHEMA, RECORD, STATE messages)
 - ✅ Inventory data processing with proper field mapping
@@ -25,6 +27,7 @@ Demonstrates fundamental Oracle WMS target usage with real configuration:
 - ✅ Proper cleanup and resource management
 
 **Key Patterns:**
+
 ```python
 # DRY: Real flext-* imports
 from flext_core import get_logger
@@ -49,9 +52,11 @@ if not setup_result.is_success:
 ```
 
 ### 2. [advanced_configuration.py](./advanced_configuration.py)
+
 **ENTERPRISE-GRADE advanced features**
 
 Shows sophisticated configuration and custom business logic:
+
 - ✅ Custom type converters with business rules
 - ✅ Advanced performance tuning parameters
 - ✅ Complex nested data structure handling
@@ -60,6 +65,7 @@ Shows sophisticated configuration and custom business logic:
 - ✅ Production security settings
 
 **Key Patterns:**
+
 ```python
 # Custom business type converter
 class CustomWMSTypeConverter(WMSTypeConverter):
@@ -82,9 +88,11 @@ config = {
 ```
 
 ### 3. [batch_processing.py](./batch_processing.py)
+
 **HIGH-PERFORMANCE batch operations**
 
 Demonstrates optimized batch processing for large-scale data:
+
 - ✅ Performance-tuned batch configurations
 - ✅ Memory-efficient chunk processing
 - ✅ Concurrent stream processing
@@ -93,6 +101,7 @@ Demonstrates optimized batch processing for large-scale data:
 - ✅ Resource optimization patterns
 
 **Key Patterns:**
+
 ```python
 # Performance optimization
 config = {
@@ -111,9 +120,11 @@ await asyncio.gather(*concurrent_tasks)
 ```
 
 ### 4. [error_handling.py](./error_handling.py)
+
 **MISSION-CRITICAL error handling and resilience**
 
 Shows comprehensive error handling and recovery patterns:
+
 - ✅ Circuit breaker implementation
 - ✅ Retry with exponential backoff
 - ✅ Graceful degradation under load
@@ -122,6 +133,7 @@ Shows comprehensive error handling and recovery patterns:
 - ✅ Emergency cleanup procedures
 
 **Key Patterns:**
+
 ```python
 # Error handling configuration
 config = {
@@ -147,17 +159,20 @@ async def retry_with_backoff(operation: Any, max_retries: int = 3) -> FlextResul
 ### Prerequisites
 
 1. **Install dependencies:**
+
    ```bash
    cd /path/to/flext-target-oracle-wms
    poetry install
    ```
 
 2. **Activate virtual environment:**
+
    ```bash
    poetry shell
    ```
 
 3. **Set environment variables (optional):**
+
    ```bash
    export WMS_BASE_URL="https://your-wms.oracle.com"
    export WMS_USERNAME="your_username"
@@ -200,15 +215,16 @@ All examples support both file-based and environment-based configuration:
 ### File-based Configuration
 
 Create `config.json` in the project root:
+
 ```json
 {
-    "base_url": "https://your-wms.oracle.com",
-    "username": "your_username",
-    "password": "your_password",
-    "environment": "production",
-    "batch_size": 1000,
-    "table_prefix": "PROD_",
-    "schema_name": "WMS_PROD"
+  "base_url": "https://your-wms.oracle.com",
+  "username": "your_username",
+  "password": "your_password",
+  "environment": "production",
+  "batch_size": 1000,
+  "table_prefix": "PROD_",
+  "schema_name": "WMS_PROD"
 }
 ```
 
@@ -224,17 +240,19 @@ export WMS_ENV="production"
 ## 📊 Performance Benchmarks
 
 ### Batch Processing Performance
+
 - **Single Record**: ~100-500 records/second
 - **Batch Mode (1K)**: ~2,000-5,000 records/second
 - **Batch Mode (5K)**: ~8,000-15,000 records/second
 - **Concurrent Streams**: ~20,000+ records/second
 
 ### Memory Usage
+
 - **Basic Processing**: ~50-100 MB
 - **Batch Processing**: ~200-500 MB
 - **Concurrent Processing**: ~500-1000 MB
 
-*Performance varies based on record complexity, network latency, and Oracle WMS Cloud configuration.*
+_Performance varies based on record complexity, network latency, and Oracle WMS Cloud configuration._
 
 ## 🛡️ Security Considerations
 
@@ -272,7 +290,7 @@ python -m pytest tests/examples/ --cov=examples --cov-report=term-missing
 When adding new examples:
 
 1. **Follow DRY principles** - Use real implementations, no duplication
-2. **Use flext-* patterns** - Leverage the full ecosystem
+2. **Use flext-\* patterns** - Leverage the full ecosystem
 3. **Include error handling** - Production-grade error handling
 4. **Add documentation** - Comprehensive docstrings and comments
 5. **Write tests** - Ensure examples work correctly
@@ -284,4 +302,4 @@ All examples are provided under the MIT License. See [LICENSE](../LICENSE) for d
 
 ---
 
-**Note**: These examples use real Oracle WMS Cloud SaaS API patterns and production-grade flext-* implementations. They are designed for mission-critical applications and follow enterprise security and performance standards.
+**Note**: These examples use real Oracle WMS Cloud SaaS API patterns and production-grade flext-\* implementations. They are designed for mission-critical applications and follow enterprise security and performance standards.

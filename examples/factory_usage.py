@@ -52,7 +52,9 @@ async def demonstrate_factory_patterns() -> None:
         simple_target = simple_target_result.data
         logger.info(f"Target config: {simple_target.config}")
     else:
-        logger.error(f"❌ Simple target creation failed: {simple_target_result.error or 'Unknown error'}")
+        logger.error(
+            f"❌ Simple target creation failed: {simple_target_result.error or 'Unknown error'}",
+        )
 
     # Example 2: Development target with preset
     logger.info("\n🔧 Example 2: Development Target with Preset")
@@ -71,7 +73,9 @@ async def demonstrate_factory_patterns() -> None:
         logger.info(f"Table prefix: {dev_target.config.get('table_prefix')}")
         logger.info(f"Verify SSL: {dev_target.config.get('verify_ssl')}")
     else:
-        logger.error(f"❌ Development target creation failed: {dev_target_result.error}")
+        logger.error(
+            f"❌ Development target creation failed: {dev_target_result.error}",
+        )
 
     # Example 3: Production target with strict settings
     logger.info("\n🚀 Example 3: Production Target with Strict Settings")
@@ -93,7 +97,9 @@ async def demonstrate_factory_patterns() -> None:
         logger.info(f"Verify SSL: {prod_target.config.get('verify_ssl')}")
         logger.info(f"Timeout: {prod_target.config.get('timeout')}")
     else:
-        logger.error(f"❌ Production target creation failed: {prod_target_result.error}")
+        logger.error(
+            f"❌ Production target creation failed: {prod_target_result.error}",
+        )
 
     # Example 4: Testing target with minimal settings
     logger.info("\n🧪 Example 4: Testing Target with Minimal Settings")
@@ -133,7 +139,9 @@ async def demonstrate_factory_patterns() -> None:
         logger.info(f"Environment: {config_target.config.get('environment')}")
         logger.info(f"Custom field: {config_target.config.get('custom_field')}")
     else:
-        logger.error(f"❌ Configuration-based target creation failed: {config_target_result.error}")
+        logger.error(
+            f"❌ Configuration-based target creation failed: {config_target_result.error}",
+        )
 
     # Example 6: Monitored target with observability
     logger.info("\n📊 Example 6: Monitored Target with Observability")
@@ -156,7 +164,9 @@ async def demonstrate_factory_patterns() -> None:
         logger.info("  - Performance timing")
         logger.info("  - Success/failure counters")
     else:
-        logger.error(f"❌ Monitored target creation failed: {monitored_target_result.error}")
+        logger.error(
+            f"❌ Monitored target creation failed: {monitored_target_result.error}",
+        )
 
     # Example 7: Advanced monitoring factory usage
     logger.info("\n🏭 Example 7: Advanced Monitoring Factory")
@@ -179,7 +189,9 @@ async def demonstrate_factory_patterns() -> None:
         logger.info("  - Automatic error tracking")
         logger.info("  - Resource usage metrics")
     else:
-        logger.error(f"❌ Advanced monitored target creation failed: {advanced_monitored_result.error}")
+        logger.error(
+            f"❌ Advanced monitored target creation failed: {advanced_monitored_result.error}",
+        )
 
 
 @flext_monitor_function(monitor)
@@ -200,7 +212,9 @@ async def demonstrate_preset_differences() -> None:
         if preset_name == "development":
             logger.info("  💡 Optimized for: Fast feedback, easy debugging")
         elif preset_name == "staging":
-            logger.info("  💡 Optimized for: Production-like testing, performance validation")
+            logger.info(
+                "  💡 Optimized for: Production-like testing, performance validation",
+            )
         elif preset_name == "production":
             logger.info("  💡 Optimized for: High performance, reliability, security")
         elif preset_name == "testing":

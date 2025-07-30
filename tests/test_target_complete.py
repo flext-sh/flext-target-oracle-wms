@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-import json
 from typing import Any
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -43,7 +42,9 @@ class TestSingerTargetOracleWMSComprehensive:
 
         # Mock client start to fail
         with patch.object(
-            target.oracle_client, "start", new_callable=AsyncMock
+            target.oracle_client,
+            "start",
+            new_callable=AsyncMock,
         ) as mock_start:
             mock_start.return_value = FlextResult.fail("Connection failed")
 
@@ -54,14 +55,17 @@ class TestSingerTargetOracleWMSComprehensive:
 
     @pytest.mark.asyncio
     async def test_setup_with_exception(
-        self, oracle_wms_config: dict[str, Any]
+        self,
+        oracle_wms_config: dict[str, Any],
     ) -> None:
         """Test setup when unexpected exception occurs."""
         target = SingerTargetOracleWMS(oracle_wms_config)
 
         # Mock client start to raise exception
         with patch.object(
-            target.oracle_client, "start", new_callable=AsyncMock
+            target.oracle_client,
+            "start",
+            new_callable=AsyncMock,
         ) as mock_start:
             mock_start.side_effect = RuntimeError("Unexpected error")
 
@@ -183,7 +187,8 @@ class TestSingerTargetOracleWMSComprehensive:
 
         # Mock table manager to fail SQL generation
         with patch.object(
-            target.table_manager, "generate_create_table_sql"
+            target.table_manager,
+            "generate_create_table_sql",
         ) as mock_sql:
             mock_sql.return_value = FlextResult.fail("SQL generation failed")
 
@@ -256,7 +261,8 @@ class TestSingerTargetOracleWMSComprehensive:
 
         result = await target.process_record_message(invalid_message1)
         assert not result.is_success
-        assert result.error is not None and "missing stream or record" in result.error
+        assert result.error is not None
+        assert "missing stream or record" in result.error
 
         # Missing record
         invalid_message2 = {
@@ -266,7 +272,8 @@ class TestSingerTargetOracleWMSComprehensive:
 
         result = await target.process_record_message(invalid_message2)
         assert not result.is_success
-        assert result.error is not None and "missing stream or record" in result.error
+        assert result.error is not None
+        assert "missing stream or record" in result.error
 
     @pytest.mark.asyncio
     async def test_process_record_message_stream_processing_failure(
@@ -301,7 +308,9 @@ class TestSingerTargetOracleWMSComprehensive:
 
         # Mock _insert_record to fail
         with patch.object(
-            target, "_insert_record", new_callable=AsyncMock
+            target,
+            "_insert_record",
+            new_callable=AsyncMock,
         ) as mock_insert:
             mock_insert.return_value = FlextResult.fail("Insertion failed")
 
@@ -317,7 +326,8 @@ class TestSingerTargetOracleWMSComprehensive:
             assert "Insertion failed" in result.error
 
     def test_process_state_message_invalid_type(
-        self, oracle_wms_config: dict[str, Any]
+        self,
+        oracle_wms_config: dict[str, Any],
     ) -> None:
         """Test processing message with invalid type for STATE."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -363,7 +373,9 @@ class TestSingerTargetOracleWMSComprehensive:
         target.oracle_client = None  # Simulate uninitialized client
 
         result = await target._ensure_table_exists(
-            "test_table", "test_schema", "CREATE TABLE test"
+            "test_table",
+            "test_schema",
+            "CREATE TABLE test",
         )
         assert not result.is_success
         assert result.error is not None
@@ -381,13 +393,13 @@ class TestSingerTargetOracleWMSComprehensive:
         with patch.object(target, "oracle_client", None):
             # Force an exception by accessing None
             result = await target._ensure_table_exists(
-                "test_table", "test_schema", "CREATE TABLE test"
+                "test_table",
+                "test_schema",
+                "CREATE TABLE test",
             )
             assert not result.is_success
-            assert (
-                result.error is not None
-                and "Oracle WMS client not initialized" in result.error
-            )
+            assert result.error is not None
+            assert "Oracle WMS client not initialized" in result.error
 
     @pytest.mark.asyncio
     async def test_insert_record_complex_data_types(
@@ -441,7 +453,8 @@ class TestSingerTargetOracleWMSComprehensive:
 
         # Mock table manager to raise exception
         with patch.object(
-            target.table_manager, "generate_table_name"
+            target.table_manager,
+            "generate_table_name",
         ) as mock_table_name:
             mock_table_name.side_effect = RuntimeError("Name generation failed")
 
@@ -486,7 +499,8 @@ class TestSingerTargetOracleWMSComprehensive:
             assert summary["streams_processed"] == 0
 
     def test_finalize_exception_handling(
-        self, oracle_wms_config: dict[str, Any]
+        self,
+        oracle_wms_config: dict[str, Any],
     ) -> None:
         """Test finalize exception handling."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -510,7 +524,9 @@ class TestSingerTargetOracleWMSComprehensive:
 
         # Mock client stop to fail
         with patch.object(
-            target.oracle_client, "stop", new_callable=AsyncMock
+            target.oracle_client,
+            "stop",
+            new_callable=AsyncMock,
         ) as mock_stop:
             mock_stop.return_value = FlextResult.fail("Stop failed")
 
@@ -528,7 +544,9 @@ class TestSingerTargetOracleWMSComprehensive:
 
         # Mock client stop to raise exception
         with patch.object(
-            target.oracle_client, "stop", new_callable=AsyncMock
+            target.oracle_client,
+            "stop",
+            new_callable=AsyncMock,
         ) as mock_stop:
             mock_stop.side_effect = RuntimeError("Unexpected error")
 
@@ -538,7 +556,8 @@ class TestSingerTargetOracleWMSComprehensive:
             assert "Cleanup failed" in result.error
 
     def test_target_configuration_edge_cases(
-        self, oracle_wms_config: dict[str, Any]
+        self,
+        oracle_wms_config: dict[str, Any],
     ) -> None:
         """Test target with various configuration edge cases."""
         # Test with minimal configuration
@@ -578,10 +597,14 @@ class TestSingerTargetOracleWMSComprehensive:
         # Mock Oracle client
         with (
             patch.object(
-                target.oracle_client, "start", new_callable=AsyncMock
+                target.oracle_client,
+                "start",
+                new_callable=AsyncMock,
             ) as mock_start,
             patch.object(
-                target.oracle_client, "stop", new_callable=AsyncMock
+                target.oracle_client,
+                "stop",
+                new_callable=AsyncMock,
             ) as mock_stop,
         ):
             mock_start.return_value = FlextResult.ok(None)

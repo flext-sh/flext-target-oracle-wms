@@ -60,7 +60,9 @@ class SingerWMSStreamProcessor:
         try:
             # Validate schema structure
             if not isinstance(schema, dict):
-                return FlextResult.fail(f"Invalid schema for {stream_name}: expected dict")
+                return FlextResult.fail(
+                    f"Invalid schema for {stream_name}: expected dict",
+                )
 
             if "type" not in schema:
                 return FlextResult.fail(
@@ -69,7 +71,8 @@ class SingerWMSStreamProcessor:
 
             # Store stream stats with schema for validation
             self._stream_stats[stream_name] = WMSStreamProcessingStats(
-                stream_name, schema,
+                stream_name,
+                schema,
             )
             logger.info(
                 f"Initialized WMS stream processing: {stream_name} with schema validation",
