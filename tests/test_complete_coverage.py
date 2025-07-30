@@ -63,7 +63,8 @@ class TestCompleteTargetCoverage:
 
     @pytest.mark.asyncio
     async def test_target_complete_workflow(
-        self, target_config: dict[str, str],
+        self,
+        target_config: dict[str, str],
     ) -> None:
         """Test complete target workflow with all operations."""
         with patch("flext_oracle_wms.FlextOracleWmsClient") as mock_client_class:
@@ -337,7 +338,9 @@ class TestCompletePatternsMetworkCoverage:
         # Test INSERT SQL generation
         columns = ["id", "name", "value", "created_at"]
         insert_result = manager.generate_insert_sql(
-            "test_table", "test_schema", columns,
+            "test_table",
+            "test_schema",
+            columns,
         )
         assert insert_result.is_success
         insert_sql = insert_result.data
@@ -531,9 +534,12 @@ class TestCompleteCLIEdgeCases:
         cli = OracleWMSTargetCli()
 
         # Test with empty stdin
-        with patch("sys.stdin", io.StringIO("")), patch(
-            "flext_target_oracle_wms.cli.SingerTargetOracleWMS",
-        ) as mock_target_class:
+        with (
+            patch("sys.stdin", io.StringIO("")),
+            patch(
+                "flext_target_oracle_wms.cli.SingerTargetOracleWMS",
+            ) as mock_target_class,
+        ):
             # Create a proper mock target
             mock_target = MagicMock()
             mock_target_class.return_value = mock_target
@@ -560,9 +566,12 @@ class TestCompleteCLIEdgeCases:
         ]
 
         for malformed_input in malformed_inputs:
-            with patch("sys.stdin", io.StringIO(malformed_input)), patch(
-                "flext_target_oracle_wms.cli.SingerTargetOracleWMS",
-            ) as mock_target_class:
+            with (
+                patch("sys.stdin", io.StringIO(malformed_input)),
+                patch(
+                    "flext_target_oracle_wms.cli.SingerTargetOracleWMS",
+                ) as mock_target_class,
+            ):
                 mock_target = AsyncMock()
                 mock_target_class.return_value = mock_target
                 mock_target.setup = AsyncMock(

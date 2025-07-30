@@ -377,7 +377,8 @@ class TestIntegrationPerformanceBenchmarks:
                 mock_client.start.return_value = MagicMock(is_success=True)
                 mock_client.stop.return_value = MagicMock(is_success=True)
                 mock_client.execute_query.return_value = MagicMock(
-                    is_success=True, data=[],
+                    is_success=True,
+                    data=[],
                 )
 
                 target = SingerTargetOracleWMS(config)

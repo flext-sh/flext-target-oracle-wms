@@ -73,7 +73,8 @@ class OracleWMSTargetCli:
             return FlextResult.fail(f"Configuration preparation failed: {e}")
 
     async def _process_stdin_messages(
-        self, target: SingerTargetOracleWMS,
+        self,
+        target: SingerTargetOracleWMS,
     ) -> FlextResult[None]:
         """Process stdin messages following Singer protocol."""
         try:
@@ -91,7 +92,9 @@ class OracleWMSTargetCli:
             return FlextResult.fail(f"Message processing failed: {e}")
 
     async def _process_single_message(
-        self, target: SingerTargetOracleWMS, line: str,
+        self,
+        target: SingerTargetOracleWMS,
+        line: str,
     ) -> FlextResult[None]:
         """Process a single Singer message."""
         try:
@@ -112,7 +115,8 @@ class OracleWMSTargetCli:
             return FlextResult.fail(f"Invalid JSON: {e}")
 
     async def _finalize_target(
-        self, target: SingerTargetOracleWMS,
+        self,
+        target: SingerTargetOracleWMS,
     ) -> FlextResult[None]:
         """Finalize target processing and cleanup."""
         try:
