@@ -278,7 +278,7 @@ class TestWMSDataTransformer:
     def test_prepare_batch_parameters_with_none_values(self) -> None:
         """Test batch parameter preparation with None values."""
         transformer = WMSDataTransformer()
-        records: list[dict[str, Any]] = [
+        records: list[dict[str, object]] = [
             {"ID": None, "NAME": "Item1", "PRICE": None},
             {"ID": 2, "NAME": None, "PRICE": 99.99},
         ]
@@ -368,7 +368,7 @@ class TestWMSSchemaMapper:
     def test_map_empty_schema(self) -> None:
         """Test mapping empty schema."""
         mapper = WMSSchemaMapper()
-        schema: dict[str, Any] = {"properties": {}}
+        schema: dict[str, object] = {"properties": {}}
 
         result = mapper.map_singer_schema_to_oracle(schema)
         assert result.is_success

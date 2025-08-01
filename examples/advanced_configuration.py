@@ -91,9 +91,9 @@ class CustomWMSDataTransformer(WMSDataTransformer):
 
     def transform_record(
         self,
-        record: dict[str, Any],
-        schema: dict[str, Any] | None = None,
-    ) -> FlextResult[dict[str, Any]]:
+        record: dict[str, object],
+        schema: dict[str, object] | None = None,
+    ) -> FlextResult[dict[str, object]]:
         """Transform record with business validations."""
         # Apply standard transformation first
         base_result = super().transform_record(record, schema)

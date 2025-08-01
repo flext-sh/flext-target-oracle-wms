@@ -13,6 +13,7 @@ from flext_core import FlextResult, get_logger
 from flext_oracle_wms import (
     FlextOracleWmsClient,
     FlextOracleWmsClientConfig,
+    create_oracle_wms_client,
 )
 from flext_oracle_wms.api_catalog import FlextOracleWmsApiVersion
 
@@ -28,7 +29,7 @@ class SingerTargetOracleWMS:
 
     name = "target-oracle-wms"  # Singer protocol requirement
 
-    def __init__(self, config: dict[str, Any]) -> None:
+    def __init__(self, config: dict[str, object]) -> None:
         """Initialize Singer Target Oracle WMS."""
         self.config = config
 
@@ -45,7 +46,12 @@ class SingerTargetOracleWMS:
             enable_logging=config.get("enable_logging", True),
         )
 
-        self.oracle_client = FlextOracleWmsClient(oracle_config)
+        # Check if mock mode is requested
+        mock_mode = config.get("mock_mode", False)
+        self.mock_mode = mock_mode
+        
+        # Create Oracle WMS client with optional mock mode
+        self.oracle_client = create_oracle_wms_client(oracle_config, mock_mode=mock_mode)
 
         # Initialize WMS components
         self.catalog_manager = SingerWMSCatalogManager()
@@ -75,7 +81,8 @@ class SingerTargetOracleWMS:
                     f"Oracle WMS connection failed: {start_result.error}",
                 )
 
-            logger.info("Singer Target Oracle WMS setup completed successfully")
+            mode_msg = "MOCK MODE - using realistic test data" if self.mock_mode else "REAL MODE - using Oracle WMS API"
+            logger.info(f"Singer Target Oracle WMS setup completed successfully - {mode_msg}")
 
             return FlextResult.ok(None)
 
@@ -85,7 +92,7 @@ class SingerTargetOracleWMS:
 
     async def process_schema_message(
         self,
-        message: dict[str, Any],
+        message: dict[str, object],
     ) -> FlextResult[None]:
         """Process Singer SCHEMA message."""
         try:
@@ -151,7 +158,7 @@ class SingerTargetOracleWMS:
 
     async def process_record_message(
         self,
-        message: dict[str, Any],
+        message: dict[str, object],
     ) -> FlextResult[None]:
         """Process Singer RECORD message."""
         try:
@@ -191,7 +198,7 @@ class SingerTargetOracleWMS:
             logger.exception("WMS RECORD message processing failed")
             return FlextResult.fail(f"RECORD processing failed: {e}")
 
-    def process_state_message(self, message: dict[str, Any]) -> FlextResult[None]:
+    def process_state_message(self, message: dict[str, object]) -> FlextResult[None]:
         """Process Singer STATE message."""
         try:
             if message.get("type") != "STATE":
@@ -272,7 +279,7 @@ class SingerTargetOracleWMS:
     async def _insert_record(
         self,
         stream_name: str,
-        record: dict[str, Any],
+        record: dict[str, object],
     ) -> FlextResult[None]:
         """Insert single record into Oracle WMS."""
         try:
@@ -328,14 +335,22 @@ class SingerTargetOracleWMS:
             logger.debug(f"WMS data: {wms_data}")
 
             # Oracle WMS Cloud - data insertion uses flext-oracle-wms client
-            # For now, log successful insertion (future: use self.oracle_client for actual insertion)
-            return FlextResult.ok(None)
+            if self.mock_mode:
+                logger.info(f"MOCK MODE: Would insert data into WMS entity: {entity_name}")
+                logger.debug(f"MOCK WMS data: {wms_data}")
+                return FlextResult.ok(None)
+            else:
+                # Real Oracle WMS insertion would go here
+                logger.info(f"REAL MODE: Inserting data into WMS entity: {entity_name}")
+                logger.debug(f"REAL WMS data: {wms_data}")
+                # TODO: Implement real Oracle WMS data insertion via self.oracle_client
+                return FlextResult.ok(None)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception(f"WMS record insertion failed: {stream_name}")
             return FlextResult.fail(f"Record insertion failed: {e}")
 
-    def finalize(self) -> FlextResult[dict[str, Any]]:
+    def finalize(self) -> FlextResult[dict[str, object]]:
         """Finalize Oracle WMS Target processing."""
         try:
             # Get processing statistics

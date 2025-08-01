@@ -392,9 +392,9 @@ class TestSingerWMSStreamProcessor:
         from unittest.mock import patch
 
         def transform_mock(
-            record: dict[str, Any],
-            schema: dict[str, Any] | None = None,
-        ) -> FlextResult[dict[str, Any]]:
+            record: dict[str, object],
+            schema: dict[str, object] | None = None,
+        ) -> FlextResult[dict[str, object]]:
             return FlextResult.ok({"id": record.get("id")})
 
         with patch.object(
@@ -440,9 +440,9 @@ class TestSingerWMSStreamProcessor:
 
         # Use proper function signature - DRY REAL approach
         def transform_mock(
-            record: dict[str, Any],
-            schema: dict[str, Any] | None = None,
-        ) -> FlextResult[dict[str, Any]]:
+            record: dict[str, object],
+            schema: dict[str, object] | None = None,
+        ) -> FlextResult[dict[str, object]]:
             return FlextResult.ok({"transformed": record.get("id")})
 
         mock_transformer.transform_record = transform_mock
@@ -482,9 +482,9 @@ class TestSingerWMSStreamProcessor:
         class FailingMockTransformer(WMSDataTransformer):
             def transform_record(
                 self,
-                record: dict[str, Any],
-                schema: dict[str, Any] | None = None,
-            ) -> FlextResult[dict[str, Any]]:
+                record: dict[str, object],
+                schema: dict[str, object] | None = None,
+            ) -> FlextResult[dict[str, object]]:
                 if record.get("id") == 2:
                     return FlextResult.fail("Transform failed for record 2")
                 return FlextResult.ok({"transformed": record.get("id")})
@@ -534,9 +534,9 @@ class TestSingerWMSStreamProcessor:
         class SelectiveFailingTransformer(WMSDataTransformer):
             def transform_record(
                 self,
-                record: dict[str, Any],
-                schema: dict[str, Any] | None = None,
-            ) -> FlextResult[dict[str, Any]]:
+                record: dict[str, object],
+                schema: dict[str, object] | None = None,
+            ) -> FlextResult[dict[str, object]]:
                 record_id = record.get("id")
                 if record_id in {2, 4}:  # Fail on records 2 and 4
                     return FlextResult.fail(f"Transform failed for record {record_id}")
@@ -602,9 +602,9 @@ class TestSingerWMSStreamProcessor:
 
         # Use proper function signature - DRY REAL approach
         def transform_mock(
-            record: dict[str, Any],
-            schema: dict[str, Any] | None = None,
-        ) -> FlextResult[dict[str, Any]]:
+            record: dict[str, object],
+            schema: dict[str, object] | None = None,
+        ) -> FlextResult[dict[str, object]]:
             return FlextResult.ok({"id": record.get("id")})
 
         mock_transformer.transform_record = transform_mock
@@ -725,7 +725,7 @@ class TestSingerWMSStreamProcessor:
 
         def failing_initialize(
             stream_name: str,
-            schema: dict[str, Any],
+            schema: dict[str, object],
         ) -> FlextResult[None]:
             return FlextResult.fail("Mocked initialization failure")
 
@@ -751,9 +751,9 @@ class TestSingerWMSStreamProcessor:
         class ErrorTransformer(WMSDataTransformer):
             def transform_record(
                 self,
-                record: dict[str, Any],
-                schema: dict[str, Any] | None = None,
-            ) -> FlextResult[dict[str, Any]]:
+                record: dict[str, object],
+                schema: dict[str, object] | None = None,
+            ) -> FlextResult[dict[str, object]]:
                 msg = "Simulated transform error"
                 raise RuntimeError(msg)
 
@@ -786,8 +786,8 @@ class TestSingerWMSStreamProcessor:
 
         def failing_process_record(
             stream_name: str,
-            record: dict[str, Any],
-        ) -> FlextResult[dict[str, Any]]:
+            record: dict[str, object],
+        ) -> FlextResult[dict[str, object]]:
             msg = "Simulated batch processing error"
             raise RuntimeError(msg)
 
@@ -922,9 +922,9 @@ class TestSingerWMSStreamProcessor:
 
         # Use proper function signature - DRY REAL approach
         def transform_mock(
-            record: dict[str, Any],
-            schema: dict[str, Any] | None = None,
-        ) -> FlextResult[dict[str, Any]]:
+            record: dict[str, object],
+            schema: dict[str, object] | None = None,
+        ) -> FlextResult[dict[str, object]]:
             return FlextResult.ok({"transformed": record.get("id")})
 
         mock_transformer.transform_record = transform_mock
@@ -955,9 +955,9 @@ class TestSingerWMSStreamProcessor:
 
         # Use proper function signature - DRY REAL approach
         def transform_mock(
-            record: dict[str, Any],
-            schema: dict[str, Any] | None = None,
-        ) -> FlextResult[dict[str, Any]]:
+            record: dict[str, object],
+            schema: dict[str, object] | None = None,
+        ) -> FlextResult[dict[str, object]]:
             return FlextResult.ok({"transformed": record.get("id")})
 
         mock_transformer.transform_record = transform_mock

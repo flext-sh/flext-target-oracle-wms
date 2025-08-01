@@ -80,7 +80,7 @@ def get_wms_metadata_columns() -> list[str]:
     return [
         '"_SDC_EXTRACTED_AT" TIMESTAMP',
         '"_SDC_BATCHED_AT" TIMESTAMP',
-        f'"{FlextOracleWmsResponseFields.ENTITY_TYPE}" VARCHAR2(255)',
+        '"_WMS_ENTITY_TYPE" VARCHAR2(255)',  # Local constant since not available in lib
         '"_SDC_SEQUENCE" NUMBER',
     ]
 
@@ -159,7 +159,9 @@ class WMSDataTransformer:
         self.filter_processor = FlextOracleWmsFilter
         self.chunk_processor = flext_oracle_wms_chunk_records
 
-    def _apply_wms_filters(self, record: dict[str, Any]) -> FlextResult[dict[str, Any]]:
+    def _apply_wms_filters(
+        self, record: dict[str, object]
+    ) -> FlextResult[dict[str, object]]:
         """Apply flext-oracle-wms filters to record.
 
         SOLID REFACTORING: Use flext-oracle-wms filtering patterns for data validation.
@@ -181,9 +183,9 @@ class WMSDataTransformer:
 
     def transform_record(
         self,
-        record: dict[str, Any],
-        schema: dict[str, Any] | None = None,
-    ) -> FlextResult[dict[str, Any]]:
+        record: dict[str, object],
+        schema: dict[str, object] | None = None,
+    ) -> FlextResult[dict[str, object]]:
         """Transform Singer record for Oracle WMS storage using flext-oracle-wms.
 
         SOLID REFACTORING: Maximize integration with flext-oracle-wms filtering and processing.
@@ -234,9 +236,9 @@ class WMSDataTransformer:
 
     def prepare_batch_parameters(
         self,
-        records: list[dict[str, Any]],
+        records: list[dict[str, object]],
         columns: list[str],
-    ) -> FlextResult[list[dict[str, Any]]]:
+    ) -> FlextResult[list[dict[str, object]]]:
         """Prepare batch parameters for Oracle execution using flext-oracle-wms chunking.
 
         SOLID REFACTORING: Use flext-oracle-wms chunk_records for optimal batching.
@@ -277,7 +279,7 @@ class WMSSchemaMapper:
 
     def map_singer_schema_to_oracle(
         self,
-        schema: dict[str, Any],
+        schema: dict[str, object],
     ) -> FlextResult[dict[str, str]]:
         """Map Singer schema to Oracle WMS column definitions."""
         try:
@@ -307,7 +309,9 @@ class WMSSchemaMapper:
         # DRY: Use shared normalization logic - NO DUPLICATION
         return _normalize_oracle_identifier(name)
 
-    def _map_singer_type_to_oracle(self, prop_def: dict[str, Any]) -> FlextResult[str]:
+    def _map_singer_type_to_oracle(
+        self, prop_def: dict[str, object]
+    ) -> FlextResult[str]:
         """Map Singer property definition to Oracle type using flext-oracle-wms.
 
         SOLID REFACTORING: Use flext-oracle-wms library for type mapping consistency.
@@ -347,7 +351,7 @@ class WMSTableManager:
         self,
         table_name: str,
         schema_name: str,
-        schema: dict[str, Any],
+        schema: dict[str, object],
     ) -> FlextResult[str]:
         """Generate CREATE TABLE SQL for Oracle WMS."""
         try:

@@ -653,7 +653,7 @@ class TestSingerWMSCatalogManager:
         manager = SingerWMSCatalogManager()
 
         # Test catalog without streams key
-        catalog: dict[str, Any] = {}
+        catalog: dict[str, object] = {}
         result = manager.load_from_singer_catalog(catalog)
         assert result.is_success  # Should succeed with empty streams
 

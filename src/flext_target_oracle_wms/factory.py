@@ -37,7 +37,7 @@ class TargetCreationRequest:
     password: str
     environment: str = "development"
     preset: str | None = None
-    additional_config: dict[str, Any] | None = None
+    additional_config: dict[str, object] | None = None
 
     def __post_init__(self) -> None:
         """Initialize additional_config if not provided."""
@@ -72,7 +72,7 @@ class FlextTargetFactory:
     """
 
     # Common configuration presets for different environments
-    PRESETS: ClassVar[dict[str, dict[str, Any]]] = {
+    PRESETS: ClassVar[dict[str, dict[str, object]]] = {
         "development": {
             "batch_size": 100,
             "table_prefix": "DEV_",
@@ -248,7 +248,7 @@ class FlextTargetFactory:
     @classmethod
     def create_from_config_dict(
         cls,
-        config: dict[str, Any],
+        config: dict[str, object],
     ) -> FlextResult[SingerTargetOracleWMS]:
         """Create target from configuration dictionary.
 

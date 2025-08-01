@@ -20,8 +20,8 @@ class SingerWMSCatalogEntry(FlextDomainBaseModel):
 
     tap_stream_id: str
     stream: str
-    schema_info: dict[str, Any]
-    metadata: list[dict[str, Any]] = Field(default_factory=list)
+    schema_info: dict[str, object]
+    metadata: list[dict[str, object]] = Field(default_factory=list)
     key_properties: list[str] = Field(default_factory=list)
     bookmark_properties: list[str] = Field(default_factory=list)
     replication_method: str = "FULL_TABLE"
@@ -51,8 +51,8 @@ class SingerWMSCatalogManager:
     def add_stream(
         self,
         stream_name: str,
-        schema: dict[str, Any],
-        metadata: list[dict[str, Any]] | None = None,
+        schema: dict[str, object],
+        metadata: list[dict[str, object]] | None = None,
     ) -> FlextResult[None]:
         """Add WMS stream to catalog."""
         try:
@@ -102,7 +102,7 @@ class SingerWMSCatalogManager:
             logger.exception(f"Failed to remove WMS stream: {stream_name}")
             return FlextResult.fail(f"Stream removal failed: {e}")
 
-    def get_schema_for_stream(self, stream_name: str) -> FlextResult[dict[str, Any]]:
+    def get_schema_for_stream(self, stream_name: str) -> FlextResult[dict[str, object]]:
         """Get schema for specific WMS stream."""
         stream_result = self.get_stream(stream_name)
         if not stream_result.is_success:
@@ -127,7 +127,7 @@ class SingerWMSCatalogManager:
     def update_stream_metadata(
         self,
         stream_name: str,
-        metadata: list[dict[str, Any]],
+        metadata: list[dict[str, object]],
     ) -> FlextResult[None]:
         """Update metadata for WMS stream."""
         try:
@@ -155,7 +155,7 @@ class SingerWMSCatalogManager:
             logger.exception(f"Failed to update WMS stream metadata: {stream_name}")
             return FlextResult.fail(f"Metadata update failed: {e}")
 
-    def to_singer_catalog(self) -> FlextResult[dict[str, Any]]:
+    def to_singer_catalog(self) -> FlextResult[dict[str, object]]:
         """Convert to Singer catalog format."""
         try:
             streams = []
@@ -190,7 +190,7 @@ class SingerWMSCatalogManager:
             logger.exception("Failed to convert to Singer WMS catalog")
             return FlextResult.fail(f"Catalog conversion failed: {e}")
 
-    def load_from_singer_catalog(self, catalog: dict[str, Any]) -> FlextResult[None]:
+    def load_from_singer_catalog(self, catalog: dict[str, object]) -> FlextResult[None]:
         """Load from Singer catalog format."""
         try:
             self._catalog_entries.clear()
