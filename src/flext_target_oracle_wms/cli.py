@@ -25,33 +25,52 @@ class OracleWMSTargetCli:
         self.version = "0.9.0"
 
     async def execute(self, **kwargs: Any) -> FlextResult[None]:
-        """Execute target using REAL implementation - NO DUPLICATION."""
+        """Execute target using REAL implementation - NO DUPLICATION.
+
+        SOLID REFACTORING: Reduced multiple returns (count=6) to single exit point
+        using Railway-Oriented Programming pattern.
+        """
+        result: FlextResult[None] = FlextResult.ok(None)
+
         try:
             # Load configuration
             config_result = self._prepare_config(kwargs.get("config"))
             if not config_result.is_success:
-                return FlextResult.fail(config_result.error or "Configuration failed")
-
-            config = config_result.data
-            if config is None:
-                return FlextResult.fail("Configuration data is None")
-            target = SingerTargetOracleWMS(config)
-
-            # Setup target
-            setup_result = await target.setup()
-            if not setup_result.is_success:
-                return FlextResult.fail(f"Setup failed: {setup_result.error}")
-
-            # Process messages
-            process_result = await self._process_stdin_messages(target)
-            if not process_result.is_success:
-                return process_result
-
-            # Finalize and cleanup
-            return await self._finalize_target(target)
+                result = FlextResult.fail(config_result.error or "Configuration failed")
+            else:
+                config = config_result.data
+                if config is None:
+                    result = FlextResult.fail("Configuration data is None")
+                else:
+                    # Continue with target setup and processing
+                    result = await self._execute_target_pipeline(config)
 
         except Exception as e:
-            return FlextResult.fail(f"CLI execution failed: {e}")
+            result = FlextResult.fail(f"CLI execution failed: {e}")
+
+        return result
+
+    async def _execute_target_pipeline(
+        self, config: dict[str, Any]
+    ) -> FlextResult[None]:
+        """Execute the target pipeline with railway-oriented programming.
+
+        SOLID REFACTORING: Extract target pipeline execution to reduce complexity.
+        """
+        target = SingerTargetOracleWMS(config)
+
+        # Setup target
+        setup_result = await target.setup()
+        if not setup_result.is_success:
+            return FlextResult.fail(f"Setup failed: {setup_result.error}")
+
+        # Process messages
+        process_result = await self._process_stdin_messages(target)
+        if not process_result.is_success:
+            return process_result
+
+        # Finalize and cleanup
+        return await self._finalize_target(target)
 
     def _prepare_config(self, config_path: str | None) -> FlextResult[dict[str, Any]]:
         """Prepare configuration from path or defaults."""
