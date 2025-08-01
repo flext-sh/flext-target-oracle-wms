@@ -25,7 +25,7 @@ logger = get_logger(__name__)
 monitor = FlextObservabilityMonitor()
 
 
-def generate_test_data(num_records: int) -> list[dict[str, Any]]:
+def generate_test_data(num_records: int) -> list[dict[str, object]]:
     """Generate test data for batch processing demonstration."""
     logger.info(f"Generating {num_records} test records")
 

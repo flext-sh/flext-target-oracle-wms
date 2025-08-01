@@ -19,7 +19,9 @@ logger = get_logger(__name__)
 class WMSStreamProcessingStats:
     """WMS stream processing statistics - mutable for performance."""
 
-    def __init__(self, stream_name: str, schema: dict[str, Any] | None = None) -> None:
+    def __init__(
+        self, stream_name: str, schema: dict[str, object] | None = None
+    ) -> None:
         """Initialize stream processing statistics."""
         self.stream_name = stream_name
         self.schema = schema or {}
@@ -87,8 +89,8 @@ class SingerWMSStreamProcessor:
     def process_record(
         self,
         stream_name: str,
-        record: dict[str, Any],
-    ) -> FlextResult[dict[str, Any]]:
+        record: dict[str, object],
+    ) -> FlextResult[dict[str, object]]:
         """Process single Singer WMS record."""
         try:
             if stream_name not in self._stream_stats:
@@ -124,8 +126,8 @@ class SingerWMSStreamProcessor:
     def process_batch(
         self,
         stream_name: str,
-        records: list[dict[str, Any]],
-    ) -> FlextResult[list[dict[str, Any]]]:
+        records: list[dict[str, object]],
+    ) -> FlextResult[list[dict[str, object]]]:
         """Process batch of Singer WMS records."""
         try:
             if stream_name not in self._stream_stats:
@@ -218,8 +220,8 @@ class SingerWMSStreamProcessor:
 
     def validate_record_schema(
         self,
-        record: dict[str, Any],
-        expected_schema: dict[str, Any],
+        record: dict[str, object],
+        expected_schema: dict[str, object],
     ) -> FlextResult[bool]:
         """Validate WMS record against expected schema."""
         try:
@@ -242,8 +244,8 @@ class SingerWMSStreamProcessor:
     def handle_schema_change(
         self,
         stream_name: str,
-        old_schema: dict[str, Any],
-        new_schema: dict[str, Any],
+        old_schema: dict[str, object],
+        new_schema: dict[str, object],
     ) -> FlextResult[None]:
         """Handle schema changes for WMS stream."""
         try:

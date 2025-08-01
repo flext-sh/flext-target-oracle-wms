@@ -41,7 +41,7 @@ monitor = FlextObservabilityMonitor()
 # =============================================================================
 
 
-def get_error_demo_config() -> dict[str, Any]:
+def get_error_demo_config() -> dict[str, object]:
     """Single Responsibility: Get error demonstration configuration.
 
     SOLID REFACTORING: Extract configuration into separate function following
@@ -76,7 +76,7 @@ def get_error_demo_config() -> dict[str, Any]:
 
 
 async def demonstrate_setup_error_handling(
-    config: dict[str, Any],
+    config: dict[str, object],
 ) -> SingerTargetOracleWMS | None:
     """Single Responsibility: Demonstrate setup and connection error handling.
 

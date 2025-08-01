@@ -51,7 +51,7 @@ class OracleWMSTargetCli:
         return result
 
     async def _execute_target_pipeline(
-        self, config: dict[str, Any]
+        self, config: dict[str, object]
     ) -> FlextResult[None]:
         """Execute the target pipeline with railway-oriented programming.
 
@@ -72,7 +72,9 @@ class OracleWMSTargetCli:
         # Finalize and cleanup
         return await self._finalize_target(target)
 
-    def _prepare_config(self, config_path: str | None) -> FlextResult[dict[str, Any]]:
+    def _prepare_config(
+        self, config_path: str | None
+    ) -> FlextResult[dict[str, object]]:
         """Prepare configuration from path or defaults."""
         try:
             if config_path:
@@ -150,7 +152,7 @@ class OracleWMSTargetCli:
         except Exception as e:
             return FlextResult.fail(f"Finalization failed: {e}")
 
-    def _load_config(self, config_path: str) -> dict[str, Any]:
+    def _load_config(self, config_path: str) -> dict[str, object]:
         """Load configuration from file path - NO DUPLICATION."""
         config_file = Path(config_path)
         if not config_file.exists():
