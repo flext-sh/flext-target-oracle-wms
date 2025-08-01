@@ -15,7 +15,7 @@ from flext_core import FlextResult, get_logger
 # DRY: Use REAL flext-observability with correct signature - NO MOCKUP
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
-# SOLID REFACTORING: MAXIMIZE usage of refactored flext-oracle-wms library
+# REFACTORING: MAXIMIZE usage of refactored flext-oracle-wms library
 from flext_oracle_wms import (
     FlextOracleWmsDefaults,
     FlextOracleWmsEntity,
@@ -50,7 +50,7 @@ def _normalize_oracle_identifier(name: str) -> str:
     return normalized
 
 
-# SOLID REFACTORING: Use flext-oracle-wms constants instead of local mappings
+# REFACTORING: Use flext-oracle-wms constants instead of local mappings
 def get_oracle_type_mapping(json_type: str | None) -> str:
     """Get Oracle type mapping using flext-oracle-wms defaults.
 
@@ -112,7 +112,7 @@ class WMSTypeConverter:
             if value is None:
                 return FlextResult.ok(None)
 
-            # SOLID REFACTORING: Use flext-oracle-wms schema processor for type conversion
+            # REFACTORING: Use flext-oracle-wms schema processor for type conversion
             # Note: oracle_type could be used for future validation or logging
 
             if singer_type in {"string", "text"}:
@@ -150,7 +150,7 @@ class WMSDataTransformer:
         """Initialize WMS data transformer with flext-oracle-wms components."""
         self.type_converter = type_converter or WMSTypeConverter()
 
-        # SOLID REFACTORING: Use flext-oracle-wms filtering and processing
+        # REFACTORING: Use flext-oracle-wms filtering and processing
         from flext_oracle_wms import (
             FlextOracleWmsFilter,
             flext_oracle_wms_chunk_records,

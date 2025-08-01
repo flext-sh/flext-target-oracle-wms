@@ -19,7 +19,7 @@ from flext_core.exceptions import (
 )
 
 # =============================================================================
-# SOLID REFACTORING: DRY Principle - Centralized context building pattern
+# REFACTORING: DRY Principle - Centralized context building pattern
 # =============================================================================
 
 
@@ -78,7 +78,7 @@ class FlextTargetOracleWmsConnectionError(FlextConnectionError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target connection error with context."""
-        # SOLID REFACTORING: Use DRY principle - centralized context building
+        # REFACTORING: Use DRY principle - centralized context building
         context = _build_exception_context(
             kwargs,
             wms_endpoint=wms_endpoint,
@@ -98,7 +98,7 @@ class FlextTargetOracleWmsAuthenticationError(FlextAuthenticationError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target authentication error with context."""
-        # SOLID REFACTORING: Use DRY principle - centralized context building
+        # REFACTORING: Use DRY principle - centralized context building
         context = _build_exception_context(
             kwargs,
             username=username,
@@ -146,7 +146,7 @@ class FlextTargetOracleWmsConfigurationError(FlextConfigurationError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target configuration error with context."""
-        # SOLID REFACTORING: Use DRY principle - centralized context building
+        # REFACTORING: Use DRY principle - centralized context building
         context = _build_exception_context(kwargs, config_key=config_key)
         super().__init__(f"Oracle WMS target config: {message}", **context)
 
@@ -162,7 +162,7 @@ class FlextTargetOracleWmsProcessingError(FlextProcessingError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target processing error with context."""
-        # SOLID REFACTORING: Use DRY principle - centralized context building
+        # REFACTORING: Use DRY principle - centralized context building
         context = _build_exception_context(
             kwargs,
             entity_type=entity_type,
@@ -182,7 +182,7 @@ class FlextTargetOracleWmsInventoryError(FlextTargetOracleWmsError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target inventory error with context."""
-        # SOLID REFACTORING: Use DRY principle - centralized context building
+        # REFACTORING: Use DRY principle - centralized context building
         context = _build_exception_context(
             kwargs,
             item_code=item_code,
@@ -202,7 +202,7 @@ class FlextTargetOracleWmsShipmentError(FlextTargetOracleWmsError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target shipment error with context."""
-        # SOLID REFACTORING: Use DRY principle - centralized context building
+        # REFACTORING: Use DRY principle - centralized context building
         context = _build_exception_context(
             kwargs,
             shipment_id=shipment_id,
@@ -222,7 +222,7 @@ class FlextTargetOracleWmsTimeoutError(FlextTimeoutError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target timeout error with context."""
-        # SOLID REFACTORING: Use DRY principle - centralized context building
+        # REFACTORING: Use DRY principle - centralized context building
         context = _build_exception_context(
             kwargs,
             operation=operation,
@@ -242,7 +242,7 @@ class FlextTargetOracleWmsLoadError(FlextTargetOracleWmsError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target load error with context."""
-        # SOLID REFACTORING: Use DRY principle - centralized context building
+        # REFACTORING: Use DRY principle - centralized context building
         context = _build_exception_context(
             kwargs,
             table_name=table_name,
@@ -262,7 +262,7 @@ class FlextTargetOracleWmsTransformationError(FlextProcessingError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target transformation error with context."""
-        # SOLID REFACTORING: Use DRY principle - centralized context building
+        # REFACTORING: Use DRY principle - centralized context building
         context = _build_exception_context(
             kwargs,
             transformation_type=transformation_type,

@@ -20,7 +20,7 @@ from flext_observability import FlextObservabilityMonitor
 from flext_target_oracle_wms.singer.target import SingerTargetOracleWMS
 
 # =============================================================================
-# SOLID REFACTORING: Parameter Object Pattern for reducing method complexity
+# REFACTORING: Parameter Object Pattern for reducing method complexity
 # =============================================================================
 
 
