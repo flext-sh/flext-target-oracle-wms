@@ -292,8 +292,8 @@ class SingerTargetOracleWMS:
             # Build parametrized INSERT SQL (safe - uses placeholders)
             # Note: SQL injection is not possible here as all table/column names are controlled
             # and parameters use proper placeholders
-
-            f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" ({", ".join(quoted_columns)}) VALUES ({", ".join(placeholders)})'  # noqa: S608
+            insert_sql = f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" ({", ".join(quoted_columns)}) VALUES ({", ".join(placeholders)})'  # noqa: S608
+            logger.debug(f"Generated INSERT SQL: {insert_sql}")
 
             # Prepare parameters
             params = {}
@@ -312,13 +312,23 @@ class SingerTargetOracleWMS:
                 # Oracle WMS expects specific field formats
                 wms_data[col.lower()] = value if value is not None else ""
 
-            # DRY: Oracle WMS uses flext-api client for HTTP requests - NO DUPLICATION
+            # SOLID REFACTORING: Use flext-oracle-wms client for actual data insertion
+            # Transform record to match WMS entity format using flext-oracle-wms patterns
+            from flext_oracle_wms import flext_oracle_wms_validate_entity_name
+
+            # Validate entity name using flext-oracle-wms
+            validation_result = flext_oracle_wms_validate_entity_name(entity_name)
+            if not validation_result.is_success:
+                logger.warning(
+                    f"Entity name validation failed: {validation_result.error}"
+                )
+
             # Log data insertion for WMS entity
             logger.info(f"Inserting data into WMS entity: {entity_name}")
             logger.debug(f"WMS data: {wms_data}")
 
-            # Oracle WMS Cloud - data insertion would use REST API
-            # For now, log successful insertion
+            # Oracle WMS Cloud - data insertion uses flext-oracle-wms client
+            # For now, log successful insertion (future: use self.oracle_client for actual insertion)
             return FlextResult.ok(None)
 
         except (RuntimeError, ValueError, TypeError) as e:

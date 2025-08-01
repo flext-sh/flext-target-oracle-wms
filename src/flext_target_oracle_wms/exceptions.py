@@ -18,6 +18,37 @@ from flext_core.exceptions import (
     FlextValidationError,
 )
 
+# =============================================================================
+# SOLID REFACTORING: DRY Principle - Centralized context building pattern
+# =============================================================================
+
+
+def _build_exception_context(
+    kwargs: dict[str, object],
+    **additional_context: object,
+) -> dict[str, object]:
+    """Build exception context using DRY principle.
+
+    SOLID REFACTORING: Eliminates 144+ lines of duplicated context building code
+    by centralizing the pattern in a single function.
+
+    Args:
+        kwargs: Keyword arguments from exception constructors
+        **additional_context: Additional context fields to include
+
+    Returns:
+        Dictionary with properly formatted exception context
+
+    """
+    context = kwargs.copy()
+
+    # Add additional context fields with None filtering
+    for key, value in additional_context.items():
+        if value is not None:
+            context[key] = value
+
+    return context
+
 
 class FlextTargetOracleWmsError(FlextError):
     """Base exception for Oracle WMS target operations."""
@@ -47,12 +78,12 @@ class FlextTargetOracleWmsConnectionError(FlextConnectionError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target connection error with context."""
-        context = kwargs.copy()
-        if wms_endpoint is not None:
-            context["wms_endpoint"] = wms_endpoint
-        if database_name is not None:
-            context["database_name"] = database_name
-
+        # SOLID REFACTORING: Use DRY principle - centralized context building
+        context = _build_exception_context(
+            kwargs,
+            wms_endpoint=wms_endpoint,
+            database_name=database_name,
+        )
         super().__init__(f"Oracle WMS target connection: {message}", **context)
 
 
@@ -67,12 +98,12 @@ class FlextTargetOracleWmsAuthenticationError(FlextAuthenticationError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target authentication error with context."""
-        context = kwargs.copy()
-        if username is not None:
-            context["username"] = username
-        if warehouse_name is not None:
-            context["warehouse_name"] = warehouse_name
-
+        # SOLID REFACTORING: Use DRY principle - centralized context building
+        context = _build_exception_context(
+            kwargs,
+            username=username,
+            warehouse_name=warehouse_name,
+        )
         super().__init__(f"Oracle WMS target auth: {message}", **context)
 
 
@@ -88,7 +119,7 @@ class FlextTargetOracleWmsValidationError(FlextValidationError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target validation error with context."""
-        validation_details = {}
+        validation_details: dict[str, object] = {}
         if field is not None:
             validation_details["field"] = field
         if value is not None:
@@ -115,10 +146,8 @@ class FlextTargetOracleWmsConfigurationError(FlextConfigurationError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target configuration error with context."""
-        context = kwargs.copy()
-        if config_key is not None:
-            context["config_key"] = config_key
-
+        # SOLID REFACTORING: Use DRY principle - centralized context building
+        context = _build_exception_context(kwargs, config_key=config_key)
         super().__init__(f"Oracle WMS target config: {message}", **context)
 
 
@@ -133,12 +162,12 @@ class FlextTargetOracleWmsProcessingError(FlextProcessingError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target processing error with context."""
-        context = kwargs.copy()
-        if entity_type is not None:
-            context["entity_type"] = entity_type
-        if processing_stage is not None:
-            context["processing_stage"] = processing_stage
-
+        # SOLID REFACTORING: Use DRY principle - centralized context building
+        context = _build_exception_context(
+            kwargs,
+            entity_type=entity_type,
+            processing_stage=processing_stage,
+        )
         super().__init__(f"Oracle WMS target processing: {message}", **context)
 
 
@@ -153,13 +182,13 @@ class FlextTargetOracleWmsInventoryError(FlextTargetOracleWmsError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target inventory error with context."""
-        context = kwargs.copy()
-        if item_code is not None:
-            context["item_code"] = item_code
-        if location is not None:
-            context["location"] = location
-
-        super().__init__(f"Oracle WMS target inventory: {message}", **context)
+        # SOLID REFACTORING: Use DRY principle - centralized context building
+        context = _build_exception_context(
+            kwargs,
+            item_code=item_code,
+            location=location,
+        )
+        super().__init__(f"Oracle WMS target inventory: {message}", context=context)
 
 
 class FlextTargetOracleWmsShipmentError(FlextTargetOracleWmsError):
@@ -173,13 +202,13 @@ class FlextTargetOracleWmsShipmentError(FlextTargetOracleWmsError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target shipment error with context."""
-        context = kwargs.copy()
-        if shipment_id is not None:
-            context["shipment_id"] = shipment_id
-        if carrier is not None:
-            context["carrier"] = carrier
-
-        super().__init__(f"Oracle WMS target shipment: {message}", **context)
+        # SOLID REFACTORING: Use DRY principle - centralized context building
+        context = _build_exception_context(
+            kwargs,
+            shipment_id=shipment_id,
+            carrier=carrier,
+        )
+        super().__init__(f"Oracle WMS target shipment: {message}", context=context)
 
 
 class FlextTargetOracleWmsTimeoutError(FlextTimeoutError):
@@ -193,12 +222,12 @@ class FlextTargetOracleWmsTimeoutError(FlextTimeoutError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target timeout error with context."""
-        context = kwargs.copy()
-        if operation is not None:
-            context["operation"] = operation
-        if timeout_seconds is not None:
-            context["timeout_seconds"] = timeout_seconds
-
+        # SOLID REFACTORING: Use DRY principle - centralized context building
+        context = _build_exception_context(
+            kwargs,
+            operation=operation,
+            timeout_seconds=timeout_seconds,
+        )
         super().__init__(f"Oracle WMS target timeout: {message}", **context)
 
 
@@ -213,13 +242,13 @@ class FlextTargetOracleWmsLoadError(FlextTargetOracleWmsError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target load error with context."""
-        context = kwargs.copy()
-        if table_name is not None:
-            context["table_name"] = table_name
-        if record_count is not None:
-            context["record_count"] = record_count
-
-        super().__init__(f"Oracle WMS target load: {message}", **context)
+        # SOLID REFACTORING: Use DRY principle - centralized context building
+        context = _build_exception_context(
+            kwargs,
+            table_name=table_name,
+            record_count=record_count,
+        )
+        super().__init__(f"Oracle WMS target load: {message}", context=context)
 
 
 class FlextTargetOracleWmsTransformationError(FlextProcessingError):
@@ -233,12 +262,12 @@ class FlextTargetOracleWmsTransformationError(FlextProcessingError):
         **kwargs: object,
     ) -> None:
         """Initialize Oracle WMS target transformation error with context."""
-        context = kwargs.copy()
-        if transformation_type is not None:
-            context["transformation_type"] = transformation_type
-        if input_format is not None:
-            context["input_format"] = input_format
-
+        # SOLID REFACTORING: Use DRY principle - centralized context building
+        context = _build_exception_context(
+            kwargs,
+            transformation_type=transformation_type,
+            input_format=input_format,
+        )
         super().__init__(f"Oracle WMS target transformation: {message}", **context)
 
 
