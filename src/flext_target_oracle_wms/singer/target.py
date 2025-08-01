@@ -312,7 +312,7 @@ class SingerTargetOracleWMS:
                 # Oracle WMS expects specific field formats
                 wms_data[col.lower()] = value if value is not None else ""
 
-            # SOLID REFACTORING: Use flext-oracle-wms client for actual data insertion
+            # REFACTORING: Use flext-oracle-wms client for actual data insertion
             # Transform record to match WMS entity format using flext-oracle-wms patterns
             from flext_oracle_wms import flext_oracle_wms_validate_entity_name
 

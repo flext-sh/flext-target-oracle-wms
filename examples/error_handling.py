@@ -12,7 +12,8 @@ from __future__ import annotations
 
 import asyncio
 import time
-from typing import Any, Coroutine
+from collections.abc import Coroutine
+from typing import Any
 
 # DRY: Import REAL flext-* APIs
 from flext_core import FlextResult, get_logger
@@ -36,13 +37,13 @@ monitor = FlextObservabilityMonitor()
 
 
 # =============================================================================
-# SOLID REFACTORING: Break down monolithic function into smaller, focused functions
+# REFACTORING: Break down monolithic function into smaller, focused functions
 # =============================================================================
 
 
 def get_error_demo_config() -> dict[str, Any]:
     """Single Responsibility: Get error demonstration configuration.
-    
+
     SOLID REFACTORING: Extract configuration into separate function following
     Single Responsibility Principle.
     """
@@ -74,9 +75,11 @@ def get_error_demo_config() -> dict[str, Any]:
     }
 
 
-async def demonstrate_setup_error_handling(config: dict[str, Any]) -> SingerTargetOracleWMS | None:
+async def demonstrate_setup_error_handling(
+    config: dict[str, Any],
+) -> SingerTargetOracleWMS | None:
     """Single Responsibility: Demonstrate setup and connection error handling.
-    
+
     SOLID REFACTORING: Extract setup error handling into focused function.
     """
     logger.info("Test 1: Setup error scenarios")
@@ -98,17 +101,15 @@ async def demonstrate_setup_error_handling(config: dict[str, Any]) -> SingerTarg
         if setup_result.is_success:
             logger.info("Setup successful with fallback configuration")
             return target
-        else:
-            logger.error("Setup failed even with fallback - switching to mock mode")
-            return None
-    else:
-        logger.info("Setup successful on first attempt")
-        return target
+        logger.error("Setup failed even with fallback - switching to mock mode")
+        return None
+    logger.info("Setup successful on first attempt")
+    return target
 
 
 async def demonstrate_schema_validation_errors(target: SingerTargetOracleWMS) -> None:
     """Single Responsibility: Demonstrate schema validation error handling.
-    
+
     SOLID REFACTORING: Extract schema validation into focused function.
     """
     logger.info("Test 2: Schema validation error scenarios")
@@ -140,7 +141,7 @@ async def demonstrate_schema_validation_errors(target: SingerTargetOracleWMS) ->
 
 async def _test_invalid_schemas(target: SingerTargetOracleWMS) -> None:
     """Helper: Test invalid schema handling.
-    
+
     SOLID REFACTORING: Extract invalid schema testing into helper function.
     """
     # Invalid schemas to test
@@ -175,51 +176,51 @@ async def _test_invalid_schemas(target: SingerTargetOracleWMS) -> None:
 @flext_monitor_function(monitor)
 async def demonstrate_error_handling() -> None:
     """Orchestrate comprehensive error handling demonstration.
-    
+
     SOLID REFACTORING: Reduced complexity from 61 to ~8 by breaking down monolithic
     function into focused, single-responsibility functions.
     """
     logger.info("Starting error handling demonstration")
-    
+
     # Get configuration
     config = get_error_demo_config()
-    
+
     # Test setup error handling
     target = await demonstrate_setup_error_handling(config)
     if target is None:
         logger.error("Unable to establish target connection - ending demonstration")
         return
-    
+
     # Test schema validation errors
     await demonstrate_schema_validation_errors(target)
-    
-    # Test data processing errors 
+
+    # Test data processing errors
     await demonstrate_data_processing_errors(target)
-    
+
     # Test recovery scenarios
     await demonstrate_recovery_scenarios(target)
-    
+
     logger.info("Error handling demonstration completed")
 
 
 async def demonstrate_data_processing_errors(target: SingerTargetOracleWMS) -> None:
     """Single Responsibility: Demonstrate data processing error handling.
-    
+
     SOLID REFACTORING: Extract data processing errors into focused function.
     """
     logger.info("Test 3: Data processing error scenarios")
-    
+
     # Valid record first
     valid_record = {
         "type": "RECORD",
-        "stream": "error_test", 
+        "stream": "error_test",
         "record": {
             "id": "test_001",
             "value": 100.50,
             "timestamp": "2025-01-01T10:00:00Z",
         },
     }
-    
+
     try:
         record_result = await target.process_record_message(valid_record)
         if record_result.is_success:
@@ -232,14 +233,14 @@ async def demonstrate_data_processing_errors(target: SingerTargetOracleWMS) -> N
 
 async def demonstrate_recovery_scenarios(target: SingerTargetOracleWMS) -> None:
     """Single Responsibility: Demonstrate recovery and resilience scenarios.
-    
+
     SOLID REFACTORING: Extract recovery scenarios into focused function.
     """
     logger.info("Test 4: Recovery and resilience scenarios")
-    
+
     # Simulate connection recovery
     logger.info("Simulating connection recovery scenario...")
-    
+
     try:
         # Test graceful shutdown and restart
         cleanup_result = await target.cleanup()
@@ -247,10 +248,10 @@ async def demonstrate_recovery_scenarios(target: SingerTargetOracleWMS) -> None:
             logger.info("Target cleanup successful")
         else:
             logger.warning(f"Target cleanup had issues: {cleanup_result.error}")
-            
+
     except Exception as e:
         logger.warning(f"Recovery scenario raised exception: {e}")
-        
+
     logger.info("Recovery scenarios completed")
 
 
