@@ -4,14 +4,12 @@ from __future__ import annotations
 
 import json
 import sys
-from typing import Any
 
 # Import from flext-core for foundational patterns
 from flext_core import FlextResult, get_logger
 
 # Use REAL flext-oracle-wms library - NO DUPLICATION
 from flext_oracle_wms import (
-    FlextOracleWmsClient,
     FlextOracleWmsClientConfig,
     create_oracle_wms_client,
 )
@@ -49,9 +47,12 @@ class SingerTargetOracleWMS:
         # Check if mock mode is requested
         mock_mode = config.get("mock_mode", False)
         self.mock_mode = mock_mode
-        
+
         # Create Oracle WMS client with optional mock mode
-        self.oracle_client = create_oracle_wms_client(oracle_config, mock_mode=mock_mode)
+        self.oracle_client = create_oracle_wms_client(
+            oracle_config,
+            mock_mode=mock_mode,
+        )
 
         # Initialize WMS components
         self.catalog_manager = SingerWMSCatalogManager()
@@ -81,8 +82,14 @@ class SingerTargetOracleWMS:
                     f"Oracle WMS connection failed: {start_result.error}",
                 )
 
-            mode_msg = "MOCK MODE - using realistic test data" if self.mock_mode else "REAL MODE - using Oracle WMS API"
-            logger.info(f"Singer Target Oracle WMS setup completed successfully - {mode_msg}")
+            mode_msg = (
+                "MOCK MODE - using realistic test data"
+                if self.mock_mode
+                else "REAL MODE - using Oracle WMS API"
+            )
+            logger.info(
+                f"Singer Target Oracle WMS setup completed successfully - {mode_msg}",
+            )
 
             return FlextResult.ok(None)
 
@@ -327,7 +334,7 @@ class SingerTargetOracleWMS:
             validation_result = flext_oracle_wms_validate_entity_name(entity_name)
             if not validation_result.is_success:
                 logger.warning(
-                    f"Entity name validation failed: {validation_result.error}"
+                    f"Entity name validation failed: {validation_result.error}",
                 )
 
             # Log data insertion for WMS entity
@@ -336,15 +343,16 @@ class SingerTargetOracleWMS:
 
             # Oracle WMS Cloud - data insertion uses flext-oracle-wms client
             if self.mock_mode:
-                logger.info(f"MOCK MODE: Would insert data into WMS entity: {entity_name}")
+                logger.info(
+                    f"MOCK MODE: Would insert data into WMS entity: {entity_name}",
+                )
                 logger.debug(f"MOCK WMS data: {wms_data}")
                 return FlextResult.ok(None)
-            else:
-                # Real Oracle WMS insertion would go here
-                logger.info(f"REAL MODE: Inserting data into WMS entity: {entity_name}")
-                logger.debug(f"REAL WMS data: {wms_data}")
-                # TODO: Implement real Oracle WMS data insertion via self.oracle_client
-                return FlextResult.ok(None)
+            # Real Oracle WMS insertion would go here
+            logger.info(f"REAL MODE: Inserting data into WMS entity: {entity_name}")
+            logger.debug(f"REAL WMS data: {wms_data}")
+            # TODO: Implement real Oracle WMS data insertion via self.oracle_client
+            return FlextResult.ok(None)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception(f"WMS record insertion failed: {stream_name}")

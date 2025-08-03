@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Any
 from unittest.mock import AsyncMock
 
 import pytest
@@ -40,7 +39,8 @@ class TestOracleWMSIntegration:
 
     @pytest.mark.asyncio
     async def test_singer_target_setup(
-        self, oracle_wms_config: dict[str, object]
+        self,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test SingerTarget can setup Oracle WMS client using REAL APIs."""
         # DRY: Use REAL implementation - NO DUPLICATION

@@ -11,12 +11,9 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import asyncio
-import time
-from collections.abc import Coroutine
-from typing import Any
 
 # DRY: Import REAL flext-* APIs
-from flext_core import FlextResult, get_logger
+from flext_core import get_logger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 # Import REAL production implementations
@@ -257,7 +254,7 @@ async def demonstrate_recovery_scenarios(target: SingerTargetOracleWMS) -> None:
 
 if __name__ == "__main__":
     """Run error handling demonstration.
-    
+
     SOLID REFACTORING: Simplified main execution using the orchestrated functions.
     """
     # Example code - MyPy type checking relaxed for demonstration

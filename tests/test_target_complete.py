@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Any
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -480,7 +479,8 @@ class TestSingerTargetOracleWMSComprehensive:
             assert "Stats retrieval failed" in result.error
 
     def test_finalize_with_empty_stats(
-        self, oracle_wms_config: dict[str, object]
+        self,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test finalize with empty statistics."""
         target = SingerTargetOracleWMS(oracle_wms_config)
