@@ -51,7 +51,8 @@ class OracleWMSTargetCli:
         return result
 
     async def _execute_target_pipeline(
-        self, config: dict[str, object]
+        self,
+        config: dict[str, object],
     ) -> FlextResult[None]:
         """Execute the target pipeline with railway-oriented programming.
 
@@ -73,7 +74,8 @@ class OracleWMSTargetCli:
         return await self._finalize_target(target)
 
     def _prepare_config(
-        self, config_path: str | None
+        self,
+        config_path: str | None,
     ) -> FlextResult[dict[str, object]]:
         """Prepare configuration from path or defaults."""
         try:

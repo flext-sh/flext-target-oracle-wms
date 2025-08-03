@@ -20,7 +20,9 @@ class WMSStreamProcessingStats:
     """WMS stream processing statistics - mutable for performance."""
 
     def __init__(
-        self, stream_name: str, schema: dict[str, object] | None = None
+        self,
+        stream_name: str,
+        schema: dict[str, object] | None = None,
     ) -> None:
         """Initialize stream processing statistics."""
         self.stream_name = stream_name
@@ -235,7 +237,7 @@ class SingerWMSStreamProcessor:
                         return FlextResult.fail(f"Missing required field: {prop_name}")
 
             # Basic type validation could be added here
-            return FlextResult.ok(True)
+            return FlextResult.ok(data=True)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("WMS schema validation failed")

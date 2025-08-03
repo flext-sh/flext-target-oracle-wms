@@ -19,7 +19,7 @@ import gc
 import time
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -96,8 +96,8 @@ async def production_target(
         with patch("flext_oracle_wms.FlextOracleWmsClient") as mock_client:
             mock_instance = AsyncMock()
             mock_client.return_value = mock_instance
-            mock_instance.connect.return_value = FlextResult.ok(True)
-            mock_instance.disconnect.return_value = FlextResult.ok(True)
+            mock_instance.connect.return_value = FlextResult.ok(data=True)
+            mock_instance.disconnect.return_value = FlextResult.ok(data=True)
             mock_instance.execute.return_value = FlextResult.ok({"rows_affected": 1})
 
             setup_result = await target.setup()
@@ -1101,7 +1101,7 @@ class TestProductionEdgeCases:
                 with patch.object(
                     temp_target,
                     "setup",
-                    return_value=FlextResult.ok(True),
+                    return_value=FlextResult.ok(data=True),
                 ):
                     setup_result = await temp_target.setup()
                     return setup_result.is_success

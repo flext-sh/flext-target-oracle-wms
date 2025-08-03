@@ -17,12 +17,7 @@ from flext_observability import FlextObservabilityMonitor, flext_monitor_functio
 
 # REFACTORING: MAXIMIZE usage of refactored flext-oracle-wms library
 from flext_oracle_wms import (
-    FlextOracleWmsDefaults,
-    FlextOracleWmsEntity,
-    FlextOracleWmsResponseFields,
-    OracleWMSEntityType,
     flext_oracle_wms_format_timestamp,
-    flext_oracle_wms_normalize_url,
     flext_oracle_wms_validate_entity_name,
 )
 
@@ -160,7 +155,8 @@ class WMSDataTransformer:
         self.chunk_processor = flext_oracle_wms_chunk_records
 
     def _apply_wms_filters(
-        self, record: dict[str, object]
+        self,
+        record: dict[str, object],
     ) -> FlextResult[dict[str, object]]:
         """Apply flext-oracle-wms filters to record.
 
@@ -310,7 +306,8 @@ class WMSSchemaMapper:
         return _normalize_oracle_identifier(name)
 
     def _map_singer_type_to_oracle(
-        self, prop_def: dict[str, object]
+        self,
+        prop_def: dict[str, object],
     ) -> FlextResult[str]:
         """Map Singer property definition to Oracle type using flext-oracle-wms.
 

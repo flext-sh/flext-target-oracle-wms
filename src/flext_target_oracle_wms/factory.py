@@ -129,7 +129,7 @@ class FlextTargetFactory:
         """
         try:
             logger.debug(
-                f"Creating Oracle WMS target for environment: {request.environment}"
+                f"Creating Oracle WMS target for environment: {request.environment}",
             )
 
             # Start with base configuration
