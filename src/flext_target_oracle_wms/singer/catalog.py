@@ -103,7 +103,7 @@ class SingerWMSCatalogManager:
     def get_schema_for_stream(self, stream_name: str) -> FlextResult[dict[str, object]]:
         """Get schema for specific WMS stream."""
         stream_result = self.get_stream(stream_name)
-        if not stream_result.is_success:
+        if not stream_result.success:
             return FlextResult.fail(stream_result.error or "Stream not found")
 
         stream_entry = stream_result.data
@@ -114,7 +114,7 @@ class SingerWMSCatalogManager:
     def get_key_properties(self, stream_name: str) -> FlextResult[list[str]]:
         """Get key properties for WMS stream."""
         stream_result = self.get_stream(stream_name)
-        if not stream_result.is_success:
+        if not stream_result.success:
             return FlextResult.fail(stream_result.error or "Stream not found")
 
         stream_entry = stream_result.data

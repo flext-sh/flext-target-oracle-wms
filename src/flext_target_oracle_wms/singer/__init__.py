@@ -11,7 +11,7 @@ with contextlib.suppress(ImportError):
     from flext_target_oracle_wms.singer.stream import SingerWMSStreamProcessor
     from flext_target_oracle_wms.singer.target import SingerTargetOracleWMS
 
-__all__ = [
+__all__: list[str] = [
     "SingerTargetOracleWMS",
     "SingerWMSCatalogManager",
     "SingerWMSStreamProcessor",

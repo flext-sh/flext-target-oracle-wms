@@ -10,7 +10,7 @@ from flext_target_oracle_wms.patterns.wms_patterns import (
     WMSTypeConverter,
 )
 
-__all__ = [
+__all__: list[str] = [
     "WMSDataTransformer",
     "WMSSchemaMapper",
     "WMSTableManager",

@@ -71,15 +71,15 @@ class TestCompleteTargetCoverage:
             # Setup complete mock client
             mock_client = AsyncMock()
             mock_client_class.return_value = mock_client
-            mock_client.start.return_value = MagicMock(is_success=True)
-            mock_client.stop.return_value = MagicMock(is_success=True)
-            mock_client.execute_query.return_value = MagicMock(is_success=True, data=[])
+            mock_client.start.return_value = MagicMock(success=True)
+            mock_client.stop.return_value = MagicMock(success=True)
+            mock_client.execute_query.return_value = MagicMock(success=True, data=[])
 
             target = SingerTargetOracleWMS(target_config)
 
             # Test complete initialization
             setup_result = await target.setup()
-            assert setup_result.is_success
+            assert setup_result.success
 
             # Test schema processing with complex schema
             complex_schema = {
@@ -110,7 +110,7 @@ class TestCompleteTargetCoverage:
             }
 
             schema_result = await target.process_schema_message(complex_schema)
-            assert schema_result.is_success
+            assert schema_result.success
 
             # Test multiple record processing
             records = [
@@ -159,16 +159,16 @@ class TestCompleteTargetCoverage:
                 }
 
                 record_result = await target.process_record_message(record_message)
-                assert record_result.is_success
+                assert record_result.success
 
             # Test finalization
             finalize_result = target.finalize()
-            assert finalize_result.is_success
+            assert finalize_result.success
             assert finalize_result.data is not None
 
             # Test cleanup
             cleanup_result = await target.cleanup()
-            assert cleanup_result.is_success
+            assert cleanup_result.success
 
     def test_target_configuration_variants(self) -> None:
         """Test target with various configuration variants."""
@@ -265,7 +265,7 @@ class TestCompletePatternsMetworkCoverage:
 
         # Use correct method signature from actual implementation
         result = transformer.transform_record(complex_data, None)
-        assert result.is_success
+        assert result.success
         transformed_data = result.data
         assert transformed_data is not None
         assert "SIMPLE_STRING" in transformed_data  # Oracle normalizes to uppercase
@@ -298,7 +298,7 @@ class TestCompletePatternsMetworkCoverage:
 
         # Use the correct method name from actual implementation
         result = mapper.map_singer_schema_to_oracle(complex_schema)
-        assert result.is_success
+        assert result.success
         table_schema = result.data
         assert table_schema is not None
         assert "STRING_FIELD" in table_schema  # Oracle normalizes to uppercase
@@ -329,7 +329,7 @@ class TestCompletePatternsMetworkCoverage:
             "test_schema",
             complex_schema,
         )
-        assert create_result.is_success
+        assert create_result.success
         create_sql = create_result.data
         assert create_sql is not None
         assert "CREATE TABLE" in create_sql
@@ -342,7 +342,7 @@ class TestCompletePatternsMetworkCoverage:
             "test_schema",
             columns,
         )
-        assert insert_result.is_success
+        assert insert_result.success
         insert_sql = insert_result.data
         assert insert_sql is not None
         assert "INSERT INTO" in insert_sql
@@ -365,7 +365,7 @@ class TestCompletePatternsMetworkCoverage:
 
         for singer_type, test_value in type_mappings:
             result = converter.convert_singer_to_oracle(singer_type, test_value)
-            assert result.is_success
+            assert result.success
             # Just verify conversion doesn't fail - actual type mapping depends on implementation
 
         # Test with edge cases
@@ -379,7 +379,7 @@ class TestCompletePatternsMetworkCoverage:
 
         for singer_type, test_value in edge_cases:
             result = converter.convert_singer_to_oracle(singer_type, test_value)
-            assert result.is_success
+            assert result.success
 
 
 @pytest.mark.skipif(not IMPORTS_AVAILABLE, reason="Target imports not available")
@@ -414,7 +414,7 @@ class TestCompleteStreamCoverage:
 
         for config in stream_configs:
             result = processor.initialize_stream(config["stream"], config["schema"])
-            assert result.is_success
+            assert result.success
 
         # Test batch processing with mixed success/failure
         records = [
@@ -425,11 +425,11 @@ class TestCompleteStreamCoverage:
         ]
 
         result = processor.process_batch("simple_stream", records)
-        assert result.is_success
+        assert result.success
 
         # Test stats collection
         stats_result = processor.get_all_stats()
-        assert stats_result.is_success
+        assert stats_result.success
         assert stats_result.data is not None
 
 
@@ -499,11 +499,11 @@ class TestCompleteCatalogCoverage:
                 entry["schema"],
                 metadata,
             )
-            assert result.is_success
+            assert result.success
 
         # Test catalog conversion
         singer_catalog_result = manager.to_singer_catalog()
-        assert singer_catalog_result.is_success
+        assert singer_catalog_result.success
         catalog = singer_catalog_result.data
         assert catalog is not None
         assert len(catalog.get("streams", [])) == 2
@@ -521,7 +521,7 @@ class TestCompleteCatalogCoverage:
                 },
             ],
         )
-        assert metadata_result.is_success
+        assert metadata_result.success
 
 
 @pytest.mark.skipif(not IMPORTS_AVAILABLE, reason="Target imports not available")
@@ -545,12 +545,12 @@ class TestCompleteCLIEdgeCases:
             mock_target_class.return_value = mock_target
 
             # Mock all methods correctly - avoid async confusion
-            mock_target.setup = AsyncMock(return_value=MagicMock(is_success=True))
-            mock_target.finalize.return_value = MagicMock(is_success=True, data={})
-            mock_target.cleanup = AsyncMock(return_value=MagicMock(is_success=True))
+            mock_target.setup = AsyncMock(return_value=MagicMock(success=True))
+            mock_target.finalize.return_value = MagicMock(success=True, data={})
+            mock_target.cleanup = AsyncMock(return_value=MagicMock(success=True))
 
             result = await cli.execute()
-            assert result.is_success
+            assert result.success
 
     @pytest.mark.asyncio
     async def test_cli_malformed_json_handling(self) -> None:
@@ -575,12 +575,12 @@ class TestCompleteCLIEdgeCases:
                 mock_target = AsyncMock()
                 mock_target_class.return_value = mock_target
                 mock_target.setup = AsyncMock(
-                    return_value=MagicMock(is_success=True),
+                    return_value=MagicMock(success=True),
                 )
 
                 result = await cli.execute()
                 # Should handle malformed JSON gracefully
-                assert not result.is_success
+                assert not result.success
                 assert result.error is not None
                 # Error message should indicate JSON or execution failure
                 assert (
@@ -629,7 +629,7 @@ class TestCompleteCLIEdgeCases:
         for test_args in test_cases:
             with patch("sys.argv", test_args):
                 with patch("asyncio.run") as mock_run:
-                    mock_run.return_value = MagicMock(is_success=True)
+                    mock_run.return_value = MagicMock(success=True)
                     with patch("sys.exit") as mock_exit:
                         main()
                         # Should not exit with success
@@ -655,15 +655,15 @@ class TestCompleteIntegrationWorkflows:
             # Setup comprehensive mock client
             mock_client = AsyncMock()
             mock_client_class.return_value = mock_client
-            mock_client.start.return_value = MagicMock(is_success=True)
-            mock_client.stop.return_value = MagicMock(is_success=True)
-            mock_client.execute_query.return_value = MagicMock(is_success=True, data=[])
+            mock_client.start.return_value = MagicMock(success=True)
+            mock_client.stop.return_value = MagicMock(success=True)
+            mock_client.execute_query.return_value = MagicMock(success=True, data=[])
 
             target = SingerTargetOracleWMS(config)
 
             # 1. Setup phase
             setup_result = await target.setup()
-            assert setup_result.is_success
+            assert setup_result.success
 
             # 2. Schema processing phase - multiple schemas
             schemas = [
@@ -697,7 +697,7 @@ class TestCompleteIntegrationWorkflows:
 
             for schema in schemas:
                 schema_result = await target.process_schema_message(schema)
-                assert schema_result.is_success
+                assert schema_result.success
 
             # 3. Data processing phase - batch of records
             product_records = [
@@ -729,7 +729,7 @@ class TestCompleteIntegrationWorkflows:
                 }
 
                 record_result = await target.process_record_message(record_message)
-                assert record_result.is_success
+                assert record_result.success
 
             # Process customer records
             for record_data in customer_records:
@@ -741,7 +741,7 @@ class TestCompleteIntegrationWorkflows:
                 }
 
                 record_result = await target.process_record_message(record_message)
-                assert record_result.is_success
+                assert record_result.success
 
             # 4. State management phase
             state_message = {
@@ -756,7 +756,7 @@ class TestCompleteIntegrationWorkflows:
 
             with patch("sys.stdout", new_callable=io.StringIO) as mock_stdout:
                 state_result = target.process_state_message(state_message)
-                assert state_result.is_success
+                assert state_result.success
                 # Verify STATE was written to stdout
                 output = mock_stdout.getvalue().strip()
                 if output:  # Only check if output was produced
@@ -764,7 +764,7 @@ class TestCompleteIntegrationWorkflows:
 
             # 5. Finalization phase
             finalize_result = target.finalize()
-            assert finalize_result.is_success
+            assert finalize_result.success
             assert finalize_result.data is not None
 
             summary = finalize_result.data
@@ -773,7 +773,7 @@ class TestCompleteIntegrationWorkflows:
 
             # 6. Cleanup phase
             cleanup_result = await target.cleanup()
-            assert cleanup_result.is_success
+            assert cleanup_result.success
 
     def test_factory_integration_with_real_patterns(self) -> None:
         """Test factory integration with real pattern usage."""
@@ -795,7 +795,7 @@ class TestCompleteIntegrationWorkflows:
         )
 
         # Should succeed even with mocked backend
-        assert result.is_success or "Failed to create Oracle WMS target" in (
+        assert result.success or "Failed to create Oracle WMS target" in (
             result.error or ""
         )
 

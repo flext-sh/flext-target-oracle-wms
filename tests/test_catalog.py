@@ -27,7 +27,7 @@ class TestSingerWMSCatalogEntry:
         )
 
         validation_result = entry.validate_domain_rules()
-        assert validation_result.is_success
+        assert validation_result.success
         assert validation_result.error is None
 
     def test_catalog_entry_empty_tap_stream_id(self) -> None:
@@ -39,7 +39,7 @@ class TestSingerWMSCatalogEntry:
         )
 
         validation_result = entry.validate_domain_rules()
-        assert not validation_result.is_success
+        assert not validation_result.success
         assert validation_result.error is not None
         assert "tap_stream_id cannot be empty" in validation_result.error
 
@@ -52,7 +52,7 @@ class TestSingerWMSCatalogEntry:
         )
 
         validation_result = entry.validate_domain_rules()
-        assert not validation_result.is_success
+        assert not validation_result.success
         assert validation_result.error is not None
         assert "tap_stream_id cannot be empty" in validation_result.error
 
@@ -65,7 +65,7 @@ class TestSingerWMSCatalogEntry:
         )
 
         validation_result = entry.validate_domain_rules()
-        assert not validation_result.is_success
+        assert not validation_result.success
         assert validation_result.error is not None
         assert "stream cannot be empty" in validation_result.error
 
@@ -78,7 +78,7 @@ class TestSingerWMSCatalogEntry:
         )
 
         validation_result = entry.validate_domain_rules()
-        assert not validation_result.is_success
+        assert not validation_result.success
         assert validation_result.error is not None
         assert "schema_info cannot be empty" in validation_result.error
 
@@ -99,7 +99,7 @@ class TestSingerWMSCatalogEntry:
 
         # Should still validate successfully
         validation_result = entry.validate_domain_rules()
-        assert validation_result.is_success
+        assert validation_result.success
 
 
 class TestSingerWMSCatalogManager:
@@ -122,7 +122,7 @@ class TestSingerWMSCatalogManager:
         }
 
         result = manager.add_stream("test_stream", schema)
-        assert result.is_success
+        assert result.success
         assert result.error is None
 
     def test_add_stream_with_complex_schema(self) -> None:
@@ -142,7 +142,7 @@ class TestSingerWMSCatalogManager:
         }
 
         result = manager.add_stream("complex_stream", schema)
-        assert result.is_success
+        assert result.success
         assert result.error is None
 
     def test_add_duplicate_stream(self) -> None:
@@ -153,15 +153,15 @@ class TestSingerWMSCatalogManager:
 
         # Add first stream
         result1 = manager.add_stream("duplicate_stream", schema1)
-        assert result1.is_success
+        assert result1.success
 
         # Add same stream with different schema (should overwrite)
         result2 = manager.add_stream("duplicate_stream", schema2)
-        assert result2.is_success
+        assert result2.success
 
         # Verify the schema was updated
         get_result = manager.get_stream("duplicate_stream")
-        assert get_result.is_success
+        assert get_result.success
         entry = get_result.data
         assert entry is not None
         assert entry.schema_info == schema2
@@ -176,7 +176,7 @@ class TestSingerWMSCatalogManager:
 
         # Get stream
         result = manager.get_stream("test_stream")
-        assert result.is_success
+        assert result.success
 
         entry = result.data
         assert entry is not None
@@ -188,7 +188,7 @@ class TestSingerWMSCatalogManager:
         manager = SingerWMSCatalogManager()
 
         result = manager.get_stream("nonexistent_stream")
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "not found" in result.error.lower()
 
@@ -197,7 +197,7 @@ class TestSingerWMSCatalogManager:
         manager = SingerWMSCatalogManager()
 
         result = manager.list_streams()
-        assert result.is_success
+        assert result.success
         streams = result.data
         assert streams is not None
         assert len(streams) == 0
@@ -214,7 +214,7 @@ class TestSingerWMSCatalogManager:
 
         # List streams
         result = manager.list_streams()
-        assert result.is_success
+        assert result.success
 
         streams = result.data
         assert streams is not None
@@ -231,22 +231,22 @@ class TestSingerWMSCatalogManager:
 
         # Verify stream exists
         get_result = manager.get_stream("test_stream")
-        assert get_result.is_success
+        assert get_result.success
 
         # Remove stream
         remove_result = manager.remove_stream("test_stream")
-        assert remove_result.is_success
+        assert remove_result.success
 
         # Verify stream is gone
         get_result_after = manager.get_stream("test_stream")
-        assert not get_result_after.is_success
+        assert not get_result_after.success
 
     def test_remove_stream_nonexistent(self) -> None:
         """Test removing non-existent stream succeeds (idempotent)."""
         manager = SingerWMSCatalogManager()
 
         result = manager.remove_stream("nonexistent_stream")
-        assert result.is_success  # Should succeed even if stream doesn't exist
+        assert result.success  # Should succeed even if stream doesn't exist
 
     def test_catalog_entry_properties(self) -> None:
         """Test catalog entry properties are correctly set."""
@@ -259,11 +259,11 @@ class TestSingerWMSCatalogManager:
 
         # Add stream with metadata
         result = manager.add_stream("property_test", schema, metadata)
-        assert result.is_success
+        assert result.success
 
         # Get stream and verify properties
         get_result = manager.get_stream("property_test")
-        assert get_result.is_success
+        assert get_result.success
 
         entry = get_result.data
         assert entry is not None
@@ -285,32 +285,32 @@ class TestSingerWMSCatalogManager:
                 "properties": {f"field_{i}": {"type": "string"}},
             }
             result = manager.add_stream(f"stream_{i}", schema)
-            assert result.is_success
+            assert result.success
 
         # List all streams
         list_result = manager.list_streams()
-        assert list_result.is_success
+        assert list_result.success
         assert len(list_result.data or []) == 3
 
         # Remove one stream
         remove_result = manager.remove_stream("stream_1")
-        assert remove_result.is_success
+        assert remove_result.success
 
         # Verify count decreased
         list_result_after = manager.list_streams()
-        assert list_result_after.is_success
+        assert list_result_after.success
         assert len(list_result_after.data or []) == 2
 
         # Verify removed stream is gone
         get_result = manager.get_stream("stream_1")
-        assert not get_result.is_success
+        assert not get_result.success
 
         # Verify other streams still exist
         get_result_0 = manager.get_stream("stream_0")
-        assert get_result_0.is_success
+        assert get_result_0.success
 
         get_result_2 = manager.get_stream("stream_2")
-        assert get_result_2.is_success
+        assert get_result_2.success
 
     def test_catalog_manager_isolation(self) -> None:
         """Test that different catalog manager instances are isolated."""
@@ -324,10 +324,10 @@ class TestSingerWMSCatalogManager:
 
         # Verify stream doesn't exist in second manager
         result1 = manager1.get_stream("isolated_stream")
-        assert result1.is_success
+        assert result1.success
 
         result2 = manager2.get_stream("isolated_stream")
-        assert not result2.is_success
+        assert not result2.success
 
     def test_catalog_entry_validation_with_edge_cases(self) -> None:
         """Test catalog entry validation with edge cases."""
@@ -339,7 +339,7 @@ class TestSingerWMSCatalogManager:
         )
 
         validation_result = entry.validate_domain_rules()
-        assert validation_result.is_success  # Should pass with valid data
+        assert validation_result.success  # Should pass with valid data
 
     def test_add_stream_exception_handling(self) -> None:
         """Test add_stream exception handling."""
@@ -354,7 +354,7 @@ class TestSingerWMSCatalogManager:
             mock_entry.side_effect = RuntimeError("Catalog entry creation failed")
             result = manager.add_stream("test_stream", {"type": "object"})
 
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "Stream addition failed" in result.error
 
@@ -369,7 +369,7 @@ class TestSingerWMSCatalogManager:
             mock_entries.keys.side_effect = RuntimeError("keys() failed")
             result = manager.list_streams()
 
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "Stream listing failed" in result.error
 
@@ -387,7 +387,7 @@ class TestSingerWMSCatalogManager:
         with patch.object(manager, "_catalog_entries", mock_entries):
             result = manager.remove_stream("test_stream")
 
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "Stream removal failed" in result.error
 
@@ -404,12 +404,12 @@ class TestSingerWMSCatalogManager:
 
         # Test successful retrieval (lines 107-114)
         result = manager.get_schema_for_stream("test_stream")
-        assert result.is_success
+        assert result.success
         assert result.data == schema
 
         # Test non-existent stream
         result = manager.get_schema_for_stream("nonexistent_stream")
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "not found" in result.error.lower()
 
@@ -430,7 +430,7 @@ class TestSingerWMSCatalogManager:
             mp.setattr(manager, "get_stream", mock_get_stream)
 
             result = manager.get_schema_for_stream("test_stream")
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Stream entry is None" in result.error
 
@@ -442,16 +442,16 @@ class TestSingerWMSCatalogManager:
 
         # Add stream with key properties (lines 118-125)
         add_result = manager.add_stream("test_stream", schema, metadata)
-        assert add_result.is_success
+        assert add_result.success
 
         # Test successful retrieval
         result = manager.get_key_properties("test_stream")
-        assert result.is_success
+        assert result.success
         assert isinstance(result.data, list)
 
         # Test non-existent stream
         result = manager.get_key_properties("nonexistent_stream")
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "not found" in result.error.lower()
 
@@ -470,7 +470,7 @@ class TestSingerWMSCatalogManager:
             mp.setattr(manager, "get_stream", mock_get_stream)
 
             result = manager.get_key_properties("test_stream")
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Stream entry is None" in result.error
 
@@ -485,18 +485,18 @@ class TestSingerWMSCatalogManager:
         # Test successful metadata update (lines 133-156)
         new_metadata = [{"breadcrumb": [], "metadata": {"inclusion": "automatic"}}]
         result = manager.update_stream_metadata("test_stream", new_metadata)
-        assert result.is_success
+        assert result.success
 
         # Verify metadata was updated
         get_result = manager.get_stream("test_stream")
-        assert get_result.is_success
+        assert get_result.success
         entry = get_result.data
         assert entry is not None
         assert entry.metadata == new_metadata
 
         # Test non-existent stream
         result = manager.update_stream_metadata("nonexistent_stream", new_metadata)
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "not found" in result.error.lower()
 
@@ -518,7 +518,7 @@ class TestSingerWMSCatalogManager:
                 [{"metadata": "test"}],
             )
 
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "Metadata update failed" in result.error
 
@@ -528,7 +528,7 @@ class TestSingerWMSCatalogManager:
 
         # Test empty catalog (lines 160-191)
         result = manager.to_singer_catalog()
-        assert result.is_success
+        assert result.success
         assert result.data is not None
         catalog = result.data
         assert "streams" in catalog
@@ -542,7 +542,7 @@ class TestSingerWMSCatalogManager:
         manager.add_stream("stream2", schema2)
 
         result = manager.to_singer_catalog()
-        assert result.is_success
+        assert result.success
         assert result.data is not None
         catalog = result.data
         assert len(catalog["streams"]) == 2
@@ -563,7 +563,7 @@ class TestSingerWMSCatalogManager:
             mock_entries.values.side_effect = RuntimeError("values() failed")
             result = manager.to_singer_catalog()
 
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "Catalog conversion failed" in result.error
 
@@ -602,11 +602,11 @@ class TestSingerWMSCatalogManager:
         }
 
         result = manager.load_from_singer_catalog(catalog)
-        assert result.is_success
+        assert result.success
 
         # Verify streams were loaded
         list_result = manager.list_streams()
-        assert list_result.is_success
+        assert list_result.success
         streams = list_result.data
         assert streams is not None
         assert len(streams) == 2
@@ -615,7 +615,7 @@ class TestSingerWMSCatalogManager:
 
         # Verify stream1 properties
         get_result = manager.get_stream("test_stream1")
-        assert get_result.is_success
+        assert get_result.success
         entry1 = get_result.data
         assert entry1 is not None
         assert entry1.replication_method == "INCREMENTAL"
@@ -624,7 +624,7 @@ class TestSingerWMSCatalogManager:
 
         # Verify stream2 defaults
         get_result = manager.get_stream("test_stream2")
-        assert get_result.is_success
+        assert get_result.success
         entry2 = get_result.data
         assert entry2 is not None
         assert entry2.replication_method == "FULL_TABLE"  # Default
@@ -642,7 +642,7 @@ class TestSingerWMSCatalogManager:
         bad_catalog.get.side_effect = RuntimeError("get() failed")
 
         result = manager.load_from_singer_catalog(bad_catalog)
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "Catalog loading failed" in result.error
 
@@ -653,11 +653,11 @@ class TestSingerWMSCatalogManager:
         # Test catalog without streams key
         catalog: dict[str, object] = {}
         result = manager.load_from_singer_catalog(catalog)
-        assert result.is_success  # Should succeed with empty streams
+        assert result.success  # Should succeed with empty streams
 
         # Verify no streams were loaded
         list_result = manager.list_streams()
-        assert list_result.is_success
+        assert list_result.success
         streams = list_result.data
         assert streams is not None
         assert len(streams) == 0

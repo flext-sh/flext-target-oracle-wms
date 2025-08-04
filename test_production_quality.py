@@ -106,7 +106,7 @@ async def test_singer_target_interfaces() -> bool | None:
             else:
                 result = await target.process_schema_message(message)
 
-            if result.is_success:
+            if result.success:
                 return False
 
         # Test valid schema message structure
@@ -127,7 +127,7 @@ async def test_singer_target_interfaces() -> bool | None:
         # This will fail at Oracle connection, but should pass message validation
         schema_result = await target.process_schema_message(valid_schema)
         if (
-            schema_result.is_success
+            schema_result.success
             or "connection" in schema_result.error.lower()
             or "failed" in schema_result.error.lower()
         ):
@@ -142,7 +142,7 @@ async def test_singer_target_interfaces() -> bool | None:
         }
 
         state_result = target.process_state_message(state_message)
-        return state_result.is_success
+        return state_result.success
 
     except Exception:
         return False
@@ -170,7 +170,7 @@ async def test_data_transformation() -> bool | None:
 
         for singer_type, input_value, expected in test_conversions:
             result = converter.convert_singer_to_oracle(singer_type, input_value)
-            if not result.is_success:
+            if not result.success:
                 return False
 
             converted = result.data
@@ -205,7 +205,7 @@ async def test_data_transformation() -> bool | None:
         }
 
         transform_result = transformer.transform_record(test_record, test_schema)
-        if not transform_result.is_success:
+        if not transform_result.success:
             return False
 
         transformed = transform_result.data
@@ -258,7 +258,7 @@ async def test_table_management() -> bool | None:
             "TEST_SCHEMA",
             test_schema,
         )
-        if not sql_result.is_success:
+        if not sql_result.success:
             return False
 
         sql = sql_result.data
@@ -272,7 +272,7 @@ async def test_table_management() -> bool | None:
             "TEST_SCHEMA",
             columns,
         )
-        if not insert_result.is_success:
+        if not insert_result.success:
             return False
 
         insert_sql = insert_result.data
@@ -299,12 +299,12 @@ async def test_catalog_management() -> bool | None:
         }
 
         add_result = manager.add_stream("test_stream", test_schema)
-        if not add_result.is_success:
+        if not add_result.success:
             return False
 
         # Test getting stream
         get_result = manager.get_stream("test_stream")
-        if not get_result.is_success:
+        if not get_result.success:
             return False
 
         stream_entry = get_result.data
@@ -313,7 +313,7 @@ async def test_catalog_management() -> bool | None:
 
         # Test listing streams
         list_result = manager.list_streams()
-        if not list_result.is_success:
+        if not list_result.success:
             return False
 
         streams = list_result.data
@@ -322,7 +322,7 @@ async def test_catalog_management() -> bool | None:
 
         # Test Singer catalog conversion
         catalog_result = manager.to_singer_catalog()
-        if not catalog_result.is_success:
+        if not catalog_result.success:
             return False
 
         catalog = catalog_result.data

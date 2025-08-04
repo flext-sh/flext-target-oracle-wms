@@ -77,7 +77,7 @@ class SingerTargetOracleWMS:
         try:
             # Start Oracle WMS client - REAL API
             start_result = await self.oracle_client.start()
-            if not start_result.is_success:
+            if not start_result.success:
                 return FlextResult.fail(
                     f"Oracle WMS connection failed: {start_result.error}",
                 )
@@ -116,14 +116,14 @@ class SingerTargetOracleWMS:
 
             # Add to catalog
             catalog_result = self.catalog_manager.add_stream(stream_name, schema)
-            if not catalog_result.is_success:
+            if not catalog_result.success:
                 return FlextResult.fail(
                     f"Failed to add stream to catalog: {catalog_result.error}",
                 )
 
             # Initialize stream processing
             init_result = self.stream_processor.initialize_stream(stream_name, schema)
-            if not init_result.is_success:
+            if not init_result.success:
                 return FlextResult.fail(
                     f"Stream initialization failed: {init_result.error}",
                 )
@@ -141,7 +141,7 @@ class SingerTargetOracleWMS:
                 schema_name,
                 schema,
             )
-            if not create_sql_result.is_success:
+            if not create_sql_result.success:
                 return FlextResult.fail(
                     f"CREATE SQL generation failed: {create_sql_result.error}",
                 )
@@ -152,7 +152,7 @@ class SingerTargetOracleWMS:
                 schema_name,
                 create_sql_result.data or "",
             )
-            if not table_result.is_success:
+            if not table_result.success:
                 return FlextResult.fail(f"Table creation failed: {table_result.error}")
 
             logger.info(f"Processed SCHEMA message for WMS stream: {stream_name}")
@@ -182,7 +182,7 @@ class SingerTargetOracleWMS:
 
             # Process record through stream processor
             process_result = self.stream_processor.process_record(stream_name, record)
-            if not process_result.is_success:
+            if not process_result.success:
                 return FlextResult.fail(
                     f"Record processing failed: {process_result.error}",
                 )
@@ -194,7 +194,7 @@ class SingerTargetOracleWMS:
                 stream_name,
                 transformed_record or {},
             )
-            if not insert_result.is_success:
+            if not insert_result.success:
                 return FlextResult.fail(
                     f"Record insertion failed: {insert_result.error}",
                 )
@@ -259,7 +259,7 @@ class SingerTargetOracleWMS:
                     # Skip validation if client doesn't support queries
                     query_result = FlextResult.ok(None)
 
-                if query_result.is_success:
+                if query_result.success:
                     logger.info(f"Oracle WMS entity validated: {full_entity_name}")
                 else:
                     # Entity might not exist or no access - log but don't fail
@@ -332,7 +332,7 @@ class SingerTargetOracleWMS:
 
             # Validate entity name using flext-oracle-wms
             validation_result = flext_oracle_wms_validate_entity_name(entity_name)
-            if not validation_result.is_success:
+            if not validation_result.success:
                 logger.warning(
                     f"Entity name validation failed: {validation_result.error}",
                 )
@@ -363,7 +363,7 @@ class SingerTargetOracleWMS:
         try:
             # Get processing statistics
             stats_result = self.stream_processor.get_all_stats()
-            if not stats_result.is_success:
+            if not stats_result.success:
                 return FlextResult.fail(
                     f"Failed to get statistics: {stats_result.error}",
                 )
@@ -409,7 +409,7 @@ class SingerTargetOracleWMS:
         try:
             # Stop Oracle WMS client using REAL API
             stop_result = await self.oracle_client.stop()
-            if not stop_result.is_success:
+            if not stop_result.success:
                 logger.warning(
                     f"Oracle WMS client stop failed: {stop_result.error}",
                 )

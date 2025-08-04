@@ -82,7 +82,7 @@ class TestOracleWMSTargetCli:
             mock_target_class.return_value = mock_target
 
             result = await cli.execute(config="config.json")
-            assert result.is_success
+            assert result.success
 
     @pytest.mark.asyncio
     async def test_execute_with_default_config(self) -> None:
@@ -102,7 +102,7 @@ class TestOracleWMSTargetCli:
             mock_target_class.return_value = mock_target
 
             result = await cli.execute()
-            assert result.is_success
+            assert result.success
 
     @pytest.mark.asyncio
     async def test_execute_setup_failure(self) -> None:
@@ -117,7 +117,7 @@ class TestOracleWMSTargetCli:
             mock_target_class.return_value = mock_target
 
             result = await cli.execute()
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Setup failed" in result.error
 
@@ -153,7 +153,7 @@ class TestOracleWMSTargetCli:
             mock_target_class.return_value = mock_target
 
             result = await cli.execute()
-            assert result.is_success
+            assert result.success
             mock_target.process_schema_message.assert_called_once()
             mock_target.process_record_message.assert_called_once()
             mock_target.process_state_message.assert_called_once()
@@ -174,7 +174,7 @@ class TestOracleWMSTargetCli:
             mock_target_class.return_value = mock_target
 
             result = await cli.execute()
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Invalid JSON" in result.error
 
@@ -197,7 +197,7 @@ class TestOracleWMSTargetCli:
             mock_target_class.return_value = mock_target
 
             result = await cli.execute()
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Processing failed" in result.error
 
@@ -211,7 +211,7 @@ class TestOracleWMSTargetCli:
             side_effect=Exception("Test error"),
         ):
             result = await cli.execute()
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "CLI execution failed" in result.error
             assert result.error is not None

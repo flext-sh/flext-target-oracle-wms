@@ -35,7 +35,7 @@ class OracleWMSTargetCli:
         try:
             # Load configuration
             config_result = self._prepare_config(kwargs.get("config"))
-            if not config_result.is_success:
+            if not config_result.success:
                 result = FlextResult.fail(config_result.error or "Configuration failed")
             else:
                 config = config_result.data
@@ -62,12 +62,12 @@ class OracleWMSTargetCli:
 
         # Setup target
         setup_result = await target.setup()
-        if not setup_result.is_success:
+        if not setup_result.success:
             return FlextResult.fail(f"Setup failed: {setup_result.error}")
 
         # Process messages
         process_result = await self._process_stdin_messages(target)
-        if not process_result.is_success:
+        if not process_result.success:
             return process_result
 
         # Finalize and cleanup
@@ -107,7 +107,7 @@ class OracleWMSTargetCli:
                     continue
 
                 result = await self._process_single_message(target, line)
-                if not result.is_success:
+                if not result.success:
                     return result
 
             return FlextResult.ok(None)
@@ -146,7 +146,7 @@ class OracleWMSTargetCli:
             finalize_result = target.finalize()
             await target.cleanup()
 
-            if finalize_result.is_success:
+            if finalize_result.success:
                 summary = finalize_result.data or {}
                 sys.stderr.write(f"Completed: {summary}\n")
 
@@ -158,7 +158,7 @@ class OracleWMSTargetCli:
         """Load configuration from file path - NO DUPLICATION."""
         config_file = Path(config_path)
         if not config_file.exists():
-            msg = f"Configuration file not found: {config_path}"
+            msg: str = f"Configuration file not found: {config_path}"
             raise FileNotFoundError(msg)
 
         config_text = config_file.read_text(encoding="utf-8")
@@ -180,7 +180,7 @@ def main() -> None:
         # Execute CLI with parsed arguments
         result = asyncio.run(cli_instance.execute(config=config_path))
 
-        if not result.is_success:
+        if not result.success:
             sys.stderr.write(f"Execution failed: {result.error}\n")
             sys.exit(1)
 

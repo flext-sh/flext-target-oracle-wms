@@ -56,7 +56,7 @@ class TestFlextTargetFactory:
             preset="development",
         )
 
-        assert result.is_success
+        assert result.success
         assert result.data == mock_target
 
         # Verify config was merged correctly
@@ -87,7 +87,7 @@ class TestFlextTargetFactory:
             custom_option="custom_value",
         )
 
-        assert result.is_success
+        assert result.success
         call_args = mock_target_class.call_args[0][0]
 
         # Production preset applied
@@ -112,7 +112,7 @@ class TestFlextTargetFactory:
                 preset="unknown_preset",
             )
 
-            assert result.is_success
+            assert result.success
             mock_logger.warning.assert_called_once()
             assert (
                 "Unknown preset: unknown_preset" in mock_logger.warning.call_args[0][0]
@@ -132,7 +132,7 @@ class TestFlextTargetFactory:
             password="test_password",
         )
 
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "Failed to create Oracle WMS target" in result.error
         assert result.error is not None
@@ -149,7 +149,7 @@ class TestFlextTargetFactory:
             custom_setting="custom_value",
         )
 
-        assert result.is_success
+        assert result.success
         call_args = mock_target_class.call_args[0][0]
         assert call_args["base_url"] == "https://dev.wms.oracle.com"
         assert call_args["username"] == "dev_user"
@@ -170,7 +170,7 @@ class TestFlextTargetFactory:
             security_level="high",
         )
 
-        assert result.is_success
+        assert result.success
         call_args = mock_target_class.call_args[0][0]
         assert call_args["base_url"] == "https://prod.wms.oracle.com"
         assert call_args["username"] == "prod_user"
@@ -189,7 +189,7 @@ class TestFlextTargetFactory:
 
         result = FlextTargetFactory.create_testing_target()
 
-        assert result.is_success
+        assert result.success
         call_args = mock_target_class.call_args[0][0]
         assert call_args["base_url"] == "https://test.wms.oracle.com"
         assert call_args["username"] == "test_user"
@@ -214,7 +214,7 @@ class TestFlextTargetFactory:
 
             result = FlextTargetFactory.create_from_config_dict(config)
 
-            assert result.is_success
+            assert result.success
             mock_create.assert_called_once_with(
                 base_url="https://config.wms.oracle.com",
                 username="config_user",
@@ -233,7 +233,7 @@ class TestFlextTargetFactory:
 
         result = FlextTargetFactory.create_from_config_dict(config)
 
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "Missing required configuration fields" in result.error
         assert result.error is not None
@@ -256,7 +256,7 @@ class TestFlextTargetFactory:
         ):
             result = FlextTargetFactory.create_from_config_dict(config)
 
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Failed to create target from config" in result.error
 
@@ -308,7 +308,7 @@ class TestFlextTargetMonitoringFactory:
             preset="production",
         )
 
-        assert result.is_success
+        assert result.success
         monitored_target = result.data
 
         # Verify target was created with correct config
@@ -346,7 +346,7 @@ class TestFlextTargetMonitoringFactory:
                 password="fail_password",
             )
 
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Base creation failed" in result.error
 
@@ -375,7 +375,7 @@ class TestFlextTargetMonitoringFactory:
                 password="error_password",
             )
 
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Failed to create monitored target" in result.error
 
@@ -398,7 +398,7 @@ class TestFactoryConvenienceFunctions:
             custom_param="custom_value",
         )
 
-        assert result.is_success
+        assert result.success
         assert result.data == mock_target
 
         mock_create_target.assert_called_once_with(
@@ -431,7 +431,7 @@ class TestFactoryConvenienceFunctions:
             monitoring_param="monitoring_value",
         )
 
-        assert result.is_success
+        assert result.success
         assert result.data == mock_target
 
         # Verify factory was created with custom monitor name
@@ -471,13 +471,13 @@ class TestFactoryIntegration:
             username="simple_user",
             password="simple_password",
         )
-        assert simple_result.is_success
+        assert simple_result.success
 
         # Test 2: Development target with preset
         dev_result = FlextTargetFactory.create_development_target(
             base_url="https://dev.wms.oracle.com",
         )
-        assert dev_result.is_success
+        assert dev_result.success
 
         # Test 3: Production target with monitoring
         prod_result = create_monitored_oracle_wms_target(
@@ -487,7 +487,7 @@ class TestFactoryIntegration:
             preset="production",
             monitor_name="prod_monitor",
         )
-        assert prod_result.is_success
+        assert prod_result.success
 
         # Test 4: Configuration-based creation
         config = {
@@ -497,7 +497,7 @@ class TestFactoryIntegration:
             "preset": "staging",
         }
         config_result = FlextTargetFactory.create_from_config_dict(config)
-        assert config_result.is_success
+        assert config_result.success
 
         # Verify all targets were created successfully
         assert mock_target_class.call_count == 4

@@ -64,7 +64,7 @@ class TestTargetComplete:
             }
             
             schema_result = await target.process_schema_message(schema_message)
-            assert schema_result.is_success
+            assert schema_result.success
 
     @pytest.mark.e2e
     async def test_record_processing_workflow(self, sample_config: dict[str, object]) -> None:
@@ -96,7 +96,7 @@ class TestTargetComplete:
         }
         
         schema_result = await target.process_schema_message(schema_message)
-        assert schema_result.is_success
+        assert schema_result.success
         
         # Process record
         record_message = {
@@ -111,7 +111,7 @@ class TestTargetComplete:
         }
         
         record_result = await target.process_record_message(record_message)
-        assert record_result.is_success
+        assert record_result.success
 
     @pytest.mark.e2e
     async def test_business_logic_integration(self, sample_config: dict[str, object]) -> None:
@@ -149,7 +149,7 @@ class TestTargetComplete:
             }
             
             result = await target.process_schema_message(schema_message)
-            assert result.is_success
+            assert result.success
 
     @pytest.mark.e2e
     def test_configuration_validation_complete(self, sample_config: dict[str, object]) -> None:
@@ -193,10 +193,10 @@ class TestTargetComplete:
             # Test that invalid messages are handled gracefully
             if invalid_message.get("type") == "SCHEMA":
                 result = await target.process_schema_message(invalid_message)
-                assert not result.is_success  # Should fail gracefully
+                assert not result.success  # Should fail gracefully
             elif invalid_message.get("type") == "INVALID":
                 result = target.process_state_message(invalid_message)
-                assert not result.is_success  # Should fail gracefully
+                assert not result.success  # Should fail gracefully
 
     @pytest.mark.e2e
     async def test_multi_stream_handling(self, sample_config: dict[str, object]) -> None:
@@ -222,7 +222,7 @@ class TestTargetComplete:
             }
             
             schema_result = await target.process_schema_message(schema_message)
-            assert schema_result.is_success
+            assert schema_result.success
         
         # Process records for each stream
         for stream_name in streams:
@@ -234,7 +234,7 @@ class TestTargetComplete:
             }
             
             record_result = await target.process_record_message(record_message)
-            assert record_result.is_success
+            assert record_result.success
 
     @pytest.mark.e2e
     async def test_memory_efficiency(self, sample_config: dict[str, object]) -> None:
@@ -254,7 +254,7 @@ class TestTargetComplete:
                 
                 # Test complete lifecycle
                 setup_result = await target.setup()
-                assert setup_result.is_success
+                assert setup_result.success
                 
                 # Process a minimal schema and record
                 schema_message = {
@@ -277,6 +277,6 @@ class TestTargetComplete:
                 
                 # Clean up
                 cleanup_result = await target.cleanup()
-                assert cleanup_result.is_success
+                assert cleanup_result.success
                 
                 del target

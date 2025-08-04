@@ -9,7 +9,7 @@ def test_import_from_correct_module() -> None:
     """Test that we can import from the correct module."""
     assert TargetOracleWMS is not None
     if TargetOracleWMS.name != "target-oracle-wms":
-        msg = f"Expected {'target-oracle-wms'}, got {TargetOracleWMS.name}"
+        msg: str = f"Expected {'target-oracle-wms'}, got {TargetOracleWMS.name}"
         raise AssertionError(msg)
 
 

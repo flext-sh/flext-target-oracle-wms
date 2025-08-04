@@ -101,12 +101,12 @@ async def production_target(
             mock_instance.execute.return_value = FlextResult.ok({"rows_affected": 1})
 
             setup_result = await target.setup()
-            assert setup_result.is_success, f"Target setup failed: {setup_result.error}"
+            assert setup_result.success, f"Target setup failed: {setup_result.error}"
 
             yield target
     finally:
         cleanup_result = await target.cleanup()
-        if not cleanup_result.is_success:
+        if not cleanup_result.success:
             pytest.fail(f"Target cleanup failed: {cleanup_result.error}")
 
 
@@ -146,7 +146,7 @@ class TestProductionLoadTesting:
         }
 
         schema_result = await production_target.process_schema_message(schema_message)
-        assert schema_result.is_success, f"Schema setup failed: {schema_result.error}"
+        assert schema_result.success, f"Schema setup failed: {schema_result.error}"
 
         # Load test parameters
         records_count = 10000
@@ -202,7 +202,7 @@ class TestProductionLoadTesting:
             for result in batch_results:
                 if isinstance(result, Exception):
                     errors += 1
-                elif isinstance(result, FlextResult) and result.is_success:
+                elif isinstance(result, FlextResult) and result.success:
                     records_processed += 1
                 else:
                     errors += 1
@@ -276,7 +276,7 @@ class TestProductionLoadTesting:
         # Setup all schemas
         setup_results = await asyncio.gather(*setup_tasks)
         for result in setup_results:
-            assert result.is_success, f"Schema setup failed: {result.error}"
+            assert result.success, f"Schema setup failed: {result.error}"
 
         async def process_stream_load(stream_id: int) -> tuple[int, int, float]:
             """Process load for a single stream."""
@@ -311,7 +311,7 @@ class TestProductionLoadTesting:
             for result in results:
                 if isinstance(result, Exception):
                     errors += 1
-                elif isinstance(result, FlextResult) and result.is_success:
+                elif isinstance(result, FlextResult) and result.success:
                     processed += 1
                 else:
                     errors += 1
@@ -461,14 +461,14 @@ class TestProductionLoadTesting:
                         result = await production_target.process_record_message(
                             record_message,
                         )
-                        if not result.is_success:
+                        if not result.success:
                             scenario_errors += 1
                 else:
                     # Normal processing
                     result = await production_target.process_record_message(
                         record_message,
                     )
-                    if result.is_success:
+                    if result.success:
                         scenario_processed += 1
                     else:
                         scenario_errors += 1
@@ -553,7 +553,7 @@ class TestProductionLoadTesting:
             }
 
             result = await production_target.process_record_message(record_message)
-            if result.is_success:
+            if result.success:
                 processed += 1
 
             # Sample memory usage every 50 records
@@ -672,7 +672,7 @@ class TestProductionDataIntegrity:
             }
 
             result = await production_target.process_record_message(record_message)
-            assert result.is_success, f"Order processing failed: {result.error}"
+            assert result.success, f"Order processing failed: {result.error}"
             # DRY: Use original data if result.data is None (common in targets)
             order_data = result.data if result.data is not None else order_data
             processed_orders.append(order_data)
@@ -778,7 +778,7 @@ class TestProductionDataIntegrity:
             results.append((i, result, record_data))
 
             # All operations should succeed (idempotent)
-            assert result.is_success, (
+            assert result.success, (
                 f"Duplicate handling failed for record {i}: {result.error}"
             )
 
@@ -793,7 +793,7 @@ class TestProductionDataIntegrity:
             }
 
             result = await production_target.process_record_message(record_message)
-            assert result.is_success, f"Idempotency test failed: {result.error}"
+            assert result.success, f"Idempotency test failed: {result.error}"
 
 
 class TestProductionEdgeCases:
@@ -883,7 +883,7 @@ class TestProductionEdgeCases:
             try:
                 result = await production_target.process_record_message(record_message)
 
-                if result.is_success:
+                if result.success:
                     processed_count += 1
                     # Successfully processed extreme value record
 
@@ -1002,7 +1002,7 @@ class TestProductionEdgeCases:
                     continue
 
                 # Should fail gracefully with error message
-                if not result.is_success and result.error:
+                if not result.success and result.error:
                     handled_gracefully += 1
                     errors_logged.append(f"Message {i}: {result.error}")
                 else:
@@ -1074,7 +1074,7 @@ class TestProductionEdgeCases:
                 memory_after = self._get_memory_usage()
                 memory_growth = memory_after - memory_before
 
-                if result.is_success:
+                if result.success:
                     large_data_records.append(i)
 
                 # Stop if memory growth becomes excessive
@@ -1104,7 +1104,7 @@ class TestProductionEdgeCases:
                     return_value=FlextResult.ok(data=True),
                 ):
                     setup_result = await temp_target.setup()
-                    return setup_result.is_success
+                    return setup_result.success
             except Exception:
                 return False
 

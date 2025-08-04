@@ -83,7 +83,7 @@ async def demonstrate_setup_error_handling(
     target = SingerTargetOracleWMS(config)
 
     setup_result = await target.setup()
-    if not setup_result.is_success:
+    if not setup_result.success:
         logger.error(f"Setup failed as expected for demo: {setup_result.error}")
         logger.info("Implementing setup retry logic...")
 
@@ -95,7 +95,7 @@ async def demonstrate_setup_error_handling(
         target = SingerTargetOracleWMS(fallback_config)
         setup_result = await target.setup()
 
-        if setup_result.is_success:
+        if setup_result.success:
             logger.info("Setup successful with fallback configuration")
             return target
         logger.error("Setup failed even with fallback - switching to mock mode")
@@ -127,7 +127,7 @@ async def demonstrate_schema_validation_errors(target: SingerTargetOracleWMS) ->
     }
 
     schema_result = await target.process_schema_message(valid_schema)
-    if schema_result.is_success:
+    if schema_result.success:
         logger.info("Valid schema processed successfully")
     else:
         logger.error(f"Valid schema failed: {schema_result.error}")
@@ -162,7 +162,7 @@ async def _test_invalid_schemas(target: SingerTargetOracleWMS) -> None:
     for invalid_schema in invalid_schemas:
         try:
             schema_result = await target.process_schema_message(invalid_schema)
-            if not schema_result.is_success:
+            if not schema_result.success:
                 logger.info(f"Invalid schema properly rejected: {schema_result.error}")
             else:
                 logger.warning("Invalid schema was accepted - this may indicate a bug")
@@ -220,7 +220,7 @@ async def demonstrate_data_processing_errors(target: SingerTargetOracleWMS) -> N
 
     try:
         record_result = await target.process_record_message(valid_record)
-        if record_result.is_success:
+        if record_result.success:
             logger.info("Valid record processed successfully")
         else:
             logger.error(f"Valid record failed: {record_result.error}")
@@ -241,7 +241,7 @@ async def demonstrate_recovery_scenarios(target: SingerTargetOracleWMS) -> None:
     try:
         # Test graceful shutdown and restart
         cleanup_result = await target.cleanup()
-        if cleanup_result.is_success:
+        if cleanup_result.success:
             logger.info("Target cleanup successful")
         else:
             logger.warning(f"Target cleanup had issues: {cleanup_result.error}")

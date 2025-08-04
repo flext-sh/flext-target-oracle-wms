@@ -34,7 +34,7 @@ def _normalize_oracle_identifier(name: str) -> str:
     """
     # Use flext-oracle-wms validation first
     validation_result = flext_oracle_wms_validate_entity_name(name)
-    if validation_result.is_success:
+    if validation_result.success:
         # Additional Oracle identifier normalization
         normalized = name.replace(" ", "_").replace("-", "_").upper()
         # Oracle identifier limit
@@ -189,7 +189,7 @@ class WMSDataTransformer:
         try:
             # First apply flext-oracle-wms filtering if available
             filter_result = self._apply_wms_filters(record)
-            if not filter_result.is_success:
+            if not filter_result.success:
                 return filter_result
 
             filtered_record = filter_result.data or record
@@ -211,7 +211,7 @@ class WMSDataTransformer:
                     )
                     if (
                         isinstance(convert_result, FlextResult)
-                        and convert_result.is_success
+                        and convert_result.success
                     ):
                         transformed[oracle_key] = convert_result.data
                     else:
@@ -286,10 +286,7 @@ class WMSSchemaMapper:
                 oracle_name = self._normalize_column_name(prop_name)
                 oracle_type_result = self._map_singer_type_to_oracle(prop_def)
 
-                if (
-                    oracle_type_result.is_success
-                    and oracle_type_result.data is not None
-                ):
+                if oracle_type_result.success and oracle_type_result.data is not None:
                     oracle_columns[oracle_name] = oracle_type_result.data
                 else:
                     oracle_columns[oracle_name] = "VARCHAR2(4000)"  # Fallback
@@ -355,7 +352,7 @@ class WMSTableManager:
             schema_mapper = WMSSchemaMapper()
             columns_result = schema_mapper.map_singer_schema_to_oracle(schema)
 
-            if not columns_result.is_success:
+            if not columns_result.success:
                 return FlextResult.fail(
                     f"Schema mapping failed: {columns_result.error}",
                 )

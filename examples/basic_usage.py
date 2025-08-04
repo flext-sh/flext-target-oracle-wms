@@ -58,13 +58,13 @@ async def run_basic_example() -> None:
     #     environment="demo",
     #     preset="development"  # Automatically sets optimal dev settings
     # )
-    # if factory_result.is_success:
+    # if factory_result.success:
     #     target = factory_result.data
 
     try:
         # Setup target - REAL flext-core patterns
         setup_result = await target.setup()
-        if not setup_result.is_success:
+        if not setup_result.success:
             logger.error(f"Target setup failed: {setup_result.error}")
             return
 
@@ -93,7 +93,7 @@ async def run_basic_example() -> None:
 
         # Process schema - REAL Singer protocol
         schema_result = await target.process_schema_message(schema_message)
-        if not schema_result.is_success:
+        if not schema_result.success:
             logger.error(f"Schema processing failed: {schema_result.error}")
             return
 
@@ -143,7 +143,7 @@ async def run_basic_example() -> None:
             }
 
             record_result = await target.process_record_message(record_message)
-            if not record_result.is_success:
+            if not record_result.success:
                 logger.error(f"Record processing failed: {record_result.error}")
                 continue
 
@@ -162,14 +162,14 @@ async def run_basic_example() -> None:
         }
 
         state_result = target.process_state_message(state_message)
-        if not state_result.is_success:
+        if not state_result.success:
             logger.error(f"State processing failed: {state_result.error}")
         else:
             logger.info("State processed successfully")
 
         # Finalize target - REAL cleanup
         finalize_result = target.finalize()
-        if not finalize_result.is_success:
+        if not finalize_result.success:
             logger.error(f"Target finalization failed: {finalize_result.error}")
         else:
             logger.info("Target finalized successfully")
@@ -180,7 +180,7 @@ async def run_basic_example() -> None:
     finally:
         # Cleanup using REAL implementation
         cleanup_result = await target.cleanup()
-        if not cleanup_result.is_success:
+        if not cleanup_result.success:
             logger.error(f"Target cleanup failed: {cleanup_result.error}")
         else:
             logger.info("Target cleanup completed")
@@ -233,7 +233,7 @@ def run_from_singer_files() -> None:
                 logger.warning(f"Unknown message type: {message['type']}")
                 continue
 
-            if not result.is_success:
+            if not result.success:
                 logger.error(f"Message processing failed: {result.error}")
             else:
                 logger.debug(f"Processed {message['type']} message successfully")

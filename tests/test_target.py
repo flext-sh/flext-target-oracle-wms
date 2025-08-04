@@ -19,7 +19,7 @@ class TestTargetOracleWMS:
         }
         target = TargetOracleWMS(config)
         if target.name != "target-oracle-wms":
-            msg = f"Expected target-oracle-wms, got {target.name}"
+            msg: str = f"Expected target-oracle-wms, got {target.name}"
             raise AssertionError(msg)
         assert target.config == config
 
@@ -87,7 +87,7 @@ class TestTargetOracleWMS:
         }
 
         result = target.data_transformer.transform_record(test_record, test_schema)
-        assert result.is_success
+        assert result.success
         assert result.data is not None
 
         # Test transformed data structure

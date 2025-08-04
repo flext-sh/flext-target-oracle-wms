@@ -29,7 +29,7 @@ class TestSingerWMSCatalogManagerComprehensive:
 
         # Get schema
         result = manager.get_schema_for_stream("test_stream")
-        assert result.is_success
+        assert result.success
         assert result.data is not None
         assert result.data == schema
 
@@ -38,7 +38,7 @@ class TestSingerWMSCatalogManagerComprehensive:
         manager = SingerWMSCatalogManager()
 
         result = manager.get_schema_for_stream("nonexistent_stream")
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "not found" in result.error.lower()
 
@@ -53,7 +53,7 @@ class TestSingerWMSCatalogManagerComprehensive:
 
         # Get key properties
         result = manager.get_key_properties("test_stream")
-        assert result.is_success
+        assert result.success
         assert result.data is not None
         assert isinstance(result.data, list)
 
@@ -62,7 +62,7 @@ class TestSingerWMSCatalogManagerComprehensive:
         manager = SingerWMSCatalogManager()
 
         result = manager.get_key_properties("nonexistent_stream")
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "not found" in result.error.lower()
 
@@ -85,11 +85,11 @@ class TestSingerWMSCatalogManagerComprehensive:
         ]
 
         result = manager.update_stream_metadata("test_stream", new_metadata)
-        assert result.is_success
+        assert result.success
 
         # Verify metadata was updated
         stream_result = manager.get_stream("test_stream")
-        assert stream_result.is_success
+        assert stream_result.success
         assert stream_result.data is not None
         assert stream_result.data.metadata == new_metadata
 
@@ -99,7 +99,7 @@ class TestSingerWMSCatalogManagerComprehensive:
         metadata = [{"breadcrumb": [], "metadata": {"inclusion": "available"}}]
 
         result = manager.update_stream_metadata("nonexistent_stream", metadata)
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "not found" in result.error.lower()
 
@@ -108,7 +108,7 @@ class TestSingerWMSCatalogManagerComprehensive:
         manager = SingerWMSCatalogManager()
 
         result = manager.to_singer_catalog()
-        assert result.is_success
+        assert result.success
         assert result.data is not None
 
         catalog = result.data
@@ -143,7 +143,7 @@ class TestSingerWMSCatalogManagerComprehensive:
 
         # Convert to Singer catalog
         result = manager.to_singer_catalog()
-        assert result.is_success
+        assert result.success
         assert result.data is not None
 
         catalog = result.data
@@ -201,11 +201,11 @@ class TestSingerWMSCatalogManagerComprehensive:
         }
 
         result = manager.load_from_singer_catalog(singer_catalog)
-        assert result.is_success
+        assert result.success
 
         # Verify streams were loaded
         list_result = manager.list_streams()
-        assert list_result.is_success
+        assert list_result.success
         assert list_result.data is not None
         assert len(list_result.data) == 2
         assert "test_stream_1" in list_result.data
@@ -213,13 +213,13 @@ class TestSingerWMSCatalogManagerComprehensive:
 
         # Verify stream details
         stream1_result = manager.get_stream("test_stream_1")
-        assert stream1_result.is_success
+        assert stream1_result.success
         assert stream1_result.data is not None
         assert stream1_result.data.replication_method == "FULL_TABLE"
         assert stream1_result.data.key_properties == ["id"]
 
         stream2_result = manager.get_stream("test_stream_2")
-        assert stream2_result.is_success
+        assert stream2_result.success
         assert stream2_result.data is not None
         assert stream2_result.data.replication_method == "INCREMENTAL"
         assert stream2_result.data.replication_key == "updated_at"
@@ -232,11 +232,11 @@ class TestSingerWMSCatalogManagerComprehensive:
         invalid_catalog = {"version": "1.0"}  # Missing streams
 
         result = manager.load_from_singer_catalog(invalid_catalog)
-        assert result.is_success  # Empty streams list should be handled gracefully
+        assert result.success  # Empty streams list should be handled gracefully
 
         # Verify catalog is empty
         list_result = manager.list_streams()
-        assert list_result.is_success
+        assert list_result.success
         assert list_result.data == []
 
     def test_load_from_singer_catalog_invalid_stream(self) -> None:
@@ -286,17 +286,17 @@ class TestSingerWMSCatalogManagerComprehensive:
 
         # Convert to Singer format
         to_singer_result = manager.to_singer_catalog()
-        assert to_singer_result.is_success
+        assert to_singer_result.success
         assert to_singer_result.data is not None
 
         # Create new manager and load from Singer format
         manager2 = SingerWMSCatalogManager()
         from_singer_result = manager2.load_from_singer_catalog(to_singer_result.data)
-        assert from_singer_result.is_success
+        assert from_singer_result.success
 
         # Verify round-trip preserved data
         stream_result = manager2.get_stream("round_trip_stream")
-        assert stream_result.is_success
+        assert stream_result.success
         assert stream_result.data is not None
         assert stream_result.data.schema_info == schema
         assert stream_result.data.metadata == metadata
@@ -323,7 +323,7 @@ class TestSingerWMSCatalogManagerComprehensive:
 
         # Get entry
         entry_result = manager.get_stream("immutable_test")
-        assert entry_result.is_success
+        assert entry_result.success
         assert entry_result.data is not None
 
         original_entry = entry_result.data
@@ -331,11 +331,11 @@ class TestSingerWMSCatalogManagerComprehensive:
         # Update metadata to create new entry
         new_metadata = [{"breadcrumb": [], "metadata": {"inclusion": "automatic"}}]
         update_result = manager.update_stream_metadata("immutable_test", new_metadata)
-        assert update_result.is_success
+        assert update_result.success
 
         # Get updated entry
         updated_entry_result = manager.get_stream("immutable_test")
-        assert updated_entry_result.is_success
+        assert updated_entry_result.success
         assert updated_entry_result.data is not None
 
         updated_entry = updated_entry_result.data
@@ -369,12 +369,12 @@ class TestSingerWMSCatalogManagerComprehensive:
 
         # Verify all streams were added
         list_result = manager.list_streams()
-        assert list_result.is_success
+        assert list_result.success
         assert list_result.data is not None
         assert len(list_result.data) == expected_count
 
         # Test catalog conversion performance
         catalog_result = manager.to_singer_catalog()
-        assert catalog_result.is_success
+        assert catalog_result.success
         assert catalog_result.data is not None
         assert len(catalog_result.data["streams"]) == expected_count

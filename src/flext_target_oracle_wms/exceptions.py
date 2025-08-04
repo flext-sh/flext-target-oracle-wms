@@ -271,7 +271,7 @@ class FlextTargetOracleWmsTransformationError(FlextProcessingError):
         super().__init__(f"Oracle WMS target transformation: {message}", **context)
 
 
-__all__ = [
+__all__: list[str] = [
     "FlextTargetOracleWmsAuthenticationError",
     "FlextTargetOracleWmsConfigurationError",
     "FlextTargetOracleWmsConnectionError",

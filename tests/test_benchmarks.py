@@ -53,7 +53,7 @@ class TestFactoryPerformanceBenchmarks:
                     password="benchmark_password",
                     preset="production",
                 )
-                assert result.is_success
+                assert result.success
                 return result.data
 
         # Benchmark factory target creation
@@ -108,7 +108,7 @@ class TestFactoryPerformanceBenchmarks:
                     password="monitor_password",
                     preset="production",
                 )
-                assert result.is_success
+                assert result.success
                 return result.data
 
         # Benchmark monitored target creation
@@ -136,7 +136,7 @@ class TestPatternsPerformanceBenchmarks:
         def transform_large_record() -> dict:
             """Transform large record - measured operation."""
             result = transformer.transform_record(large_record, None)
-            assert result.is_success
+            assert result.success
             return result.data
 
         # Benchmark transformation
@@ -175,7 +175,7 @@ class TestPatternsPerformanceBenchmarks:
         def map_complex_schema() -> dict:
             """Map complex schema - measured operation."""
             result = mapper.map_singer_schema_to_oracle(complex_schema)
-            assert result.is_success
+            assert result.success
             return result.data
 
         # Benchmark schema mapping
@@ -202,7 +202,7 @@ class TestPatternsPerformanceBenchmarks:
             results = []
             for singer_type, value in test_conversions:
                 result = converter.convert_singer_to_oracle(singer_type, value)
-                assert result.is_success
+                assert result.success
                 results.append(result.data)
             return results
 
@@ -232,7 +232,7 @@ class TestPatternsPerformanceBenchmarks:
                 "benchmark_schema",
                 complex_schema,
             )
-            assert create_result.is_success
+            assert create_result.success
 
             columns = [f"column_{i}" for i in range(30)]
             insert_result = manager.generate_insert_sql(
@@ -240,7 +240,7 @@ class TestPatternsPerformanceBenchmarks:
                 "benchmark_schema",
                 columns,
             )
-            assert insert_result.is_success
+            assert insert_result.success
 
             return (create_result.data, insert_result.data)
 
@@ -271,7 +271,7 @@ class TestStreamPerformanceBenchmarks:
         }
 
         init_result = processor.initialize_stream("benchmark_stream", test_schema)
-        assert init_result.is_success
+        assert init_result.success
 
         # Generate test records
         test_records = [
@@ -287,11 +287,11 @@ class TestStreamPerformanceBenchmarks:
         def process_batch_records() -> dict:
             """Process batch of records - measured operation."""
             result = processor.process_batch("benchmark_stream", test_records)
-            assert result.is_success
+            assert result.success
 
             # Get stats
             stats_result = processor.get_stream_stats("benchmark_stream")
-            assert stats_result.is_success
+            assert stats_result.success
             return stats_result.data
 
         # Benchmark batch processing
@@ -337,15 +337,15 @@ class TestCatalogPerformanceBenchmarks:
                     stream_data["schema"],
                     stream_data["metadata"],
                 )
-                assert result.is_success
+                assert result.success
 
             # List streams
             list_result = manager.list_streams()
-            assert list_result.is_success
+            assert list_result.success
 
             # Convert to Singer catalog
             catalog_result = manager.to_singer_catalog()
-            assert catalog_result.is_success
+            assert catalog_result.success
 
             return catalog_result.data
 
@@ -374,10 +374,10 @@ class TestIntegrationPerformanceBenchmarks:
                 # Setup mocked client for performance testing
                 mock_client = AsyncMock()
                 mock_client_class.return_value = mock_client
-                mock_client.start.return_value = MagicMock(is_success=True)
-                mock_client.stop.return_value = MagicMock(is_success=True)
+                mock_client.start.return_value = MagicMock(success=True)
+                mock_client.stop.return_value = MagicMock(success=True)
                 mock_client.execute_query.return_value = MagicMock(
-                    is_success=True,
+                    success=True,
                     data=[],
                 )
 
@@ -385,7 +385,7 @@ class TestIntegrationPerformanceBenchmarks:
 
                 # 1. Setup
                 setup_result = await target.setup()
-                assert setup_result.is_success
+                assert setup_result.success
 
                 # 2. Process schema
                 schema_message = {
@@ -403,7 +403,7 @@ class TestIntegrationPerformanceBenchmarks:
                 }
 
                 schema_result = await target.process_schema_message(schema_message)
-                assert schema_result.is_success
+                assert schema_result.success
 
                 # 3. Process multiple records
                 for i in range(20):
@@ -419,15 +419,15 @@ class TestIntegrationPerformanceBenchmarks:
                     }
 
                     record_result = await target.process_record_message(record_message)
-                    assert record_result.is_success
+                    assert record_result.success
 
                 # 4. Finalize
                 finalize_result = target.finalize()
-                assert finalize_result.is_success
+                assert finalize_result.success
 
                 # 5. Cleanup
                 cleanup_result = await target.cleanup()
-                assert cleanup_result.is_success
+                assert cleanup_result.success
 
                 return finalize_result.data
 
@@ -460,7 +460,7 @@ class TestMemoryEfficiencyBenchmarks:
         }
 
         init_result = processor.initialize_stream("memory_test", schema)
-        assert init_result.is_success
+        assert init_result.success
 
         def process_large_batch() -> dict:
             """Process large batch efficiently - measured operation."""
@@ -488,14 +488,14 @@ class TestMemoryEfficiencyBenchmarks:
             for start_idx in range(0, len(large_records), batch_size):
                 batch = large_records[start_idx : start_idx + batch_size]
                 result = processor.process_batch("memory_test", batch)
-                assert result.is_success
+                assert result.success
 
                 # Clear batch to help with memory
                 del batch
 
             # Get final stats
             stats_result = processor.get_stream_stats("memory_test")
-            assert stats_result.is_success
+            assert stats_result.success
 
             # Force garbage collection after processing
             gc.collect()
