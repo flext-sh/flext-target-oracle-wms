@@ -178,7 +178,7 @@ class TestExamplesCodeQuality:
                 if isinstance(node, ast.Try):
                     has_try_except = True
                 elif isinstance(node, ast.Attribute):
-                    if node.attr == "is_success":
+                    if node.attr == "success":
                         has_flext_result_check = True
                 elif isinstance(node, ast.Call):
                     if isinstance(node.func, ast.Attribute) and node.func.attr in {
@@ -382,8 +382,8 @@ class TestExamplesFlextIntegration:
 
             if "FlextResult" in content:
                 # Must use proper FlextResult patterns
-                assert ".is_success" in content, (
-                    f"{example_file.name} uses FlextResult but not .is_success"
+                assert ".success" in content, (
+                    f"{example_file.name} uses FlextResult but not .success"
                 )
                 assert ".error" in content or "result.data" in content, (
                     f"{example_file.name} must check result.error or result.data"

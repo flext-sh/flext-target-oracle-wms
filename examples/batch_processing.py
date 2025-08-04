@@ -84,7 +84,7 @@ async def run_performance_batch_example() -> None:
         # Setup for batch processing
         setup_start = time.time()
         setup_result = await target.setup()
-        if not setup_result.is_success:
+        if not setup_result.success:
             logger.error(f"Batch setup failed: {setup_result.error}")
             return
 
@@ -118,7 +118,7 @@ async def run_performance_batch_example() -> None:
         # Process schema
         schema_start = time.time()
         schema_result = await target.process_schema_message(batch_schema)
-        if not schema_result.is_success:
+        if not schema_result.success:
             logger.error(f"Batch schema failed: {schema_result.error}")
             return
 
@@ -156,7 +156,7 @@ async def run_performance_batch_example() -> None:
                     }
 
                     record_result = await target.process_record_message(record_message)
-                    if record_result.is_success:
+                    if record_result.success:
                         success_count += 1
                     else:
                         error_count += 1
@@ -189,7 +189,7 @@ async def run_performance_batch_example() -> None:
         final_result = target.finalize()
         finalize_time = time.time() - finalize_start
 
-        if final_result.is_success and final_result.data:
+        if final_result.success and final_result.data:
             stats = final_result.data
             logger.info(
                 f"Batch processing finalized in {finalize_time:.2f}s - "
@@ -230,7 +230,7 @@ async def demonstrate_stream_processor_batching() -> None:
     }
 
     init_result = stream_processor.initialize_stream("batch_test", schema)
-    if not init_result.is_success:
+    if not init_result.success:
         logger.error(f"Stream initialization failed: {init_result.error}")
         return
 
@@ -245,7 +245,7 @@ async def demonstrate_stream_processor_batching() -> None:
     batch_result = stream_processor.process_batch("batch_test", batch_records)
     batch_time = time.time() - batch_start
 
-    if batch_result.is_success and batch_result.data:
+    if batch_result.success and batch_result.data:
         processed_count = len(batch_result.data)
         rate = processed_count / batch_time if batch_time > 0 else 0
         logger.info(
@@ -255,7 +255,7 @@ async def demonstrate_stream_processor_batching() -> None:
 
     # Get final statistics
     stats_result = stream_processor.get_stream_stats("batch_test")
-    if stats_result.is_success and stats_result.data:
+    if stats_result.success and stats_result.data:
         stats = stats_result.data
         logger.info(
             f"Final stats: {stats.records_processed} processed, "
@@ -266,7 +266,7 @@ async def demonstrate_stream_processor_batching() -> None:
 
     # Finalize stream
     final_result = stream_processor.finalize_stream("batch_test")
-    if final_result.is_success:
+    if final_result.success:
         logger.info("Stream processing finalized successfully")
 
 
@@ -321,7 +321,7 @@ async def demonstrate_concurrent_batching() -> None:
         for i, result in enumerate(schema_results):
             if isinstance(result, Exception):
                 logger.error(f"Schema setup failed for {streams[i]}: {result}")
-            elif hasattr(result, "is_success") and result.is_success:
+            elif hasattr(result, "success") and result.success:
                 successful_streams.append(streams[i])
                 logger.info(f"Schema setup successful for {streams[i]}")
 

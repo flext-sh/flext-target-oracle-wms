@@ -44,7 +44,7 @@ TargetOracleWMS = SingerTargetOracleWMS
 __version__ = importlib.metadata.version("flext-target-oracle-wms")
 
 # DRY EXPORTS: Single implementation, multiple access patterns
-__all__ = [
+__all__: list[str] = [
     # Sorted alphabetically as required by RUF022
     "FlextResult",
     "FlextTargetFactory",

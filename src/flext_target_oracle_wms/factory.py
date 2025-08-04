@@ -160,7 +160,7 @@ class FlextTargetFactory:
             return FlextResult.ok(target)
 
         except Exception as e:
-            error_msg = f"Failed to create Oracle WMS target: {e}"
+            error_msg: str = f"Failed to create Oracle WMS target: {e}"
             logger.exception(error_msg)
             return FlextResult.fail(error_msg)
 
@@ -265,7 +265,9 @@ class FlextTargetFactory:
             missing_fields = [field for field in required_fields if field not in config]
 
             if missing_fields:
-                error_msg = f"Missing required configuration fields: {missing_fields}"
+                error_msg: str = (
+                    f"Missing required configuration fields: {missing_fields}"
+                )
                 logger.error(error_msg)
                 return FlextResult.fail(error_msg)
 
@@ -285,7 +287,7 @@ class FlextTargetFactory:
             return cls.create_target(request)
 
         except Exception as e:
-            error_msg = f"Failed to create target from config: {e}"
+            error_msg: str = f"Failed to create target from config: {e}"
             logger.exception(error_msg)
             return FlextResult.fail(error_msg)
 
@@ -336,7 +338,7 @@ class FlextTargetMonitoringFactory:
             )
             target_result = self.factory.create_target(target_request)
 
-            if not target_result.is_success:
+            if not target_result.success:
                 return target_result
 
             target = target_result.data
@@ -345,14 +347,14 @@ class FlextTargetMonitoringFactory:
 
             # Initialize monitoring services
             init_result = self.monitor.flext_initialize_observability()
-            if not init_result.is_success:
+            if not init_result.success:
                 logger.warning(f"Failed to initialize monitoring: {init_result.error}")
                 # Continue without monitoring rather than fail
                 return FlextResult.ok(target)
 
             # Start monitoring
             start_result = self.monitor.flext_start_monitoring()
-            if not start_result.is_success:
+            if not start_result.success:
                 logger.warning(f"Failed to start monitoring: {start_result.error}")
                 # Continue without monitoring rather than fail
                 return FlextResult.ok(target)
@@ -364,7 +366,7 @@ class FlextTargetMonitoringFactory:
             return FlextResult.ok(target)
 
         except Exception as e:
-            error_msg = f"Failed to create monitored target: {e}"
+            error_msg: str = f"Failed to create monitored target: {e}"
             logger.exception(error_msg)
             return FlextResult.fail(error_msg)
 

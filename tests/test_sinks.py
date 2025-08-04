@@ -48,11 +48,11 @@ class TestSingerTargetComponents:
 
         # Add stream to catalog
         result = target.catalog_manager.add_stream("test_stream", test_schema)
-        assert result.is_success
+        assert result.success
 
         # Get stream from catalog
         stream_result = target.catalog_manager.get_stream("test_stream")
-        assert stream_result.is_success
+        assert stream_result.success
         assert stream_result.data is not None
 
     def test_table_manager_functionality(self) -> None:
@@ -88,7 +88,7 @@ class TestSingerTargetComponents:
         }
 
         result = target.data_transformer.transform_record(test_record, test_schema)
-        assert result.is_success
+        assert result.success
         assert result.data is not None
 
         transformed = result.data
@@ -114,7 +114,7 @@ class TestSingerTargetComponents:
             "test_stream",
             test_schema,
         )
-        assert init_result.is_success
+        assert init_result.success
 
         # Process record
         test_record = {"id": "TEST001"}
@@ -122,7 +122,7 @@ class TestSingerTargetComponents:
             "test_stream",
             test_record,
         )
-        assert process_result.is_success
+        assert process_result.success
         assert process_result.data is not None
 
     def test_oracle_wms_client_integration(self) -> None:
@@ -188,13 +188,13 @@ class TestSingerTargetComponents:
 
             # Test setup
             setup_result = await target.setup()
-            assert setup_result.is_success
+            assert setup_result.success
 
             # Test finalization
             finalize_result = target.finalize()
-            assert finalize_result.is_success
+            assert finalize_result.success
             assert finalize_result.data is not None
 
             # Test cleanup
             cleanup_result = await target.cleanup()
-            assert cleanup_result.is_success
+            assert cleanup_result.success

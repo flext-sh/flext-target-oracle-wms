@@ -97,7 +97,7 @@ class SingerWMSStreamProcessor:
         try:
             if stream_name not in self._stream_stats:
                 init_result = self.initialize_stream(stream_name, {})
-                if not init_result.is_success:
+                if not init_result.success:
                     return FlextResult.fail(
                         f"Stream initialization failed: {init_result.error}",
                     )
@@ -106,7 +106,7 @@ class SingerWMSStreamProcessor:
 
             # Transform record using WMS data transformer
             transform_result = self.data_transformer.transform_record(record)
-            if not transform_result.is_success:
+            if not transform_result.success:
                 stats.records_failed += 1
                 stats.errors.append(
                     f"Record transformation failed: {transform_result.error}",
@@ -134,7 +134,7 @@ class SingerWMSStreamProcessor:
         try:
             if stream_name not in self._stream_stats:
                 init_result = self.initialize_stream(stream_name, {})
-                if not init_result.is_success:
+                if not init_result.success:
                     return FlextResult.fail(
                         f"Stream initialization failed: {init_result.error}",
                     )
@@ -144,7 +144,7 @@ class SingerWMSStreamProcessor:
 
             for record in records:
                 process_result = self.process_record(stream_name, record)
-                if process_result.is_success and process_result.data is not None:
+                if process_result.success and process_result.data is not None:
                     processed_records.append(process_result.data)
                 else:
                     logger.warning(

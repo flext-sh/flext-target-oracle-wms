@@ -55,7 +55,7 @@ class TestWMSTypeConverter:
         from flext_core import FlextResult
 
         assert isinstance(result, FlextResult)
-        assert result.is_success
+        assert result.success
         assert result.data == expected
 
     def test_convert_none_value(self) -> None:
@@ -67,7 +67,7 @@ class TestWMSTypeConverter:
         from flext_core import FlextResult
 
         assert isinstance(result, FlextResult)
-        assert result.is_success
+        assert result.success
         assert result.data is None
 
     def test_convert_invalid_number(self) -> None:
@@ -79,7 +79,7 @@ class TestWMSTypeConverter:
         from flext_core import FlextResult
 
         assert isinstance(result, FlextResult)
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "Cannot convert" in result.error
 
@@ -101,7 +101,7 @@ class TestWMSTypeConverter:
         from flext_core import FlextResult
 
         assert isinstance(result, FlextResult)
-        assert result.is_success
+        assert result.success
         if result.data is not None:
             assert result.data == "BadJSONObject string representation"
 
@@ -117,7 +117,7 @@ class TestWMSTypeConverter:
         from flext_core import FlextResult
 
         assert isinstance(result, FlextResult)
-        assert result.is_success
+        assert result.success
         assert result.data is not None
         assert "nested" in result.data
 
@@ -126,7 +126,7 @@ class TestWMSTypeConverter:
         result = converter.convert_singer_to_oracle("array", test_array)
         # Use REAL FlextResult typing - DRY approach
         assert isinstance(result, FlextResult)
-        assert result.is_success
+        assert result.success
         if result.data is not None:
             assert "item1" in result.data
 
@@ -156,7 +156,7 @@ class TestWMSDataTransformer:
         }
 
         result = transformer.transform_record(record)
-        assert result.is_success
+        assert result.success
         assert result.data is not None
 
         transformed = result.data
@@ -186,7 +186,7 @@ class TestWMSDataTransformer:
         }
 
         result = transformer.transform_record(record, schema)
-        assert result.is_success
+        assert result.success
         assert result.data is not None
 
         transformed = result.data
@@ -209,7 +209,7 @@ class TestWMSDataTransformer:
         columns = ["ID", "NAME", "_SDC_EXTRACTED_AT"]
 
         result = transformer.prepare_batch_parameters(records, columns)
-        assert result.is_success
+        assert result.success
         assert result.data is not None
 
         batch_params = result.data
@@ -238,9 +238,7 @@ class TestWMSDataTransformer:
 
         # This should trigger line 122 (error handling in transform_record)
         result = transformer.transform_record(record, schema)
-        assert (
-            result.is_success
-        )  # Should still succeed with fallback to string conversion
+        assert result.success  # Should still succeed with fallback to string conversion
 
     def test_transform_record_exception_handling(self) -> None:
         """Test record transformation exception handling."""
@@ -253,7 +251,7 @@ class TestWMSDataTransformer:
             mock_validate.side_effect = RuntimeError("Record validation failed")
             result = transformer.transform_record({"test": "data"}, {})
 
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "Record transformation failed" in result.error
 
@@ -271,7 +269,7 @@ class TestWMSDataTransformer:
                 ["ID", "NAME"],
             )
 
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "Parameter preparation failed" in result.error
 
@@ -285,7 +283,7 @@ class TestWMSDataTransformer:
         columns = ["ID", "NAME", "PRICE"]
 
         result = transformer.prepare_batch_parameters(records, columns)
-        assert result.is_success
+        assert result.success
         assert result.data is not None
 
         batch_params = result.data
@@ -320,7 +318,7 @@ class TestWMSSchemaMapper:
         }
 
         result = mapper.map_singer_schema_to_oracle(schema)
-        assert result.is_success
+        assert result.success
         assert result.data is not None
 
         columns = result.data
@@ -358,7 +356,7 @@ class TestWMSSchemaMapper:
         }
 
         result = mapper.map_singer_schema_to_oracle(schema)
-        assert result.is_success
+        assert result.success
         assert result.data is not None
 
         columns = result.data
@@ -371,7 +369,7 @@ class TestWMSSchemaMapper:
         schema: dict[str, object] = {"properties": {}}
 
         result = mapper.map_singer_schema_to_oracle(schema)
-        assert result.is_success
+        assert result.success
         assert result.data == {}
 
     def test_map_singer_schema_to_oracle_exception_handling(self) -> None:
@@ -385,7 +383,7 @@ class TestWMSSchemaMapper:
         bad_schema.get.side_effect = RuntimeError("get() failed")
 
         result = mapper.map_singer_schema_to_oracle(bad_schema)
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "Schema mapping failed" in result.error
 
@@ -401,7 +399,7 @@ class TestWMSSchemaMapper:
 
         # This should trigger the exception handling path in _map_singer_type_to_oracle
         result = mapper._map_singer_type_to_oracle(bad_prop_def)
-        assert result.is_success  # Should fallback to default
+        assert result.success  # Should fallback to default
         assert result.data == "VARCHAR2(4000)"  # Default fallback
 
 
@@ -454,7 +452,7 @@ class TestWMSTableManager:
         }
 
         result = manager.generate_create_table_sql("TEST_TABLE", "WMS_SCHEMA", schema)
-        assert result.is_success
+        assert result.success
         assert result.data is not None
 
         sql = result.data
@@ -472,7 +470,7 @@ class TestWMSTableManager:
         columns = ["ID", "NAME", "CREATED_AT", "_SDC_EXTRACTED_AT"]
 
         result = manager.generate_insert_sql("TEST_TABLE", "WMS_SCHEMA", columns)
-        assert result.is_success
+        assert result.success
         assert result.data is not None
 
         sql = result.data
@@ -487,7 +485,7 @@ class TestWMSTableManager:
         columns = ["_ID", "__NAME", "___FIELD"]
 
         result = manager.generate_insert_sql("TEST_TABLE", "WMS_SCHEMA", columns)
-        assert result.is_success
+        assert result.success
         assert result.data is not None
 
         sql = result.data
@@ -511,7 +509,7 @@ class TestWMSTableManager:
                 {"properties": {"id": {"type": "integer"}}},
             )
 
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "Schema mapping failed" in result.error
 
@@ -530,7 +528,7 @@ class TestWMSTableManager:
                 schema,
             )
 
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "SQL generation failed" in result.error
 
@@ -549,7 +547,7 @@ class TestWMSTableManager:
                 ["ID", "NAME"],
             )
 
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "SQL generation failed" in result.error
 
@@ -572,6 +570,6 @@ class TestWMSTableManager:
                 schema,
             )
 
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "Column mapping returned None" in result.error

@@ -48,7 +48,7 @@ class TestSingerTargetOracleWMSComprehensive:
             mock_start.return_value = FlextResult.fail("Connection failed")
 
             result = await target.setup()
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Connection failed" in result.error
 
@@ -69,7 +69,7 @@ class TestSingerTargetOracleWMSComprehensive:
             mock_start.side_effect = RuntimeError("Unexpected error")
 
             result = await target.setup()
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Setup failed" in result.error
 
@@ -88,7 +88,7 @@ class TestSingerTargetOracleWMSComprehensive:
         }
 
         result = await target.process_schema_message(invalid_message)
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "Not a SCHEMA message" in result.error
 
@@ -107,7 +107,7 @@ class TestSingerTargetOracleWMSComprehensive:
         }
 
         result = await target.process_schema_message(invalid_message)
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "missing stream or schema" in result.error
 
@@ -126,7 +126,7 @@ class TestSingerTargetOracleWMSComprehensive:
         }
 
         result = await target.process_schema_message(invalid_message)
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "missing stream or schema" in result.error
 
@@ -149,7 +149,7 @@ class TestSingerTargetOracleWMSComprehensive:
             }
 
             result = await target.process_schema_message(schema_message)
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Catalog add failed" in result.error
 
@@ -172,7 +172,7 @@ class TestSingerTargetOracleWMSComprehensive:
             }
 
             result = await target.process_schema_message(schema_message)
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Stream init failed" in result.error
 
@@ -198,7 +198,7 @@ class TestSingerTargetOracleWMSComprehensive:
             }
 
             result = await target.process_schema_message(schema_message)
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "SQL generation failed" in result.error
 
@@ -221,7 +221,7 @@ class TestSingerTargetOracleWMSComprehensive:
             }
 
             result = await target.process_schema_message(schema_message)
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "SCHEMA processing failed" in result.error
 
@@ -240,7 +240,7 @@ class TestSingerTargetOracleWMSComprehensive:
         }
 
         result = await target.process_record_message(invalid_message)
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "Not a RECORD message" in result.error
 
@@ -259,7 +259,7 @@ class TestSingerTargetOracleWMSComprehensive:
         }
 
         result = await target.process_record_message(invalid_message1)
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "missing stream or record" in result.error
 
@@ -270,7 +270,7 @@ class TestSingerTargetOracleWMSComprehensive:
         }
 
         result = await target.process_record_message(invalid_message2)
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "missing stream or record" in result.error
 
@@ -293,7 +293,7 @@ class TestSingerTargetOracleWMSComprehensive:
             }
 
             result = await target.process_record_message(record_message)
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Record processing failed" in result.error
 
@@ -320,7 +320,7 @@ class TestSingerTargetOracleWMSComprehensive:
             }
 
             result = await target.process_record_message(record_message)
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Insertion failed" in result.error
 
@@ -337,7 +337,7 @@ class TestSingerTargetOracleWMSComprehensive:
         }
 
         result = target.process_state_message(invalid_message)
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "Not a STATE message" in result.error
 
@@ -358,7 +358,7 @@ class TestSingerTargetOracleWMSComprehensive:
         }
 
         result = target.process_state_message(invalid_message)
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "STATE processing failed" in result.error
 
@@ -376,7 +376,7 @@ class TestSingerTargetOracleWMSComprehensive:
             "test_schema",
             "CREATE TABLE test",
         )
-        assert not result.is_success
+        assert not result.success
         assert result.error is not None
         assert "Oracle WMS client not initialized" in result.error
 
@@ -396,7 +396,7 @@ class TestSingerTargetOracleWMSComprehensive:
                 "test_schema",
                 "CREATE TABLE test",
             )
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Oracle WMS client not initialized" in result.error
 
@@ -421,7 +421,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
         result = await target._insert_record("complex_stream", complex_record)
         # Should succeed with proper parameter preparation
-        assert result.is_success
+        assert result.success
 
     @pytest.mark.asyncio
     async def test_insert_record_with_underscores(
@@ -440,7 +440,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
         result = await target._insert_record("underscore_stream", underscore_record)
         # Should handle underscore fields properly
-        assert result.is_success
+        assert result.success
 
     @pytest.mark.asyncio
     async def test_insert_record_exception_handling(
@@ -458,7 +458,7 @@ class TestSingerTargetOracleWMSComprehensive:
             mock_table_name.side_effect = RuntimeError("Name generation failed")
 
             result = await target._insert_record("error_stream", {"id": 1})
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Record insertion failed" in result.error
 
@@ -474,7 +474,7 @@ class TestSingerTargetOracleWMSComprehensive:
             mock_stats.return_value = FlextResult.fail("Stats retrieval failed")
 
             result = target.finalize()
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Stats retrieval failed" in result.error
 
@@ -490,7 +490,7 @@ class TestSingerTargetOracleWMSComprehensive:
             mock_stats.return_value = FlextResult.ok({})
 
             result = target.finalize()
-            assert result.is_success
+            assert result.success
             assert result.data is not None
 
             summary = result.data
@@ -512,7 +512,7 @@ class TestSingerTargetOracleWMSComprehensive:
             mock_stats.side_effect = RuntimeError("Unexpected error")
 
             result = target.finalize()
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Finalization failed" in result.error
 
@@ -534,7 +534,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
             result = await target.cleanup()
             # Should succeed despite client stop failure (logs warning)
-            assert result.is_success
+            assert result.success
 
     @pytest.mark.asyncio
     async def test_cleanup_exception_handling(
@@ -553,7 +553,7 @@ class TestSingerTargetOracleWMSComprehensive:
             mock_stop.side_effect = RuntimeError("Unexpected error")
 
             result = await target.cleanup()
-            assert not result.is_success
+            assert not result.success
             assert result.error is not None
             assert "Cleanup failed" in result.error
 
@@ -614,7 +614,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
             # Setup
             setup_result = await target.setup()
-            assert setup_result.is_success
+            assert setup_result.success
 
             # Process valid SCHEMA
             valid_schema = {
@@ -623,7 +623,7 @@ class TestSingerTargetOracleWMSComprehensive:
                 "schema": {"type": "object", "properties": {"id": {"type": "integer"}}},
             }
             schema_result = await target.process_schema_message(valid_schema)
-            assert schema_result.is_success
+            assert schema_result.success
 
             # Process invalid SCHEMA (should fail)
             invalid_schema = {
@@ -632,7 +632,7 @@ class TestSingerTargetOracleWMSComprehensive:
                 "schema": {"type": "object"},
             }
             invalid_result = await target.process_schema_message(invalid_schema)
-            assert not invalid_result.is_success
+            assert not invalid_result.success
 
             # Process valid RECORD
             valid_record = {
@@ -641,7 +641,7 @@ class TestSingerTargetOracleWMSComprehensive:
                 "record": {"id": 123},
             }
             record_result = await target.process_record_message(valid_record)
-            assert record_result.is_success
+            assert record_result.success
 
             # Process valid STATE
             valid_state = {
@@ -649,13 +649,13 @@ class TestSingerTargetOracleWMSComprehensive:
                 "value": {"bookmarks": {"valid_table": {"version": 1}}},
             }
             state_result = target.process_state_message(valid_state)
-            assert state_result.is_success
+            assert state_result.success
 
             # Finalize
             finalize_result = target.finalize()
-            assert finalize_result.is_success
+            assert finalize_result.success
             assert finalize_result.data is not None
 
             # Cleanup
             cleanup_result = await target.cleanup()
-            assert cleanup_result.is_success
+            assert cleanup_result.success

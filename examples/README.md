@@ -47,7 +47,7 @@ config = {
 # Real implementation with error handling
 target = SingerTargetOracleWMS(config)
 setup_result = await target.setup()
-if not setup_result.is_success:
+if not setup_result.success:
     logger.error(f"Setup failed: {setup_result.error}")
 ```
 
