@@ -13,7 +13,7 @@ import json
 from flext_core import FlextResult, get_logger
 
 # DRY: Use REAL flext-observability with correct signature - NO MOCKUP
-from flext_observability import FlextObservabilityMonitor, flext_monitor_function
+from flext_observability import FlextObservabilityMonitor
 
 # REFACTORING: MAXIMIZE usage of refactored flext-oracle-wms library
 from flext_oracle_wms import (
@@ -288,7 +288,7 @@ class WMSSchemaMapper:
         try:
             oracle_columns = {}
             properties = schema.get("properties", {})
-            
+
             if not isinstance(properties, dict):
                 return FlextResult.fail("Invalid schema: properties must be a dict")
 
@@ -324,7 +324,7 @@ class WMSSchemaMapper:
             # prop_def is already typed as dict[str, object]
             prop_type = prop_def.get("type", "string")
             prop_format = prop_def.get("format")
-            
+
             # Ensure prop_type and prop_format are strings or None
             prop_type_str = str(prop_type) if prop_type is not None else "string"
             prop_format_str = str(prop_format) if prop_format is not None else None

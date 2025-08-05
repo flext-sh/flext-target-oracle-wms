@@ -8,7 +8,6 @@ import pytest
 
 # DRY: Import from REAL implementation - NO DUPLICATION
 from flext_core import FlextResult
-
 from flext_target_oracle_wms.patterns.wms_patterns import (
     WMSDataTransformer,
     WMSSchemaMapper,

@@ -42,7 +42,7 @@ class SingerTargetOracleWMS:
         verify_ssl = config.get("verify_ssl", True)
         enable_logging = config.get("enable_logging", True)
         mock_mode = config.get("mock_mode", False)
-        
+
         oracle_config = FlextOracleWmsClientConfig(
             base_url=str(base_url),
             username=str(username),
@@ -124,7 +124,7 @@ class SingerTargetOracleWMS:
                 return FlextResult.fail(
                     "Invalid SCHEMA message: missing stream or schema",
                 )
-            
+
             # Validate types
             if not isinstance(stream_name, str):
                 return FlextResult.fail("Invalid SCHEMA message: stream must be a string")

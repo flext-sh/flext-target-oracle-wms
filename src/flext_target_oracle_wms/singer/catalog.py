@@ -196,12 +196,12 @@ class SingerWMSCatalogManager:
             streams = catalog.get("streams", [])
             if not isinstance(streams, list):
                 return FlextResult.fail("Invalid catalog format: streams must be a list")
-            
+
             for stream_dict in streams:
                 if not isinstance(stream_dict, dict):
                     continue
                 stream_name = stream_dict.get("stream")
-                
+
                 # Validate stream_name is a string
                 if not isinstance(stream_name, str):
                     continue
