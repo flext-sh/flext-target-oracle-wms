@@ -223,7 +223,7 @@ class SingerWMSStreamProcessor:
         """Validate WMS record against expected schema."""
         try:
             properties = expected_schema.get("properties", {})
-            
+
             if not isinstance(properties, dict):
                 return FlextResult.fail("Invalid schema: properties must be a dict")
 
@@ -255,7 +255,7 @@ class SingerWMSStreamProcessor:
             # Compare schemas and identify changes
             old_props = old_schema.get("properties", {})
             new_props = new_schema.get("properties", {})
-            
+
             # Validate that properties are dicts
             if not isinstance(old_props, dict):
                 old_props = {}

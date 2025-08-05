@@ -279,7 +279,7 @@ class FlextTargetFactory:
             base_url = config.pop("base_url")
             username = config.pop("username")
             password = config.pop("password")
-            
+
             # Validate types before creating request
             if not isinstance(base_url, str):
                 return FlextResult.fail("base_url must be a string")
@@ -291,7 +291,7 @@ class FlextTargetFactory:
                 return FlextResult.fail("environment must be a string")
             if preset is not None and not isinstance(preset, str):
                 return FlextResult.fail("preset must be a string or None")
-                
+
             request = TargetCreationRequest(
                 base_url=base_url,
                 username=username,
