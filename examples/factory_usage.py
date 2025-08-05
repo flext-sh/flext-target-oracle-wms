@@ -272,7 +272,9 @@ def demonstrate_configuration_flexibility() -> None:
         "log_level": "DEBUG",
         "enable_sql_logging": True,
     }
-    logger.info("Custom Development Config: %s", json.dumps(custom_dev_config, indent=2))
+    logger.info(
+        "Custom Development Config: %s", json.dumps(custom_dev_config, indent=2)
+    )
 
     # Custom production configuration
     custom_prod_config = {
@@ -281,7 +283,9 @@ def demonstrate_configuration_flexibility() -> None:
         "enable_clustering": True,
         "backup_strategy": "incremental",
     }
-    logger.info("Custom Production Config: %s", json.dumps(custom_prod_config, indent=2))
+    logger.info(
+        "Custom Production Config: %s", json.dumps(custom_prod_config, indent=2)
+    )
 
     logger.info("\n💡 Benefits of Factory Pattern:")
     logger.info("  ✅ Sensible defaults for each environment")

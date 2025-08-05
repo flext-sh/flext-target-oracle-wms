@@ -77,7 +77,9 @@ class SingerTargetOracleWMS:
         self.batch_size = config.get("batch_size", 1000)
         self.load_method = config.get("load_method", "APPEND_ONLY")
         table_prefix_raw = config.get("table_prefix", "")
-        self.table_prefix = str(table_prefix_raw) if table_prefix_raw is not None else ""
+        self.table_prefix = (
+            str(table_prefix_raw) if table_prefix_raw is not None else ""
+        )
 
         # REAL PLUGIN SYSTEM: Initialize plugin capabilities - NO MOCKUP
         self.plugin_enabled = config.get("enable_plugins", False)
@@ -127,7 +129,9 @@ class SingerTargetOracleWMS:
 
             # Validate types
             if not isinstance(stream_name, str):
-                return FlextResult.fail("Invalid SCHEMA message: stream must be a string")
+                return FlextResult.fail(
+                    "Invalid SCHEMA message: stream must be a string",
+                )
             if not isinstance(schema, dict):
                 return FlextResult.fail("Invalid SCHEMA message: schema must be a dict")
 
@@ -152,7 +156,9 @@ class SingerTargetOracleWMS:
             )
             # Use REAL configuration directly - no duplicated config access
             schema_name_raw = self.config.get("default_target_schema", "WMS_TARGET")
-            schema_name = str(schema_name_raw) if schema_name_raw is not None else "WMS_TARGET"
+            schema_name = (
+                str(schema_name_raw) if schema_name_raw is not None else "WMS_TARGET"
+            )
 
             create_sql_result = self.table_manager.generate_create_table_sql(
                 table_name,
@@ -321,7 +327,9 @@ class SingerTargetOracleWMS:
             )
             # Use REAL configuration directly - no duplicated config access
             schema_name_raw = self.config.get("default_target_schema", "WMS_TARGET")
-            schema_name = str(schema_name_raw) if schema_name_raw is not None else "WMS_TARGET"
+            schema_name = (
+                str(schema_name_raw) if schema_name_raw is not None else "WMS_TARGET"
+            )
 
             # Build INSERT SQL safely (schema and table names are controlled)
 
