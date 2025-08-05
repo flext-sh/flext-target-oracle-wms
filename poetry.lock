@@ -1674,7 +1674,7 @@ optional = false
 python-versions = ">=3.13,<3.14"
 groups = ["main"]
 files = []
-develop = true
+develop = false
 
 [package.dependencies]
 pydantic = ">=2.11.7"
@@ -1798,6 +1798,7 @@ flext-observability = {path = "/home/marlonsc/flext/flext-observability"}
 httpx = ">=0.28.1"
 pydantic = ">=2.11.7"
 pydantic-settings = ">=2.10.1"
+python-dotenv = ">=1.1.1,<2.0.0"
 
 [package.source]
 type = "directory"
@@ -6389,4 +6390,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13,<3.14"
-content-hash = "78c4103559120fff3a888e7aec21f972efe3e4bbe94132f2060981225ea7ee40"
+content-hash = "fcb1a19c1faf92a0e68444b9fcd3cf134df3142a98a8b8443d067e642d13a0d2"

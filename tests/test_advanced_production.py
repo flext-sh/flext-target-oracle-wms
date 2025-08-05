@@ -26,6 +26,7 @@ import pytest
 
 # DRY: Import REAL flext-* APIs - NO DUPLICATION
 from flext_core import FlextResult
+
 from flext_target_oracle_wms.singer.target import SingerTargetOracleWMS
 
 if TYPE_CHECKING:

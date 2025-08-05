@@ -195,7 +195,9 @@ class SingerWMSCatalogManager:
 
             streams = catalog.get("streams", [])
             if not isinstance(streams, list):
-                return FlextResult.fail("Invalid catalog format: streams must be a list")
+                return FlextResult.fail(
+                    "Invalid catalog format: streams must be a list",
+                )
 
             for stream_dict in streams:
                 if not isinstance(stream_dict, dict):
@@ -222,7 +224,9 @@ class SingerWMSCatalogManager:
 
                 self._catalog_entries[stream_name] = entry
 
-            logger.info(f"Loaded {len(self._catalog_entries)} WMS streams from Singer catalog")
+            logger.info(
+                f"Loaded {len(self._catalog_entries)} WMS streams from Singer catalog",
+            )
 
             return FlextResult.ok(None)
 
