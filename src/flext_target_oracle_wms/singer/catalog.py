@@ -180,7 +180,7 @@ class SingerWMSCatalogManager:
 
                 streams.append(stream_dict)
 
-            catalog = {"streams": streams}
+            catalog: dict[str, object] = {"streams": streams}
 
             return FlextResult.ok(catalog)
 
@@ -194,8 +194,17 @@ class SingerWMSCatalogManager:
             self._catalog_entries.clear()
 
             streams = catalog.get("streams", [])
+            if not isinstance(streams, list):
+                return FlextResult.fail("Invalid catalog format: streams must be a list")
+            
             for stream_dict in streams:
-                stream_name = stream_dict["stream"]
+                if not isinstance(stream_dict, dict):
+                    continue
+                stream_name = stream_dict.get("stream")
+                
+                # Validate stream_name is a string
+                if not isinstance(stream_name, str):
+                    continue
 
                 entry = SingerWMSCatalogEntry(
                     tap_stream_id=stream_dict.get("tap_stream_id", stream_name),
@@ -213,7 +222,7 @@ class SingerWMSCatalogManager:
 
                 self._catalog_entries[stream_name] = entry
 
-            logger.info(f"Loaded {len(streams)} WMS streams from Singer catalog")
+            logger.info(f"Loaded {len(self._catalog_entries)} WMS streams from Singer catalog")
 
             return FlextResult.ok(None)
 

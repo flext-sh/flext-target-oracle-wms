@@ -43,9 +43,11 @@ class TestOracleWMSTargetCli:
         """Test loading configuration when file not found."""
         cli = OracleWMSTargetCli()
 
-        with patch("pathlib.Path.exists", return_value=False):
-            with pytest.raises(FileNotFoundError, match="Configuration file not found"):
-                cli._load_config("nonexistent.json")
+        with (
+            patch("pathlib.Path.exists", return_value=False),
+            pytest.raises(FileNotFoundError, match="Configuration file not found"),
+        ):
+            cli._load_config("nonexistent.json")
 
     def test_load_config_invalid_json(self) -> None:
         """Test loading configuration with invalid JSON."""
@@ -54,9 +56,9 @@ class TestOracleWMSTargetCli:
         with (
             patch("pathlib.Path.exists", return_value=True),
             patch("pathlib.Path.read_text", return_value="invalid json"),
+            pytest.raises(json.JSONDecodeError),
         ):
-            with pytest.raises(json.JSONDecodeError):
-                cli._load_config("invalid.json")
+            cli._load_config("invalid.json")
 
     @pytest.mark.asyncio
     async def test_execute_with_config_file(self) -> None:

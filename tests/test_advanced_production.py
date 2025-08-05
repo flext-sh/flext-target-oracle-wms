@@ -27,7 +27,6 @@ import pytest
 # DRY: Import REAL flext-* APIs - NO DUPLICATION
 from flext_core import FlextResult
 
-from flext_target_oracle_wms import SingerTargetOracleWMS
 from flext_target_oracle_wms.singer.target import SingerTargetOracleWMS
 
 if TYPE_CHECKING:
@@ -673,9 +672,9 @@ class TestProductionDataIntegrity:
 
             result = await production_target.process_record_message(record_message)
             assert result.success, f"Order processing failed: {result.error}"
-            # DRY: Use original data if result.data is None (common in targets)
-            order_data = result.data if result.data is not None else order_data
-            processed_orders.append(order_data)
+            # DRY: Use result data or original data as fallback (common in targets)
+            processed_data = result.data if result.data is not None else order_data
+            processed_orders.append(processed_data)
 
         # Verify data integrity constraints
         assert len(processed_orders) == len(test_orders), "Not all orders processed"

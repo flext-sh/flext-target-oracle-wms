@@ -7,8 +7,8 @@ instead of local implementations to follow DRY principle.
 from __future__ import annotations
 
 import json
-from typing import Any
 
+# Removed Any import - using specific types from flext-core
 # DRY: Use REAL flext-core patterns - NO DUPLICATION
 from flext_core import FlextResult, get_logger
 
@@ -52,7 +52,7 @@ def get_oracle_type_mapping(json_type: str | None) -> str:
     SOLID REFACTORING: Delegate to flext-oracle-wms library for type mappings.
     """
     # Use flext-oracle-wms defaults where available
-    default_mappings = {
+    default_mappings: dict[str, str] = {
         "date-time": "TIMESTAMP",
         "date": "DATE",
         "integer": "NUMBER",
@@ -64,6 +64,8 @@ def get_oracle_type_mapping(json_type: str | None) -> str:
         "text": "VARCHAR2(4000)",
     }
 
+    if json_type is None:
+        return "VARCHAR2(4000)"
     return default_mappings.get(json_type, "VARCHAR2(4000)")
 
 
@@ -93,12 +95,11 @@ class WMSTypeConverter:
 
         self.schema_processor = FlextOracleWmsDynamicSchemaProcessor()
 
-    @flext_monitor_function(monitor=_observability_monitor)
     def convert_singer_to_oracle(
         self,
         singer_type: str,
         value: object,
-    ) -> FlextResult[Any]:
+    ) -> FlextResult[object]:
         """Convert Singer type to Oracle-compatible type using flext-oracle-wms.
 
         SOLID REFACTORING: Use flext-oracle-wms for type inference and validation.
@@ -202,8 +203,14 @@ class WMSDataTransformer:
                 # Type conversion using flext-oracle-wms patterns
                 if schema:
                     properties = schema.get("properties", {})
-                    prop_def = properties.get(key, {})
-                    singer_type = prop_def.get("type", "string")
+                    if isinstance(properties, dict):
+                        prop_def = properties.get(key, {})
+                        if isinstance(prop_def, dict):
+                            singer_type = prop_def.get("type", "string")
+                        else:
+                            singer_type = "string"
+                    else:
+                        singer_type = "string"
 
                     convert_result = self.type_converter.convert_singer_to_oracle(
                         singer_type,
@@ -217,7 +224,7 @@ class WMSDataTransformer:
                     else:
                         transformed[oracle_key] = str(value)
                 else:
-                    transformed[oracle_key] = value
+                    transformed[oracle_key] = str(value) if value is not None else ""
 
             return FlextResult.ok(transformed)
 
@@ -246,13 +253,13 @@ class WMSDataTransformer:
 
             for chunk in chunked_records:
                 for record in chunk:
-                    params = {}
+                    params: dict[str, object] = {}
                     for col in columns:
                         # Oracle bind parameters can't start with underscore
                         param_name = col.lstrip("_")
                         value = record.get(col)
 
-                        # Convert to string for Oracle compatibility
+                        # Convert to appropriate type for Oracle compatibility
                         if value is None:
                             params[param_name] = ""
                         else:
@@ -281,6 +288,9 @@ class WMSSchemaMapper:
         try:
             oracle_columns = {}
             properties = schema.get("properties", {})
+            
+            if not isinstance(properties, dict):
+                return FlextResult.fail("Invalid schema: properties must be a dict")
 
             for prop_name, prop_def in properties.items():
                 oracle_name = self._normalize_column_name(prop_name)
@@ -311,11 +321,16 @@ class WMSSchemaMapper:
         SOLID REFACTORING: Use flext-oracle-wms library for type mapping consistency.
         """
         try:
+            # prop_def is already typed as dict[str, object]
             prop_type = prop_def.get("type", "string")
             prop_format = prop_def.get("format")
+            
+            # Ensure prop_type and prop_format are strings or None
+            prop_type_str = str(prop_type) if prop_type is not None else "string"
+            prop_format_str = str(prop_format) if prop_format is not None else None
 
             # Use flext-oracle-wms type mapping where available
-            oracle_type = get_oracle_type_mapping(prop_format or prop_type)
+            oracle_type = get_oracle_type_mapping(prop_format_str or prop_type_str)
 
             return FlextResult.ok(oracle_type)
 

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 # Import from flext-core for foundational patterns
 from flext_core import (
@@ -58,16 +58,11 @@ class SingerWMSStreamProcessor:
     def initialize_stream(
         self,
         stream_name: str,
-        schema: Any,
+        schema: dict[str, object],
     ) -> FlextResult[None]:
         """Initialize WMS stream processing with schema validation."""
         try:
-            # Validate schema structure
-            if not isinstance(schema, dict):
-                return FlextResult.fail(
-                    f"Invalid schema for {stream_name}: expected dict",
-                )
-
+            # Validate schema structure (schema is already typed as dict[str, object])
             if "type" not in schema:
                 return FlextResult.fail(
                     f"Schema missing 'type' field for stream {stream_name}",
@@ -228,6 +223,9 @@ class SingerWMSStreamProcessor:
         """Validate WMS record against expected schema."""
         try:
             properties = expected_schema.get("properties", {})
+            
+            if not isinstance(properties, dict):
+                return FlextResult.fail("Invalid schema: properties must be a dict")
 
             # Check required fields
             for prop_name, prop_def in properties.items():
@@ -257,6 +255,12 @@ class SingerWMSStreamProcessor:
             # Compare schemas and identify changes
             old_props = old_schema.get("properties", {})
             new_props = new_schema.get("properties", {})
+            
+            # Validate that properties are dicts
+            if not isinstance(old_props, dict):
+                old_props = {}
+            if not isinstance(new_props, dict):
+                new_props = {}
 
             added_fields = set(new_props.keys()) - set(old_props.keys())
             removed_fields = set(old_props.keys()) - set(new_props.keys())

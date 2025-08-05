@@ -32,26 +32,36 @@ class SingerTargetOracleWMS:
         self.config = config
 
         # Use REAL flext-oracle-wms configuration - NO DUPLICATION
+        # Extract and validate configuration values
+        base_url = config.get("base_url", "https://localhost/wms")
+        username = config.get("username", "oracle")
+        password = config.get("password", "oracle")
+        environment = config.get("environment", "default")
+        timeout = config.get("timeout", 30.0)
+        max_retries = config.get("max_retries", 3)
+        verify_ssl = config.get("verify_ssl", True)
+        enable_logging = config.get("enable_logging", True)
+        mock_mode = config.get("mock_mode", False)
+        
         oracle_config = FlextOracleWmsClientConfig(
-            base_url=config.get("base_url", "https://localhost/wms"),
-            username=config.get("username", "oracle"),
-            password=config.get("password", "oracle"),
-            environment=config.get("environment", "default"),
-            timeout=config.get("timeout", 30.0),
-            max_retries=config.get("max_retries", 3),
+            base_url=str(base_url),
+            username=str(username),
+            password=str(password),
+            environment=str(environment),
+            timeout=float(str(timeout)),
+            max_retries=int(str(max_retries)),
             api_version=FlextOracleWmsApiVersion.LGF_V10,
-            verify_ssl=config.get("verify_ssl", True),
-            enable_logging=config.get("enable_logging", True),
+            verify_ssl=bool(verify_ssl),
+            enable_logging=bool(enable_logging),
         )
 
         # Check if mock mode is requested
-        mock_mode = config.get("mock_mode", False)
-        self.mock_mode = mock_mode
+        self.mock_mode = bool(mock_mode)
 
         # Create Oracle WMS client with optional mock mode
         self.oracle_client = create_oracle_wms_client(
             oracle_config,
-            mock_mode=mock_mode,
+            mock_mode=bool(mock_mode),
         )
 
         # Initialize WMS components
@@ -66,7 +76,8 @@ class SingerTargetOracleWMS:
         # Configuration options
         self.batch_size = config.get("batch_size", 1000)
         self.load_method = config.get("load_method", "APPEND_ONLY")
-        self.table_prefix = config.get("table_prefix", "")
+        table_prefix_raw = config.get("table_prefix", "")
+        self.table_prefix = str(table_prefix_raw) if table_prefix_raw is not None else ""
 
         # REAL PLUGIN SYSTEM: Initialize plugin capabilities - NO MOCKUP
         self.plugin_enabled = config.get("enable_plugins", False)
@@ -113,6 +124,12 @@ class SingerTargetOracleWMS:
                 return FlextResult.fail(
                     "Invalid SCHEMA message: missing stream or schema",
                 )
+            
+            # Validate types
+            if not isinstance(stream_name, str):
+                return FlextResult.fail("Invalid SCHEMA message: stream must be a string")
+            if not isinstance(schema, dict):
+                return FlextResult.fail("Invalid SCHEMA message: schema must be a dict")
 
             # Add to catalog
             catalog_result = self.catalog_manager.add_stream(stream_name, schema)
@@ -134,7 +151,8 @@ class SingerTargetOracleWMS:
                 self.table_prefix,
             )
             # Use REAL configuration directly - no duplicated config access
-            schema_name = self.config.get("default_target_schema", "WMS_TARGET")
+            schema_name_raw = self.config.get("default_target_schema", "WMS_TARGET")
+            schema_name = str(schema_name_raw) if schema_name_raw is not None else "WMS_TARGET"
 
             create_sql_result = self.table_manager.generate_create_table_sql(
                 table_name,
@@ -180,6 +198,12 @@ class SingerTargetOracleWMS:
                     "Invalid RECORD message: missing stream or record",
                 )
 
+            # Validate types before processing
+            if not isinstance(stream_name, str):
+                return FlextResult.fail("Invalid message: stream must be a string")
+            if not isinstance(record, dict):
+                return FlextResult.fail("Invalid message: record must be a dict")
+
             # Process record through stream processor
             process_result = self.stream_processor.process_record(stream_name, record)
             if not process_result.success:
@@ -190,6 +214,7 @@ class SingerTargetOracleWMS:
             transformed_record = process_result.data
 
             # Insert into Oracle (this could be batched for performance)
+            # stream_name is already validated as str above
             insert_result = await self._insert_record(
                 stream_name,
                 transformed_record or {},
@@ -295,7 +320,8 @@ class SingerTargetOracleWMS:
                 self.table_prefix,
             )
             # Use REAL configuration directly - no duplicated config access
-            schema_name = self.config.get("default_target_schema", "WMS_TARGET")
+            schema_name_raw = self.config.get("default_target_schema", "WMS_TARGET")
+            schema_name = str(schema_name_raw) if schema_name_raw is not None else "WMS_TARGET"
 
             # Build INSERT SQL safely (schema and table names are controlled)
 
