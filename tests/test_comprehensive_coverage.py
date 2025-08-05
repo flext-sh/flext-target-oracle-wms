@@ -74,10 +74,12 @@ class TestComprehensiveCLICoverage:
 
         config_json = json.dumps(config_data)
 
-        with patch("pathlib.Path.exists", return_value=True):
-            with patch("pathlib.Path.read_text", return_value=config_json):
-                config = cli._load_config("test-config.json")
-                assert config == config_data
+        with (
+            patch("pathlib.Path.exists", return_value=True),
+            patch("pathlib.Path.read_text", return_value=config_json),
+        ):
+            config = cli._load_config("test-config.json")
+            assert config == config_data
 
     @pytest.mark.asyncio
     async def test_cli_execute_with_multiple_message_types(self) -> None:
@@ -133,30 +135,38 @@ class TestComprehensiveCLICoverage:
         async_result.success = True
 
         # Test 1: No arguments (default behavior) - now simplified without CLISettings
-        with patch("sys.argv", ["target-oracle-wms"]):
-            with patch("asyncio.run", return_value=async_result):
-                main()  # main() returns None, not capturing result
+        with (
+            patch("sys.argv", ["target-oracle-wms"]),
+            patch("asyncio.run", return_value=async_result),
+        ):
+            main()  # main() returns None, not capturing result
 
         # Test 2: Config file argument
-        with patch("sys.argv", ["target-oracle-wms", "--config", "test-config.json"]):
-            with patch("asyncio.run", return_value=async_result):
-                main()  # main() returns None, not capturing result
+        with (
+            patch("sys.argv", ["target-oracle-wms", "--config", "test-config.json"]),
+            patch("asyncio.run", return_value=async_result),
+        ):
+            main()  # main() returns None, not capturing result
 
         # Test 3: KeyboardInterrupt handling
-        with patch("sys.argv", ["target-oracle-wms"]):
-            with patch("asyncio.run", side_effect=KeyboardInterrupt()):
-                with patch("sys.exit") as mock_exit:
-                    with patch("sys.stderr.write"):
-                        main()
-                    mock_exit.assert_called_once_with(1)
+        with (
+            patch("sys.argv", ["target-oracle-wms"]),
+            patch("asyncio.run", side_effect=KeyboardInterrupt()),
+            patch("sys.exit") as mock_exit,
+            patch("sys.stderr.write"),
+        ):
+            main()
+            mock_exit.assert_called_once_with(1)
 
         # Test 4: General exception handling
-        with patch("sys.argv", ["target-oracle-wms"]):
-            with patch("asyncio.run", side_effect=RuntimeError("Test error")):
-                with patch("sys.exit") as mock_exit:
-                    with patch("sys.stderr.write"):
-                        main()
-                    mock_exit.assert_called_once_with(1)
+        with (
+            patch("sys.argv", ["target-oracle-wms"]),
+            patch("asyncio.run", side_effect=RuntimeError("Test error")),
+            patch("sys.exit") as mock_exit,
+            patch("sys.stderr.write"),
+        ):
+            main()
+            mock_exit.assert_called_once_with(1)
 
 
 class TestComprehensiveTargetCoverage:
@@ -289,22 +299,19 @@ class TestComprehensiveTargetCoverage:
 
             # Test _ensure_table_exists with exception - patch the method itself
             target.oracle_client = mock_client
-            with patch.object(
-                target,
-                "_ensure_table_exists",
-                side_effect=RuntimeError("Test error"),
+            with (
+                patch.object(
+                    target,
+                    "_ensure_table_exists",
+                    side_effect=RuntimeError("Test error"),
+                ),
+                pytest.raises(RuntimeError, match="Test error"),
             ):
-                try:
-                    result = await target._ensure_table_exists(
-                        "test_table",
-                        "test_schema",
-                        "CREATE TABLE...",
-                    )
-                    # Should not reach here due to exception
-                    msg = "Expected RuntimeError but method succeeded"
-                    raise AssertionError(msg)
-                except RuntimeError as e:
-                    assert "Test error" in str(e)
+                await target._ensure_table_exists(
+                    "test_table",
+                    "test_schema",
+                    "CREATE TABLE...",
+                )
 
     @pytest.mark.asyncio
     async def test_target_record_insertion_comprehensive(
@@ -485,13 +492,15 @@ class TestComprehensiveIntegrationCoverage:
         # Create mock config file
         config_file_content = json.dumps(config_data)
 
-        with patch("pathlib.Path.exists", return_value=True):
-            with patch("pathlib.Path.read_text", return_value=config_file_content):
-                cli = OracleWMSTargetCli()
-                loaded_config = cli._load_config("test-config.json")
+        with (
+            patch("pathlib.Path.exists", return_value=True),
+            patch("pathlib.Path.read_text", return_value=config_file_content),
+        ):
+            cli = OracleWMSTargetCli()
+            loaded_config = cli._load_config("test-config.json")
 
-                assert loaded_config == config_data
+            assert loaded_config == config_data
 
-                # Test CLI initialization works correctly
-                cli_new = OracleWMSTargetCli()
-                assert cli_new.name == "target-oracle-wms"
+            # Test CLI initialization works correctly
+            cli_new = OracleWMSTargetCli()
+            assert cli_new.name == "target-oracle-wms"

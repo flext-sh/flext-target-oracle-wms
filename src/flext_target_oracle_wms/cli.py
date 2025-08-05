@@ -6,8 +6,8 @@ import asyncio
 import json
 import sys
 from pathlib import Path
-from typing import Any
 
+# Removed Any import - using specific types from flext-core
 # DRY: Use only essential imports - avoid CLISettings env var conflicts
 from flext_core import FlextResult
 
@@ -24,7 +24,7 @@ class OracleWMSTargetCli:
         self.description = "Oracle WMS Singer Target - Production Ready using REAL flext-oracle-wms API"
         self.version = "0.9.0"
 
-    async def execute(self, **kwargs: Any) -> FlextResult[None]:
+    async def execute(self, **kwargs: object) -> FlextResult[None]:
         """Execute target using REAL implementation - NO DUPLICATION.
 
         SOLID REFACTORING: Reduced multiple returns (count=6) to single exit point
@@ -34,7 +34,9 @@ class OracleWMSTargetCli:
 
         try:
             # Load configuration
-            config_result = self._prepare_config(kwargs.get("config"))
+            config_path = kwargs.get("config")
+            config_path_str = str(config_path) if config_path is not None else None
+            config_result = self._prepare_config(config_path_str)
             if not config_result.success:
                 result = FlextResult.fail(config_result.error or "Configuration failed")
             else:

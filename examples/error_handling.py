@@ -258,4 +258,4 @@ if __name__ == "__main__":
     SOLID REFACTORING: Simplified main execution using the orchestrated functions.
     """
     # Example code - MyPy type checking relaxed for demonstration
-    asyncio.run(demonstrate_error_handling())  # type: ignore[arg-type]
+    asyncio.run(demonstrate_error_handling())

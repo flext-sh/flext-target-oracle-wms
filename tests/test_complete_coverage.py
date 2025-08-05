@@ -598,16 +598,20 @@ class TestCompleteCLIEdgeCases:
             cli._load_config("non_existent_file.json")
 
         # Test with directory instead of file
-        with patch("pathlib.Path.exists", return_value=True):
-            with patch("pathlib.Path.read_text", side_effect=IsADirectoryError()):
-                with pytest.raises(IsADirectoryError):
-                    cli._load_config("directory_path")
+        with (
+            patch("pathlib.Path.exists", return_value=True),
+            patch("pathlib.Path.read_text", side_effect=IsADirectoryError()),
+            pytest.raises(IsADirectoryError),
+        ):
+            cli._load_config("directory_path")
 
         # Test with permission denied
-        with patch("pathlib.Path.exists", return_value=True):
-            with patch("pathlib.Path.read_text", side_effect=PermissionError()):
-                with pytest.raises(PermissionError):
-                    cli._load_config("permission_denied.json")
+        with (
+            patch("pathlib.Path.exists", return_value=True),
+            patch("pathlib.Path.read_text", side_effect=PermissionError()),
+            pytest.raises(PermissionError),
+        ):
+            cli._load_config("permission_denied.json")
 
     def test_main_function_edge_cases(self) -> None:
         """Test main function with various edge cases."""
@@ -627,13 +631,15 @@ class TestCompleteCLIEdgeCases:
         ]
 
         for test_args in test_cases:
-            with patch("sys.argv", test_args):
-                with patch("asyncio.run") as mock_run:
-                    mock_run.return_value = MagicMock(success=True)
-                    with patch("sys.exit") as mock_exit:
-                        main()
-                        # Should not exit with success
-                        mock_exit.assert_not_called()
+            with (
+                patch("sys.argv", test_args),
+                patch("asyncio.run") as mock_run,
+                patch("sys.exit") as mock_exit,
+            ):
+                mock_run.return_value = MagicMock(success=True)
+                main()
+                # Should not exit with success
+                mock_exit.assert_not_called()
 
 
 @pytest.mark.skipif(not IMPORTS_AVAILABLE, reason="Target imports not available")

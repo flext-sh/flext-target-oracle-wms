@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, ClassVar
+from typing import ClassVar
 
 # DRY: Use REAL flext-* APIs for consistency
 from flext_core import FlextResult, get_logger
@@ -133,7 +133,7 @@ class FlextTargetFactory:
             )
 
             # Start with base configuration
-            config = {
+            config: dict[str, object] = {
                 "base_url": request.base_url,
                 "username": request.username,
                 "password": request.password,
@@ -172,7 +172,7 @@ class FlextTargetFactory:
         password: str,
         environment: str = "development",
         preset: str | None = None,
-        **additional_config: Any,
+        **additional_config: object,
     ) -> FlextResult[SingerTargetOracleWMS]:
         """Legacy method for backward compatibility - delegates to Parameter Object version.
 
@@ -194,7 +194,7 @@ class FlextTargetFactory:
         base_url: str,
         username: str = "dev_user",
         password: str = "dev_password",
-        **overrides: Any,
+        **overrides: object,
     ) -> FlextResult[SingerTargetOracleWMS]:
         """Create development target with optimized settings."""
         request = TargetCreationRequest(
@@ -213,7 +213,7 @@ class FlextTargetFactory:
         base_url: str,
         username: str,
         password: str,
-        **overrides: Any,
+        **overrides: object,
     ) -> FlextResult[SingerTargetOracleWMS]:
         """Create production target with optimized settings."""
         request = TargetCreationRequest(
@@ -232,7 +232,7 @@ class FlextTargetFactory:
         base_url: str = "https://test.wms.oracle.com",
         username: str = "test_user",
         password: str = "test_password",
-        **overrides: Any,
+        **overrides: object,
     ) -> FlextResult[SingerTargetOracleWMS]:
         """Create testing target with optimized settings."""
         request = TargetCreationRequest(
@@ -276,10 +276,26 @@ class FlextTargetFactory:
             environment = config.get("environment", "development")
 
             # Create target using preset logic with Parameter Object
+            base_url = config.pop("base_url")
+            username = config.pop("username")
+            password = config.pop("password")
+            
+            # Validate types before creating request
+            if not isinstance(base_url, str):
+                return FlextResult.fail("base_url must be a string")
+            if not isinstance(username, str):
+                return FlextResult.fail("username must be a string")
+            if not isinstance(password, str):
+                return FlextResult.fail("password must be a string")
+            if not isinstance(environment, str):
+                return FlextResult.fail("environment must be a string")
+            if preset is not None and not isinstance(preset, str):
+                return FlextResult.fail("preset must be a string or None")
+                
             request = TargetCreationRequest(
-                base_url=config.pop("base_url"),
-                username=config.pop("username"),
-                password=config.pop("password"),
+                base_url=base_url,
+                username=username,
+                password=password,
                 environment=environment,
                 preset=preset,
                 additional_config=config,
@@ -287,9 +303,9 @@ class FlextTargetFactory:
             return cls.create_target(request)
 
         except Exception as e:
-            error_msg: str = f"Failed to create target from config: {e}"
-            logger.exception(error_msg)
-            return FlextResult.fail(error_msg)
+            creation_error_msg: str = f"Failed to create target from config: {e}"
+            logger.exception(creation_error_msg)
+            return FlextResult.fail(creation_error_msg)
 
 
 class FlextTargetMonitoringFactory:
@@ -378,7 +394,7 @@ def create_oracle_wms_target(
     password: str,
     environment: str = "development",
     preset: str | None = None,
-    **config: Any,
+    **config: object,
 ) -> FlextResult[SingerTargetOracleWMS]:
     """Convenient function to create Oracle WMS target.
 
@@ -403,7 +419,7 @@ def create_monitored_oracle_wms_target(
     environment: str = "development",
     preset: str | None = None,
     monitor_name: str = "oracle_wms_target",
-    **config: Any,
+    **config: object,
 ) -> FlextResult[SingerTargetOracleWMS]:
     """Convenient function to create monitored Oracle WMS target.
 
