@@ -280,7 +280,7 @@ class SingerTargetOracleWMS:
             # Validate WMS entity accessibility using REAL Oracle client API
             try:
                 # Use REAL flext-oracle-wms API to validate entity exists
-                validation_query = f"SELECT 1 FROM {full_entity_name} WHERE ROWNUM = 1"  # noqa: S608
+                validation_query = f"SELECT 1 FROM {full_entity_name} WHERE ROWNUM = 1"
                 # Use generic method or skip validation if method doesn't exist
                 if hasattr(self.oracle_client, "execute_query"):
                     query_result = await self.oracle_client.execute_query(
@@ -340,7 +340,7 @@ class SingerTargetOracleWMS:
             # Build parametrized INSERT SQL (safe - uses placeholders)
             # Note: SQL injection is not possible here as all table/column names are controlled
             # and parameters use proper placeholders
-            insert_sql = f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" ({", ".join(quoted_columns)}) VALUES ({", ".join(placeholders)})'  # noqa: S608
+            insert_sql = f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" ({", ".join(quoted_columns)}) VALUES ({", ".join(placeholders)})'
             logger.debug(f"Generated INSERT SQL: {insert_sql}")
 
             # Prepare parameters

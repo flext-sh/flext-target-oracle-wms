@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3  # noqa: EXE001
 """Production Quality Tests for flext-target-oracle-wms.
 
 Validates production-ready implementation using real flext-oracle-wms API
@@ -173,7 +173,7 @@ async def test_data_transformation() -> bool | None:
             if not result.success:
                 return False
 
-            converted = result.data
+            converted: str | int | float | bool | dict[str, object] = result.data
             if singer_type == "object":
                 # JSON string comparison
                 import json

@@ -38,6 +38,32 @@ class SingerWMSCatalogEntry(FlextDomainBaseModel):
         except Exception as e:
             return FlextResult.fail(f"Catalog entry validation failed: {e}")
 
+    def validate_business_rules(self) -> FlextResult[None]:
+        """Validate Singer WMS catalog entry business rules."""
+        try:
+            # Basic business rules validation
+            if self.replication_method not in ["FULL_TABLE", "INCREMENTAL"]:
+                return FlextResult.fail(
+                    f"Invalid replication_method: {self.replication_method}. "
+                    f"Must be FULL_TABLE or INCREMENTAL"
+                )
+
+            # If incremental, must have replication key
+            if self.replication_method == "INCREMENTAL" and not self.replication_key:
+                return FlextResult.fail(
+                    "INCREMENTAL replication requires replication_key"
+                )
+
+            # Stream name should match tap_stream_id for consistency
+            if self.stream != self.tap_stream_id:
+                return FlextResult.fail(
+                    f"Stream name '{self.stream}' must match tap_stream_id '{self.tap_stream_id}'"
+                )
+
+            return FlextResult.ok(None)
+        except Exception as e:
+            return FlextResult.fail(f"Business rules validation failed: {e}")
+
 
 class SingerWMSCatalogManager:
     """Manage Singer WMS catalog operations using flext-core patterns."""
