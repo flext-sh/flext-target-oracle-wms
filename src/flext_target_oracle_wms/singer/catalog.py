@@ -42,22 +42,22 @@ class SingerWMSCatalogEntry(FlextDomainBaseModel):
         """Validate Singer WMS catalog entry business rules."""
         try:
             # Basic business rules validation
-            if self.replication_method not in ["FULL_TABLE", "INCREMENTAL"]:
+            if self.replication_method not in {"FULL_TABLE", "INCREMENTAL"}:
                 return FlextResult.fail(
                     f"Invalid replication_method: {self.replication_method}. "
-                    f"Must be FULL_TABLE or INCREMENTAL"
+                    f"Must be FULL_TABLE or INCREMENTAL",
                 )
 
             # If incremental, must have replication key
             if self.replication_method == "INCREMENTAL" and not self.replication_key:
                 return FlextResult.fail(
-                    "INCREMENTAL replication requires replication_key"
+                    "INCREMENTAL replication requires replication_key",
                 )
 
             # Stream name should match tap_stream_id for consistency
             if self.stream != self.tap_stream_id:
                 return FlextResult.fail(
-                    f"Stream name '{self.stream}' must match tap_stream_id '{self.tap_stream_id}'"
+                    f"Stream name '{self.stream}' must match tap_stream_id '{self.tap_stream_id}'",
                 )
 
             return FlextResult.ok(None)
@@ -88,12 +88,12 @@ class SingerWMSCatalogManager:
             )
 
             self._catalog_entries[stream_name] = entry
-            logger.info(f"Added WMS stream to catalog: {stream_name}")
+            logger.info("Added WMS stream to catalog: %s", stream_name)
 
             return FlextResult.ok(None)
 
         except (RuntimeError, ValueError, TypeError) as e:
-            logger.exception(f"Failed to add WMS stream to catalog: {stream_name}")
+            logger.exception("Failed to add WMS stream to catalog: %s", stream_name)
             return FlextResult.fail(f"Stream addition failed: {e}")
 
     def get_stream(self, stream_name: str) -> FlextResult[SingerWMSCatalogEntry]:
@@ -118,12 +118,12 @@ class SingerWMSCatalogManager:
         try:
             if stream_name in self._catalog_entries:
                 del self._catalog_entries[stream_name]
-                logger.info(f"Removed WMS stream from catalog: {stream_name}")
+                logger.info("Removed WMS stream from catalog: %s", stream_name)
 
             return FlextResult.ok(None)
 
         except (RuntimeError, ValueError, TypeError) as e:
-            logger.exception(f"Failed to remove WMS stream: {stream_name}")
+            logger.exception("Failed to remove WMS stream: %s", stream_name)
             return FlextResult.fail(f"Stream removal failed: {e}")
 
     def get_schema_for_stream(self, stream_name: str) -> FlextResult[dict[str, object]]:
@@ -171,12 +171,12 @@ class SingerWMSCatalogManager:
                 replication_key=current_entry.replication_key,
             )
             self._catalog_entries[stream_name] = updated_entry
-            logger.info(f"Updated metadata for WMS stream: {stream_name}")
+            logger.info("Updated metadata for WMS stream: %s", stream_name)
 
             return FlextResult.ok(None)
 
         except (RuntimeError, ValueError, TypeError) as e:
-            logger.exception(f"Failed to update WMS stream metadata: {stream_name}")
+            logger.exception("Failed to update WMS stream metadata: %s", stream_name)
             return FlextResult.fail(f"Metadata update failed: {e}")
 
     def to_singer_catalog(self) -> FlextResult[dict[str, object]]:
@@ -251,7 +251,8 @@ class SingerWMSCatalogManager:
                 self._catalog_entries[stream_name] = entry
 
             logger.info(
-                f"Loaded {len(self._catalog_entries)} WMS streams from Singer catalog",
+                "Loaded %d WMS streams from Singer catalog",
+                len(self._catalog_entries),
             )
 
             return FlextResult.ok(None)

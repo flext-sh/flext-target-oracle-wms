@@ -129,7 +129,8 @@ class FlextTargetFactory:
         """
         try:
             logger.debug(
-                f"Creating Oracle WMS target for environment: {request.environment}",
+                "Creating Oracle WMS target for environment: %s",
+                request.environment,
             )
 
             # Start with base configuration
@@ -143,9 +144,9 @@ class FlextTargetFactory:
             # Apply preset if specified
             if request.preset and request.preset in cls.PRESETS:
                 config.update(cls.PRESETS[request.preset])
-                logger.debug(f"Applied preset: {request.preset}")
+                logger.debug("Applied preset: %s", request.preset)
             elif request.preset:
-                logger.warning(f"Unknown preset: {request.preset}, using defaults")
+                logger.warning("Unknown preset: %s, using defaults", request.preset)
 
             # Apply any additional configuration overrides
             if request.additional_config:
@@ -155,7 +156,8 @@ class FlextTargetFactory:
             target = SingerTargetOracleWMS(config)
 
             logger.info(
-                f"Created Oracle WMS target for {request.environment} with preset {request.preset}",
+                "Created Oracle WMS target for %s with preset %s",
+                request.environment, request.preset,
             )
             return FlextResult.ok(target)
 
@@ -364,20 +366,21 @@ class FlextTargetMonitoringFactory:
             # Initialize monitoring services
             init_result = self.monitor.flext_initialize_observability()
             if not init_result.success:
-                logger.warning(f"Failed to initialize monitoring: {init_result.error}")
+                logger.warning("Failed to initialize monitoring: %s", init_result.error)
                 # Continue without monitoring rather than fail
                 return FlextResult.ok(target)
 
             # Start monitoring
             start_result = self.monitor.flext_start_monitoring()
             if not start_result.success:
-                logger.warning(f"Failed to start monitoring: {start_result.error}")
+                logger.warning("Failed to start monitoring: %s", start_result.error)
                 # Continue without monitoring rather than fail
                 return FlextResult.ok(target)
 
             # Add basic monitoring through logging - KISS approach
             logger.info(
-                f"Created monitored target for {request.environment} with observability integration",
+                "Created monitored target for %s with observability integration",
+                request.environment,
             )
             return FlextResult.ok(target)
 

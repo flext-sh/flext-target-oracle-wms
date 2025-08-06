@@ -101,7 +101,8 @@ class SingerTargetOracleWMS:
                 else "REAL MODE - using Oracle WMS API"
             )
             logger.info(
-                f"Singer Target Oracle WMS setup completed successfully - {mode_msg}",
+                "Singer Target Oracle WMS setup completed successfully - %s",
+                mode_msg,
             )
 
             return FlextResult.ok(None)
@@ -179,7 +180,7 @@ class SingerTargetOracleWMS:
             if not table_result.success:
                 return FlextResult.fail(f"Table creation failed: {table_result.error}")
 
-            logger.info(f"Processed SCHEMA message for WMS stream: {stream_name}")
+            logger.info("Processed SCHEMA message for WMS stream: %s", stream_name)
 
             return FlextResult.ok(None)
 
@@ -274,7 +275,7 @@ class SingerTargetOracleWMS:
             full_entity_name = f"{schema_name}.{table_name}"
 
             # Log the CREATE SQL for debugging/documentation purposes
-            logger.debug(f"Generated CREATE SQL for {full_entity_name}:")
+            logger.debug("Generated CREATE SQL for %s:", full_entity_name)
             logger.debug(create_sql)
 
             # Validate WMS entity accessibility using REAL Oracle client API
@@ -291,27 +292,30 @@ class SingerTargetOracleWMS:
                     query_result = FlextResult.ok(None)
 
                 if query_result.success:
-                    logger.info(f"Oracle WMS entity validated: {full_entity_name}")
+                    logger.info("Oracle WMS entity validated: %s", full_entity_name)
                 else:
                     # Entity might not exist or no access - log but don't fail
                     logger.warning(
-                        f"Oracle WMS entity validation failed for {full_entity_name}: {query_result.error}",
+                        "Oracle WMS entity validation failed for %s: %s",
+                        full_entity_name, query_result.error,
                     )
                     logger.info(
-                        f"Assuming entity {full_entity_name} will be available during data insertion",
+                        "Assuming entity %s will be available during data insertion",
+                        full_entity_name,
                     )
 
             except Exception as query_error:
                 # Client might not support validation queries - log and continue
                 logger.debug(
-                    f"Entity validation query failed (expected for some WMS configurations): {query_error}",
+                    "Entity validation query failed (expected for some WMS configurations): %s",
+                    query_error,
                 )
-                logger.info(f"Oracle WMS entity assumed available: {full_entity_name}")
+                logger.info("Oracle WMS entity assumed available: %s", full_entity_name)
 
             return FlextResult.ok(None)
 
         except (RuntimeError, ValueError, TypeError) as e:
-            logger.exception(f"WMS table management failed: {table_name}")
+            logger.exception("WMS table management failed: %s", table_name)
             return FlextResult.fail(f"Table management failed: {e}")
 
     async def _insert_record(
@@ -341,7 +345,7 @@ class SingerTargetOracleWMS:
             # Note: SQL injection is not possible here as all table/column names are controlled
             # and parameters use proper placeholders
             insert_sql = f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" ({", ".join(quoted_columns)}) VALUES ({", ".join(placeholders)})'
-            logger.debug(f"Generated INSERT SQL: {insert_sql}")
+            logger.debug("Generated INSERT SQL: %s", insert_sql)
 
             # Prepare parameters
             params = {}
@@ -368,19 +372,21 @@ class SingerTargetOracleWMS:
             validation_result = flext_oracle_wms_validate_entity_name(entity_name)
             if not validation_result.success:
                 logger.warning(
-                    f"Entity name validation failed: {validation_result.error}",
+                    "Entity name validation failed: %s",
+                    validation_result.error,
                 )
 
             # Log data insertion for WMS entity
-            logger.info(f"Inserting data into WMS entity: {entity_name}")
-            logger.debug(f"WMS data: {wms_data}")
+            logger.info("Inserting data into WMS entity: %s", entity_name)
+            logger.debug("WMS data: %s", wms_data)
 
             # Oracle WMS Cloud - data insertion uses flext-oracle-wms client
             if self.mock_mode:
                 logger.info(
-                    f"MOCK MODE: Would insert data into WMS entity: {entity_name}",
+                    "MOCK MODE: Would insert data into WMS entity: %s",
+                    entity_name,
                 )
-                logger.debug(f"MOCK WMS data: {wms_data}")
+                logger.debug("MOCK WMS data: %s", wms_data)
                 return FlextResult.ok(None)
             # Real Oracle WMS insertion would go here
             logger.info(f"REAL MODE: Inserting data into WMS entity: {entity_name}")

@@ -41,7 +41,7 @@ def _normalize_oracle_identifier(name: str) -> str:
         return normalized[:30] if len(normalized) > 30 else normalized
     # Fallback for invalid names
     normalized = str(name).replace(" ", "_").replace("-", "_").upper()[:30]
-    logger.warning(f"Invalid entity name normalized: {name} -> {normalized}")
+    logger.warning("Invalid entity name normalized: %s -> %s", name, normalized)
     return normalized
 
 
@@ -132,7 +132,7 @@ class WMSTypeConverter:
             return FlextResult.ok(str(value))
 
         except (RuntimeError, ValueError, TypeError) as e:
-            logger.warning(f"Type conversion failed for {singer_type}: {e}")
+            logger.warning("Type conversion failed for %s: %s", singer_type, e)
             return FlextResult.ok(str(value))  # Fallback to string
 
 
@@ -175,7 +175,7 @@ class WMSDataTransformer:
             return FlextResult.ok(filtered_data)
 
         except (RuntimeError, ValueError, TypeError) as e:
-            logger.warning(f"WMS filter application failed: {e}")
+            logger.warning("WMS filter application failed: %s", e)
             return FlextResult.ok(record)  # Fallback to original record
 
     def transform_record(
@@ -335,7 +335,7 @@ class WMSSchemaMapper:
             return FlextResult.ok(oracle_type)
 
         except (RuntimeError, ValueError, TypeError) as e:
-            logger.warning(f"Type mapping failed: {e}")
+            logger.warning("Type mapping failed: %s", e)
             return FlextResult.ok("VARCHAR2(4000)")  # Safe fallback
 
 
