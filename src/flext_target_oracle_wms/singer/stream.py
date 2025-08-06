@@ -74,13 +74,14 @@ class SingerWMSStreamProcessor:
                 schema,
             )
             logger.info(
-                f"Initialized WMS stream processing: {stream_name} with schema validation",
+                "Initialized WMS stream processing: %s with schema validation",
+                stream_name,
             )
 
             return FlextResult.ok(None)
 
         except (RuntimeError, ValueError, TypeError) as e:
-            logger.exception(f"WMS stream initialization failed: {stream_name}")
+            logger.exception("WMS stream initialization failed: %s", stream_name)
             return FlextResult.fail(f"Stream initialization failed: {e}")
 
     def process_record(
@@ -114,7 +115,7 @@ class SingerWMSStreamProcessor:
             return FlextResult.ok(transform_result.data or {})
 
         except (RuntimeError, ValueError, TypeError) as e:
-            logger.exception(f"WMS record processing failed for stream: {stream_name}")
+            logger.exception("WMS record processing failed for stream: %s", stream_name)
             if stream_name in self._stream_stats:
                 self._stream_stats[stream_name].records_failed += 1
                 self._stream_stats[stream_name].errors.append(str(e))
@@ -143,20 +144,21 @@ class SingerWMSStreamProcessor:
                     processed_records.append(process_result.data)
                 else:
                     logger.warning(
-                        f"WMS record processing failed: {process_result.error}",
+                        "WMS record processing failed: %s",
+                        process_result.error,
                     )
 
             stats.batches_processed += 1
 
             logger.info(
-                f"Processed WMS batch for {stream_name}: "
-                f"{len(processed_records)}/{len(records)} records",
+                "Processed WMS batch for %s: %d/%d records",
+                stream_name, len(processed_records), len(records),
             )
 
             return FlextResult.ok(processed_records)
 
         except (RuntimeError, ValueError, TypeError) as e:
-            logger.exception(f"WMS batch processing failed for stream: {stream_name}")
+            logger.exception("WMS batch processing failed for stream: %s", stream_name)
             return FlextResult.fail(f"Batch processing failed: {e}")
 
     def get_stream_stats(
@@ -185,12 +187,12 @@ class SingerWMSStreamProcessor:
                 self._stream_stats[stream_name] = WMSStreamProcessingStats(
                     stream_name=stream_name,
                 )
-                logger.info(f"Reset WMS stream statistics: {stream_name}")
+                logger.info("Reset WMS stream statistics: %s", stream_name)
 
             return FlextResult.ok(None)
 
         except (RuntimeError, ValueError, TypeError) as e:
-            logger.exception(f"Failed to reset WMS stream statistics: {stream_name}")
+            logger.exception("Failed to reset WMS stream statistics: %s", stream_name)
             return FlextResult.fail(f"Statistics reset failed: {e}")
 
     def finalize_stream(
@@ -205,14 +207,14 @@ class SingerWMSStreamProcessor:
             stats = self._stream_stats[stream_name]
 
             logger.info(
-                f"Finalized WMS stream {stream_name}: "
-                f"{stats.records_success}/{stats.records_processed} records successful",
+                "Finalized WMS stream %s: %d/%d records successful",
+                stream_name, stats.records_success, stats.records_processed,
             )
 
             return FlextResult.ok(stats)
 
         except (RuntimeError, ValueError, TypeError) as e:
-            logger.exception(f"WMS stream finalization failed: {stream_name}")
+            logger.exception("WMS stream finalization failed: %s", stream_name)
             return FlextResult.fail(f"Stream finalization failed: {e}")
 
     def validate_record_schema(
@@ -250,7 +252,7 @@ class SingerWMSStreamProcessor:
         """Handle schema changes for WMS stream."""
         try:
             # Log schema change
-            logger.info(f"WMS schema change detected for stream: {stream_name}")
+            logger.info("WMS schema change detected for stream: %s", stream_name)
 
             # Compare schemas and identify changes
             old_props = old_schema.get("properties", {})
@@ -266,13 +268,13 @@ class SingerWMSStreamProcessor:
             removed_fields = set(old_props.keys()) - set(new_props.keys())
 
             if added_fields:
-                logger.info(f"WMS added fields in {stream_name}: {added_fields}")
+                logger.info("WMS added fields in %s: %s", stream_name, added_fields)
 
             if removed_fields:
-                logger.warning(f"WMS removed fields in {stream_name}: {removed_fields}")
+                logger.warning("WMS removed fields in %s: %s", stream_name, removed_fields)
 
             return FlextResult.ok(None)
 
         except (RuntimeError, ValueError, TypeError) as e:
-            logger.exception(f"WMS schema change handling failed: {stream_name}")
+            logger.exception("WMS schema change handling failed: %s", stream_name)
             return FlextResult.fail(f"Schema change handling failed: {e}")
