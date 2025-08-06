@@ -12,14 +12,12 @@ from __future__ import annotations
 
 import asyncio
 import os
-from datetime import UTC
-from typing import Any
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING, Any, cast
 
-# DRY: Import REAL flext-* APIs
 from flext_core import FlextResult, get_logger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
-# Import REAL production implementations
 from flext_target_oracle_wms import (
     SingerTargetOracleWMS,
     WMSDataTransformer,
@@ -27,6 +25,9 @@ from flext_target_oracle_wms import (
     WMSTableManager,
     WMSTypeConverter,
 )
+
+if TYPE_CHECKING:
+    from collections.abc import Coroutine
 
 logger = get_logger(__name__)
 monitor = FlextObservabilityMonitor()
@@ -47,8 +48,6 @@ class CustomWMSTypeConverter(WMSTypeConverter):
             if isinstance(value, str) and value:
                 # Business logic: convert YYYY-MM-DD to DD-MON-YYYY
                 try:
-                    from datetime import datetime
-
                     dt = datetime.strptime(value, "%Y-%m-%d").replace(tzinfo=UTC)
                     oracle_date = dt.strftime("%d-%b-%Y").upper()
                     return FlextResult.ok(oracle_date)
@@ -77,7 +76,6 @@ class CustomWMSTypeConverter(WMSTypeConverter):
         # Delegate to parent for standard types - ensure proper typing
         parent_result = super().convert_singer_to_oracle(singer_type, value)
         # Type cast to ensure MyPy understands this returns FlextResult[Any]
-        from typing import cast
 
         return cast("FlextResult[Any]", parent_result)
 
@@ -330,8 +328,8 @@ async def run_advanced_configuration_example() -> None:
                 f"Errors: {stats.get('total_errors', 0)}",
             )
 
-    except Exception as e:
-        logger.exception(f"Advanced configuration example failed: {e}")
+    except Exception:
+        logger.exception("Advanced configuration example failed")
         raise
     finally:
         await target.cleanup()
@@ -373,7 +371,7 @@ async def demonstrate_custom_components() -> None:
     # Custom schema mapper
     schema_mapper = WMSSchemaMapper()
 
-    test_schema = {
+    test_schema: dict[str, object] = {
         "properties": {
             "business_date": {"type": "business_date"},
             "amount": {"type": "business_currency"},
@@ -388,10 +386,6 @@ async def demonstrate_custom_components() -> None:
 
 if __name__ == "__main__":
     """Run advanced configuration examples."""
-    from typing import TYPE_CHECKING, Any, cast
-
-    if TYPE_CHECKING:
-        from collections.abc import Coroutine
 
     asyncio.run(cast("Coroutine[Any, Any, None]", run_advanced_configuration_example()))
     asyncio.run(cast("Coroutine[Any, Any, None]", demonstrate_custom_components()))
