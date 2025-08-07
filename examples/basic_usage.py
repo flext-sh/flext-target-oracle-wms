@@ -174,8 +174,8 @@ async def run_basic_example() -> None:
         else:
             logger.info("Target finalized successfully")
 
-    except Exception as e:
-        logger.exception(f"Example execution failed: {e}")
+    except Exception:
+        logger.exception("Example execution failed")
         raise
     finally:
         # Cleanup using REAL implementation
@@ -238,8 +238,8 @@ def run_from_singer_files() -> None:
             else:
                 logger.debug(f"Processed {message['type']} message successfully")
 
-    except Exception as e:
-        logger.exception(f"Singer file processing failed: {e}")
+    except Exception:
+        logger.exception("Singer file processing failed")
         raise
     finally:
         # Cleanup

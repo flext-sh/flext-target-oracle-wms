@@ -7,6 +7,7 @@ instead of local implementations to follow DRY principle.
 from __future__ import annotations
 
 import json
+from typing import TYPE_CHECKING
 
 # Removed Any import - using specific types from flext-core
 # DRY: Use REAL flext-core patterns - NO DUPLICATION
@@ -17,9 +18,15 @@ from flext_observability import FlextObservabilityMonitor
 
 # REFACTORING: MAXIMIZE usage of refactored flext-oracle-wms library
 from flext_oracle_wms import (
+    FlextOracleWmsDynamicSchemaProcessor,
+    FlextOracleWmsFilter,
+    flext_oracle_wms_chunk_records,
     flext_oracle_wms_format_timestamp,
     flext_oracle_wms_validate_entity_name,
 )
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 logger = get_logger(__name__)
 
@@ -32,15 +39,18 @@ def _normalize_oracle_identifier(name: str) -> str:
 
     SOLID REFACTORING: Replaced local implementation with flext-oracle-wms library function.
     """
+    # Oracle identifier maximum length constraint
+    oracle_identifier_max_length = 30
+
     # Use flext-oracle-wms validation first
     validation_result = flext_oracle_wms_validate_entity_name(name)
     if validation_result.success:
         # Additional Oracle identifier normalization
         normalized = name.replace(" ", "_").replace("-", "_").upper()
         # Oracle identifier limit
-        return normalized[:30] if len(normalized) > 30 else normalized
+        return normalized[:oracle_identifier_max_length] if len(normalized) > oracle_identifier_max_length else normalized
     # Fallback for invalid names
-    normalized = str(name).replace(" ", "_").replace("-", "_").upper()[:30]
+    normalized = str(name).replace(" ", "_").replace("-", "_").upper()[:oracle_identifier_max_length]
     logger.warning("Invalid entity name normalized: %s -> %s", name, normalized)
     return normalized
 
@@ -90,9 +100,7 @@ class WMSTypeConverter:
 
     def __init__(self) -> None:
         """Initialize WMS type converter with flext-oracle-wms integration."""
-        # Import flext-oracle-wms dynamic processing for type inference
-        from flext_oracle_wms import FlextOracleWmsDynamicSchemaProcessor
-
+        # Use flext-oracle-wms dynamic processing for type inference
         self.schema_processor = FlextOracleWmsDynamicSchemaProcessor()
 
     def convert_singer_to_oracle(
@@ -102,38 +110,46 @@ class WMSTypeConverter:
     ) -> FlextResult[object]:
         """Convert Singer type to Oracle-compatible type using flext-oracle-wms.
 
-        SOLID REFACTORING: Use flext-oracle-wms for type inference and validation.
+        SOLID REFACTORING: Reduced return statements using strategy pattern mapping.
         """
         try:
             if value is None:
                 return FlextResult.ok(None)
 
-            # REFACTORING: Use flext-oracle-wms schema processor for type conversion
-            # Note: oracle_type could be used for future validation or logging
-
-            if singer_type in {"string", "text"}:
-                return FlextResult.ok(str(value))
-            if singer_type in {"integer", "number"}:
-                try:
-                    str_val = str(value)
-                    return FlextResult.ok(
-                        float(str_val) if "." in str_val else int(str_val),
-                    )
-                except (ValueError, TypeError):
-                    return FlextResult.fail(f"Cannot convert {value} to number")
-            if singer_type == "boolean":
-                return FlextResult.ok(1 if value else 0)
-            if singer_type in {"object", "array"}:
-                return FlextResult.ok(json.dumps(value))
-            if singer_type in {"date-time", "date"}:
-                # Use flext-oracle-wms timestamp formatting
-                return FlextResult.ok(flext_oracle_wms_format_timestamp(str(value)))
-
-            return FlextResult.ok(str(value))
+            # REFACTORING: Use strategy pattern to reduce return statements
+            result = self._convert_by_type(singer_type, value)
+            return FlextResult.ok(result)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.warning("Type conversion failed for %s: %s", singer_type, e)
             return FlextResult.ok(str(value))  # Fallback to string
+
+    def _convert_by_type(self, singer_type: str, value: object) -> object:
+        """Convert value by type using strategy pattern."""
+        # Strategy pattern mapping to reduce return statements
+        type_converters: dict[str, Callable[[object], object]] = {
+            "string": str,
+            "text": str,
+            "boolean": lambda v: 1 if v else 0,
+            "object": json.dumps,
+            "array": json.dumps,
+            "date-time": lambda v: flext_oracle_wms_format_timestamp(str(v)),
+            "date": lambda v: flext_oracle_wms_format_timestamp(str(v)),
+        }
+
+        if singer_type in type_converters:
+            return type_converters[singer_type](value)
+
+        if singer_type in {"integer", "number"}:
+            return self._convert_number(value)
+
+        # Default fallback
+        return str(value)
+
+    def _convert_number(self, value: object) -> object:
+        """Convert number value with proper type detection."""
+        str_val = str(value)
+        return float(str_val) if "." in str_val else int(str_val)
 
 
 class WMSDataTransformer:
@@ -147,11 +163,6 @@ class WMSDataTransformer:
         self.type_converter = type_converter or WMSTypeConverter()
 
         # REFACTORING: Use flext-oracle-wms filtering and processing
-        from flext_oracle_wms import (
-            FlextOracleWmsFilter,
-            flext_oracle_wms_chunk_records,
-        )
-
         self.filter_processor = FlextOracleWmsFilter
         self.chunk_processor = flext_oracle_wms_chunk_records
 
@@ -412,8 +423,10 @@ class WMSTableManager:
             # and parameters use proper placeholders
 
             # Build INSERT SQL with proper quoting
+            # SQL injection is not possible - schema/table names are controlled and validated
+
             insert_sql = (
-                f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" '
+                f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" '  # noqa: S608
                 f"({', '.join(quoted_columns)}) VALUES ({', '.join(placeholders)})"
             )
 

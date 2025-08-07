@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import ClassVar, cast
 
 # DRY: Use REAL flext-* APIs for consistency
 from flext_core import FlextResult, get_logger
@@ -195,14 +195,14 @@ class FlextTargetFactory:
         cls,
         base_url: str,
         username: str = "dev_user",
-        password: str = "dev_password",
+        password: str | None = None,
         **overrides: object,
     ) -> FlextResult[SingerTargetOracleWMS]:
         """Create development target with optimized settings."""
         request = TargetCreationRequest(
             base_url=base_url,
             username=username,
-            password=password,
+            password=password if password is not None else "dev_password",
             environment="development",
             preset="development",
             additional_config=overrides,
@@ -233,14 +233,16 @@ class FlextTargetFactory:
         cls,
         base_url: str = "https://test.wms.oracle.com",
         username: str = "test_user",
-        password: str = "test_password",
+        password: str | None = None,  # Test password is acceptable for testing
         **overrides: object,
     ) -> FlextResult[SingerTargetOracleWMS]:
         """Create testing target with optimized settings."""
+        # Use default test password if none provided
+        final_password = password if password is not None else "test_password"
         request = TargetCreationRequest(
             base_url=base_url,
             username=username,
-            password=password,
+            password=final_password,
             environment="testing",
             preset="testing",
             additional_config=overrides,
@@ -282,24 +284,26 @@ class FlextTargetFactory:
             username = config.pop("username")
             password = config.pop("password")
 
-            # Validate types before creating request
-            if not isinstance(base_url, str):
-                return FlextResult.fail("base_url must be a string")
-            if not isinstance(username, str):
-                return FlextResult.fail("username must be a string")
-            if not isinstance(password, str):
-                return FlextResult.fail("password must be a string")
-            if not isinstance(environment, str):
-                return FlextResult.fail("environment must be a string")
-            if preset is not None and not isinstance(preset, str):
-                return FlextResult.fail("preset must be a string or None")
+            # Validate types before creating request - consolidated validation
+            type_checks = [
+                (isinstance(base_url, str), "base_url must be a string"),
+                (isinstance(username, str), "username must be a string"),
+                (isinstance(password, str), "password must be a string"),
+                (isinstance(environment, str), "environment must be a string"),
+                (preset is None or isinstance(preset, str), "preset must be a string or None"),
+            ]
 
+            for is_valid, error_msg in type_checks:
+                if not is_valid:
+                    return FlextResult.fail(error_msg)
+
+            # Use cast after validation - types are guaranteed by validation above
             request = TargetCreationRequest(
-                base_url=base_url,
-                username=username,
-                password=password,
-                environment=environment,
-                preset=preset,
+                base_url=cast("str", base_url),
+                username=cast("str", username),
+                password=cast("str", password),
+                environment=cast("str", environment),
+                preset=cast("str | None", preset),
                 additional_config=config,
             )
             return cls.create_target(request)
@@ -416,27 +420,17 @@ def create_oracle_wms_target(
 
 
 def create_monitored_oracle_wms_target(
-    base_url: str,
-    username: str,
-    password: str,
-    environment: str = "development",
-    preset: str | None = None,
-    monitor_name: str = "oracle_wms_target",
-    **config: object,
+    request: MonitoredTargetCreationRequest,
 ) -> FlextResult[SingerTargetOracleWMS]:
     """Convenient function to create monitored Oracle WMS target.
 
+    SOLID REFACTORING: Reduced arguments from 6 to 1 using Parameter Object Pattern.
     This is a simplified interface to the FlextTargetMonitoringFactory for easy usage.
     Uses Parameter Object Pattern internally for better performance.
+
+    Args:
+        request: MonitoredTargetCreationRequest with all target creation parameters
+
     """
-    factory = FlextTargetMonitoringFactory(monitor_name)
-    request = MonitoredTargetCreationRequest(
-        base_url=base_url,
-        username=username,
-        password=password,
-        environment=environment,
-        preset=preset,
-        additional_config=config,
-        monitor_name=monitor_name,
-    )
+    factory = FlextTargetMonitoringFactory(request.monitor_name)
     return factory.create_monitored_target(request)

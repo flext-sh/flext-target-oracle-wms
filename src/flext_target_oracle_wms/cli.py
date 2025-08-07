@@ -176,7 +176,8 @@ def main() -> None:
 
         # Parse command line arguments manually - simple and reliable
         config_path = None
-        if len(sys.argv) > 2 and sys.argv[1] == "--config":
+        min_cli_args = 2  # Command itself + --config flag requires 2+ args
+        if len(sys.argv) > min_cli_args and sys.argv[1] == "--config":
             config_path = sys.argv[2]
 
         # Execute CLI with parsed arguments

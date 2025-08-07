@@ -12,45 +12,38 @@ from __future__ import annotations
 # Version info - use standard importlib.metadata
 import importlib.metadata
 
+# RE-EXPORT real flext-core types - NO DUPLICATION
+from flext_core import FlextResult, FlextValueObject
+
 # === FLEXT-MELTANO COMPLETE INTEGRATION ===
 # Re-export ALL flext-meltano facilities for full ecosystem integration
 from flext_meltano import (
+    BatchSink,
+    FlextMeltanoBaseService,
+    # Bridge integration
+    FlextMeltanoBridge,
+    # Configuration and validation
+    FlextMeltanoConfig,
+    FlextMeltanoEvent,
+    # Enterprise services from flext-meltano.base
+    FlextMeltanoTargetService,
+    # Authentication patterns
+    OAuthAuthenticator,
+    # Typing definitions
+    PropertiesList,
+    Property,
+    Sink,
+    SQLSink,
     # Core Singer SDK classes (centralized from flext-meltano)
     Stream,
     Tap,
     Target,
-    Sink,
-    BatchSink,
-    SQLSink,
-    
-    # Enterprise services from flext-meltano.base
-    FlextMeltanoTargetService,
-    FlextMeltanoBaseService,
     create_meltano_target_service,
-    
-    # Configuration and validation
-    FlextMeltanoConfig,
-    FlextMeltanoEvent,
-    
-    # Singer typing utilities (centralized)
-    singer_typing,
-    
-    # Bridge integration
-    FlextMeltanoBridge,
-    
     # Testing utilities
     get_tap_test_class,
-    
-    # Authentication patterns
-    OAuthAuthenticator,
-    
-    # Typing definitions
-    PropertiesList,
-    Property,
+    # Singer typing utilities (centralized)
+    singer_typing,
 )
-
-# RE-EXPORT real flext-core types - NO DUPLICATION
-from flext_core import FlextResult, FlextValueObject
 
 # Factory patterns for easier library usage - SOLID principles
 from flext_target_oracle_wms.factory import (
@@ -82,60 +75,49 @@ __version__ = importlib.metadata.version("flext-target-oracle-wms")
 
 # DRY EXPORTS: Single implementation, multiple access patterns
 __all__: list[str] = [
-    # === PRIMARY CLASSES ===
-    "TargetOracleWMS",
+    "BatchSink",
+    "FlextMeltanoBaseService",
+    # Bridge integration
+    "FlextMeltanoBridge",
+    # Configuration patterns
+    "FlextMeltanoConfig",
+    "FlextMeltanoEvent",
+    # Enterprise services
+    "FlextMeltanoTargetService",
+    # === FLEXT-CORE RE-EXPORTS ===
+    "FlextResult",
+    # === FACTORY PATTERNS ===
+    "FlextTargetFactory",
+    "FlextTargetMonitoringFactory",
+    "FlextValueObject",
+    # Authentication
+    "OAuthAuthenticator",
+    "PropertiesList",
+    "Property",
+    "SQLSink",
     "SingerTargetOracleWMS",
     "SingerWMSCatalogManager",
     "SingerWMSStreamProcessor",
-    
+    "Sink",
     # === FLEXT-MELTANO COMPLETE RE-EXPORTS ===
     # Singer SDK core classes
     "Stream",
     "Tap",
     "Target",
-    "Sink",
-    "BatchSink",
-    "SQLSink",
-    
-    # Enterprise services
-    "FlextMeltanoTargetService",
-    "FlextMeltanoBaseService",
-    "create_meltano_target_service",
-    
-    # Configuration patterns
-    "FlextMeltanoConfig",
-    "FlextMeltanoEvent",
-    
-    # Singer typing
-    "singer_typing",
-    "PropertiesList",
-    "Property",
-    
-    # Bridge integration
-    "FlextMeltanoBridge",
-    
-    # Testing
-    "get_tap_test_class",
-    
-    # Authentication
-    "OAuthAuthenticator",
-    
-    # === FLEXT-CORE RE-EXPORTS ===
-    "FlextResult",
-    "FlextValueObject",
-    
+    # === PRIMARY CLASSES ===
+    "TargetOracleWMS",
     # === WMS PATTERNS ===
     "WMSDataTransformer",
     "WMSSchemaMapper",
     "WMSTableManager",
     "WMSTypeConverter",
-    
-    # === FACTORY PATTERNS ===
-    "FlextTargetFactory",
-    "FlextTargetMonitoringFactory",
-    "create_monitored_oracle_wms_target",
-    "create_oracle_wms_target",
-    
     # === METADATA ===
     "__version__",
+    "create_meltano_target_service",
+    "create_monitored_oracle_wms_target",
+    "create_oracle_wms_target",
+    # Testing
+    "get_tap_test_class",
+    # Singer typing
+    "singer_typing",
 ]

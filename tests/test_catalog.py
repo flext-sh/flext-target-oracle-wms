@@ -511,8 +511,8 @@ class TestSingerWMSCatalogManager:
         manager.add_stream("test_stream", schema)
 
         # Use proper mock to simulate metadata processing failure - SOLID pattern
-        with patch.object(manager, "_validate_metadata") as mock_validate:
-            mock_validate.side_effect = RuntimeError("Metadata validation failed")
+        with patch.dict(manager._catalog_entries, {"test_stream": None}):
+            # Force an exception during processing by removing required data
             result = manager.update_stream_metadata(
                 "test_stream",
                 [{"metadata": "test"}],
