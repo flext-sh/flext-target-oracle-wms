@@ -108,14 +108,19 @@ class CustomWMSDataTransformer(WMSDataTransformer):
             transformed["_PROCESSED_AT"] = "SYSTIMESTAMP"
             transformed["_PROCESSED_BY"] = "FLEXT_TARGET"
 
+            # Constants for business rules
+            item_id_min_length = 9
+            item_prefix_length = 3
+            item_number_end = 9
+
             # Apply business key formatting
             if "ITEM_ID" in transformed:
                 item_id = str(transformed["ITEM_ID"]).upper().strip()
                 # Ensure item ID follows business format (3 letters + 6 digits)
                 if (
-                    len(item_id) >= 9
-                    and item_id[:3].isalpha()
-                    and item_id[3:9].isdigit()
+                    len(item_id) >= item_id_min_length
+                    and item_id[:item_prefix_length].isalpha()
+                    and item_id[item_prefix_length:item_number_end].isdigit()
                 ):
                     transformed["ITEM_ID"] = item_id[:9]  # Truncate to standard length
 

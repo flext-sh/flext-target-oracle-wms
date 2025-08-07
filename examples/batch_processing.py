@@ -20,6 +20,10 @@ from flext_observability import FlextObservabilityMonitor, flext_monitor_functio
 
 # Import REAL production implementations
 from flext_target_oracle_wms import SingerTargetOracleWMS, SingerWMSStreamProcessor
+from flext_target_oracle_wms.patterns import WMSDataTransformer, WMSTableManager
+
+# Constants
+MAX_ERROR_LOGS = 5  # Maximum number of errors to log per batch
 
 logger = get_logger(__name__)
 monitor = FlextObservabilityMonitor()
@@ -50,13 +54,9 @@ def generate_test_data(num_records: int) -> list[dict[str, object]]:
     return records
 
 
-@flext_monitor_function(monitor)
-async def run_performance_batch_example() -> None:
-    """Demonstrate high-performance batch processing."""
-    logger.info("Starting performance batch processing example")
-
-    # Configuration optimized for batch processing
-    config = {
+def _create_batch_config() -> dict[str, object]:
+    """Create optimized configuration for batch processing."""
+    return {
         "base_url": "https://batch.wms.oracle.com",
         "username": "batch_user",
         "password": "batch_password",
@@ -78,6 +78,97 @@ async def run_performance_batch_example() -> None:
         "memory_optimization": True,
     }
 
+
+def _create_batch_schema() -> dict[str, object]:
+    """Create optimized schema for batch processing."""
+    return {
+        "type": "SCHEMA",
+        "stream": "batch_inventory",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "item_id": {"type": "string"},
+                "item_name": {"type": "string"},
+                "location_id": {"type": "string"},
+                "quantity": {"type": "integer"},
+                "unit_cost": {"type": "number"},
+                "last_updated": {"type": "string", "format": "date-time"},
+                "status": {"type": "string"},
+                "warehouse_id": {"type": "string"},
+                "category": {"type": "string"},
+                "supplier_id": {"type": "string"},
+                "batch_number": {"type": "string"},
+            },
+        },
+        "key_properties": ["item_id", "location_id"],
+        "bookmark_properties": ["last_updated"],
+    }
+
+
+async def _process_batch_size(target: SingerTargetOracleWMS, batch_size: int) -> None:
+    """Process a specific batch size and log performance metrics."""
+    logger.info(f"Testing batch size: {batch_size}")
+
+    # Generate test data
+    test_data = generate_test_data(batch_size)
+
+    # Process batch with timing
+    batch_start = time.time()
+    success_count = 0
+    error_count = 0
+
+    # Process in chunks for memory efficiency
+    chunk_size = min(batch_size, 1000)
+
+    for i in range(0, len(test_data), chunk_size):
+        chunk = test_data[i : i + chunk_size]
+        chunk_start = time.time()
+
+        # Process chunk records
+        for record_data in chunk:
+            record_message = {
+                "type": "RECORD",
+                "stream": "batch_inventory",
+                "record": record_data,
+                "time_extracted": "2024-01-15T12:00:00Z",
+            }
+
+            record_result = await target.process_record_message(record_message)
+            if record_result.success:
+                success_count += 1
+            else:
+                error_count += 1
+                if error_count <= MAX_ERROR_LOGS:  # Log first few errors only
+                    logger.error(f"Record error: {record_result.error}")
+
+        chunk_time = time.time() - chunk_start
+        chunk_rate = len(chunk) / chunk_time if chunk_time > 0 else 0
+        logger.info(
+            f"Processed chunk {i // chunk_size + 1}: "
+            f"{len(chunk)} records in {chunk_time:.2f}s "
+            f"({chunk_rate:.1f} records/sec)",
+        )
+
+    # Calculate performance metrics
+    total_time = time.time() - batch_start
+    total_rate = batch_size / total_time if total_time > 0 else 0
+
+    logger.info(
+        f"Batch {batch_size} completed: "
+        f"{success_count} success, {error_count} errors "
+        f"in {total_time:.2f}s ({total_rate:.1f} records/sec)",
+    )
+
+    # Memory cleanup between batches
+    await asyncio.sleep(1)
+
+
+@flext_monitor_function(monitor)
+async def run_performance_batch_example() -> None:
+    """Demonstrate high-performance batch processing."""
+    logger.info("Starting performance batch processing example")
+
+    config = _create_batch_config()
     target = SingerTargetOracleWMS(config)
 
     try:
@@ -91,31 +182,8 @@ async def run_performance_batch_example() -> None:
         setup_time = time.time() - setup_start
         logger.info(f"Batch target setup completed in {setup_time:.2f}s")
 
-        # Define optimized schema for batch processing
-        batch_schema = {
-            "type": "SCHEMA",
-            "stream": "batch_inventory",
-            "schema": {
-                "type": "object",
-                "properties": {
-                    "item_id": {"type": "string"},
-                    "item_name": {"type": "string"},
-                    "location_id": {"type": "string"},
-                    "quantity": {"type": "integer"},
-                    "unit_cost": {"type": "number"},
-                    "last_updated": {"type": "string", "format": "date-time"},
-                    "status": {"type": "string"},
-                    "warehouse_id": {"type": "string"},
-                    "category": {"type": "string"},
-                    "supplier_id": {"type": "string"},
-                    "batch_number": {"type": "string"},
-                },
-            },
-            "key_properties": ["item_id", "location_id"],
-            "bookmark_properties": ["last_updated"],
-        }
-
         # Process schema
+        batch_schema = _create_batch_schema()
         schema_start = time.time()
         schema_result = await target.process_schema_message(batch_schema)
         if not schema_result.success:
@@ -127,62 +195,8 @@ async def run_performance_batch_example() -> None:
 
         # Test different batch sizes for performance comparison
         batch_sizes = [1000, 5000, 10000, 25000]
-
         for batch_size in batch_sizes:
-            logger.info(f"Testing batch size: {batch_size}")
-
-            # Generate test data
-            test_data = generate_test_data(batch_size)
-
-            # Process batch with timing
-            batch_start = time.time()
-            success_count = 0
-            error_count = 0
-
-            # Process in chunks for memory efficiency
-            chunk_size = min(batch_size, 1000)
-
-            for i in range(0, len(test_data), chunk_size):
-                chunk = test_data[i : i + chunk_size]
-                chunk_start = time.time()
-
-                # Process chunk records
-                for record_data in chunk:
-                    record_message = {
-                        "type": "RECORD",
-                        "stream": "batch_inventory",
-                        "record": record_data,
-                        "time_extracted": "2024-01-15T12:00:00Z",
-                    }
-
-                    record_result = await target.process_record_message(record_message)
-                    if record_result.success:
-                        success_count += 1
-                    else:
-                        error_count += 1
-                        if error_count <= 5:  # Log first few errors only
-                            logger.error(f"Record error: {record_result.error}")
-
-                chunk_time = time.time() - chunk_start
-                chunk_rate = len(chunk) / chunk_time if chunk_time > 0 else 0
-                logger.info(
-                    f"Processed chunk {i // chunk_size + 1}: "
-                    f"{len(chunk)} records in {chunk_time:.2f}s "
-                    f"({chunk_rate:.1f} records/sec)",
-                )
-
-            # Calculate performance metrics
-            total_time = time.time() - batch_start
-            total_rate = batch_size / total_time if total_time > 0 else 0
-
-            logger.info(
-                f"Batch {batch_size} completed: "
-                f"{success_count} success, {error_count} errors "
-                f"in {total_time:.2f}s ({total_rate:.1f} records/sec)",
-            )
-
-            # Memory cleanup between batches
-            await asyncio.sleep(1)
+            await _process_batch_size(target, batch_size)
 
         # Finalize with statistics
         finalize_start = time.time()
@@ -197,8 +211,8 @@ async def run_performance_batch_example() -> None:
                 f"Total errors: {stats.get('total_errors', 0)}",
             )
 
-    except Exception as e:
-        logger.exception(f"Performance batch example failed: {e}")
+    except Exception:
+        logger.exception("Performance batch example failed")
         raise
     finally:
         cleanup_start = time.time()
@@ -211,8 +225,6 @@ async def run_performance_batch_example() -> None:
 async def demonstrate_stream_processor_batching() -> None:
     """Demonstrate direct stream processor batch capabilities."""
     logger.info("Demonstrating stream processor batch processing")
-
-    from flext_target_oracle_wms.patterns import WMSDataTransformer, WMSTableManager
 
     # Create components
     table_manager = WMSTableManager()
@@ -377,8 +389,8 @@ async def demonstrate_concurrent_batching() -> None:
             f"in {concurrent_time:.2f}s ({total_rate:.1f} records/sec)",
         )
 
-    except Exception as e:
-        logger.exception(f"Concurrent batch processing failed: {e}")
+    except Exception:
+        logger.exception("Concurrent batch processing failed")
         raise
     finally:
         await target.cleanup()

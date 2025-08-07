@@ -231,10 +231,9 @@ class SingerWMSStreamProcessor:
 
             # Check required fields
             for prop_name, prop_def in properties.items():
-                if prop_name not in record:
-                    # Check if field is required (not nullable)
-                    if prop_def.get("anyOf", [{}])[0].get("type") != "null":
-                        return FlextResult.fail(f"Missing required field: {prop_name}")
+                if prop_name not in record and prop_def.get("anyOf", [{}])[0].get("type") != "null":
+                    # Field is missing and required (not nullable)
+                    return FlextResult.fail(f"Missing required field: {prop_name}")
 
             # Basic type validation could be added here
             return FlextResult.ok(data=True)

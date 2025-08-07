@@ -180,12 +180,11 @@ class TestExamplesCodeQuality:
                 elif isinstance(node, ast.Attribute):
                     if node.attr == "success":
                         has_flext_result_check = True
-                elif isinstance(node, ast.Call):
-                    if isinstance(node.func, ast.Attribute) and node.func.attr in {
-                        "error",
-                        "warning",
-                    }:
-                        pass
+                elif isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr in {
+                    "error",
+                    "warning",
+                }:
+                    pass
 
             # Verify error handling patterns
             if "error" in content.lower():

@@ -175,7 +175,7 @@ class SingerWMSCatalogManager:
 
             return FlextResult.ok(None)
 
-        except (RuntimeError, ValueError, TypeError) as e:
+        except (RuntimeError, ValueError, TypeError, AttributeError) as e:
             logger.exception("Failed to update WMS stream metadata: %s", stream_name)
             return FlextResult.fail(f"Metadata update failed: {e}")
 

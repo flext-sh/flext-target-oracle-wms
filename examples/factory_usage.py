@@ -13,6 +13,11 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
+from typing import TYPE_CHECKING, Any, cast
+
+if TYPE_CHECKING:
+    from collections.abc import Coroutine
 
 # DRY: Import REAL flext-* APIs
 from flext_core import get_logger
@@ -21,8 +26,6 @@ from flext_observability import FlextObservabilityMonitor, flext_monitor_functio
 # Import factory patterns for easier usage
 from flext_target_oracle_wms import (
     FlextTargetFactory,
-    FlextTargetMonitoringFactory,
-    create_monitored_oracle_wms_target,
     create_oracle_wms_target,
 )
 
@@ -32,18 +35,17 @@ logger = get_logger(__name__)
 # Monitor using flext-observability
 monitor = FlextObservabilityMonitor()
 
+# Constants for demo configuration
+DEMO_PASSWORD = os.getenv("DEMO_PASSWORD", "demo_password")  # Use env var or fallback
 
-@flext_monitor_function(monitor)
-async def demonstrate_factory_patterns() -> None:
-    """Demonstrate various factory patterns for easier library usage."""
-    logger.info("🏭 Starting Oracle WMS Target Factory Usage Examples")
 
-    # Example 1: Simple target creation using convenience function
+async def _demonstrate_simple_target() -> None:
+    """Demonstrate simple target creation using convenience function."""
     logger.info("\n📝 Example 1: Simple Target Creation")
     simple_target_result = create_oracle_wms_target(
         base_url="https://simple.wms.oracle.com",
         username="simple_user",
-        password="simple_password",
+        password=DEMO_PASSWORD,
         environment="demo",
     )
 
@@ -57,7 +59,9 @@ async def demonstrate_factory_patterns() -> None:
             simple_target_result.error or "Unknown error",
         )
 
-    # Example 2: Development target with preset
+
+async def _demonstrate_development_target() -> None:
+    """Demonstrate development target with preset."""
     logger.info("\n🔧 Example 2: Development Target with Preset")
     dev_target_result = FlextTargetFactory.create_development_target(
         base_url="https://dev.wms.oracle.com",
@@ -79,12 +83,14 @@ async def demonstrate_factory_patterns() -> None:
             dev_target_result.error,
         )
 
-    # Example 3: Production target with strict settings
+
+async def _demonstrate_production_target() -> None:
+    """Demonstrate production target with strict settings."""
     logger.info("\n🚀 Example 3: Production Target with Strict Settings")
     prod_target_result = FlextTargetFactory.create_production_target(
         base_url="https://prod.wms.oracle.com",
         username="prod_user",
-        password="prod_password",
+        password=DEMO_PASSWORD,
         # Production-specific overrides
         connection_pool_size=20,
         enable_audit_logging=True,
@@ -104,10 +110,11 @@ async def demonstrate_factory_patterns() -> None:
             prod_target_result.error,
         )
 
-    # Example 4: Testing target with minimal settings
+
+async def _demonstrate_testing_target() -> None:
+    """Demonstrate testing target with minimal settings."""
     logger.info("\n🧪 Example 4: Testing Target with Minimal Settings")
     test_target_result = FlextTargetFactory.create_testing_target(
-        # Uses sensible test defaults
         test_mode=True,
         fast_execution=True,
     )
@@ -115,19 +122,20 @@ async def demonstrate_factory_patterns() -> None:
     if test_target_result.success and test_target_result.data:
         logger.info("✅ Testing target created with minimal settings")
         test_target = test_target_result.data
-        # Testing preset optimized for fast test execution
         logger.info("Batch size: %s", test_target.config.get("batch_size"))
         logger.info("Enable logging: %s", test_target.config.get("enable_logging"))
         logger.info("Max retries: %s", test_target.config.get("max_retries"))
     else:
         logger.error("❌ Testing target creation failed: %s", test_target_result.error)
 
-    # Example 5: Configuration-based target creation
+
+async def _demonstrate_config_target() -> None:
+    """Demonstrate configuration-based target creation."""
     logger.info("\n📋 Example 5: Configuration-based Target Creation")
     config_dict = {
         "base_url": "https://config.wms.oracle.com",
         "username": "config_user",
-        "password": "config_password",
+        "password": DEMO_PASSWORD,
         "environment": "staging",
         "preset": "staging",
         "custom_field": "custom_value",
@@ -135,7 +143,6 @@ async def demonstrate_factory_patterns() -> None:
     }
 
     config_target_result = FlextTargetFactory.create_from_config_dict(config_dict)
-
     if config_target_result.success and config_target_result.data:
         logger.info("✅ Configuration-based target created successfully")
         config_target = config_target_result.data
@@ -147,57 +154,17 @@ async def demonstrate_factory_patterns() -> None:
             config_target_result.error,
         )
 
-    # Example 6: Monitored target with observability
-    logger.info("\n📊 Example 6: Monitored Target with Observability")
-    monitored_target_result = create_monitored_oracle_wms_target(
-        base_url="https://monitored.wms.oracle.com",
-        username="monitored_user",
-        password="monitored_password",
-        environment="production",
-        preset="production",
-        monitor_name="prod_wms_monitor",
-    )
 
-    if monitored_target_result.success:
-        logger.info("✅ Monitored target created with observability integration")
+@flext_monitor_function(monitor)
+async def demonstrate_factory_patterns() -> None:
+    """Demonstrate various factory patterns for easier library usage."""
+    logger.info("🏭 Starting Oracle WMS Target Factory Usage Examples")
 
-        # Demonstrate monitoring capabilities
-        logger.info("🔍 Target has built-in monitoring for:")
-        logger.info("  - Setup/cleanup operations")
-        logger.info("  - Record processing metrics")
-        logger.info("  - Performance timing")
-        logger.info("  - Success/failure counters")
-    else:
-        logger.error(
-            "❌ Monitored target creation failed: %s",
-            monitored_target_result.error,
-        )
-
-    # Example 7: Advanced monitoring factory usage
-    logger.info("\n🏭 Example 7: Advanced Monitoring Factory")
-    monitoring_factory = FlextTargetMonitoringFactory("advanced_monitor")
-
-    advanced_monitored_result = monitoring_factory.create_monitored_target(
-        base_url="https://advanced.wms.oracle.com",
-        username="advanced_user",
-        password="advanced_password",
-        preset="production",
-        connection_pool_monitoring=True,
-        performance_profiling=True,
-    )
-
-    if advanced_monitored_result.success:
-        logger.info("✅ Advanced monitored target created")
-        logger.info("🔧 Features enabled:")
-        logger.info("  - Connection pool monitoring")
-        logger.info("  - Performance profiling")
-        logger.info("  - Automatic error tracking")
-        logger.info("  - Resource usage metrics")
-    else:
-        logger.error(
-            "❌ Advanced monitored target creation failed: %s",
-            advanced_monitored_result.error,
-        )
+    await _demonstrate_simple_target()
+    await _demonstrate_development_target()
+    await _demonstrate_production_target()
+    await _demonstrate_testing_target()
+    await _demonstrate_config_target()
 
 
 @flext_monitor_function(monitor)
@@ -248,7 +215,7 @@ async def demonstrate_error_handling() -> None:
     unknown_preset_result = FlextTargetFactory.create_target(
         base_url="https://test.wms.oracle.com",
         username="test_user",
-        password="test_password",
+        password=DEMO_PASSWORD,
         preset="unknown_preset",
     )
 
@@ -302,11 +269,6 @@ async def main() -> None:
 
     try:
         # Demonstrate core factory patterns
-        from typing import TYPE_CHECKING, Any, cast
-
-        if TYPE_CHECKING:
-            from collections.abc import Coroutine
-
         await cast("Coroutine[Any, Any, Any]", demonstrate_factory_patterns())
 
         # Show preset differences
@@ -327,8 +289,8 @@ async def main() -> None:
         logger.info("  ⚡ Convenience functions reduce boilerplate code")
         logger.info("  🛡️  Built-in error handling improves reliability")
 
-    except Exception as e:
-        logger.exception("Factory usage example failed: %s", e)
+    except Exception:
+        logger.exception("Factory usage example failed")
         raise
 
 
