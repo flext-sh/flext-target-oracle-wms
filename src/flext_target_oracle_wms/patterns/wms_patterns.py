@@ -48,9 +48,18 @@ def _normalize_oracle_identifier(name: str) -> str:
         # Additional Oracle identifier normalization
         normalized = name.replace(" ", "_").replace("-", "_").upper()
         # Oracle identifier limit
-        return normalized[:oracle_identifier_max_length] if len(normalized) > oracle_identifier_max_length else normalized
+        return (
+            normalized[:oracle_identifier_max_length]
+            if len(normalized) > oracle_identifier_max_length
+            else normalized
+        )
     # Fallback for invalid names
-    normalized = str(name).replace(" ", "_").replace("-", "_").upper()[:oracle_identifier_max_length]
+    normalized = (
+        str(name)
+        .replace(" ", "_")
+        .replace("-", "_")
+        .upper()[:oracle_identifier_max_length]
+    )
     logger.warning("Invalid entity name normalized: %s -> %s", name, normalized)
     return normalized
 
@@ -426,7 +435,7 @@ class WMSTableManager:
             # SQL injection is not possible - schema/table names are controlled and validated
 
             insert_sql = (
-                f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" '  # noqa: S608
+                f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" '
                 f"({', '.join(quoted_columns)}) VALUES ({', '.join(placeholders)})"
             )
 

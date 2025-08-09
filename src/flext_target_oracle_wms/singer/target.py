@@ -168,12 +168,16 @@ class SingerTargetOracleWMS:
         # Add to catalog
         catalog_result = self.catalog_manager.add_stream(stream_name, schema)
         if not catalog_result.success:
-            return FlextResult.fail(f"Failed to add stream to catalog: {catalog_result.error}")
+            return FlextResult.fail(
+                f"Failed to add stream to catalog: {catalog_result.error}"
+            )
 
         # Initialize stream processing
         init_result = self.stream_processor.initialize_stream(stream_name, schema)
         if not init_result.success:
-            return FlextResult.fail(f"Stream initialization failed: {init_result.error}")
+            return FlextResult.fail(
+                f"Stream initialization failed: {init_result.error}"
+            )
 
         # Create table
         return await self._ensure_schema_table(stream_name, schema)
@@ -184,18 +188,28 @@ class SingerTargetOracleWMS:
         schema: dict[str, object],
     ) -> FlextResult[None]:
         """Ensure table exists for schema."""
-        table_name = self.table_manager.generate_table_name(stream_name, self.table_prefix)
+        table_name = self.table_manager.generate_table_name(
+            stream_name, self.table_prefix
+        )
         schema_name_raw = self.config.get("default_target_schema", "WMS_TARGET")
-        schema_name = str(schema_name_raw) if schema_name_raw is not None else "WMS_TARGET"
+        schema_name = (
+            str(schema_name_raw) if schema_name_raw is not None else "WMS_TARGET"
+        )
 
         create_sql_result = self.table_manager.generate_create_table_sql(
-            table_name, schema_name, schema,
+            table_name,
+            schema_name,
+            schema,
         )
         if not create_sql_result.success:
-            return FlextResult.fail(f"CREATE SQL generation failed: {create_sql_result.error}")
+            return FlextResult.fail(
+                f"CREATE SQL generation failed: {create_sql_result.error}"
+            )
 
         return await self._ensure_table_exists(
-            table_name, schema_name, create_sql_result.data or "",
+            table_name,
+            schema_name,
+            create_sql_result.data or "",
         )
 
     async def process_record_message(
@@ -307,7 +321,7 @@ class SingerTargetOracleWMS:
             try:
                 # Use REAL flext-oracle-wms API to validate entity exists
                 # SQL injection not possible - full_entity_name is controlled and validated
-                validation_query = f"SELECT 1 FROM {full_entity_name} WHERE ROWNUM = 1"  # noqa: S608
+                validation_query = f"SELECT 1 FROM {full_entity_name} WHERE ROWNUM = 1"
                 # Use generic method or skip validation if method doesn't exist
                 if hasattr(self.oracle_client, "execute_query"):
                     query_result = await self.oracle_client.execute_query(
@@ -323,7 +337,8 @@ class SingerTargetOracleWMS:
                     # Entity might not exist or no access - log but don't fail
                     logger.warning(
                         "Oracle WMS entity validation failed for %s: %s",
-                        full_entity_name, query_result.error,
+                        full_entity_name,
+                        query_result.error,
                     )
                     logger.info(
                         "Assuming entity %s will be available during data insertion",
@@ -370,7 +385,7 @@ class SingerTargetOracleWMS:
             # Build parametrized INSERT SQL (safe - uses placeholders)
             # SQL injection is not possible here as all table/column names are controlled
             # and parameters use proper placeholders
-            insert_sql = f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" ({", ".join(quoted_columns)}) VALUES ({", ".join(placeholders)})'  # noqa: S608
+            insert_sql = f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" ({", ".join(quoted_columns)}) VALUES ({", ".join(placeholders)})'
             logger.debug("Generated INSERT SQL: %s", insert_sql)
 
             # Prepare parameters
