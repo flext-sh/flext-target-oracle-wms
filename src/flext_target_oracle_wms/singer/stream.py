@@ -236,7 +236,7 @@ class SingerWMSStreamProcessor:
                     return FlextResult.fail(f"Missing required field: {prop_name}")
 
             # Basic type validation could be added here
-            return FlextResult.ok(data=True)
+            return FlextResult.ok(True)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("WMS schema validation failed")
