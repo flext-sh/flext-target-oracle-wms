@@ -20,7 +20,7 @@ Domain-specific exceptions for Oracle WMS target operations using factory patter
 from __future__ import annotations
 
 # 🚨 ZERO DUPLICATION: Use flext-core exception factory - eliminates 230+ lines
-from flext_core import create_module_exception_classes
+from flext_core.exceptions import create_module_exception_classes
 
 # Generate all standard exceptions using factory pattern
 _target_oracle_wms_exceptions = create_module_exception_classes("flext_target_oracle_wms")
