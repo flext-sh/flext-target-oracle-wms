@@ -53,19 +53,19 @@ from flext_target_oracle_wms.factory import (
     create_oracle_wms_target,
 )
 
-# Import patterns and singer modules
-from flext_target_oracle_wms.patterns import (
+# Import consolidated models and client classes
+from flext_target_oracle_wms.target_models import (
     WMSDataTransformer,
     WMSSchemaMapper,
     WMSTableManager,
     WMSTypeConverter,
 )
-from flext_target_oracle_wms.singer.catalog import SingerWMSCatalogManager
-from flext_target_oracle_wms.singer.stream import SingerWMSStreamProcessor
-
-# DRY PRINCIPLE: Use ONLY the production-ready implementation
-# This eliminates ALL duplication and uses REAL flext-oracle-wms API
-from flext_target_oracle_wms.singer.target import SingerTargetOracleWMS
+from flext_target_oracle_wms.target_client import (
+    SingerWMSCatalogManager,
+    SingerWMSStreamProcessor,
+    # Main target implementation
+    SingerTargetOracleWMS,
+)
 
 # BACKWARD COMPATIBILITY: Alias to prevent API breakage
 # Uses the newer, better code path without changing the interface
@@ -75,6 +75,15 @@ __version__ = importlib.metadata.version("flext-target-oracle-wms")
 
 # DRY EXPORTS: Single implementation, multiple access patterns
 __all__: list[str] = [
+    "annotations", "FlextResult", "FlextValueObject", "BatchSink", "FlextMeltanoBaseService",
+    "FlextMeltanoBridge", "FlextMeltanoConfig", "FlextMeltanoEvent", "FlextMeltanoTargetService",
+    "OAuthAuthenticator", "PropertiesList", "Property", "Sink", "SQLSink", "Stream", "Tap", "Target",
+    "create_meltano_target_service", "get_tap_test_class", "singer_typing", "FlextTargetFactory",
+    "FlextTargetMonitoringFactory", "create_monitored_oracle_wms_target", "create_oracle_wms_target",
+    "WMSDataTransformer", "WMSSchemaMapper", "WMSTableManager", "WMSTypeConverter",
+    "SingerWMSCatalogManager", "SingerWMSStreamProcessor", "SingerTargetOracleWMS", "TargetOracleWMS",
+    "__version__",
+] = [
     "BatchSink",
     "FlextMeltanoBaseService",
     # Bridge integration

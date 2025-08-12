@@ -1,7 +1,10 @@
-"""Oracle WMS patterns using flext-core patterns - MAXIMIZING flext-oracle-wms integration.
+"""Oracle WMS Target Models - Consolidated data models and transformation patterns.
 
-SOLID REFACTORING: Maximize usage of refactored flext-oracle-wms library components
-instead of local implementations to follow DRY principle.
+This module consolidates all Oracle WMS data models, transformers, and patterns
+from the patterns/ directory following PEP8 conventions.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
@@ -9,7 +12,6 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING
 
-# Removed Any import - using specific types from flext-core
 # DRY: Use REAL flext-core patterns - NO DUPLICATION
 from flext_core import FlextResult, get_logger
 
@@ -32,6 +34,11 @@ logger = get_logger(__name__)
 
 # DRY: Single observability monitor instance - NO DUPLICATION
 _observability_monitor = FlextObservabilityMonitor()
+
+
+# =============================================================================
+# ORACLE WMS UTILITY FUNCTIONS
+# =============================================================================
 
 
 def _normalize_oracle_identifier(name: str) -> str:
@@ -64,7 +71,6 @@ def _normalize_oracle_identifier(name: str) -> str:
     return normalized
 
 
-# REFACTORING: Use flext-oracle-wms constants instead of local mappings
 def get_oracle_type_mapping(json_type: str | None) -> str:
     """Get Oracle type mapping using flext-oracle-wms defaults.
 
@@ -99,6 +105,11 @@ def get_wms_metadata_columns() -> list[str]:
         '"_WMS_ENTITY_TYPE" VARCHAR2(255)',  # Local constant since not available in lib
         '"_SDC_SEQUENCE" NUMBER',
     ]
+
+
+# =============================================================================
+# TYPE CONVERSION MODELS
+# =============================================================================
 
 
 class WMSTypeConverter:
@@ -159,6 +170,11 @@ class WMSTypeConverter:
         """Convert number value with proper type detection."""
         str_val = str(value)
         return float(str_val) if "." in str_val else int(str_val)
+
+
+# =============================================================================
+# DATA TRANSFORMATION MODELS
+# =============================================================================
 
 
 class WMSDataTransformer:
@@ -294,6 +310,11 @@ class WMSDataTransformer:
             return FlextResult.fail(f"Parameter preparation failed: {e}")
 
 
+# =============================================================================
+# SCHEMA MAPPING MODELS
+# =============================================================================
+
+
 class WMSSchemaMapper:
     """Map Singer schemas to Oracle WMS schemas using flext-core patterns."""
 
@@ -357,6 +378,11 @@ class WMSSchemaMapper:
         except (RuntimeError, ValueError, TypeError) as e:
             logger.warning("Type mapping failed: %s", e)
             return FlextResult.ok("VARCHAR2(4000)")  # Safe fallback
+
+
+# =============================================================================
+# TABLE MANAGEMENT MODELS
+# =============================================================================
 
 
 class WMSTableManager:
@@ -434,9 +460,16 @@ class WMSTableManager:
             # Build INSERT SQL with proper quoting
             # SQL injection is not possible - schema/table names are controlled and validated
 
+            # Build parametrized INSERT SQL (safe - uses placeholders)
+            # SQL injection is not possible - schema/table names are controlled and validated
+            # Ensure schema and table names are alphanumeric with underscores for safety
+            safe_schema = "".join(ch for ch in schema_name if ch.isalnum() or ch == "_").upper()
+            safe_table = "".join(ch for ch in table_name if ch.isalnum() or ch == "_").upper()
+            # Build SQL using format with pre-sanitized identifiers
+            columns_str = ", ".join(quoted_columns)
+            values_str = ", ".join(placeholders)
             insert_sql = (
-                f'INSERT INTO "{schema_name.upper()}"."{table_name.upper()}" '
-                f"({', '.join(quoted_columns)}) VALUES ({', '.join(placeholders)})"
+                f'INSERT INTO "{safe_schema}"."{safe_table}" ({columns_str}) VALUES ({values_str})'
             )
 
             return FlextResult.ok(insert_sql)
@@ -444,3 +477,17 @@ class WMSTableManager:
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("INSERT SQL generation failed")
             return FlextResult.fail(f"SQL generation failed: {e}")
+
+
+# =============================================================================
+# PUBLIC API
+# =============================================================================
+
+__all__ = [
+    "WMSDataTransformer",
+    "WMSSchemaMapper",
+    "WMSTableManager",
+    "WMSTypeConverter",
+    "get_oracle_type_mapping",
+    "get_wms_metadata_columns",
+]
