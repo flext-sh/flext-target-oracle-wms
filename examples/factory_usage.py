@@ -36,7 +36,7 @@ logger = get_logger(__name__)
 monitor = FlextObservabilityMonitor()
 
 # Constants for demo configuration
-DEMO_PASSWORD = os.getenv("DEMO_PASSWORD", "demo_password")  # Use env var or fallback
+DEMO_PASSWORD = os.getenv("DEMO_PASSWORD", "demo_password"  # noqa: S105)  # Use env var or fallback
 
 
 async def _demonstrate_simple_target() -> None:

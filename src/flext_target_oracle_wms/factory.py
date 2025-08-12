@@ -17,7 +17,7 @@ from flext_core import FlextResult, get_logger
 from flext_observability import FlextObservabilityMonitor
 
 # Use REAL implementation - NO DUPLICATION
-from flext_target_oracle_wms.singer.target import SingerTargetOracleWMS
+from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 # =============================================================================
 # REFACTORING: Parameter Object Pattern for reducing method complexity

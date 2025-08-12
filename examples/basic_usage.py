@@ -54,7 +54,7 @@ async def run_basic_example() -> None:
     # factory_result = create_oracle_wms_target(
     #     base_url="https://example.wms.oracle.com",
     #     username="demo_user",
-    #     password="demo_password",
+    #     password="demo_password"
     #     environment="demo",
     #     preset="development"  # Automatically sets optimal dev settings
     # )

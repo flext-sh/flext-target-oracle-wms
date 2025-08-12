@@ -12,7 +12,7 @@ from pathlib import Path
 from flext_core import FlextResult
 
 # DRY: Use ONLY the production-ready implementation
-from flext_target_oracle_wms.singer.target import SingerTargetOracleWMS
+from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 
 class OracleWMSTargetCli:
@@ -127,11 +127,14 @@ class OracleWMSTargetCli:
             message_type = message.get("type")
 
             if message_type == "SCHEMA":
-                return await target.process_schema_message(message)
+                target._handle_schema_message(message)
+                return FlextResult.ok(None)
             if message_type == "RECORD":
-                return await target.process_record_message(message)
+                target._handle_record_message(message)
+                return FlextResult.ok(None)
             if message_type == "STATE":
-                return target.process_state_message(message)
+                target._handle_state_message(message)
+                return FlextResult.ok(None)
 
             # Skip unknown message types
             return FlextResult.ok(None)
@@ -145,13 +148,7 @@ class OracleWMSTargetCli:
     ) -> FlextResult[None]:
         """Finalize target processing and cleanup."""
         try:
-            finalize_result = target.finalize()
             await target.cleanup()
-
-            if finalize_result.success:
-                summary = finalize_result.data or {}
-                sys.stderr.write(f"Completed: {summary}\n")
-
             return FlextResult.ok(None)
         except Exception as e:
             return FlextResult.fail(f"Finalization failed: {e}")
