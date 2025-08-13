@@ -322,7 +322,10 @@ class TestSingerTargetOracleWMSComprehensive:
             result = await target.process_record_message(record_message)
             assert not result.success
             assert result.error is not None
-            assert ("Insertion failed" in result.error or "Record processing failed" in result.error)
+            assert (
+                "Insertion failed" in result.error
+                or "Record processing failed" in result.error
+            )
 
     def test_process_state_message_invalid_type(
         self,

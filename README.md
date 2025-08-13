@@ -1,5 +1,7 @@
 # FLEXT Target Oracle WMS - Enterprise Warehouse Management System Loading
 
+**Type**: Singer Target | **Status**: Active Development | **Dependencies**: Python 3.13+, flext-core, flext-oracle-wms, flext-meltano, singer-sdk
+
 [![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
 [![Singer SDK](https://img.shields.io/badge/singer--sdk-compliant-brightgreen.svg)](https://sdk.meltano.com/)
 [![Clean Architecture](https://img.shields.io/badge/Architecture-Clean%20Architecture%20%2B%20DDD-green.svg)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
@@ -527,4 +529,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-**Framework**: FLEXT Ecosystem | **Protocol**: Singer SDK | **Language**: Python 3.13+ | **Architecture**: Clean Architecture + DDD | **Updated**: 2025-07-30
+**Framework**: FLEXT Ecosystem | **Protocol**: Singer SDK | **Language**: Python 3.13+ | **Architecture**: Clean Architecture + DDD | **Updated**: 2025-08-13

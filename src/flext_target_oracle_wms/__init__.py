@@ -75,15 +75,6 @@ __version__ = importlib.metadata.version("flext-target-oracle-wms")
 
 # DRY EXPORTS: Single implementation, multiple access patterns
 __all__: list[str] = [
-    "annotations", "FlextResult", "FlextValueObject", "BatchSink", "FlextMeltanoBaseService",
-    "FlextMeltanoBridge", "FlextMeltanoConfig", "FlextMeltanoEvent", "FlextMeltanoTargetService",
-    "OAuthAuthenticator", "PropertiesList", "Property", "Sink", "SQLSink", "Stream", "Tap", "Target",
-    "create_meltano_target_service", "get_tap_test_class", "singer_typing", "FlextTargetFactory",
-    "FlextTargetMonitoringFactory", "create_monitored_oracle_wms_target", "create_oracle_wms_target",
-    "WMSDataTransformer", "WMSSchemaMapper", "WMSTableManager", "WMSTypeConverter",
-    "SingerWMSCatalogManager", "SingerWMSStreamProcessor", "SingerTargetOracleWMS", "TargetOracleWMS",
-    "__version__",
-] = [
     "BatchSink",
     "FlextMeltanoBaseService",
     # Bridge integration

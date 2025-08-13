@@ -23,22 +23,44 @@ from __future__ import annotations
 from flext_core.exceptions import create_module_exception_classes
 
 # Generate all standard exceptions using factory pattern
-_target_oracle_wms_exceptions = create_module_exception_classes("flext_target_oracle_wms")
+_target_oracle_wms_exceptions = create_module_exception_classes(
+    "flext_target_oracle_wms",
+)
 
 # Export factory-created exception classes (using actual factory keys)
 FlextTargetOracleWmsError = _target_oracle_wms_exceptions["FlextTargetOracleWmsError"]
-FlextTargetOracleWmsValidationError = _target_oracle_wms_exceptions["FlextTargetOracleWmsValidationError"]
-FlextTargetOracleWmsConfigurationError = _target_oracle_wms_exceptions["FlextTargetOracleWmsConfigurationError"]
-FlextTargetOracleWmsProcessingError = _target_oracle_wms_exceptions["FlextTargetOracleWmsProcessingError"]
-FlextTargetOracleWmsConnectionError = _target_oracle_wms_exceptions["FlextTargetOracleWmsConnectionError"]
-FlextTargetOracleWmsAuthenticationError = _target_oracle_wms_exceptions["FlextTargetOracleWmsAuthenticationError"]
-FlextTargetOracleWmsTimeoutError = _target_oracle_wms_exceptions["FlextTargetOracleWmsTimeoutError"]
+FlextTargetOracleWmsValidationError = _target_oracle_wms_exceptions[
+    "FlextTargetOracleWmsValidationError"
+]
+FlextTargetOracleWmsConfigurationError = _target_oracle_wms_exceptions[
+    "FlextTargetOracleWmsConfigurationError"
+]
+FlextTargetOracleWmsProcessingError = _target_oracle_wms_exceptions[
+    "FlextTargetOracleWmsProcessingError"
+]
+FlextTargetOracleWmsConnectionError = _target_oracle_wms_exceptions[
+    "FlextTargetOracleWmsConnectionError"
+]
+FlextTargetOracleWmsAuthenticationError = _target_oracle_wms_exceptions[
+    "FlextTargetOracleWmsAuthenticationError"
+]
+FlextTargetOracleWmsTimeoutError = _target_oracle_wms_exceptions[
+    "FlextTargetOracleWmsTimeoutError"
+]
 
 # Create backward-compatible aliases for existing code
-FlextTargetOracleWmsSchemaError = FlextTargetOracleWmsValidationError  # Schema is validation
-FlextTargetOracleWmsLoadError = FlextTargetOracleWmsProcessingError  # Load is processing
-FlextTargetOracleWmsWriteError = FlextTargetOracleWmsProcessingError  # Write is processing
-FlextTargetOracleWmsDataError = FlextTargetOracleWmsProcessingError  # Data is processing
+FlextTargetOracleWmsSchemaError = (
+    FlextTargetOracleWmsValidationError  # Schema is validation
+)
+FlextTargetOracleWmsLoadError = (
+    FlextTargetOracleWmsProcessingError  # Load is processing
+)
+FlextTargetOracleWmsWriteError = (
+    FlextTargetOracleWmsProcessingError  # Write is processing
+)
+FlextTargetOracleWmsDataError = (
+    FlextTargetOracleWmsProcessingError  # Data is processing
+)
 
 
 __all__ = [

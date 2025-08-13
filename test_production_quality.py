@@ -282,7 +282,7 @@ async def test_table_management() -> bool | None:
         return False
 
 
-async def test_catalog_management() -> bool | None:
+async def test_catalog_management() -> bool | None:  # noqa: PLR0911
     """Test catalog management patterns."""
     try:
         from flext_target_oracle_wms.singer.catalog import SingerWMSCatalogManager
