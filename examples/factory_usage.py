@@ -240,7 +240,8 @@ def demonstrate_configuration_flexibility() -> None:
         "enable_sql_logging": True,
     }
     logger.info(
-        "Custom Development Config: %s", json.dumps(custom_dev_config, indent=2),
+        "Custom Development Config: %s",
+        json.dumps(custom_dev_config, indent=2),
     )
 
     # Custom production configuration
@@ -251,7 +252,8 @@ def demonstrate_configuration_flexibility() -> None:
         "backup_strategy": "incremental",
     }
     logger.info(
-        "Custom Production Config: %s", json.dumps(custom_prod_config, indent=2),
+        "Custom Production Config: %s",
+        json.dumps(custom_prod_config, indent=2),
     )
 
     logger.info("\n💡 Benefits of Factory Pattern:")
