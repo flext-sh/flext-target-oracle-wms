@@ -14,7 +14,7 @@ from typing import ClassVar
 from flext_core import FlextResult, get_logger
 from flext_core.models import FlextModel
 from flext_oracle_wms import FlextOracleWmsClientConfig
-from flext_oracle_wms.api_catalog import FlextOracleWmsApiVersion
+from flext_oracle_wms.wms_constants import FlextOracleWmsApiVersion
 from pydantic import Field, field_validator
 
 logger = get_logger(__name__)

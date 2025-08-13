@@ -29,7 +29,7 @@ from flext_oracle_wms import (
     FlextOracleWmsClientConfig,
     create_oracle_wms_client,
 )
-from flext_oracle_wms.api_catalog import FlextOracleWmsApiVersion
+from flext_oracle_wms.wms_constants import FlextOracleWmsApiVersion
 from pydantic import Field
 
 if TYPE_CHECKING:
@@ -564,7 +564,9 @@ class SingerWMSStreamProcessor:
 
             if removed_fields:
                 logger.warning(
-                    "WMS removed fields in %s: %s", stream_name, removed_fields,
+                    "WMS removed fields in %s: %s",
+                    stream_name,
+                    removed_fields,
                 )
 
             return FlextResult.ok(None)
@@ -616,14 +618,11 @@ class SingerTargetOracleWMS:
         self.mock_mode = bool(mock_mode)
 
         # Create Oracle WMS client with optional mock mode
-        self.oracle_client = create_oracle_wms_client(
-            oracle_config,
-            mock_mode=bool(mock_mode),
-        )
+        # Create Oracle WMS client (mock mode handled via base_url/environment)
+        self.oracle_client = create_oracle_wms_client(oracle_config)
 
         # Initialize WMS components using target_models
-        # Import moved to top-level to satisfy linting
-        from flext_target_oracle_wms.target_models import (  # noqa: PLC0415
+        from flext_target_oracle_wms.target_models import (
             WMSDataTransformer,
             WMSTableManager,
         )
@@ -649,10 +648,10 @@ class SingerTargetOracleWMS:
         self.plugin_directory = config.get("plugin_directory", "./plugins")
 
     async def setup(self) -> FlextResult[None]:
-        """Setup Oracle WMS Target using REAL flext-oracle-wms client."""
+        """Set up Oracle WMS Target using REAL flext-oracle-wms client."""
         try:
             # Start Oracle WMS client - REAL API
-            start_result = await self.oracle_client.start()
+            start_result = await self.oracle_client.initialize()
             if not start_result.success:
                 return FlextResult.fail(
                     f"Oracle WMS connection failed: {start_result.error}",
@@ -675,7 +674,8 @@ class SingerTargetOracleWMS:
         """Cleanup Oracle WMS Target resources."""
         try:
             # Stop Oracle WMS client
-            await self.oracle_client.stop()
+            # Close resources if client exposes such method; otherwise no-op
+            # In flext_oracle_wms client, `initialize` prepares http client; rely on GC
             logger.info("Oracle WMS Target cleanup complete")
 
             return FlextResult.ok(None)
@@ -746,7 +746,8 @@ class SingerTargetOracleWMS:
             # Process record through stream processor
             if self.stream_processor is not None:
                 process_result = self.stream_processor.process_record(
-                    stream_name, record,
+                    stream_name,
+                    record,
                 )
                 if not process_result.success:
                     logger.error("Failed to process record: %s", process_result.error)

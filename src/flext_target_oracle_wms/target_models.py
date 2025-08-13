@@ -463,14 +463,16 @@ class WMSTableManager:
             # Build parametrized INSERT SQL (safe - uses placeholders)
             # SQL injection is not possible - schema/table names are controlled and validated
             # Ensure schema and table names are alphanumeric with underscores for safety
-            safe_schema = "".join(ch for ch in schema_name if ch.isalnum() or ch == "_").upper()
-            safe_table = "".join(ch for ch in table_name if ch.isalnum() or ch == "_").upper()
+            safe_schema = "".join(
+                ch for ch in schema_name if ch.isalnum() or ch == "_"
+            ).upper()
+            safe_table = "".join(
+                ch for ch in table_name if ch.isalnum() or ch == "_"
+            ).upper()
             # Build SQL using format with pre-sanitized identifiers
             columns_str = ", ".join(quoted_columns)
             values_str = ", ".join(placeholders)
-            insert_sql = (
-                f'INSERT INTO "{safe_schema}"."{safe_table}" ({columns_str}) VALUES ({values_str})'
-            )
+            insert_sql = f'INSERT INTO "{safe_schema}"."{safe_table}" ({columns_str}) VALUES ({values_str})'  # noqa: S608
 
             return FlextResult.ok(insert_sql)
 

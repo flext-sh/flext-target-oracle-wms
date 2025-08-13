@@ -157,7 +157,8 @@ class FlextTargetFactory:
 
             logger.info(
                 "Created Oracle WMS target for %s with preset %s",
-                request.environment, request.preset,
+                request.environment,
+                request.preset,
             )
             return FlextResult.ok(target)
 
@@ -290,7 +291,10 @@ class FlextTargetFactory:
                 (isinstance(username, str), "username must be a string"),
                 (isinstance(password, str), "password must be a string"),
                 (isinstance(environment, str), "environment must be a string"),
-                (preset is None or isinstance(preset, str), "preset must be a string or None"),
+                (
+                    preset is None or isinstance(preset, str),
+                    "preset must be a string or None",
+                ),
             ]
 
             for is_valid, error_msg in type_checks:
@@ -403,7 +407,7 @@ def create_oracle_wms_target(
     preset: str | None = None,
     **config: object,
 ) -> FlextResult[SingerTargetOracleWMS]:
-    """Convenient function to create Oracle WMS target.
+    """Create Oracle WMS target.
 
     This is a simplified interface to the FlextTargetFactory for easy usage.
     Uses Parameter Object Pattern internally for better performance.
@@ -422,7 +426,7 @@ def create_oracle_wms_target(
 def create_monitored_oracle_wms_target(
     request: MonitoredTargetCreationRequest,
 ) -> FlextResult[SingerTargetOracleWMS]:
-    """Convenient function to create monitored Oracle WMS target.
+    """Create monitored Oracle WMS target.
 
     SOLID REFACTORING: Reduced arguments from 6 to 1 using Parameter Object Pattern.
     This is a simplified interface to the FlextTargetMonitoringFactory for easy usage.

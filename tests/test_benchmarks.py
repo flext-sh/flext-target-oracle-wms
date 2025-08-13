@@ -105,6 +105,7 @@ class TestFactoryPerformanceBenchmarks:
                 from flext_target_oracle_wms.factory import (
                     MonitoredTargetCreationRequest,
                 )
+
                 request = MonitoredTargetCreationRequest(
                     base_url="https://monitored-benchmark.wms.oracle.com",
                     username="monitor_user",
@@ -112,8 +113,7 @@ class TestFactoryPerformanceBenchmarks:
                     preset="production",
                     monitor_name="benchmark_monitor",
                 )
-                result = factory.create_monitored_target(request
-                )
+                result = factory.create_monitored_target(request)
                 assert result.success
                 return result.data
 

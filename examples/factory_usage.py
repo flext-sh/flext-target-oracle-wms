@@ -36,7 +36,7 @@ logger = get_logger(__name__)
 monitor = FlextObservabilityMonitor()
 
 # Constants for demo configuration
-DEMO_PASSWORD = os.getenv("DEMO_PASSWORD", "demo_password"  # noqa: S105)  # Use env var or fallback
+DEMO_PASSWORD = os.getenv("DEMO_PASSWORD", "demo_password")
 
 
 async def _demonstrate_simple_target() -> None:
@@ -240,7 +240,7 @@ def demonstrate_configuration_flexibility() -> None:
         "enable_sql_logging": True,
     }
     logger.info(
-        "Custom Development Config: %s", json.dumps(custom_dev_config, indent=2)
+        "Custom Development Config: %s", json.dumps(custom_dev_config, indent=2),
     )
 
     # Custom production configuration
@@ -251,7 +251,7 @@ def demonstrate_configuration_flexibility() -> None:
         "backup_strategy": "incremental",
     }
     logger.info(
-        "Custom Production Config: %s", json.dumps(custom_prod_config, indent=2)
+        "Custom Production Config: %s", json.dumps(custom_prod_config, indent=2),
     )
 
     logger.info("\n💡 Benefits of Factory Pattern:")

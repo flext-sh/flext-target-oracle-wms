@@ -165,7 +165,7 @@ class OracleWMSTargetCli:
 
 
 def main() -> None:
-    """Main CLI entry point - DRY approach without complex CLI setup."""
+    """Provide CLI entry point without complex CLI setup."""
     try:
         # DRY: Direct approach without CLISettings that causes env var conflicts
         # Create and run CLI instance directly
