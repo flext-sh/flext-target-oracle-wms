@@ -15,16 +15,12 @@ from __future__ import annotations
 
 import json
 import sys
-from typing import TYPE_CHECKING
 
-# Import from flext-core for foundational patterns
 from flext_core import (
     FlextResult,
     FlextValueObject as FlextDomainBaseModel,
     get_logger,
 )
-
-# Use REAL flext-oracle-wms library - NO DUPLICATION
 from flext_oracle_wms import (
     FlextOracleWmsClientConfig,
     create_oracle_wms_client,
@@ -32,11 +28,10 @@ from flext_oracle_wms import (
 from flext_oracle_wms.wms_constants import FlextOracleWmsApiVersion
 from pydantic import Field
 
-if TYPE_CHECKING:
-    from flext_target_oracle_wms.target_models import (
-        WMSDataTransformer,
-        WMSTableManager,
-    )
+from flext_target_oracle_wms.models import (
+    WMSDataTransformer,
+    WMSTableManager,
+)
 
 logger = get_logger(__name__)
 
@@ -622,11 +617,6 @@ class SingerTargetOracleWMS:
         self.oracle_client = create_oracle_wms_client(oracle_config)
 
         # Initialize WMS components using target_models
-        from flext_target_oracle_wms.target_models import (
-            WMSDataTransformer,
-            WMSTableManager,
-        )
-
         self.catalog_manager = SingerWMSCatalogManager()
         self.table_manager = WMSTableManager()
         self.data_transformer = WMSDataTransformer()
