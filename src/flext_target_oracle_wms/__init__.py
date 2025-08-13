@@ -54,7 +54,7 @@ from flext_target_oracle_wms.factory import (
 )
 
 # Import consolidated models and client classes
-from flext_target_oracle_wms.target_models import (
+from flext_target_oracle_wms.models import (
     WMSDataTransformer,
     WMSSchemaMapper,
     WMSTableManager,
@@ -72,6 +72,7 @@ from flext_target_oracle_wms.target_client import (
 TargetOracleWMS = SingerTargetOracleWMS
 
 __version__ = importlib.metadata.version("flext-target-oracle-wms")
+__version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
 
 # DRY EXPORTS: Single implementation, multiple access patterns
 __all__: list[str] = [
@@ -113,6 +114,7 @@ __all__: list[str] = [
     "WMSTypeConverter",
     # === METADATA ===
     "__version__",
+    "__version_info__",
     "create_meltano_target_service",
     "create_monitored_oracle_wms_target",
     "create_oracle_wms_target",
