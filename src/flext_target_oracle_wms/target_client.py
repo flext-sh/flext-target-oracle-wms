@@ -28,7 +28,7 @@ from flext_oracle_wms import (
 from flext_oracle_wms.wms_constants import FlextOracleWmsApiVersion
 from pydantic import Field
 
-from flext_target_oracle_wms.models import (
+from flext_target_oracle_wms.target_models import (
     WMSDataTransformer,
     WMSTableManager,
 )

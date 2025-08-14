@@ -60,6 +60,11 @@ extend = "../.ruff-shared.toml"
 [tool.ruff.lint.isort]
 known-first-party = ["flext_target_oracle_wms"]
 
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = [
+    "PLC0415",
+]
+
 [tool.mypy]
 # Strict mode - enables all recommended checks
 strict = true
