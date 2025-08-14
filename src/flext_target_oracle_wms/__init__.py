@@ -12,6 +12,11 @@ from __future__ import annotations
 # Version info - use standard importlib.metadata
 import importlib.metadata
 
+# Provide legacy module path alias: flext_target_oracle_wms.singer.target
+# to satisfy tests importing from that location
+import sys as _sys
+import types as _types
+
 # RE-EXPORT real flext-core types - NO DUPLICATION
 from flext_core import FlextResult, FlextValueObject
 
@@ -52,20 +57,25 @@ from flext_target_oracle_wms.factory import (
     create_monitored_oracle_wms_target,
     create_oracle_wms_target,
 )
+from flext_target_oracle_wms.target_client import (
+    # Main target implementation
+    SingerTargetOracleWMS,
+    SingerWMSCatalogManager,
+    SingerWMSStreamProcessor,
+)
 
 # Import consolidated models and client classes
-from flext_target_oracle_wms.models import (
+from flext_target_oracle_wms.target_models import (
     WMSDataTransformer,
     WMSSchemaMapper,
     WMSTableManager,
     WMSTypeConverter,
 )
-from flext_target_oracle_wms.target_client import (
-    SingerWMSCatalogManager,
-    SingerWMSStreamProcessor,
-    # Main target implementation
-    SingerTargetOracleWMS,
-)
+
+_legacy_mod_name = "flext_target_oracle_wms.singer.target"
+_legacy_mod = _types.ModuleType(_legacy_mod_name)
+_legacy_mod.SingerTargetOracleWMS = SingerTargetOracleWMS  # type: ignore[attr-defined]
+_sys.modules[_legacy_mod_name] = _legacy_mod
 
 # BACKWARD COMPATIBILITY: Alias to prevent API breakage
 # Uses the newer, better code path without changing the interface
