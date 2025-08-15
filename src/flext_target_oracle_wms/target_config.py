@@ -11,8 +11,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from flext_core import FlextResult, get_logger
-from flext_core.models import FlextModel
+from flext_core import FlextResult, FlextBaseConfigModel, get_logger
 from flext_oracle_wms import FlextOracleWmsClientConfig
 from flext_oracle_wms.wms_constants import FlextOracleWmsApiVersion
 from pydantic import Field, field_validator
@@ -20,7 +19,7 @@ from pydantic import Field, field_validator
 logger = get_logger(__name__)
 
 
-class TargetOracleWmsConfig(FlextModel):
+class TargetOracleWmsConfig(FlextBaseConfigModel):
     """Configuration model for Oracle WMS Target with validation.
 
     Provides comprehensive configuration for Oracle WMS target operations
@@ -174,6 +173,36 @@ class TargetOracleWmsConfig(FlextModel):
             verify_ssl=self.verify_ssl,
             enable_logging=self.enable_logging,
         )
+
+    def validate_business_rules(self) -> FlextResult[None]:
+        """Validate Oracle WMS configuration business rules."""
+        try:
+            # Validate base URL accessibility
+            if not self.base_url.startswith(("http://", "https://")):
+                return FlextResult.fail("Base URL must start with http:// or https://")
+            
+            # Validate timeout values
+            if self.timeout <= 0:
+                return FlextResult.fail("Timeout must be positive")
+            
+            # Validate batch size
+            if self.batch_size <= 0:
+                return FlextResult.fail("Batch size must be positive")
+            
+            # Validate load method
+            valid_methods = {"APPEND_ONLY", "UPSERT", "REPLACE"}
+            if self.load_method.upper() not in valid_methods:
+                return FlextResult.fail(f"Invalid load_method: {self.load_method}")
+            
+            # Validate credentials are provided
+            if not self.username.strip():
+                return FlextResult.fail("Username cannot be empty")
+            if not self.password.strip():
+                return FlextResult.fail("Password cannot be empty")
+            
+            return FlextResult.ok(None)
+        except Exception as e:
+            return FlextResult.fail(f"Configuration validation failed: {e}")
 
     def apply_preset(self, preset_name: str) -> FlextResult[TargetOracleWmsConfig]:
         """Apply configuration preset."""
