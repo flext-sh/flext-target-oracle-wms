@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from flext_core import FlextResult, FlextBaseConfigModel, get_logger
+from flext_core import FlextBaseConfigModel, FlextResult, get_logger
 from flext_oracle_wms import FlextOracleWmsClientConfig
 from flext_oracle_wms.wms_constants import FlextOracleWmsApiVersion
 from pydantic import Field, field_validator
@@ -180,26 +180,26 @@ class TargetOracleWmsConfig(FlextBaseConfigModel):
             # Validate base URL accessibility
             if not self.base_url.startswith(("http://", "https://")):
                 return FlextResult.fail("Base URL must start with http:// or https://")
-            
+
             # Validate timeout values
             if self.timeout <= 0:
                 return FlextResult.fail("Timeout must be positive")
-            
+
             # Validate batch size
             if self.batch_size <= 0:
                 return FlextResult.fail("Batch size must be positive")
-            
+
             # Validate load method
             valid_methods = {"APPEND_ONLY", "UPSERT", "REPLACE"}
             if self.load_method.upper() not in valid_methods:
                 return FlextResult.fail(f"Invalid load_method: {self.load_method}")
-            
+
             # Validate credentials are provided
             if not self.username.strip():
                 return FlextResult.fail("Username cannot be empty")
             if not self.password.strip():
                 return FlextResult.fail("Password cannot be empty")
-            
+
             return FlextResult.ok(None)
         except Exception as e:
             return FlextResult.fail(f"Configuration validation failed: {e}")
