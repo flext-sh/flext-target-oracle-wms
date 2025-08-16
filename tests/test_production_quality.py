@@ -6,11 +6,19 @@ without requiring actual Oracle WMS credentials.
 """
 
 import asyncio
+import json
 import sys
+import traceback
 
 from flext_oracle_wms import FlextOracleWmsClientConfig
 from flext_oracle_wms.api_catalog import FlextOracleWmsApiVersion
 
+from flext_target_oracle_wms.patterns import (
+    WMSDataTransformer,
+    WMSTableManager,
+    WMSTypeConverter,
+)
+from flext_target_oracle_wms.singer.catalog import SingerWMSCatalogManager
 from flext_target_oracle_wms.singer.target import SingerTargetOracleWMS
 
 
@@ -151,11 +159,6 @@ async def test_singer_target_interfaces() -> bool | None:
 async def test_data_transformation() -> bool | None:
     """Test data transformation patterns."""
     try:
-        from flext_target_oracle_wms.patterns import (
-            WMSDataTransformer,
-            WMSTypeConverter,
-        )
-
         # Test type converter
         converter = WMSTypeConverter()
 
@@ -176,7 +179,6 @@ async def test_data_transformation() -> bool | None:
             converted: str | int | float | bool | dict[str, object] = result.data
             if singer_type == "object":
                 # JSON string comparison
-                import json
 
                 if json.loads(converted) != input_value:
                     return False
@@ -221,8 +223,6 @@ async def test_data_transformation() -> bool | None:
 async def test_table_management() -> bool | None:
     """Test table management patterns."""
     try:
-        from flext_target_oracle_wms.patterns import WMSTableManager
-
         manager = WMSTableManager()
 
         # Test table name generation
@@ -285,8 +285,6 @@ async def test_table_management() -> bool | None:
 async def test_catalog_management() -> bool | None:  # noqa: PLR0911
     """Test catalog management patterns."""
     try:
-        from flext_target_oracle_wms.singer.catalog import SingerWMSCatalogManager
-
         manager = SingerWMSCatalogManager()
 
         # Test adding streams
@@ -350,8 +348,6 @@ async def main() -> bool:
             if await test_func():
                 passed += 1
         except Exception:
-            import traceback
-
             traceback.print_exc()
 
     return passed == total

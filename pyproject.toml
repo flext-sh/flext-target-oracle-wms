@@ -30,10 +30,7 @@ classifiers = [
     "Topic :: Database",
     "Topic :: System :: Archiving",
 ]
-dependencies = [
-    "pydantic>=2.11.7",
-    "pydantic-settings>=2.10.1",
-]
+dependencies = ["pydantic>=2.11.7", "pydantic-settings>=2.10.1"]
 [[project.authors]]
 name = "FLEXT Team"
 email = "team@flext.sh"
@@ -59,11 +56,6 @@ extend = "../.ruff-shared.toml"
 
 [tool.ruff.lint.isort]
 known-first-party = ["flext_target_oracle_wms"]
-
-[tool.ruff.lint.per-file-ignores]
-"**/tests/**" = [
-    "PLC0415",
-]
 
 [tool.mypy]
 # Strict mode - enables all recommended checks
