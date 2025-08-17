@@ -24,9 +24,9 @@ class SimulatedOracleWMSError(Exception):
     """Custom exception for simulated Oracle WMS operation failures."""
 
     def __init__(self, message: str, attempt: int) -> None:
-        """Initialize simulated error with attempt context."""
-        super().__init__(message)
-        self.attempt = attempt
+      """Initialize simulated error with attempt context."""
+      super().__init__(message)
+      self.attempt = attempt
 
 
 logger = get_logger(__name__)
@@ -45,30 +45,30 @@ def get_error_demo_config() -> dict[str, object]:
     Single Responsibility Principle.
     """
     return {
-        "base_url": "https://error-demo.wms.oracle.com",
-        "username": "error_demo_user",
-        "password": "error_demo_password",
-        "environment": "error_demo",
-        # Error handling configuration
-        "max_retries": 3,
-        "retry_delay": 2,
-        "exponential_backoff": True,
-        "circuit_breaker_enabled": True,
-        "circuit_breaker_threshold": 5,
-        "circuit_breaker_timeout": 30,
-        # Resilience features
-        "connection_timeout": 30,
-        "request_timeout": 60,
-        "health_check_interval": 10,
-        "auto_recovery": True,
-        # Error reporting
-        "detailed_error_logging": True,
-        "error_aggregation": True,
-        "alert_on_errors": True,
-        # Data integrity
-        "validate_on_insert": True,
-        "rollback_on_error": True,
-        "checkpoint_frequency": 100,
+      "base_url": "https://error-demo.wms.oracle.com",
+      "username": "error_demo_user",
+      "password": "error_demo_password",
+      "environment": "error_demo",
+      # Error handling configuration
+      "max_retries": 3,
+      "retry_delay": 2,
+      "exponential_backoff": True,
+      "circuit_breaker_enabled": True,
+      "circuit_breaker_threshold": 5,
+      "circuit_breaker_timeout": 30,
+      # Resilience features
+      "connection_timeout": 30,
+      "request_timeout": 60,
+      "health_check_interval": 10,
+      "auto_recovery": True,
+      # Error reporting
+      "detailed_error_logging": True,
+      "error_aggregation": True,
+      "alert_on_errors": True,
+      # Data integrity
+      "validate_on_insert": True,
+      "rollback_on_error": True,
+      "checkpoint_frequency": 100,
     }
 
 
@@ -84,22 +84,22 @@ async def demonstrate_setup_error_handling(
 
     setup_result = await target.setup()
     if not setup_result.success:
-        logger.error(f"Setup failed as expected for demo: {setup_result.error}")
-        logger.info("Implementing setup retry logic...")
+      logger.error(f"Setup failed as expected for demo: {setup_result.error}")
+      logger.info("Implementing setup retry logic...")
 
-        # Retry with fallback configuration
-        fallback_config = config.copy()
-        fallback_config["connection_timeout"] = 60  # Extended timeout
-        fallback_config["max_retries"] = 5  # More retries
+      # Retry with fallback configuration
+      fallback_config = config.copy()
+      fallback_config["connection_timeout"] = 60  # Extended timeout
+      fallback_config["max_retries"] = 5  # More retries
 
-        target = SingerTargetOracleWMS(fallback_config)
-        setup_result = await target.setup()
+      target = SingerTargetOracleWMS(fallback_config)
+      setup_result = await target.setup()
 
-        if setup_result.success:
-            logger.info("Setup successful with fallback configuration")
-            return target
-        logger.error("Setup failed even with fallback - switching to mock mode")
-        return None
+      if setup_result.success:
+          logger.info("Setup successful with fallback configuration")
+          return target
+      logger.error("Setup failed even with fallback - switching to mock mode")
+      return None
     logger.info("Setup successful on first attempt")
     return target
 
@@ -113,24 +113,24 @@ async def demonstrate_schema_validation_errors(target: SingerTargetOracleWMS) ->
 
     # Valid schema first
     valid_schema = {
-        "type": "SCHEMA",
-        "stream": "error_test",
-        "schema": {
-            "type": "object",
-            "properties": {
-                "id": {"type": "string"},
-                "value": {"type": "number"},
-                "timestamp": {"type": "string", "format": "date-time"},
-            },
-        },
-        "key_properties": ["id"],
+      "type": "SCHEMA",
+      "stream": "error_test",
+      "schema": {
+          "type": "object",
+          "properties": {
+              "id": {"type": "string"},
+              "value": {"type": "number"},
+              "timestamp": {"type": "string", "format": "date-time"},
+          },
+      },
+      "key_properties": ["id"],
     }
 
     schema_result = await target.process_schema_message(valid_schema)
     if schema_result.success:
-        logger.info("Valid schema processed successfully")
+      logger.info("Valid schema processed successfully")
     else:
-        logger.error(f"Valid schema failed: {schema_result.error}")
+      logger.error(f"Valid schema failed: {schema_result.error}")
 
     # Test invalid schemas
     await _test_invalid_schemas(target)
@@ -143,31 +143,31 @@ async def _test_invalid_schemas(target: SingerTargetOracleWMS) -> None:
     """
     # Invalid schemas to test
     invalid_schemas = [
-        # Missing required fields
-        {
-            "type": "SCHEMA",
-            "stream": "invalid_missing_schema",
-            # Missing 'schema' field
-            "key_properties": ["id"],
-        },
-        # Invalid schema structure
-        {
-            "type": "SCHEMA",
-            "stream": "invalid_structure",
-            "schema": "invalid_schema_format",  # Should be object
-            "key_properties": ["id"],
-        },
+      # Missing required fields
+      {
+          "type": "SCHEMA",
+          "stream": "invalid_missing_schema",
+          # Missing 'schema' field
+          "key_properties": ["id"],
+      },
+      # Invalid schema structure
+      {
+          "type": "SCHEMA",
+          "stream": "invalid_structure",
+          "schema": "invalid_schema_format",  # Should be object
+          "key_properties": ["id"],
+      },
     ]
 
     for invalid_schema in invalid_schemas:
-        try:
-            schema_result = await target.process_schema_message(invalid_schema)
-            if not schema_result.success:
-                logger.info(f"Invalid schema properly rejected: {schema_result.error}")
-            else:
-                logger.warning("Invalid schema was accepted - this may indicate a bug")
-        except Exception as e:
-            logger.info(f"Invalid schema caused exception as expected: {e}")
+      try:
+          schema_result = await target.process_schema_message(invalid_schema)
+          if not schema_result.success:
+              logger.info(f"Invalid schema properly rejected: {schema_result.error}")
+          else:
+              logger.warning("Invalid schema was accepted - this may indicate a bug")
+      except Exception as e:
+          logger.info(f"Invalid schema caused exception as expected: {e}")
 
 
 @flext_monitor_function(monitor)
@@ -185,8 +185,8 @@ async def demonstrate_error_handling() -> None:
     # Test setup error handling
     target = await demonstrate_setup_error_handling(config)
     if target is None:
-        logger.error("Unable to establish target connection - ending demonstration")
-        return
+      logger.error("Unable to establish target connection - ending demonstration")
+      return
 
     # Test schema validation errors
     await demonstrate_schema_validation_errors(target)
@@ -209,23 +209,23 @@ async def demonstrate_data_processing_errors(target: SingerTargetOracleWMS) -> N
 
     # Valid record first
     valid_record = {
-        "type": "RECORD",
-        "stream": "error_test",
-        "record": {
-            "id": "test_001",
-            "value": 100.50,
-            "timestamp": "2025-01-01T10:00:00Z",
-        },
+      "type": "RECORD",
+      "stream": "error_test",
+      "record": {
+          "id": "test_001",
+          "value": 100.50,
+          "timestamp": "2025-01-01T10:00:00Z",
+      },
     }
 
     try:
-        record_result = await target.process_record_message(valid_record)
-        if record_result.success:
-            logger.info("Valid record processed successfully")
-        else:
-            logger.error(f"Valid record failed: {record_result.error}")
+      record_result = await target.process_record_message(valid_record)
+      if record_result.success:
+          logger.info("Valid record processed successfully")
+      else:
+          logger.error(f"Valid record failed: {record_result.error}")
     except Exception as e:
-        logger.info(f"Valid record processing raised exception: {e}")
+      logger.info(f"Valid record processing raised exception: {e}")
 
 
 async def demonstrate_recovery_scenarios(target: SingerTargetOracleWMS) -> None:
@@ -239,15 +239,15 @@ async def demonstrate_recovery_scenarios(target: SingerTargetOracleWMS) -> None:
     logger.info("Simulating connection recovery scenario...")
 
     try:
-        # Test graceful shutdown and restart
-        cleanup_result = await target.cleanup()
-        if cleanup_result.success:
-            logger.info("Target cleanup successful")
-        else:
-            logger.warning(f"Target cleanup had issues: {cleanup_result.error}")
+      # Test graceful shutdown and restart
+      cleanup_result = await target.cleanup()
+      if cleanup_result.success:
+          logger.info("Target cleanup successful")
+      else:
+          logger.warning(f"Target cleanup had issues: {cleanup_result.error}")
 
     except Exception as e:
-        logger.warning(f"Recovery scenario raised exception: {e}")
+      logger.warning(f"Recovery scenario raised exception: {e}")
 
     logger.info("Recovery scenarios completed")
 

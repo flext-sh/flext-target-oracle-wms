@@ -6,22 +6,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is `flext-target-oracle-wms`, a Singer target implementation for loading data into Oracle WMS (Warehouse Management System). It's part of the larger FLEXT ecosystem and implements enterprise-grade data loading patterns using Clean Architecture and Domain-Driven Design principles.
 
+**Requirements**: Python 3.13+, Poetry for dependency management, Oracle WMS access
+
+**Status**: Active Development - Production/Stable implementation with 90% test coverage requirement
+
 ## Architecture
 
 ### Core Components
 
-- **Singer Target Implementation**: `src/flext_target_oracle_wms/singer/target.py` - Main Singer protocol implementation
+- **Singer Target Implementation**: `src/flext_target_oracle_wms/target_client.py` - Main Singer protocol implementation (`SingerTargetOracleWMS`)
 - **CLI Interface**: `src/flext_target_oracle_wms/cli.py` - Command-line interface for the target
-- **WMS Patterns**: `src/flext_target_oracle_wms/patterns/` - Domain-specific WMS data transformation patterns
+- **Configuration Management**: `src/flext_target_oracle_wms/target_config.py` - Target configuration handling
+- **Data Models**: `src/flext_target_oracle_wms/target_models.py` - WMS data transformation models
 - **Factory Pattern**: `src/flext_target_oracle_wms/factory.py` - Factory for creating target instances
 
 ### Dependencies
 
 The project leverages several FLEXT ecosystem libraries:
 
-- `flext-core`: Base patterns, logging, result handling
+- `flext-core`: Base patterns, logging, result handling (`FlextResult`, `FlextValueObject`)
 - `flext-oracle-wms`: Oracle WMS API client and data models
-- `flext-meltano`: Singer/Meltano integration patterns
+- `flext-meltano`: Singer/Meltano integration patterns (complete Singer SDK integration)
 - `flext-observability`: Monitoring and metrics
 
 ### Key Design Patterns
@@ -30,6 +35,15 @@ The project leverages several FLEXT ecosystem libraries:
 - **Factory Pattern**: `FlextTargetFactory` for creating configured target instances
 - **Result Pattern**: `FlextResult` for railway-oriented programming and error handling
 - **Clean Architecture**: Clear separation between Singer protocol, domain logic, and Oracle WMS integration
+- **Consolidated Implementation**: All Singer components (target, catalog, stream processing) are unified in `target_client.py`
+
+### Key Classes
+
+- **`SingerTargetOracleWMS`**: Main target implementation with Singer protocol compliance
+- **`SingerWMSCatalogManager`**: Catalog management for WMS streams
+- **`SingerWMSStreamProcessor`**: Stream processing with WMS-specific logic
+- **`WMSDataTransformer`**: Data transformation for WMS entities
+- **`WMSTableManager`**: WMS table management and operations
 
 ## Development Commands
 
@@ -42,49 +56,94 @@ make test              # Run tests with 90% coverage requirement
 make lint              # Ruff linting with ALL rules enabled
 make type-check        # MyPy strict type checking
 make format            # Auto-format code with ruff
+make fix               # Auto-fix issues and format code
+make security          # Run security scanning (bandit + pip-audit)
+```
+
+### Project Setup Commands
+
+```bash
+make install           # Install dependencies with Poetry
+make install-dev       # Install dev dependencies  
+make setup             # Complete project setup with pre-commit hooks
+make diagnose          # Project diagnostics
+make doctor            # Health check + diagnostics
+```
+
+### Build and Package Commands
+
+```bash
+make build             # Build package
+make build-clean       # Clean and build
+make clean             # Clean build artifacts
+make clean-all         # Deep clean including venv
+make reset             # Reset project (clean-all + setup)
 ```
 
 ### Testing Commands
 
 ```bash
 make test-unit         # Unit tests only
-make test-integration  # Integration tests only
+make test-integration  # Integration tests only  
 make test-singer       # Singer protocol tests
-make coverage          # Generate detailed coverage report
+make test-fast         # Run tests without coverage
+make coverage-html     # Generate HTML coverage report
 pytest -m unit         # Run unit tests by marker
-pytest -m oracle       # Run Oracle WMS specific tests
+pytest -m oracle       # Run Oracle WMS specific tests  
 pytest -m slow         # Run slow tests
+pytest -m integration  # Run integration tests
+pytest -m smoke        # Run smoke tests
+pytest -m e2e          # Run end-to-end tests
+pytest -m performance  # Run performance tests
+pytest -m resilience   # Run resilience tests
+pytest -m integrity    # Run data integrity tests
+pytest -m edge_cases   # Run edge case tests
 ```
 
 ### Singer Target Operations
 
 ```bash
-make target-test       # Test basic target functionality
-make target-validate   # Validate target configuration
-make target-schema     # Validate Oracle WMS schema mappings
-make target-run        # Run target with sample data
-make target-dry-run    # Dry run mode for testing
+make test-target       # Test basic target functionality
+make validate-target-config  # Validate target configuration
+make load              # Run target data loading
+make dry-run           # Run target in dry-run mode
 ```
 
 ### Oracle WMS Specific Commands
 
 ```bash
 make wms-write-test    # Test WMS write operations
-make wms-entity-check  # Validate WMS entity mappings
-make wms-sync-test     # Test WMS synchronization
-make wms-connect       # Test WMS connection
-make wms-schema        # Generate WMS schema mappings
-make wms-tables        # List WMS tables and mappings
+make wms-entity-check  # Test Oracle WMS entity validation
+make wms-sync-test     # Test Oracle WMS synchronization
+make wms-connect       # Test Oracle WMS connection
+make wms-schema        # Validate Oracle WMS schema
 ```
 
-### Data Loading Operations
+## CLI Usage
+
+### Command Line Interface
+
+The target provides two CLI entry points:
+- `target-oracle-wms` - Main Singer target command 
+- `flext-target-oracle-wms` - Alternative entry point
+
+### Basic CLI Commands
 
 ```bash
-make load-sample       # Load sample WMS data
-make load-inventory    # Load inventory data
-make load-shipments    # Load shipment data
-make load-receipts     # Load receipt data
-make load-labor        # Load labor data
+# Show target information
+target-oracle-wms --about
+
+# Show version
+target-oracle-wms --version
+
+# Run target with configuration
+target-oracle-wms --config config.json
+
+# Run with state file
+target-oracle-wms --config config.json --state state.json
+
+# Dry run mode for testing
+target-oracle-wms --config config.json --dry-run
 ```
 
 ## Configuration
@@ -170,11 +229,11 @@ The target processes these WMS data streams:
 
 ### Adding New WMS Entity Support
 
-1. Define entity model in `patterns/wms_patterns.py`
-2. Add stream processor in `singer/stream.py`
-3. Update catalog manager in `singer/catalog.py`
+1. Define entity model in `target_models.py` (WMS data transformation models)
+2. Update the main target implementation in `target_client.py`
+3. Add stream processing logic in `SingerTargetOracleWMS` class
 4. Add comprehensive tests for the new entity
-5. Update schema mappings and validation rules
+5. Update schema mappings and validation rules in configuration
 
 ### Performance Optimization
 
@@ -198,18 +257,16 @@ The target processes these WMS data streams:
 
 ```
 src/flext_target_oracle_wms/
-├── __init__.py           # Main exports and version
-├── cli.py               # Command-line interface
+├── __init__.py           # Main exports and flext-meltano integration
+├── cli.py               # Command-line interface (OracleWMSTargetCli)
 ├── factory.py           # Factory patterns for target creation
 ├── exceptions.py        # Custom exceptions
-├── patterns/            # WMS-specific patterns
-│   ├── __init__.py
-│   └── wms_patterns.py  # Data transformation patterns
-└── singer/              # Singer protocol implementation
-    ├── __init__.py
-    ├── catalog.py       # Catalog management
-    ├── stream.py        # Stream processing
-    └── target.py        # Main target implementation
+├── models.py            # Data models (legacy)
+├── target_client.py     # Main Singer target implementation (SingerTargetOracleWMS)
+├── target_config.py     # Configuration management
+├── target_models.py     # WMS data transformation models
+├── typings.py           # Type definitions
+└── py.typed             # Type marker file
 ```
 
 ### Test Organization
@@ -219,7 +276,8 @@ tests/
 ├── unit/                # Unit tests for core logic
 ├── integration/         # Oracle WMS integration tests
 ├── examples/           # Example usage tests
-└── e2e/                # End-to-end workflow tests
+├── e2e/                # End-to-end workflow tests
+└── conftest.py          # Pytest configuration and fixtures
 ```
 
 ## Best Practices
