@@ -71,6 +71,7 @@ from flext_target_oracle_wms.target_models import (
     WMSTableManager,
     WMSTypeConverter,
 )
+from flext_target_oracle_wms.cli import OracleWMSTargetCli, main
 
 _legacy_mod_name = "flext_target_oracle_wms.singer.target"
 _legacy_mod = _types.ModuleType(_legacy_mod_name)
@@ -125,6 +126,9 @@ __all__: list[str] = [
     # === METADATA ===
     "__version__",
     "__version_info__",
+    # === CLI ===
+    "OracleWMSTargetCli",
+    "main",
     "create_meltano_target_service",
     "create_monitored_oracle_wms_target",
     "create_oracle_wms_target",
