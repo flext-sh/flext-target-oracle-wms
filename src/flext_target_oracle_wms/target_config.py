@@ -179,37 +179,37 @@ class TargetOracleWmsConfig(FlextBaseConfigModel):
         try:
             # Validate base URL accessibility
             if not self.base_url.startswith(("http://", "https://")):
-                return FlextResult.fail("Base URL must start with http:// or https://")
+                return FlextResult[None].fail("Base URL must start with http:// or https://")
 
             # Validate timeout values
             if self.timeout <= 0:
-                return FlextResult.fail("Timeout must be positive")
+                return FlextResult[None].fail("Timeout must be positive")
 
             # Validate batch size
             if self.batch_size <= 0:
-                return FlextResult.fail("Batch size must be positive")
+                return FlextResult[None].fail("Batch size must be positive")
 
             # Validate load method
             valid_methods = {"APPEND_ONLY", "UPSERT", "REPLACE"}
             if self.load_method.upper() not in valid_methods:
-                return FlextResult.fail(f"Invalid load_method: {self.load_method}")
+                return FlextResult[None].fail(f"Invalid load_method: {self.load_method}")
 
             # Validate credentials are provided
             if not self.username.strip():
-                return FlextResult.fail("Username cannot be empty")
+                return FlextResult[None].fail("Username cannot be empty")
             if not self.password.strip():
-                return FlextResult.fail("Password cannot be empty")
+                return FlextResult[None].fail("Password cannot be empty")
 
-            return FlextResult.ok(None)
+            return FlextResult[None].ok(None)
         except Exception as e:
-            return FlextResult.fail(f"Configuration validation failed: {e}")
+            return FlextResult[None].fail(f"Configuration validation failed: {e}")
 
     def apply_preset(self, preset_name: str) -> FlextResult[TargetOracleWmsConfig]:
         """Apply configuration preset."""
         try:
             if preset_name not in self.PRESETS:
                 available = list(self.PRESETS.keys())
-                return FlextResult.fail(
+                return FlextResult[None].fail(
                     f"Unknown preset '{preset_name}'. Available: {available}",
                 )
 
@@ -219,10 +219,10 @@ class TargetOracleWmsConfig(FlextBaseConfigModel):
 
             updated_config = self.__class__(**updated_data)
             logger.info(f"Applied configuration preset: {preset_name}")
-            return FlextResult.ok(updated_config)
+            return FlextResult[None].ok(updated_config)
 
         except Exception as e:
-            return FlextResult.fail(f"Failed to apply preset {preset_name}: {e}")
+            return FlextResult[None].fail(f"Failed to apply preset {preset_name}: {e}")
 
 
 def create_config_from_dict(
@@ -241,11 +241,11 @@ def create_config_from_dict(
         # Use model_validate for proper type conversion from dict
         config = TargetOracleWmsConfig.model_validate(config_dict)
         logger.debug("Configuration created and validated successfully")
-        return FlextResult.ok(config)
+        return FlextResult[None].ok(config)
 
     except Exception as e:
         logger.exception("Configuration validation failed")
-        return FlextResult.fail(f"Invalid configuration: {e}")
+        return FlextResult[None].fail(f"Invalid configuration: {e}")
 
 
 def create_config_with_preset(
@@ -270,13 +270,13 @@ def create_config_with_preset(
 
         config = config_result.data
         if config is None:
-            return FlextResult.fail("Configuration creation returned None")
+            return FlextResult[None].fail("Configuration creation returned None")
 
         # Apply preset
         return config.apply_preset(preset_name)
 
     except Exception as e:
-        return FlextResult.fail(f"Failed to create config with preset: {e}")
+        return FlextResult[None].fail(f"Failed to create config with preset: {e}")
 
 
 __all__ = [

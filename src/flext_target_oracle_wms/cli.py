@@ -30,7 +30,7 @@ class OracleWMSTargetCli:
         SOLID REFACTORING: Reduced multiple returns (count=6) to single exit point
         using Railway-Oriented Programming pattern.
         """
-        result: FlextResult[None] = FlextResult.ok(None)
+        result: FlextResult[None] = FlextResult[None].ok(None)
 
         try:
             # Load configuration
@@ -38,17 +38,17 @@ class OracleWMSTargetCli:
             config_path_str = str(config_path) if config_path is not None else None
             config_result = self._prepare_config(config_path_str)
             if not config_result.success:
-                result = FlextResult.fail(config_result.error or "Configuration failed")
+                result = FlextResult[None].fail(config_result.error or "Configuration failed")
             else:
                 config = config_result.data
                 if config is None:
-                    result = FlextResult.fail("Configuration data is None")
+                    result = FlextResult[None].fail("Configuration data is None")
                 else:
                     # Continue with target setup and processing
                     result = await self._execute_target_pipeline(config)
 
         except Exception as e:
-            result = FlextResult.fail(f"CLI execution failed: {e}")
+            result = FlextResult[None].fail(f"CLI execution failed: {e}")
 
         return result
 
@@ -65,7 +65,7 @@ class OracleWMSTargetCli:
         # Setup target
         setup_result = await target.setup()
         if not setup_result.success:
-            return FlextResult.fail(f"Setup failed: {setup_result.error}")
+            return FlextResult[None].fail(f"Setup failed: {setup_result.error}")
 
         # Process messages
         process_result = await self._process_stdin_messages(target)
@@ -82,7 +82,7 @@ class OracleWMSTargetCli:
         """Prepare configuration from path or defaults."""
         try:
             if config_path:
-                return FlextResult.ok(self._load_config(config_path))
+                return FlextResult[None].ok(self._load_config(config_path))
 
             # Default configuration
             config = {
@@ -93,9 +93,9 @@ class OracleWMSTargetCli:
                 "timeout": 30.0,
                 "max_retries": 3,
             }
-            return FlextResult.ok(config)
+            return FlextResult[None].ok(config)
         except Exception as e:
-            return FlextResult.fail(f"Configuration preparation failed: {e}")
+            return FlextResult[None].fail(f"Configuration preparation failed: {e}")
 
     async def _process_stdin_messages(
         self,
@@ -112,9 +112,9 @@ class OracleWMSTargetCli:
                 if not result.success:
                     return result
 
-            return FlextResult.ok(None)
+            return FlextResult[None].ok(None)
         except Exception as e:
-            return FlextResult.fail(f"Message processing failed: {e}")
+            return FlextResult[None].fail(f"Message processing failed: {e}")
 
     async def _process_single_message(
         self,
@@ -128,19 +128,19 @@ class OracleWMSTargetCli:
 
             if message_type == "SCHEMA":
                 target._handle_schema_message(message)
-                return FlextResult.ok(None)
+                return FlextResult[None].ok(None)
             if message_type == "RECORD":
                 target._handle_record_message(message)
-                return FlextResult.ok(None)
+                return FlextResult[None].ok(None)
             if message_type == "STATE":
                 target._handle_state_message(message)
-                return FlextResult.ok(None)
+                return FlextResult[None].ok(None)
 
             # Skip unknown message types
-            return FlextResult.ok(None)
+            return FlextResult[None].ok(None)
 
         except json.JSONDecodeError as e:
-            return FlextResult.fail(f"Invalid JSON: {e}")
+            return FlextResult[None].fail(f"Invalid JSON: {e}")
 
     async def _finalize_target(
         self,
@@ -149,9 +149,9 @@ class OracleWMSTargetCli:
         """Finalize target processing and cleanup."""
         try:
             await target.cleanup()
-            return FlextResult.ok(None)
+            return FlextResult[None].ok(None)
         except Exception as e:
-            return FlextResult.fail(f"Finalization failed: {e}")
+            return FlextResult[None].fail(f"Finalization failed: {e}")
 
     def _load_config(self, config_path: str) -> dict[str, object]:
         """Load configuration from file path - NO DUPLICATION."""

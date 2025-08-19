@@ -71,7 +71,7 @@ Shows sophisticated configuration and custom business logic:
 class CustomWMSTypeConverter(WMSTypeConverter):
     def convert_singer_to_oracle(self, singer_type: str, value: object) -> FlextResult[Any]:
         if singer_type == "business_currency":
-            return FlextResult.ok(round(float(value), 2))
+            return FlextResult[None].ok(round(float(value), 2))
         return super().convert_singer_to_oracle(singer_type, value)
 
 # Advanced configuration

@@ -150,7 +150,7 @@ class TestSingerWMSStreamProcessorComprehensive:
         """Test that failed record processing updates statistics."""
         # Mock data transformer to always fail
         mock_transformer = MagicMock()
-        mock_transformer.transform_record.return_value = FlextResult.fail(
+        mock_transformer.transform_record.return_value = FlextResult[None].fail(
             "Transform failed",
         )
 
@@ -381,8 +381,8 @@ class TestSingerWMSStreamProcessorComprehensive:
         ) -> FlextResult[dict[str, object]]:
             """Transform that fails for even IDs."""
             if record.get("id", 0) % 2 == 0:
-                return FlextResult.fail(f"Failed for ID {record['id']}")
-            return FlextResult.ok({"ID": record["id"]})
+                return FlextResult[None].fail(f"Failed for ID {record['id']}")
+            return FlextResult[None].ok({"ID": record["id"]})
 
         mixed_transformer.transform_record.side_effect = mixed_transform
 
@@ -540,8 +540,8 @@ class TestSingerWMSStreamProcessorComprehensive:
             _schema: dict[str, object] | None = None,
         ) -> FlextResult[dict[str, object]]:
             if record.get("id", 0) % 2 == 0:
-                return FlextResult.fail("Even ID failed")
-            return FlextResult.ok({"ID": record["id"]})
+                return FlextResult[None].fail("Even ID failed")
+            return FlextResult[None].ok({"ID": record["id"]})
 
         mock_transformer.transform_record.side_effect = selective_transform
 
