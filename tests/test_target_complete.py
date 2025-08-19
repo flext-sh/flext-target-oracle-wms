@@ -45,7 +45,7 @@ class TestSingerTargetOracleWMSComprehensive:
             "start",
             new_callable=AsyncMock,
         ) as mock_start:
-            mock_start.return_value = FlextResult.fail("Connection failed")
+            mock_start.return_value = FlextResult[None].fail("Connection failed")
 
             result = await target.setup()
             assert not result.success
@@ -140,7 +140,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
         # Mock catalog manager to fail
         with patch.object(target.catalog_manager, "add_stream") as mock_add:
-            mock_add.return_value = FlextResult.fail("Catalog add failed")
+            mock_add.return_value = FlextResult[None].fail("Catalog add failed")
 
             schema_message = {
                 "type": "SCHEMA",
@@ -163,7 +163,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
         # Mock stream processor to fail
         with patch.object(target.stream_processor, "initialize_stream") as mock_init:
-            mock_init.return_value = FlextResult.fail("Stream init failed")
+            mock_init.return_value = FlextResult[None].fail("Stream init failed")
 
             schema_message = {
                 "type": "SCHEMA",
@@ -189,7 +189,7 @@ class TestSingerTargetOracleWMSComprehensive:
             target.table_manager,
             "generate_create_table_sql",
         ) as mock_sql:
-            mock_sql.return_value = FlextResult.fail("SQL generation failed")
+            mock_sql.return_value = FlextResult[None].fail("SQL generation failed")
 
             schema_message = {
                 "type": "SCHEMA",
@@ -284,7 +284,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
         # Mock stream processor to fail
         with patch.object(target.stream_processor, "process_record") as mock_process:
-            mock_process.return_value = FlextResult.fail("Record processing failed")
+            mock_process.return_value = FlextResult[None].fail("Record processing failed")
 
             record_message = {
                 "type": "RECORD",
@@ -311,7 +311,7 @@ class TestSingerTargetOracleWMSComprehensive:
             "_insert_record",
             new_callable=AsyncMock,
         ) as mock_insert:
-            mock_insert.return_value = FlextResult.fail("Insertion failed")
+            mock_insert.return_value = FlextResult[None].fail("Insertion failed")
 
             record_message = {
                 "type": "RECORD",
@@ -474,7 +474,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
         # Mock stream processor to fail stats retrieval
         with patch.object(target.stream_processor, "get_all_stats") as mock_stats:
-            mock_stats.return_value = FlextResult.fail("Stats retrieval failed")
+            mock_stats.return_value = FlextResult[None].fail("Stats retrieval failed")
 
             result = target.finalize()
             assert not result.success
@@ -490,7 +490,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
         # Mock stream processor to return empty stats
         with patch.object(target.stream_processor, "get_all_stats") as mock_stats:
-            mock_stats.return_value = FlextResult.ok({})
+            mock_stats.return_value = FlextResult[None].ok({})
 
             result = target.finalize()
             assert result.success
@@ -533,7 +533,7 @@ class TestSingerTargetOracleWMSComprehensive:
             "stop",
             new_callable=AsyncMock,
         ) as mock_stop:
-            mock_stop.return_value = FlextResult.fail("Stop failed")
+            mock_stop.return_value = FlextResult[None].fail("Stop failed")
 
             result = await target.cleanup()
             # Should succeed despite client stop failure (logs warning)
@@ -612,8 +612,8 @@ class TestSingerTargetOracleWMSComprehensive:
                 new_callable=AsyncMock,
             ) as mock_stop,
         ):
-            mock_start.return_value = FlextResult.ok(None)
-            mock_stop.return_value = FlextResult.ok(None)
+            mock_start.return_value = FlextResult[None].ok(None)
+            mock_stop.return_value = FlextResult[None].ok(None)
 
             # Setup
             setup_result = await target.setup()

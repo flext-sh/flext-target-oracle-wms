@@ -223,7 +223,7 @@ class TestWMSDataTransformer:
                 singer_type: str,
                 value: object,
             ) -> FlextResult[Any]:
-                return FlextResult.fail("Type conversion failed")
+                return FlextResult[None].fail("Type conversion failed")
 
         transformer = WMSDataTransformer(FailingTypeConverter())
         record = {"id": 123, "name": "test"}
@@ -494,7 +494,7 @@ class TestWMSTableManager:
         # Use proper mock to simulate schema mapping failure - SOLID pattern
         with patch.object(manager, "schema_mapper") as mock_schema_mapper:
             mock_schema_mapper.map_singer_schema_to_oracle.return_value = (
-                FlextResult.fail("Schema mapping failed")
+                FlextResult[None].fail("Schema mapping failed")
             )
             result = manager.generate_create_table_sql(
                 "TEST_TABLE",
@@ -553,7 +553,7 @@ class TestWMSTableManager:
         # Use proper mock to simulate None columns return - SOLID pattern
         with patch.object(manager, "schema_mapper") as mock_schema_mapper:
             mock_schema_mapper.map_singer_schema_to_oracle.return_value = (
-                FlextResult.ok(None)
+                FlextResult[None].ok(None)
             )
 
             schema = {"properties": {"id": {"type": "integer"}}}

@@ -210,7 +210,7 @@ class TestFlextTargetFactory:
         }
 
         with patch.object(FlextTargetFactory, "create_target") as mock_create:
-            mock_create.return_value = FlextResult.ok(MagicMock())
+            mock_create.return_value = FlextResult[None].ok(MagicMock())
 
             result = FlextTargetFactory.create_from_config_dict(config)
 
@@ -338,7 +338,7 @@ class TestFlextTargetMonitoringFactory:
         with patch.object(
             factory.factory,
             "create_target",
-            return_value=FlextResult.fail("Base creation failed"),
+            return_value=FlextResult[None].fail("Base creation failed"),
         ):
             result = factory.create_monitored_target(
                 base_url="https://fail.wms.oracle.com",
@@ -387,7 +387,7 @@ class TestFactoryConvenienceFunctions:
     def test_create_oracle_wms_target(self, mock_create_target: MagicMock) -> None:
         """Test convenience function for creating Oracle WMS target."""
         mock_target = MagicMock()
-        mock_create_target.return_value = FlextResult.ok(mock_target)
+        mock_create_target.return_value = FlextResult[None].ok(mock_target)
 
         result = create_oracle_wms_target(
             base_url="https://convenience.wms.oracle.com",
@@ -419,7 +419,7 @@ class TestFactoryConvenienceFunctions:
         mock_factory = MagicMock()
         mock_factory_class.return_value = mock_factory
         mock_target = MagicMock()
-        mock_factory.create_monitored_target.return_value = FlextResult.ok(mock_target)
+        mock_factory.create_monitored_target.return_value = FlextResult[None].ok(mock_target)
 
         result = create_monitored_oracle_wms_target(
             base_url="https://monitored-convenience.wms.oracle.com",

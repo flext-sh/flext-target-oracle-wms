@@ -54,7 +54,7 @@ class TestOracleWMSIntegration:
             "start",
             new_callable=AsyncMock,
         ) as mock_start:
-            mock_start.return_value = FlextResult.ok(None)
+            mock_start.return_value = FlextResult[None].ok(None)
 
             # Test setup using REAL flext-core patterns
             setup_result = await target.setup()
@@ -179,8 +179,8 @@ class TestOracleWMSIntegration:
                 new_callable=AsyncMock,
             ) as mock_stop,
         ):
-            mock_start.return_value = FlextResult.ok(None)
-            mock_stop.return_value = FlextResult.ok(None)
+            mock_start.return_value = FlextResult[None].ok(None)
+            mock_stop.return_value = FlextResult[None].ok(None)
 
             # Test setup and cleanup cycle
             await target.setup()

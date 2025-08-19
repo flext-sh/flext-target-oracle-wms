@@ -423,7 +423,7 @@ class TestSingerWMSCatalogManager:
         def mock_get_stream(
             _stream_name: str,
         ) -> FlextResult[SingerWMSCatalogEntry | None]:
-            return FlextResult.ok(None)
+            return FlextResult[None].ok(None)
 
         # Use monkeypatch for proper type safety - REAL DRY approach
         with pytest.MonkeyPatch.context() as mp:
@@ -463,7 +463,7 @@ class TestSingerWMSCatalogManager:
         def mock_get_stream(
             _stream_name: str,
         ) -> FlextResult[SingerWMSCatalogEntry | None]:
-            return FlextResult.ok(None)
+            return FlextResult[None].ok(None)
 
         # Use monkeypatch for proper type safety - REAL DRY approach
         with pytest.MonkeyPatch.context() as mp:

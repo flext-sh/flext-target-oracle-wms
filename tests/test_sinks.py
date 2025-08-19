@@ -182,8 +182,8 @@ class TestSingerTargetComponents:
                 new_callable=AsyncMock,
             ) as mock_stop,
         ):
-            mock_start.return_value = FlextResult.ok(None)
-            mock_stop.return_value = FlextResult.ok(None)
+            mock_start.return_value = FlextResult[None].ok(None)
+            mock_stop.return_value = FlextResult[None].ok(None)
 
             # Test setup
             setup_result = await target.setup()
