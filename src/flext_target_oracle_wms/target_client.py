@@ -18,7 +18,7 @@ import sys
 
 from flext_core import (
     FlextResult,
-    FlextValueObject as FlextDomainBaseModel,
+    FlextValue as FlextDomainBaseModel,
     get_logger,
 )
 from flext_oracle_wms import (
@@ -186,7 +186,7 @@ class SingerWMSCatalogManager:
             if stream_name not in self._catalog_entries:
                 return FlextResult[object].fail(f"WMS stream not found: {stream_name}")
 
-            # Create updated entry with new metadata (FlextValueObject is immutable)
+            # Create updated entry with new metadata (FlextValue is immutable)
             current_entry = self._catalog_entries[stream_name]
             updated_entry = SingerWMSCatalogEntry(
                 tap_stream_id=current_entry.tap_stream_id,

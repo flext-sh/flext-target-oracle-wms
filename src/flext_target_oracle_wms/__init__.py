@@ -18,7 +18,7 @@ import sys as _sys
 import types as _types
 
 # RE-EXPORT real flext-core types - NO DUPLICATION
-from flext_core import FlextResult, FlextValueObject
+from flext_core import FlextResult, FlextValue
 
 # === FLEXT-MELTANO COMPLETE INTEGRATION ===
 # Re-export ALL flext-meltano facilities for full ecosystem integration
@@ -101,7 +101,7 @@ __all__: list[str] = [
     # === FACTORY PATTERNS ===
     "FlextTargetFactory",
     "FlextTargetMonitoringFactory",
-    "FlextValueObject",
+    "FlextValue",
     # Authentication
     "OAuthAuthenticator",
     "PropertiesList",

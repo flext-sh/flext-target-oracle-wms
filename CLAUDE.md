@@ -24,7 +24,7 @@ This is `flext-target-oracle-wms`, a Singer target implementation for loading da
 
 The project leverages several FLEXT ecosystem libraries:
 
-- `flext-core`: Base patterns, logging, result handling (`FlextResult`, `FlextValueObject`)
+- `flext-core`: Base patterns, logging, result handling (`FlextResult`, `FlextValue`)
 - `flext-oracle-wms`: Oracle WMS API client and data models
 - `flext-meltano`: Singer/Meltano integration patterns (complete Singer SDK integration)
 - `flext-observability`: Monitoring and metrics
@@ -124,7 +124,8 @@ make wms-schema        # Validate Oracle WMS schema
 ### Command Line Interface
 
 The target provides two CLI entry points:
-- `target-oracle-wms` - Main Singer target command 
+
+- `target-oracle-wms` - Main Singer target command
 - `flext-target-oracle-wms` - Alternative entry point
 
 ### Basic CLI Commands
