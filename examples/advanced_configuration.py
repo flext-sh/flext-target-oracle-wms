@@ -50,7 +50,9 @@ class CustomWMSTypeConverter(WMSTypeConverter):
                     oracle_date = dt.strftime("%d-%b-%Y").upper()
                     return FlextResult[None].ok(oracle_date)
                 except ValueError:
-                    return FlextResult[None].fail(f"Invalid business date format: {value}")
+                    return FlextResult[None].fail(
+                        f"Invalid business date format: {value}"
+                    )
 
         # Handle custom currency with precision
         elif singer_type == "business_currency":
@@ -126,7 +128,9 @@ class CustomWMSDataTransformer(WMSDataTransformer):
             required_fields = ["ITEM_ID", "LOCATION_ID"]
             for field in required_fields:
                 if field not in transformed or not transformed[field]:
-                    return FlextResult[None].fail(f"Missing required business field: {field}")
+                    return FlextResult[None].fail(
+                        f"Missing required business field: {field}"
+                    )
 
             return FlextResult[None].ok(transformed)
 

@@ -493,9 +493,9 @@ class TestWMSTableManager:
 
         # Use proper mock to simulate schema mapping failure - SOLID pattern
         with patch.object(manager, "schema_mapper") as mock_schema_mapper:
-            mock_schema_mapper.map_singer_schema_to_oracle.return_value = (
-                FlextResult[None].fail("Schema mapping failed")
-            )
+            mock_schema_mapper.map_singer_schema_to_oracle.return_value = FlextResult[
+                None
+            ].fail("Schema mapping failed")
             result = manager.generate_create_table_sql(
                 "TEST_TABLE",
                 "WMS_SCHEMA",
@@ -552,9 +552,9 @@ class TestWMSTableManager:
 
         # Use proper mock to simulate None columns return - SOLID pattern
         with patch.object(manager, "schema_mapper") as mock_schema_mapper:
-            mock_schema_mapper.map_singer_schema_to_oracle.return_value = (
-                FlextResult[None].ok(None)
-            )
+            mock_schema_mapper.map_singer_schema_to_oracle.return_value = FlextResult[
+                None
+            ].ok(None)
 
             schema = {"properties": {"id": {"type": "integer"}}}
             result = manager.generate_create_table_sql(

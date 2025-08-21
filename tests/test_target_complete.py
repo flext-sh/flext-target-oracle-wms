@@ -284,7 +284,9 @@ class TestSingerTargetOracleWMSComprehensive:
 
         # Mock stream processor to fail
         with patch.object(target.stream_processor, "process_record") as mock_process:
-            mock_process.return_value = FlextResult[None].fail("Record processing failed")
+            mock_process.return_value = FlextResult[None].fail(
+                "Record processing failed"
+            )
 
             record_message = {
                 "type": "RECORD",
