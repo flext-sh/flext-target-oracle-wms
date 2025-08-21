@@ -310,10 +310,10 @@ class TestSingerWMSCatalogManagerComprehensive:
         # Should handle empty schema appropriately based on validation rules
 
         # Get stream with None data scenario would be tested implicitly
-        # through other error cases since FlextValueObject ensures data integrity
+        # through other error cases since FlextValue ensures data integrity
 
     def test_catalog_entry_immutability(self) -> None:
-        """Test that catalog entries are properly immutable (FlextValueObject)."""
+        """Test that catalog entries are properly immutable (FlextValue)."""
         manager = SingerWMSCatalogManager()
         schema = {"type": "object", "properties": {"id": {"type": "integer"}}}
         metadata = [{"breadcrumb": [], "metadata": {"inclusion": "available"}}]
