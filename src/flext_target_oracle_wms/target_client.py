@@ -22,10 +22,10 @@ from flext_core import (
     get_logger,
 )
 from flext_oracle_wms import (
+    FlextOracleWmsApiVersion,
     FlextOracleWmsClientConfig,
     create_oracle_wms_client,
 )
-from flext_oracle_wms.wms_constants import FlextOracleWmsApiVersion
 from pydantic import Field
 
 from flext_target_oracle_wms.target_models import (
@@ -386,7 +386,9 @@ class SingerWMSStreamProcessor:
                 stats.errors.append(
                     f"Record transformation failed: {transform_result.error}",
                 )
-                return FlextResult[object].fail(transform_result.error or "Transform failed")
+                return FlextResult[object].fail(
+                    transform_result.error or "Transform failed"
+                )
 
             stats.records_processed += 1
             stats.records_success += 1
@@ -510,7 +512,9 @@ class SingerWMSStreamProcessor:
             properties = expected_schema.get("properties", {})
 
             if not isinstance(properties, dict):
-                return FlextResult[object].fail("Invalid schema: properties must be a dict")
+                return FlextResult[object].fail(
+                    "Invalid schema: properties must be a dict"
+                )
 
             # Check required fields
             for prop_name, prop_def in properties.items():
@@ -519,7 +523,9 @@ class SingerWMSStreamProcessor:
                     and prop_def.get("anyOf", [{}])[0].get("type") != "null"
                 ):
                     # Field is missing and required (not nullable)
-                    return FlextResult[object].fail(f"Missing required field: {prop_name}")
+                    return FlextResult[object].fail(
+                        f"Missing required field: {prop_name}"
+                    )
 
             # Basic type validation could be added here
             # Basic type validation could be added here

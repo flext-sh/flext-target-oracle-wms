@@ -327,7 +327,9 @@ class WMSSchemaMapper:
             properties = schema.get("properties", {})
 
             if not isinstance(properties, dict):
-                return FlextResult[None].fail("Invalid schema: properties must be a dict")
+                return FlextResult[None].fail(
+                    "Invalid schema: properties must be a dict"
+                )
 
             for prop_name, prop_def in properties.items():
                 oracle_name = self._normalize_column_name(prop_name)

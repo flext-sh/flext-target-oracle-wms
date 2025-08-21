@@ -12,8 +12,7 @@ from __future__ import annotations
 from typing import ClassVar
 
 from flext_core import FlextBaseConfigModel, FlextResult, get_logger
-from flext_oracle_wms import FlextOracleWmsClientConfig
-from flext_oracle_wms.wms_constants import FlextOracleWmsApiVersion
+from flext_oracle_wms import FlextOracleWmsApiVersion, FlextOracleWmsClientConfig
 from pydantic import Field, field_validator
 
 logger = get_logger(__name__)
@@ -179,7 +178,9 @@ class TargetOracleWmsConfig(FlextBaseConfigModel):
         try:
             # Validate base URL accessibility
             if not self.base_url.startswith(("http://", "https://")):
-                return FlextResult[None].fail("Base URL must start with http:// or https://")
+                return FlextResult[None].fail(
+                    "Base URL must start with http:// or https://"
+                )
 
             # Validate timeout values
             if self.timeout <= 0:
@@ -192,7 +193,9 @@ class TargetOracleWmsConfig(FlextBaseConfigModel):
             # Validate load method
             valid_methods = {"APPEND_ONLY", "UPSERT", "REPLACE"}
             if self.load_method.upper() not in valid_methods:
-                return FlextResult[None].fail(f"Invalid load_method: {self.load_method}")
+                return FlextResult[None].fail(
+                    f"Invalid load_method: {self.load_method}"
+                )
 
             # Validate credentials are provided
             if not self.username.strip():

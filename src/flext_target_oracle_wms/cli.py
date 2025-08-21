@@ -38,7 +38,9 @@ class OracleWMSTargetCli:
             config_path_str = str(config_path) if config_path is not None else None
             config_result = self._prepare_config(config_path_str)
             if not config_result.success:
-                result = FlextResult[None].fail(config_result.error or "Configuration failed")
+                result = FlextResult[None].fail(
+                    config_result.error or "Configuration failed"
+                )
             else:
                 config = config_result.data
                 if config is None:

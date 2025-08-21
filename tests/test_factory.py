@@ -419,7 +419,9 @@ class TestFactoryConvenienceFunctions:
         mock_factory = MagicMock()
         mock_factory_class.return_value = mock_factory
         mock_target = MagicMock()
-        mock_factory.create_monitored_target.return_value = FlextResult[None].ok(mock_target)
+        mock_factory.create_monitored_target.return_value = FlextResult[None].ok(
+            mock_target
+        )
 
         result = create_monitored_oracle_wms_target(
             base_url="https://monitored-convenience.wms.oracle.com",
