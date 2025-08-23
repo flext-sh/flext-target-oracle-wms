@@ -94,9 +94,9 @@ async def production_target(
             mock_client.return_value = mock_instance
             mock_instance.connect.return_value = FlextResult[None].ok(data=True)
             mock_instance.disconnect.return_value = FlextResult[None].ok(data=True)
-            mock_instance.execute.return_value = FlextResult[None].ok({
-                "rows_affected": 1
-            })
+            mock_instance.execute.return_value = FlextResult[None].ok(
+                {"rows_affected": 1}
+            )
 
             setup_result = await target.setup()
             assert setup_result.success, f"Target setup failed: {setup_result.error}"
