@@ -92,11 +92,11 @@ async def production_target(
         with patch("flext_oracle_wms.FlextOracleWmsClient") as mock_client:
             mock_instance = AsyncMock()
             mock_client.return_value = mock_instance
-            mock_instance.connect.return_value = FlextResult[None].ok(True)
-            mock_instance.disconnect.return_value = FlextResult[None].ok(True)
-            mock_instance.execute.return_value = FlextResult[None].ok(
-                {"rows_affected": 1}
-            )
+            mock_instance.connect.return_value = FlextResult[None].ok(data=True)
+            mock_instance.disconnect.return_value = FlextResult[None].ok(data=True)
+            mock_instance.execute.return_value = FlextResult[None].ok({
+                "rows_affected": 1
+            })
 
             setup_result = await target.setup()
             assert setup_result.success, f"Target setup failed: {setup_result.error}"
@@ -1099,7 +1099,7 @@ class TestProductionEdgeCases:
                 with patch.object(
                     temp_target,
                     "setup",
-                    return_value=FlextResult[None].ok(True),
+                    return_value=FlextResult[None].ok(data=True),
                 ):
                     setup_result = await temp_target.setup()
                     return setup_result.success
