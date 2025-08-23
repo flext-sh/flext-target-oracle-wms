@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 # Removed Any import - using specific types from flext-core
-# DRY: Use only essential imports - avoid CLISettings env var conflicts
+# DRY: Use only essential imports - avoid FlextCliSettings env var conflicts
 from flext_core import FlextResult
 
 # DRY: Use ONLY the production-ready implementation
@@ -169,7 +169,7 @@ class OracleWMSTargetCli:
 def main() -> None:
     """Provide CLI entry point without complex CLI setup."""
     try:
-        # DRY: Direct approach without CLISettings that causes env var conflicts
+        # DRY: Direct approach without FlextCliSettings that causes env var conflicts
         # Create and run CLI instance directly
         cli_instance = OracleWMSTargetCli()
 

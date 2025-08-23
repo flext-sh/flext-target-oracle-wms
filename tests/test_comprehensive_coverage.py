@@ -133,7 +133,7 @@ class TestComprehensiveCLICoverage:
         async_result = MagicMock()
         async_result.success = True
 
-        # Test 1: No arguments (default behavior) - now simplified without CLISettings
+        # Test 1: No arguments (default behavior) - now simplified without FlextCliSettings
         with (
             patch("sys.argv", ["target-oracle-wms"]),
             patch("asyncio.run", return_value=async_result),
