@@ -160,12 +160,12 @@ class FlextTargetFactory:
                 request.environment,
                 request.preset,
             )
-            return FlextResult[None].ok(target)
+            return FlextResult[SingerTargetOracleWMS].ok(target)
 
         except Exception as e:
             error_msg: str = f"Failed to create Oracle WMS target: {e}"
             logger.exception(error_msg)
-            return FlextResult[None].fail(error_msg)
+            return FlextResult[SingerTargetOracleWMS].fail(error_msg)
 
     @classmethod
     def create_target_legacy(
@@ -274,7 +274,7 @@ class FlextTargetFactory:
                     f"Missing required configuration fields: {missing_fields}"
                 )
                 logger.error(error_msg)
-                return FlextResult[None].fail(error_msg)
+                return FlextResult[SingerTargetOracleWMS].fail(error_msg)
 
             # Extract preset if specified
             preset = config.pop("preset", None)
@@ -299,7 +299,7 @@ class FlextTargetFactory:
 
             for is_valid, error_msg in type_checks:
                 if not is_valid:
-                    return FlextResult[None].fail(error_msg)
+                    return FlextResult[SingerTargetOracleWMS].fail(error_msg)
 
             # Use cast after validation - types are guaranteed by validation above
             request = TargetCreationRequest(
@@ -315,7 +315,7 @@ class FlextTargetFactory:
         except Exception as e:
             creation_error_msg: str = f"Failed to create target from config: {e}"
             logger.exception(creation_error_msg)
-            return FlextResult[None].fail(creation_error_msg)
+            return FlextResult[SingerTargetOracleWMS].fail(creation_error_msg)
 
 
 class FlextTargetMonitoringFactory:
@@ -376,26 +376,26 @@ class FlextTargetMonitoringFactory:
             if not init_result.success:
                 logger.warning("Failed to initialize monitoring: %s", init_result.error)
                 # Continue without monitoring rather than fail
-                return FlextResult[None].ok(target)
+                return FlextResult[SingerTargetOracleWMS].ok(target)
 
             # Start monitoring
             start_result = self.monitor.flext_start_monitoring()
             if not start_result.success:
                 logger.warning("Failed to start monitoring: %s", start_result.error)
                 # Continue without monitoring rather than fail
-                return FlextResult[None].ok(target)
+                return FlextResult[SingerTargetOracleWMS].ok(target)
 
             # Add basic monitoring through logging - KISS approach
             logger.info(
                 "Created monitored target for %s with observability integration",
                 request.environment,
             )
-            return FlextResult[None].ok(target)
+            return FlextResult[SingerTargetOracleWMS].ok(target)
 
         except Exception as e:
             error_msg: str = f"Failed to create monitored target: {e}"
             logger.exception(error_msg)
-            return FlextResult[None].fail(error_msg)
+            return FlextResult[SingerTargetOracleWMS].fail(error_msg)
 
 
 # DRY: Export factory functions for easy access

@@ -130,15 +130,15 @@ class WMSTypeConverter:
         """
         try:
             if value is None:
-                return FlextResult[None].ok(None)
+                return FlextResult[object].ok(None)
 
             # REFACTORING: Use strategy pattern to reduce return statements
             result = self._convert_by_type(singer_type, value)
-            return FlextResult[None].ok(result)
+            return FlextResult[object].ok(result)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.warning("Type conversion failed for %s: %s", singer_type, e)
-            return FlextResult[None].ok(str(value))  # Fallback to string
+            return FlextResult[object].ok(str(value))  # Fallback to string
 
     def _convert_by_type(self, singer_type: str, value: object) -> object:
         """Convert value by type using strategy pattern."""
@@ -202,13 +202,13 @@ class WMSDataTransformer:
 
             # Basic validation - could be extended with flext-oracle-wms business rules
             if not filtered_data:
-                return FlextResult[None].fail("Empty record cannot be processed")
+                return FlextResult[dict[str, object]].fail("Empty record cannot be processed")
 
-            return FlextResult[None].ok(filtered_data)
+            return FlextResult[dict[str, object]].ok(filtered_data)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.warning("WMS filter application failed: %s", e)
-            return FlextResult[None].ok(record)  # Fallback to original record
+            return FlextResult[dict[str, object]].ok(record)  # Fallback to original record
 
     def transform_record(
         self,
@@ -258,11 +258,11 @@ class WMSDataTransformer:
                 else:
                     transformed[oracle_key] = str(value) if value is not None else ""
 
-            return FlextResult[None].ok(transformed)
+            return FlextResult[dict[str, object]].ok(transformed)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("WMS record transformation failed")
-            return FlextResult[None].fail(f"Record transformation failed: {e}")
+            return FlextResult[dict[str, object]].fail(f"Record transformation failed: {e}")
 
     def _normalize_wms_column_name(self, name: str) -> str:
         """Normalize column name for Oracle WMS conventions."""
@@ -299,11 +299,11 @@ class WMSDataTransformer:
 
                     batch_params.append(params)
 
-            return FlextResult[None].ok(batch_params)
+            return FlextResult[list[dict[str, object]]].ok(batch_params)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Batch parameter preparation failed")
-            return FlextResult[None].fail(f"Parameter preparation failed: {e}")
+            return FlextResult[list[dict[str, object]]].fail(f"Parameter preparation failed: {e}")
 
 
 # =============================================================================
@@ -327,7 +327,7 @@ class WMSSchemaMapper:
             properties = schema.get("properties", {})
 
             if not isinstance(properties, dict):
-                return FlextResult[None].fail(
+                return FlextResult[dict[str, str]].fail(
                     "Invalid schema: properties must be a dict"
                 )
 
@@ -340,11 +340,11 @@ class WMSSchemaMapper:
                 else:
                     oracle_columns[oracle_name] = "VARCHAR2(4000)"  # Fallback
 
-            return FlextResult[None].ok(oracle_columns)
+            return FlextResult[dict[str, str]].ok(oracle_columns)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Schema mapping failed")
-            return FlextResult[None].fail(f"Schema mapping failed: {e}")
+            return FlextResult[dict[str, str]].fail(f"Schema mapping failed: {e}")
 
     def _normalize_column_name(self, name: str) -> str:
         """Normalize column name for Oracle."""
@@ -371,11 +371,11 @@ class WMSSchemaMapper:
             # Use flext-oracle-wms type mapping where available
             oracle_type = get_oracle_type_mapping(prop_format_str or prop_type_str)
 
-            return FlextResult[None].ok(oracle_type)
+            return FlextResult[str].ok(oracle_type)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.warning("Type mapping failed: %s", e)
-            return FlextResult[None].ok("VARCHAR2(4000)")  # Safe fallback
+            return FlextResult[str].ok("VARCHAR2(4000)")  # Safe fallback
 
 
 # =============================================================================
@@ -412,7 +412,7 @@ class WMSTableManager:
             columns_result = schema_mapper.map_singer_schema_to_oracle(schema)
 
             if not columns_result.success:
-                return FlextResult[None].fail(
+                return FlextResult[str].fail(
                     f"Schema mapping failed: {columns_result.error}",
                 )
 
@@ -434,11 +434,11 @@ class WMSTableManager:
               )
           """
 
-            return FlextResult[None].ok(create_sql)
+            return FlextResult[str].ok(create_sql)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("CREATE TABLE SQL generation failed")
-            return FlextResult[None].fail(f"SQL generation failed: {e}")
+            return FlextResult[str].fail(f"SQL generation failed: {e}")
 
     def generate_insert_sql(
         self,
@@ -470,13 +470,13 @@ class WMSTableManager:
             # Build SQL using format with pre-sanitized identifiers
             columns_str = ", ".join(quoted_columns)
             values_str = ", ".join(placeholders)
-            insert_sql = f'INSERT INTO "{safe_schema}"."{safe_table}" ({columns_str}) VALUES ({values_str})'  # noqa: S608
+            insert_sql = f'INSERT INTO "{safe_schema}"."{safe_table}" ({columns_str}) VALUES ({values_str})'
 
-            return FlextResult[None].ok(insert_sql)
+            return FlextResult[str].ok(insert_sql)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("INSERT SQL generation failed")
-            return FlextResult[None].fail(f"SQL generation failed: {e}")
+            return FlextResult[str].fail(f"SQL generation failed: {e}")
 
 
 # =============================================================================

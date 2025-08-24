@@ -282,7 +282,7 @@ async def test_table_management() -> bool | None:
         return False
 
 
-async def test_catalog_management() -> bool | None:  # noqa: PLR0911
+async def test_catalog_management() -> bool | None:
     """Test catalog management patterns."""
     try:
         manager = SingerWMSCatalogManager()
