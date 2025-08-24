@@ -212,7 +212,7 @@ class TargetOracleWmsConfig(FlextBaseConfigModel):
         try:
             if preset_name not in self.PRESETS:
                 available = list(self.PRESETS.keys())
-                return FlextResult[None].fail(
+                return FlextResult[TargetOracleWmsConfig].fail(
                     f"Unknown preset '{preset_name}'. Available: {available}",
                 )
 
@@ -222,10 +222,10 @@ class TargetOracleWmsConfig(FlextBaseConfigModel):
 
             updated_config = self.__class__(**updated_data)
             logger.info(f"Applied configuration preset: {preset_name}")
-            return FlextResult[None].ok(updated_config)
+            return FlextResult[TargetOracleWmsConfig].ok(updated_config)
 
         except Exception as e:
-            return FlextResult[None].fail(f"Failed to apply preset {preset_name}: {e}")
+            return FlextResult[TargetOracleWmsConfig].fail(f"Failed to apply preset {preset_name}: {e}")
 
 
 def create_config_from_dict(
@@ -244,11 +244,11 @@ def create_config_from_dict(
         # Use model_validate for proper type conversion from dict
         config = TargetOracleWmsConfig.model_validate(config_dict)
         logger.debug("Configuration created and validated successfully")
-        return FlextResult[None].ok(config)
+        return FlextResult[TargetOracleWmsConfig].ok(config)
 
     except Exception as e:
         logger.exception("Configuration validation failed")
-        return FlextResult[None].fail(f"Invalid configuration: {e}")
+        return FlextResult[TargetOracleWmsConfig].fail(f"Invalid configuration: {e}")
 
 
 def create_config_with_preset(
@@ -279,7 +279,7 @@ def create_config_with_preset(
         return config.apply_preset(preset_name)
 
     except Exception as e:
-        return FlextResult[None].fail(f"Failed to create config with preset: {e}")
+        return FlextResult[TargetOracleWmsConfig].fail(f"Failed to create config with preset: {e}")
 
 
 __all__ = [

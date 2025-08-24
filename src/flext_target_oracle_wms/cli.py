@@ -84,7 +84,7 @@ class OracleWMSTargetCli:
         """Prepare configuration from path or defaults."""
         try:
             if config_path:
-                return FlextResult[None].ok(self._load_config(config_path))
+                return FlextResult[dict[str, object]].ok(self._load_config(config_path))
 
             # Default configuration
             config = {
@@ -95,9 +95,9 @@ class OracleWMSTargetCli:
                 "timeout": 30.0,
                 "max_retries": 3,
             }
-            return FlextResult[None].ok(config)
+            return FlextResult[dict[str, object]].ok(config)
         except Exception as e:
-            return FlextResult[None].fail(f"Configuration preparation failed: {e}")
+            return FlextResult[dict[str, object]].fail(f"Configuration preparation failed: {e}")
 
     async def _process_stdin_messages(
         self,

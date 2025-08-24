@@ -14,6 +14,7 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+from collections.abc import Coroutine
 from typing import Any, cast
 
 from flext_core import get_logger

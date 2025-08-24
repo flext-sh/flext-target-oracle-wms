@@ -6,4 +6,4 @@ by re-exporting all symbols from `target_models`.
 
 from __future__ import annotations
 
-from .target_models import *  # noqa: F403
+from .target_models import *
