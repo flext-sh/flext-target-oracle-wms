@@ -97,7 +97,9 @@ class OracleWMSTargetCli:
             }
             return FlextResult[dict[str, object]].ok(config)
         except Exception as e:
-            return FlextResult[dict[str, object]].fail(f"Configuration preparation failed: {e}")
+            return FlextResult[dict[str, object]].fail(
+                f"Configuration preparation failed: {e}"
+            )
 
     async def _process_stdin_messages(
         self,
