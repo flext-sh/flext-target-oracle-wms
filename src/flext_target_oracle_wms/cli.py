@@ -7,7 +7,7 @@ import json
 import sys
 from pathlib import Path
 
-# Removed Any import - using specific types from flext-core
+# Removed object import - using specific types from flext-core
 # DRY: Use only essential imports - avoid FlextCliSettings env var conflicts
 from flext_core import FlextResult
 

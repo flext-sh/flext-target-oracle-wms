@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+object
 
 import pytest
 from flext_core import FlextResult
@@ -42,8 +42,8 @@ class TestWMSTypeConverter:
     def test_convert_singer_to_oracle_types(
         self,
         singer_type: str,
-        value: Any,
-        expected: Any,
+        value: object,
+        expected: object,
     ) -> None:
         """Test Singer to Oracle type conversion with various types."""
         converter = WMSTypeConverter()
@@ -222,7 +222,7 @@ class TestWMSDataTransformer:
                 self,
                 singer_type: str,
                 value: object,
-            ) -> FlextResult[Any]:
+            ) -> FlextResult[object]:
                 return FlextResult[None].fail("Type conversion failed")
 
         transformer = WMSDataTransformer(FailingTypeConverter())

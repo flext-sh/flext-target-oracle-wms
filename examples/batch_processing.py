@@ -13,7 +13,7 @@ from __future__ import annotations
 import asyncio
 import time
 from collections.abc import Coroutine
-from typing import Any, cast
+from typing import cast, object
 
 from flext_core import get_logger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
@@ -402,8 +402,14 @@ async def demonstrate_concurrent_batching() -> None:
 if __name__ == "__main__":
     """Run batch processing examples."""
 
-    asyncio.run(cast("Coroutine[Any, Any, None]", run_performance_batch_example()))
     asyncio.run(
-        cast("Coroutine[Any, Any, None]", demonstrate_stream_processor_batching()),
+        cast("Coroutine[object, object, None]", run_performance_batch_example())
     )
-    asyncio.run(cast("Coroutine[Any, Any, None]", demonstrate_concurrent_batching()))
+    asyncio.run(
+        cast(
+            "Coroutine[object, object, None]", demonstrate_stream_processor_batching()
+        ),
+    )
+    asyncio.run(
+        cast("Coroutine[object, object, None]", demonstrate_concurrent_batching())
+    )
