@@ -14,7 +14,7 @@ import asyncio
 import os
 from collections.abc import Coroutine
 from datetime import UTC, datetime
-from typing import Any, cast
+from typing import cast, object
 
 from flext_core import FlextResult, get_logger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
@@ -38,7 +38,7 @@ class CustomWMSTypeConverter(WMSTypeConverter):
         self,
         singer_type: str,
         value: object,
-    ) -> FlextResult[Any]:
+    ) -> FlextResult[object]:
         """Custom conversion with business rules."""
         # Handle custom business types
         if singer_type == "business_date":
@@ -75,9 +75,9 @@ class CustomWMSTypeConverter(WMSTypeConverter):
 
         # Delegate to parent for standard types - ensure proper typing
         parent_result = super().convert_singer_to_oracle(singer_type, value)
-        # Type cast to ensure MyPy understands this returns FlextResult[Any]
+        # Type cast to ensure MyPy understands this returns FlextResult[object]
 
-        return cast("FlextResult[Any]", parent_result)
+        return cast("FlextResult[object]", parent_result)
 
 
 class CustomWMSDataTransformer(WMSDataTransformer):
@@ -394,5 +394,9 @@ async def demonstrate_custom_components() -> None:
 if __name__ == "__main__":
     """Run advanced configuration examples."""
 
-    asyncio.run(cast("Coroutine[Any, Any, None]", run_advanced_configuration_example()))
-    asyncio.run(cast("Coroutine[Any, Any, None]", demonstrate_custom_components()))
+    asyncio.run(
+        cast("Coroutine[object, object, None]", run_advanced_configuration_example())
+    )
+    asyncio.run(
+        cast("Coroutine[object, object, None]", demonstrate_custom_components())
+    )

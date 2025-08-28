@@ -14,7 +14,7 @@ import asyncio
 import json
 from collections.abc import Coroutine
 from pathlib import Path
-from typing import Any, cast
+from typing import cast, object
 
 from flext_core import get_logger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
@@ -247,5 +247,5 @@ def run_from_singer_files() -> None:
 
 if __name__ == "__main__":
     """Run the basic usage example."""
-    asyncio.run(cast("Coroutine[Any, Any, None]", run_basic_example()))
+    asyncio.run(cast("Coroutine[object, object, None]", run_basic_example()))
     run_from_singer_files()

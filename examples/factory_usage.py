@@ -15,7 +15,7 @@ import asyncio
 import json
 import os
 from collections.abc import Coroutine
-from typing import Any, cast
+from typing import cast, object
 
 from flext_core import get_logger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
@@ -268,13 +268,15 @@ async def main() -> None:
 
     try:
         # Demonstrate core factory patterns
-        await cast("Coroutine[Any, Any, Any]", demonstrate_factory_patterns())
+        await cast("Coroutine[object, object, object]", demonstrate_factory_patterns())
 
         # Show preset differences
-        await cast("Coroutine[Any, Any, Any]", demonstrate_preset_differences())
+        await cast(
+            "Coroutine[object, object, object]", demonstrate_preset_differences()
+        )
 
         # Demonstrate error handling
-        await cast("Coroutine[Any, Any, Any]", demonstrate_error_handling())
+        await cast("Coroutine[object, object, object]", demonstrate_error_handling())
 
         # Show configuration flexibility
         demonstrate_configuration_flexibility()
