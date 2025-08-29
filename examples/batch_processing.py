@@ -15,7 +15,7 @@ import time
 from collections.abc import Coroutine
 from typing import cast, object
 
-from flext_core import get_logger
+from flext_core import FlextLogger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 from flext_target_oracle_wms import (
@@ -28,7 +28,7 @@ from flext_target_oracle_wms import (
 # Constants
 MAX_ERROR_LOGS = 5  # Maximum number of errors to log per batch
 
-logger = get_logger(__name__)
+logger = FlextLogger(__name__)
 monitor = FlextObservabilityMonitor()
 
 
