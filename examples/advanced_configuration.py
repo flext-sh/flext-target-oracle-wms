@@ -16,7 +16,7 @@ from collections.abc import Coroutine
 from datetime import UTC, datetime
 from typing import cast, object
 
-from flext_core import FlextResult, get_logger
+from flext_core import FlextLogger, FlextResult
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 from flext_target_oracle_wms import (
@@ -27,7 +27,7 @@ from flext_target_oracle_wms import (
     WMSTypeConverter,
 )
 
-logger = get_logger(__name__)
+logger = FlextLogger(__name__)
 monitor = FlextObservabilityMonitor()
 
 

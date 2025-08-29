@@ -16,7 +16,7 @@ from collections.abc import Coroutine
 from pathlib import Path
 from typing import cast, object
 
-from flext_core import get_logger
+from flext_core import FlextLogger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 from flext_target_oracle_wms import (
@@ -24,7 +24,7 @@ from flext_target_oracle_wms import (
 )
 
 # Get logger using flext-core patterns
-logger = get_logger(__name__)
+logger = FlextLogger(__name__)
 
 # Monitor using flext-observability
 monitor = FlextObservabilityMonitor()

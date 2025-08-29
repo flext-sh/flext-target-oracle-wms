@@ -13,7 +13,7 @@ from __future__ import annotations
 import asyncio
 
 # DRY: Import REAL flext-* APIs
-from flext_core import get_logger
+from flext_core import FlextLogger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 # Import REAL production implementations
@@ -29,7 +29,7 @@ class SimulatedOracleWMSError(Exception):
         self.attempt = attempt
 
 
-logger = get_logger(__name__)
+logger = FlextLogger(__name__)
 monitor = FlextObservabilityMonitor()
 
 

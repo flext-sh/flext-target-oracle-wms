@@ -13,7 +13,7 @@ import json
 from collections.abc import Callable
 
 # DRY: Use REAL flext-core patterns - NO DUPLICATION
-from flext_core import FlextResult, get_logger
+from flext_core import FlextLogger, FlextResult
 
 # DRY: Use REAL flext-observability with correct signature - NO MOCKUP
 from flext_observability import FlextObservabilityMonitor
@@ -27,7 +27,7 @@ from flext_oracle_wms import (
     flext_oracle_wms_validate_entity_name,
 )
 
-logger = get_logger(__name__)
+logger = FlextLogger(__name__)
 # DRY: Single observability monitor instance - NO DUPLICATION
 _observability_monitor = FlextObservabilityMonitor()
 
@@ -202,13 +202,17 @@ class WMSDataTransformer:
 
             # Basic validation - could be extended with flext-oracle-wms business rules
             if not filtered_data:
-                return FlextResult[dict[str, object]].fail("Empty record cannot be processed")
+                return FlextResult[dict[str, object]].fail(
+                    "Empty record cannot be processed"
+                )
 
             return FlextResult[dict[str, object]].ok(filtered_data)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.warning("WMS filter application failed: %s", e)
-            return FlextResult[dict[str, object]].ok(record)  # Fallback to original record
+            return FlextResult[dict[str, object]].ok(
+                record
+            )  # Fallback to original record
 
     def transform_record(
         self,
@@ -262,7 +266,9 @@ class WMSDataTransformer:
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("WMS record transformation failed")
-            return FlextResult[dict[str, object]].fail(f"Record transformation failed: {e}")
+            return FlextResult[dict[str, object]].fail(
+                f"Record transformation failed: {e}"
+            )
 
     def _normalize_wms_column_name(self, name: str) -> str:
         """Normalize column name for Oracle WMS conventions."""
@@ -303,7 +309,9 @@ class WMSDataTransformer:
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Batch parameter preparation failed")
-            return FlextResult[list[dict[str, object]]].fail(f"Parameter preparation failed: {e}")
+            return FlextResult[list[dict[str, object]]].fail(
+                f"Parameter preparation failed: {e}"
+            )
 
 
 # =============================================================================

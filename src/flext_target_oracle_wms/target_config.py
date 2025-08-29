@@ -11,14 +11,14 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from flext_core import FlextBaseConfigModel, FlextResult, get_logger
+from flext_core import FlextConfig.BaseConfigModel, FlextResult, FlextLogger
 from flext_oracle_wms import FlextOracleWmsApiVersion, FlextOracleWmsClientConfig
 from pydantic import Field, field_validator
 
-logger = get_logger(__name__)
+logger = FlextLogger(__name__)
 
 
-class TargetOracleWmsConfig(FlextBaseConfigModel):
+class TargetOracleWmsConfig(FlextConfig.BaseConfigModel):
     """Configuration model for Oracle WMS Target with validation.
 
     Provides comprehensive configuration for Oracle WMS target operations

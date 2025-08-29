@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from typing import ClassVar, cast
 
 # DRY: Use REAL flext-* APIs for consistency
-from flext_core import FlextResult, get_logger
+from flext_core import FlextLogger, FlextResult
 from flext_observability import FlextObservabilityMonitor
 
 # Use REAL implementation - NO DUPLICATION
@@ -57,7 +57,7 @@ class MonitoredTargetCreationRequest(TargetCreationRequest):
 
 
 # Get logger using flext-core patterns
-logger = get_logger(__name__)
+logger = FlextLogger(__name__)
 
 
 class FlextTargetFactory:
