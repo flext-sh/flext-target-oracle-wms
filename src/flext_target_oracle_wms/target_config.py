@@ -11,14 +11,14 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from flext_core import FlextConfig.BaseConfigModel, FlextResult, FlextLogger
+from flext_core import FlextConfig, FlextLogger, FlextResult
 from flext_oracle_wms import FlextOracleWmsApiVersion, FlextOracleWmsClientConfig
 from pydantic import Field, field_validator
 
 logger = FlextLogger(__name__)
 
 
-class TargetOracleWmsConfig(FlextConfig.BaseConfigModel):
+class TargetOracleWmsConfig(FlextConfig.BaseModel):
     """Configuration model for Oracle WMS Target with validation.
 
     Provides comprehensive configuration for Oracle WMS target operations
@@ -225,7 +225,9 @@ class TargetOracleWmsConfig(FlextConfig.BaseConfigModel):
             return FlextResult[TargetOracleWmsConfig].ok(updated_config)
 
         except Exception as e:
-            return FlextResult[TargetOracleWmsConfig].fail(f"Failed to apply preset {preset_name}: {e}")
+            return FlextResult[TargetOracleWmsConfig].fail(
+                f"Failed to apply preset {preset_name}: {e}"
+            )
 
 
 def create_config_from_dict(
@@ -279,7 +281,9 @@ def create_config_with_preset(
         return config.apply_preset(preset_name)
 
     except Exception as e:
-        return FlextResult[TargetOracleWmsConfig].fail(f"Failed to create config with preset: {e}")
+        return FlextResult[TargetOracleWmsConfig].fail(
+            f"Failed to create config with preset: {e}"
+        )
 
 
 __all__ = [

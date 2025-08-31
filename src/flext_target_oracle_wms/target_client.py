@@ -17,9 +17,9 @@ import json
 import sys
 
 from flext_core import (
-    FlextResult,
-    FlextModels.Value as FlextDomainBaseModel,
     FlextLogger,
+    FlextModels,
+    FlextResult,
 )
 from flext_oracle_wms import (
     FlextOracleWmsApiVersion,
@@ -41,7 +41,7 @@ logger = FlextLogger(__name__)
 # =============================================================================
 
 
-class SingerWMSCatalogEntry(FlextDomainBaseModel):
+class SingerWMSCatalogEntry(FlextModels.Entity):
     """Singer WMS catalog entry using flext-core patterns."""
 
     tap_stream_id: str
