@@ -9,19 +9,13 @@ NO DUPLICATION - uses newer, better implementation via SingerTargetOracleWMS.
 
 from __future__ import annotations
 
-# Version info - use standard importlib.metadata
 import importlib.metadata
 
-# Provide legacy module path alias: flext_target_oracle_wms.singer.target
-# to satisfy tests importing from that location
 import sys as _sys
 import types as _types
 
-# RE-EXPORT real flext-core types - NO DUPLICATION
-from flext_core import FlextResult, FlextModels.Value
+from flext_core import FlextResult, FlextModels
 
-# === FLEXT-MELTANO COMPLETE INTEGRATION ===
-# Re-export ALL flext-meltano facilities for full ecosystem integration
 from flext_meltano import (
     BatchSink,
     FlextMeltanoBaseService,
