@@ -95,7 +95,7 @@ __all__: list[str] = [
     # === FACTORY PATTERNS ===
     "FlextTargetFactory",
     "FlextTargetMonitoringFactory",
-    "FlextModels.Value",
+    "FlextModels",
     # Authentication
     "OAuthAuthenticator",
     "PropertiesList",
