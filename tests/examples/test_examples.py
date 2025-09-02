@@ -41,10 +41,10 @@ class TestExamplesCodeQuality:
         assert len(python_files) >= 4, "Must have at least 4 example files"
 
         expected_files = [
-            "basic_usage.py",
-            "advanced_configuration.py",
-            "batch_processing.py",
-            "error_handling.py",
+            "01_basic_usage.py",
+            "05_advanced_configuration.py",
+            "02_batch_processing.py",
+            "03_error_handling.py",
         ]
 
         for expected_file in expected_files:
