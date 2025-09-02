@@ -41,7 +41,7 @@ logger = FlextLogger(__name__)
 # =============================================================================
 
 
-class SingerWMSCatalogEntry(FlextModels.Entity):
+class SingerWMSCatalogEntry(FlextModels):
     """Singer WMS catalog entry using flext-core patterns."""
 
     tap_stream_id: str
@@ -186,7 +186,7 @@ class SingerWMSCatalogManager:
             if stream_name not in self._catalog_entries:
                 return FlextResult[object].fail(f"WMS stream not found: {stream_name}")
 
-            # Create updated entry with new metadata (FlextModels.Value is immutable)
+            # Create updated entry with new metadata (FlextModels is immutable)
             current_entry = self._catalog_entries[stream_name]
             updated_entry = SingerWMSCatalogEntry(
                 tap_stream_id=current_entry.tap_stream_id,
