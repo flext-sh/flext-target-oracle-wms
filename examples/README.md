@@ -184,16 +184,16 @@ async def retry_with_backoff(operation: object, max_retries: int = 3) -> FlextRe
 
 ```bash
 # Basic usage
-python examples/basic_usage.py
+python examples/01_basic_usage.py
 
 # Advanced configuration
-python examples/advanced_configuration.py
+python examples/05_advanced_configuration.py
 
 # Batch processing
-python examples/batch_processing.py
+python examples/02_batch_processing.py
 
 # Error handling
-python examples/error_handling.py
+python examples/03_error_handling.py
 ```
 
 ### Running All Examples
