@@ -64,7 +64,7 @@ make security          # Run security scanning (bandit + pip-audit)
 
 ```bash
 make install           # Install dependencies with Poetry
-make install-dev       # Install dev dependencies  
+make install-dev       # Install dev dependencies
 make setup             # Complete project setup with pre-commit hooks
 make diagnose          # Project diagnostics
 make doctor            # Health check + diagnostics
@@ -84,12 +84,12 @@ make reset             # Reset project (clean-all + setup)
 
 ```bash
 make test-unit         # Unit tests only
-make test-integration  # Integration tests only  
+make test-integration  # Integration tests only
 make test-singer       # Singer protocol tests
 make test-fast         # Run tests without coverage
 make coverage-html     # Generate HTML coverage report
 pytest -m unit         # Run unit tests by marker
-pytest -m oracle       # Run Oracle WMS specific tests  
+pytest -m oracle       # Run Oracle WMS specific tests
 pytest -m slow         # Run slow tests
 pytest -m integration  # Run integration tests
 pytest -m smoke        # Run smoke tests
