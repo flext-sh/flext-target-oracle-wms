@@ -18,7 +18,7 @@ from pydantic import Field, field_validator
 logger = FlextLogger(__name__)
 
 
-class TargetOracleWmsConfig(FlextModels.BaseConfig):
+class TargetOracleWmsConfig(FlextModels.Config):
     """Configuration model for Oracle WMS Target with validation.
 
     Provides comprehensive configuration for Oracle WMS target operations
