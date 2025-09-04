@@ -1,13 +1,5 @@
 """Advanced production-grade tests for Oracle WMS Target - MISSION CRITICAL QUALITY.
 
-These tests ensure 100% production readiness with comprehensive coverage of:
-- Performance under load
-- Error recovery and resilience
-- Data integrity and consistency
-- Memory efficiency and resource management
-- Concurrent operations and thread safety
-- Real-world scenarios and edge cases
-
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
@@ -16,15 +8,16 @@ from __future__ import annotations
 
 import asyncio
 import gc
+import os
+import random
 import time
 from collections.abc import AsyncGenerator
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, patch
 
+import psutil
 import pytest
-
-# DRY: Import REAL flext-* APIs - NO DUPLICATION
 from flext_core import FlextResult
 
 from flext_target_oracle_wms import SingerTargetOracleWMS
@@ -418,7 +411,6 @@ class TestProductionLoadTesting:
 
             if scenario["failure_pattern"] == "random":
                 # Random failures throughout
-                import random
 
                 failure_indices = set(
                     random.sample(range(records_count), failure_count),
@@ -590,16 +582,8 @@ class TestProductionLoadTesting:
 
     def _get_memory_usage(self) -> float:
         """Get current memory usage in MB."""
-        try:
-            import os
-
-            import psutil
-
-            process = psutil.Process(os.getpid())
-            return float(process.memory_info().rss / 1024 / 1024)
-        except ImportError:
-            # Fallback if psutil not available
-            return 0.0
+        process = psutil.Process(os.getpid())
+        return float(process.memory_info().rss / 1024 / 1024)
 
 
 class TestProductionDataIntegrity:
@@ -1128,12 +1112,5 @@ class TestProductionEdgeCases:
 
     def _get_memory_usage(self) -> float:
         """Get current memory usage in MB."""
-        try:
-            import os
-
-            import psutil
-
-            process = psutil.Process(os.getpid())
-            return float(process.memory_info().rss / 1024 / 1024)
-        except ImportError:
-            return 0.0
+        process = psutil.Process(os.getpid())
+        return float(process.memory_info().rss / 1024 / 1024)
