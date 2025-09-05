@@ -17,31 +17,15 @@ import types as _types
 from flext_core import FlextResult, FlextModels
 
 from flext_meltano import (
-    BatchSink,
-    FlextMeltanoBaseService,
     # Bridge integration
     FlextMeltanoBridge,
     # Configuration and validation
     FlextMeltanoConfig,
-    FlextMeltanoEvent,
-    # Enterprise services from flext-meltano.base
+    # Enterprise services
     FlextMeltanoTargetService,
-    # Authentication patterns
-    OAuthAuthenticator,
-    # Typing definitions
-    PropertiesList,
-    Property,
-    Sink,
-    SQLSink,
-    # Core Singer SDK classes (centralized from flext-meltano)
-    Stream,
-    Tap,
-    Target,
-    create_meltano_target_service,
-    # Testing utilities
-    get_tap_test_class,
-    # Singer typing utilities (centralized)
-    singer_typing,
+    # Types and protocols
+    FlextSingerTypes,
+    FlextTargetAbstractions,
 )
 
 # Factory patterns for easier library usage - SOLID principles
