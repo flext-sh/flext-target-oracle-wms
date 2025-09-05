@@ -19,34 +19,38 @@ Domain-specific exceptions for Oracle WMS target operations using factory patter
 
 from __future__ import annotations
 
-# 🚨 ZERO DUPLICATION: Use flext-core exception factory - eliminates 230+ lines
-from flext_core import create_module_exception_classes
+# 🚨 ZERO DUPLICATION: Use flext-core exception classes
+from flext_core import FlextExceptions
 
-# Generate all standard exceptions using factory pattern
-_target_oracle_wms_exceptions = create_module_exception_classes(
-    "flext_target_oracle_wms",
-)
 
-# Export factory-created exception classes (using actual factory keys)
-FlextTargetOracleWmsError = _target_oracle_wms_exceptions["FlextTargetOracleWmsError"]
-FlextTargetOracleWmsValidationError = _target_oracle_wms_exceptions[
-    "FlextTargetOracleWmsValidationError"
-]
-FlextTargetOracleWmsConfigurationError = _target_oracle_wms_exceptions[
-    "FlextTargetOracleWmsConfigurationError"
-]
-FlextTargetOracleWmsProcessingError = _target_oracle_wms_exceptions[
-    "FlextTargetOracleWmsProcessingError"
-]
-FlextTargetOracleWmsConnectionError = _target_oracle_wms_exceptions[
-    "FlextTargetOracleWmsConnectionError"
-]
-FlextTargetOracleWmsAuthenticationError = _target_oracle_wms_exceptions[
-    "FlextTargetOracleWmsAuthenticationError"
-]
-FlextTargetOracleWmsTimeoutError = _target_oracle_wms_exceptions[
-    "FlextTargetOracleWmsTimeoutError"
-]
+# Oracle WMS Target exception hierarchy using flext-core base classes
+class FlextTargetOracleWmsError(FlextExceptions._Error):
+    """Base error for Oracle WMS target operations."""
+
+
+class FlextTargetOracleWmsValidationError(FlextExceptions._ValidationError):
+    """Oracle WMS target validation errors."""
+
+
+class FlextTargetOracleWmsConfigurationError(FlextExceptions._ConfigurationError):
+    """Oracle WMS target configuration errors."""
+
+
+class FlextTargetOracleWmsProcessingError(FlextExceptions._ProcessingError):
+    """Oracle WMS target processing errors."""
+
+
+class FlextTargetOracleWmsConnectionError(FlextExceptions._ConnectionError):
+    """Oracle WMS target connection errors."""
+
+
+class FlextTargetOracleWmsAuthenticationError(FlextExceptions._AuthenticationError):
+    """Oracle WMS target authentication errors."""
+
+
+class FlextTargetOracleWmsTimeoutError(FlextExceptions._TimeoutError):
+    """Oracle WMS target timeout errors."""
+
 
 # Create backward-compatible aliases for existing code
 FlextTargetOracleWmsSchemaError = (

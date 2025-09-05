@@ -478,6 +478,7 @@ class WMSTableManager:
             # Build SQL using format with pre-sanitized identifiers
             columns_str = ", ".join(quoted_columns)
             values_str = ", ".join(placeholders)
+            # SQL injection is not possible: schema/table sanitized, columns quoted, values parameterized
             insert_sql = f'INSERT INTO "{safe_schema}"."{safe_table}" ({columns_str}) VALUES ({values_str})'
 
             return FlextResult[str].ok(insert_sql)
