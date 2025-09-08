@@ -1,4 +1,8 @@
-"""Test module __init__.py import and version handling - DRY REAL approach."""
+"""Test module __init__.py import and version handling - DRY REAL approach.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 

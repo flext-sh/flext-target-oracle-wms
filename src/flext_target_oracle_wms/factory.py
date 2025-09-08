@@ -12,11 +12,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import ClassVar, cast
 
-# DRY: Use REAL flext-* APIs for consistency
-from flext_core import FlextLogger, FlextResult
+from flext_core import FlextLogger, FlextResult, FlextTypes
 from flext_observability import FlextObservabilityMonitor
 
-# Use REAL implementation - NO DUPLICATION
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 # =============================================================================
@@ -37,7 +35,7 @@ class TargetCreationRequest:
     password: str
     environment: str = "development"
     preset: str | None = None
-    additional_config: dict[str, object] | None = None
+    additional_config: FlextTypes.Core.Dict | None = None
 
     def __post_init__(self) -> None:
         """Initialize additional_config if not provided."""
@@ -72,7 +70,7 @@ class FlextTargetFactory:
     """
 
     # Common configuration presets for different environments
-    PRESETS: ClassVar[dict[str, dict[str, object]]] = {
+    PRESETS: ClassVar[dict[str, FlextTypes.Core.Dict]] = {
         "development": {
             "batch_size": 100,
             "table_prefix": "DEV_",
@@ -134,7 +132,7 @@ class FlextTargetFactory:
             )
 
             # Start with base configuration
-            config: dict[str, object] = {
+            config: FlextTypes.Core.Dict = {
                 "base_url": request.base_url,
                 "username": request.username,
                 "password": request.password,
@@ -253,7 +251,7 @@ class FlextTargetFactory:
     @classmethod
     def create_from_config_dict(
         cls,
-        config: dict[str, object],
+        config: FlextTypes.Core.Dict,
     ) -> FlextResult[SingerTargetOracleWMS]:
         """Create target from configuration dictionary.
 
@@ -330,6 +328,9 @@ class FlextTargetMonitoringFactory:
 
         Args:
             monitor_name: Name for the observability monitor
+
+        Returns:
+            object: Description of return value.
 
         """
         # Initialize monitor with proper FlextContainer

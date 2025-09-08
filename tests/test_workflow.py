@@ -3,6 +3,8 @@
 These tests target the parts with low coverage to achieve production-quality standards.
 REAL API usage with flext-* libraries, NO FALLBACKS, NO MOCKUPS.
 
+
+
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
@@ -14,6 +16,7 @@ import json
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from flext_core import FlextTypes
 
 # Import the modules to be tested - REAL imports
 from flext_target_oracle_wms import OracleWMSTargetCli, SingerTargetOracleWMS, main
@@ -172,7 +175,7 @@ class TestComprehensiveTargetCoverage:
     """Comprehensive target tests to achieve 100% coverage."""
 
     @pytest.fixture
-    def target_config(self) -> dict[str, str]:
+    def target_config(self) -> FlextTypes.Core.Headers:
         """Production target configuration."""
         return {
             "base_url": "https://test.wms.oracle.com",
@@ -186,7 +189,7 @@ class TestComprehensiveTargetCoverage:
 
     def test_target_initialization_comprehensive(
         self,
-        target_config: dict[str, str],
+        target_config: FlextTypes.Core.Headers,
     ) -> None:
         """Test target initialization with all configuration options."""
         # Test with plugin system enabled
@@ -215,7 +218,7 @@ class TestComprehensiveTargetCoverage:
     @pytest.mark.asyncio
     async def test_target_setup_failure_scenarios(
         self,
-        target_config: dict[str, str],
+        target_config: FlextTypes.Core.Headers,
     ) -> None:
         """Test target setup with various failure scenarios."""
         # Test setup with Oracle client start failure
@@ -246,7 +249,7 @@ class TestComprehensiveTargetCoverage:
     @pytest.mark.asyncio
     async def test_target_message_processing_edge_cases(
         self,
-        target_config: dict[str, str],
+        target_config: FlextTypes.Core.Headers,
     ) -> None:
         """Test message processing edge cases and error paths."""
         with patch("flext_oracle_wms.FlextOracleWmsClient"):
@@ -276,7 +279,7 @@ class TestComprehensiveTargetCoverage:
     @pytest.mark.asyncio
     async def test_target_table_management_coverage(
         self,
-        target_config: dict[str, str],
+        target_config: FlextTypes.Core.Headers,
     ) -> None:
         """Test table management methods for full coverage."""
         with patch("flext_oracle_wms.FlextOracleWmsClient") as mock_client_class:
@@ -315,7 +318,7 @@ class TestComprehensiveTargetCoverage:
     @pytest.mark.asyncio
     async def test_target_record_insertion_comprehensive(
         self,
-        target_config: dict[str, str],
+        target_config: FlextTypes.Core.Headers,
     ) -> None:
         """Test record insertion with comprehensive data types."""
         with patch("flext_oracle_wms.FlextOracleWmsClient"):
@@ -341,7 +344,7 @@ class TestComprehensiveTargetCoverage:
     @pytest.mark.asyncio
     async def test_target_cleanup_scenarios(
         self,
-        target_config: dict[str, str],
+        target_config: FlextTypes.Core.Headers,
     ) -> None:
         """Test cleanup with various scenarios."""
         with patch("flext_oracle_wms.FlextOracleWmsClient") as mock_client_class:
@@ -359,7 +362,9 @@ class TestComprehensiveTargetCoverage:
             result = await target.cleanup()
             assert result.success  # Cleanup should succeed despite stop failure
 
-    def test_target_finalize_comprehensive(self, target_config: dict[str, str]) -> None:
+    def test_target_finalize_comprehensive(
+        self, target_config: FlextTypes.Core.Headers
+    ) -> None:
         """Test finalize method with comprehensive statistics."""
         with patch("flext_oracle_wms.FlextOracleWmsClient"):
             target = SingerTargetOracleWMS(target_config)

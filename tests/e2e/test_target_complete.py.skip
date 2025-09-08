@@ -16,7 +16,7 @@ class TestTargetComplete:
     """End-to-end tests for complete target workflow - REAL implementation."""
 
     @pytest.fixture
-    def sample_config(self) -> dict[str, object]:
+    def sample_config(self) -> FlextTypes.Core.Dict:
         """Sample configuration for testing."""
         return {
             "base_url": "https://test.wms.oracle.com",
@@ -28,7 +28,7 @@ class TestTargetComplete:
         }
 
     @pytest.mark.e2e
-    def test_complete_target_initialization(self, sample_config: dict[str, object]) -> None:
+    def test_complete_target_initialization(self, sample_config: FlextTypes.Core.Dict) -> None:
         """Test complete target initialization workflow - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -44,7 +44,7 @@ class TestTargetComplete:
         assert target.stream_processor is not None
 
     @pytest.mark.e2e
-    async def test_stream_processing_workflow(self, sample_config: dict[str, object]) -> None:
+    async def test_stream_processing_workflow(self, sample_config: FlextTypes.Core.Dict) -> None:
         """Test complete stream processing workflow - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -67,7 +67,7 @@ class TestTargetComplete:
             assert schema_result.success
 
     @pytest.mark.e2e
-    async def test_record_processing_workflow(self, sample_config: dict[str, object]) -> None:
+    async def test_record_processing_workflow(self, sample_config: FlextTypes.Core.Dict) -> None:
         """Test complete record processing workflow - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -114,7 +114,7 @@ class TestTargetComplete:
         assert record_result.success
 
     @pytest.mark.e2e
-    async def test_business_logic_integration(self, sample_config: dict[str, object]) -> None:
+    async def test_business_logic_integration(self, sample_config: FlextTypes.Core.Dict) -> None:
         """Test business logic integration - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -152,7 +152,7 @@ class TestTargetComplete:
             assert result.success
 
     @pytest.mark.e2e
-    def test_configuration_validation_complete(self, sample_config: dict[str, object]) -> None:
+    def test_configuration_validation_complete(self, sample_config: FlextTypes.Core.Dict) -> None:
         """Test complete configuration validation - REAL implementation."""
         # Test with valid config
         target = SingerTargetOracleWMS(sample_config)
@@ -172,7 +172,7 @@ class TestTargetComplete:
         assert target.stream_processor is not None
 
     @pytest.mark.e2e
-    async def test_error_handling_workflow(self, sample_config: dict[str, object]) -> None:
+    async def test_error_handling_workflow(self, sample_config: FlextTypes.Core.Dict) -> None:
         """Test error handling throughout the target workflow - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -199,7 +199,7 @@ class TestTargetComplete:
                 assert not result.success  # Should fail gracefully
 
     @pytest.mark.e2e
-    async def test_multi_stream_handling(self, sample_config: dict[str, object]) -> None:
+    async def test_multi_stream_handling(self, sample_config: FlextTypes.Core.Dict) -> None:
         """Test handling multiple streams simultaneously - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -237,7 +237,7 @@ class TestTargetComplete:
             assert record_result.success
 
     @pytest.mark.e2e
-    async def test_memory_efficiency(self, sample_config: dict[str, object]) -> None:
+    async def test_memory_efficiency(self, sample_config: FlextTypes.Core.Dict) -> None:
         """Test that target operations are memory efficient - REAL implementation."""
         # Test that multiple target instances don't accumulate memory
         for i in range(5):

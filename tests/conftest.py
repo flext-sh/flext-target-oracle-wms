@@ -1,4 +1,8 @@
-"""Pytest configuration for target-oracle-wms tests."""
+"""Pytest configuration for target-oracle-wms tests.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
@@ -7,10 +11,11 @@ from collections.abc import Generator
 from pathlib import Path
 
 import pytest
+from flext_core import FlextTypes
 
 
 @pytest.fixture
-def config() -> dict[str, object]:
+def config() -> FlextTypes.Core.Dict:
     """Return a test configuration."""
     return {
         "base_url": "https://test.oracle.com/wms/api/v1",
@@ -33,7 +38,7 @@ def temp_output_dir() -> Generator[Path]:
 
 
 @pytest.fixture
-def sample_inventory_records() -> list[dict[str, object]]:
+def sample_inventory_records() -> list[FlextTypes.Core.Dict]:
     """Return sample inventory records."""
     return [
         {
@@ -58,7 +63,7 @@ def sample_inventory_records() -> list[dict[str, object]]:
 
 
 @pytest.fixture
-def sample_order_records() -> list[dict[str, object]]:
+def sample_order_records() -> list[FlextTypes.Core.Dict]:
     """Return sample order records."""
     return [
         {
@@ -81,7 +86,7 @@ def sample_order_records() -> list[dict[str, object]]:
 
 
 @pytest.fixture
-def sample_task_records() -> list[dict[str, object]]:
+def sample_task_records() -> list[FlextTypes.Core.Dict]:
     """Return sample task records."""
     return [
         {
@@ -106,7 +111,7 @@ def sample_task_records() -> list[dict[str, object]]:
 
 
 @pytest.fixture
-def singer_schema() -> dict[str, object]:
+def singer_schema() -> FlextTypes.Core.Dict:
     """Return a sample Singer schema."""
     return {
         "type": "object",

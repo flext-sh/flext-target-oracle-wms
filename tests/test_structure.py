@@ -1,4 +1,8 @@
-"""Test basic structure is correct after fixing dual structure."""
+"""Test basic structure is correct after fixing dual structure.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 import importlib.util
 

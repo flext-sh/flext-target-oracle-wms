@@ -1,6 +1,12 @@
-"""Comprehensive tests for WMS patterns - REAL flext-core integration."""
+"""Comprehensive tests for WMS patterns - REAL flext-core integration.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
+
+from flext_core import FlextTypes
 
 object
 
@@ -269,7 +275,7 @@ class TestWMSDataTransformer:
     def test_prepare_batch_parameters_with_none_values(self) -> None:
         """Test batch parameter preparation with None values."""
         transformer = WMSDataTransformer()
-        records: list[dict[str, object]] = [
+        records: list[FlextTypes.Core.Dict] = [
             {"ID": None, "NAME": "Item1", "PRICE": None},
             {"ID": 2, "NAME": None, "PRICE": 99.99},
         ]
@@ -359,7 +365,7 @@ class TestWMSSchemaMapper:
     def test_map_empty_schema(self) -> None:
         """Test mapping empty schema."""
         mapper = WMSSchemaMapper()
-        schema: dict[str, object] = {"properties": {}}
+        schema: FlextTypes.Core.Dict = {"properties": {}}
 
         result = mapper.map_singer_schema_to_oracle(schema)
         assert result.success

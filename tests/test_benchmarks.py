@@ -3,6 +3,8 @@
 These benchmarks measure actual performance characteristics using REAL flext-* APIs
 following SOLID principles for comprehensive performance validation.
 
+
+
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
@@ -12,12 +14,10 @@ from __future__ import annotations
 import asyncio
 import gc
 from collections.abc import Callable
-
-object
 from unittest.mock import AsyncMock, MagicMock, patch
 
-# DRY: Import REAL flext-* APIs
-# Import REAL production components
+from flext_core import FlextTypes
+
 from flext_target_oracle_wms import (
     FlextTargetFactory,
     FlextTargetMonitoringFactory,
@@ -192,7 +192,7 @@ class TestPatternsPerformanceBenchmarks:
             + [("array", list(range(i, i + 5))) for i in range(10)]
         )
 
-        def convert_all_types() -> list[object]:
+        def convert_all_types() -> FlextTypes.Core.List:
             """Convert all types - measured operation."""
             results = []
             for singer_type, value in test_conversions:

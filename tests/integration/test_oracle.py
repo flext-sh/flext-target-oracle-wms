@@ -1,4 +1,8 @@
-"""Integration tests for Oracle WMS target using REAL flext-core patterns."""
+"""Integration tests for Oracle WMS target using REAL flext-core patterns.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
@@ -7,7 +11,7 @@ from unittest.mock import AsyncMock
 import pytest
 
 # DRY: Use REAL flext-core patterns - NO EXTERNAL DEPENDENCIES
-from flext_core import FlextResult
+from flext_core import FlextResult, FlextTypes
 
 # DRY: Import from REAL implementation - NO DUPLICATION
 from flext_target_oracle_wms import SingerTargetOracleWMS
@@ -22,7 +26,7 @@ class TestOracleWMSIntegration:
     """Integration tests using REAL flext-oracle-wms client patterns."""
 
     @pytest.fixture
-    def oracle_wms_config(self) -> dict[str, object]:
+    def oracle_wms_config(self) -> FlextTypes.Core.Dict:
         """Oracle WMS configuration using REAL API parameters."""
         return {
             "base_url": "https://test.wms.ocs.oraclecloud.com",
@@ -40,7 +44,7 @@ class TestOracleWMSIntegration:
     @pytest.mark.asyncio
     async def test_singer_target_setup(
         self,
-        oracle_wms_config: dict[str, object],
+        oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
         """Test SingerTarget can setup Oracle WMS client using REAL APIs."""
         # DRY: Use REAL implementation - NO DUPLICATION
@@ -64,7 +68,7 @@ class TestOracleWMSIntegration:
     @pytest.mark.asyncio
     async def test_schema_message_processing(
         self,
-        oracle_wms_config: dict[str, object],
+        oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
         """Test Singer SCHEMA message processing using REAL flext-core patterns."""
         # DRY: Use REAL implementation - NO DUPLICATION
@@ -94,7 +98,7 @@ class TestOracleWMSIntegration:
     @pytest.mark.asyncio
     async def test_record_message_processing(
         self,
-        oracle_wms_config: dict[str, object],
+        oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
         """Test Singer RECORD message processing using REAL flext-core patterns."""
         # DRY: Use REAL implementation - NO DUPLICATION
@@ -134,7 +138,7 @@ class TestOracleWMSIntegration:
     @pytest.mark.asyncio
     async def test_state_message_processing(
         self,
-        oracle_wms_config: dict[str, object],
+        oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
         """Test Singer STATE message processing using REAL flext-core patterns."""
         # DRY: Use REAL implementation - NO DUPLICATION
@@ -159,7 +163,9 @@ class TestOracleWMSIntegration:
         assert state_result.error is None
 
     @pytest.mark.asyncio
-    async def test_target_cleanup(self, oracle_wms_config: dict[str, object]) -> None:
+    async def test_target_cleanup(
+        self, oracle_wms_config: FlextTypes.Core.Dict
+    ) -> None:
         """Test Oracle WMS Target cleanup using REAL flext-core patterns."""
         # DRY: Use REAL implementation - NO DUPLICATION
         target = SingerTargetOracleWMS(oracle_wms_config)

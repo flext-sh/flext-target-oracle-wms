@@ -1,6 +1,18 @@
-"""CLI entry point - REAL implementation using available flext-cli patterns."""
+"""CLI entry point - REAL implementation using available flext-cli patterns.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
+
+from flext_core import FlextTypes
+
+"""
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
+
 
 import asyncio
 import json
@@ -13,6 +25,16 @@ from flext_core import FlextResult
 
 # DRY: Use ONLY the production-ready implementation
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
+
+
+class OracleWMSTargetCli:
+    """Oracle WMS Target CLI using REAL flext-cli patterns - NO DUPLICATION."""
+
+
+# Removed object import - using specific types from flext-core
+# DRY: Use only essential imports - avoid FlextCliSettings env var conflicts
+
+# DRY: Use ONLY the production-ready implementation
 
 
 class OracleWMSTargetCli:
@@ -56,7 +78,7 @@ class OracleWMSTargetCli:
 
     async def _execute_target_pipeline(
         self,
-        config: dict[str, object],
+        config: FlextTypes.Core.Dict,
     ) -> FlextResult[None]:
         """Execute the target pipeline with railway-oriented programming.
 
@@ -80,11 +102,13 @@ class OracleWMSTargetCli:
     def _prepare_config(
         self,
         config_path: str | None,
-    ) -> FlextResult[dict[str, object]]:
+    ) -> FlextResult[FlextTypes.Core.Dict]:
         """Prepare configuration from path or defaults."""
         try:
             if config_path:
-                return FlextResult[dict[str, object]].ok(self._load_config(config_path))
+                return FlextResult[FlextTypes.Core.Dict].ok(
+                    self._load_config(config_path)
+                )
 
             # Default configuration
             config = {
@@ -95,9 +119,9 @@ class OracleWMSTargetCli:
                 "timeout": 30.0,
                 "max_retries": 3,
             }
-            return FlextResult[dict[str, object]].ok(config)
+            return FlextResult[FlextTypes.Core.Dict].ok(config)
         except Exception as e:
-            return FlextResult[dict[str, object]].fail(
+            return FlextResult[FlextTypes.Core.Dict].fail(
                 f"Configuration preparation failed: {e}"
             )
 
@@ -157,7 +181,7 @@ class OracleWMSTargetCli:
         except Exception as e:
             return FlextResult[None].fail(f"Finalization failed: {e}")
 
-    def _load_config(self, config_path: str) -> dict[str, object]:
+    def _load_config(self, config_path: str) -> FlextTypes.Core.Dict:
         """Load configuration from file path - NO DUPLICATION."""
         config_file = Path(config_path)
         if not config_file.exists():

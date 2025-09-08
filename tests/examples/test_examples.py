@@ -3,11 +3,14 @@
 These tests ensure that all examples in the examples/ directory use REAL
 flext-* APIs correctly and follow production-grade patterns.
 
+
+
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
+from flext_core import FlextTypes
 
 import ast
 from pathlib import Path
@@ -15,7 +18,7 @@ from pathlib import Path
 import pytest
 
 # DRY: Import REAL flext-* APIs for validation - avoid circular imports
-# from flext_core import FlextResult  # Skip to avoid circular import in tests
+# from ...flext_core import FlextResult  # Skip to avoid circular import in tests
 
 
 class TestExamplesCodeQuality:
