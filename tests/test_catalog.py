@@ -1,4 +1,8 @@
-"""COMPREHENSIVE tests for Singer WMS Catalog Manager - REAL flext-core integration targeting 90%+ coverage."""
+"""COMPREHENSIVE tests for Singer WMS Catalog Manager - REAL flext-core integration targeting 90%+ coverage.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 

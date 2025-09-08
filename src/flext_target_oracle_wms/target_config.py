@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from flext_core import FlextLogger, FlextModels, FlextResult
+from flext_core import FlextLogger, FlextModels, FlextResult, FlextTypes
 from flext_oracle_wms import FlextOracleWmsApiVersion, FlextOracleWmsClientConfig
 from pydantic import Field, field_validator
 
@@ -100,7 +100,7 @@ class TargetOracleWmsConfig(FlextModels.Config):
     )
 
     # Preset configurations
-    PRESETS: ClassVar[dict[str, dict[str, object]]] = {
+    PRESETS: ClassVar[dict[str, FlextTypes.Core.Dict]] = {
         "development": {
             "batch_size": 100,
             "table_prefix": "DEV_",
@@ -231,7 +231,7 @@ class TargetOracleWmsConfig(FlextModels.Config):
 
 
 def create_config_from_dict(
-    config_dict: dict[str, object],
+    config_dict: FlextTypes.Core.Dict,
 ) -> FlextResult[TargetOracleWmsConfig]:
     """Create configuration from dictionary with validation.
 
@@ -254,7 +254,7 @@ def create_config_from_dict(
 
 
 def create_config_with_preset(
-    base_config: dict[str, object],
+    base_config: FlextTypes.Core.Dict,
     preset_name: str,
 ) -> FlextResult[TargetOracleWmsConfig]:
     """Create configuration with preset applied.

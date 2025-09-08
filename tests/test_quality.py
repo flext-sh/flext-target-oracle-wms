@@ -1,4 +1,8 @@
-#!/usr/bin/env python3
+"""Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT.
+"""
+
+# !/usr/bin/env python3
 """Production Quality Tests for flext-target-oracle-wms.
 
 Validates production-ready implementation using real flext-oracle-wms API
@@ -176,7 +180,7 @@ async def test_data_transformation() -> bool | None:
             if not result.success:
                 return False
 
-            converted: str | int | float | bool | dict[str, object] = result.data
+            converted: str | int | float | bool | FlextTypes.Core.Dict = result.data
             if singer_type == "object":
                 # JSON string comparison
 

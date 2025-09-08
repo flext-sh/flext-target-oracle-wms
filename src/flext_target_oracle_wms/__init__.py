@@ -1,13 +1,17 @@
-"""Oracle WMS target implementation - DRY PRODUCTION IMPLEMENTATION.
-
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-
-DRY REFACTORING: Single source of truth using REAL flext-oracle-wms API.
-NO DUPLICATION - uses newer, better implementation via SingerTargetOracleWMS.
+"""Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT.
 """
 
 from __future__ import annotations
+from flext_core import FlextTypes
+
+
+"""Oracle WMS target implementation - DRY PRODUCTION IMPLEMENTATION."""
+"""
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
+
 
 import importlib.metadata
 
@@ -64,7 +68,7 @@ __version__ = importlib.metadata.version("flext-target-oracle-wms")
 __version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
 
 # DRY EXPORTS: Single implementation, multiple access patterns
-__all__: list[str] = [
+__all__: FlextTypes.Core.StringList = [
     "BatchSink",
     "FlextMeltanoBaseService",
     # Bridge integration
