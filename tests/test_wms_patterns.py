@@ -55,8 +55,6 @@ class TestWMSTypeConverter:
         converter = WMSTypeConverter()
         result = converter.convert_singer_to_oracle(singer_type, value)
 
-        # Type assertion for MyPy - decorator might affect type inference
-
         assert isinstance(result, FlextResult)
         assert result.success
         assert result.data == expected
@@ -66,8 +64,6 @@ class TestWMSTypeConverter:
         converter = WMSTypeConverter()
         result = converter.convert_singer_to_oracle("string", None)
 
-        # Type assertion for MyPy - decorator might affect type inference
-
         assert isinstance(result, FlextResult)
         assert result.success
         assert result.data is None
@@ -76,8 +72,6 @@ class TestWMSTypeConverter:
         """Test invalid number conversion fallback."""
         converter = WMSTypeConverter()
         result = converter.convert_singer_to_oracle("integer", "not_a_number")
-
-        # Type assertion for MyPy - decorator might affect type inference
 
         assert isinstance(result, FlextResult)
         assert not result.success
@@ -112,8 +106,6 @@ class TestWMSTypeConverter:
         # Test complex object
         complex_obj = {"nested": {"array": [1, 2, 3], "bool": True}}
         result = converter.convert_singer_to_oracle("object", complex_obj)
-
-        # Type assertion for MyPy - decorator might affect type inference
 
         assert isinstance(result, FlextResult)
         assert result.success

@@ -27,11 +27,6 @@ logger = FlextLogger(__name__)
 _observability_monitor = FlextObservabilityMonitor()
 
 
-# =============================================================================
-# ORACLE WMS UTILITY FUNCTIONS
-# =============================================================================
-
-
 def _normalize_oracle_identifier(name: str) -> str:
     """DRY: Use flext-oracle-wms entity validation for Oracle identifier normalization.
 
@@ -110,11 +105,6 @@ def get_wms_metadata_columns() -> FlextTypes.Core.StringList:
     ]
 
 
-# =============================================================================
-# TYPE CONVERSION MODELS
-# =============================================================================
-
-
 class WMSTypeConverter:
     """Convert data types for Oracle WMS storage using flext-oracle-wms patterns.
 
@@ -175,11 +165,6 @@ class WMSTypeConverter:
         """Convert number value with proper type detection."""
         str_val = str(value)
         return float(str_val) if "." in str_val else int(str_val)
-
-
-# =============================================================================
-# DATA TRANSFORMATION MODELS
-# =============================================================================
 
 
 class WMSDataTransformer:
@@ -245,7 +230,6 @@ class WMSDataTransformer:
                 # Use flext-oracle-wms entity validation for key normalization
                 oracle_key = self._normalize_wms_column_name(key)
 
-                # Type conversion using flext-oracle-wms patterns
                 if schema:
                     properties = schema.get("properties", {})
                     if isinstance(properties, dict):
@@ -323,11 +307,6 @@ class WMSDataTransformer:
             )
 
 
-# =============================================================================
-# SCHEMA MAPPING MODELS
-# =============================================================================
-
-
 class WMSSchemaMapper:
     """Map Singer schemas to Oracle WMS schemas using flext-core patterns."""
 
@@ -395,11 +374,6 @@ class WMSSchemaMapper:
         except (RuntimeError, ValueError, TypeError) as e:
             logger.warning("Type mapping failed: %s", e)
             return FlextResult[str].ok("VARCHAR2(4000)")  # Safe fallback
-
-
-# =============================================================================
-# TABLE MANAGEMENT MODELS
-# =============================================================================
 
 
 class WMSTableManager:
@@ -498,10 +472,6 @@ class WMSTableManager:
             logger.exception("INSERT SQL generation failed")
             return FlextResult[str].fail(f"SQL generation failed: {e}")
 
-
-# =============================================================================
-# PUBLIC API
-# =============================================================================
 
 __all__ = [
     "WMSDataTransformer",

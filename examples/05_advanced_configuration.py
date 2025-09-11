@@ -15,12 +15,12 @@ import asyncio
 import os
 from collections.abc import Coroutine
 from datetime import UTC, datetime
-from typing import cast, object
+from typing import cast
 
 from flext_core import FlextLogger, FlextResult
-from ..flext_observability import FlextObservabilityMonitor, flext_monitor_function
+from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
-from ..flext_target_oracle_wms import (
+from flext_target_oracle_wms import (
     SingerTargetOracleWMS,
     WMSDataTransformer,
     WMSSchemaMapper,
@@ -76,7 +76,6 @@ class CustomWMSTypeConverter(WMSTypeConverter):
 
         # Delegate to parent for standard types - ensure proper typing
         parent_result = super().convert_singer_to_oracle(singer_type, value)
-        # Type cast to ensure MyPy understands this returns FlextResult[object]
 
         return cast("FlextResult[object]", parent_result)
 

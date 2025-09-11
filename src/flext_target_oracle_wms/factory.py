@@ -17,10 +17,6 @@ from flext_observability import FlextObservabilityMonitor
 
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
-# =============================================================================
-# REFACTORING: Parameter Object Pattern for reducing method complexity
-# =============================================================================
-
 
 @dataclass
 class TargetCreationRequest:

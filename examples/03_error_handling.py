@@ -15,10 +15,10 @@ import asyncio
 
 # DRY: Import REAL flext-* APIs
 from flext_core import FlextLogger
-from ..flext_observability import FlextObservabilityMonitor, flext_monitor_function
+from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 # Import REAL production implementations
-from ..flext_target_oracle_wms import SingerTargetOracleWMS
+from flext_target_oracle_wms import SingerTargetOracleWMS
 
 
 class SimulatedOracleWMSError(Exception):
@@ -32,11 +32,6 @@ class SimulatedOracleWMSError(Exception):
 
 logger = FlextLogger(__name__)
 monitor = FlextObservabilityMonitor()
-
-
-# =============================================================================
-# REFACTORING: Break down monolithic function into smaller, focused functions
-# =============================================================================
 
 
 def get_error_demo_config() -> FlextTypes.Core.Dict:
