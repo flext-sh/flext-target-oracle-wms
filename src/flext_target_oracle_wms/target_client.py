@@ -30,11 +30,6 @@ from flext_target_oracle_wms.target_models import (
 logger = FlextLogger(__name__)
 
 
-# =============================================================================
-# CATALOG MANAGEMENT CLASSES (from singer/catalog.py)
-# =============================================================================
-
-
 class SingerWMSCatalogEntry(FlextModels.Config):
     """Singer WMS catalog entry using flext-core patterns."""
 
@@ -300,11 +295,6 @@ class SingerWMSCatalogManager:
             return FlextResult[None].fail(f"Catalog loading failed: {e}")
 
 
-# =============================================================================
-# STREAM PROCESSING CLASSES (from singer/stream.py)
-# =============================================================================
-
-
 class WMSStreamProcessingStats:
     """WMS stream processing statistics - mutable for performance."""
 
@@ -424,7 +414,7 @@ class SingerWMSStreamProcessor:
             if stream_name not in self._stream_stats:
                 init_result = self.initialize_stream(stream_name, {})
                 if not init_result.success:
-                    return FlextResult[None].fail(
+                    return FlextResult[list[FlextTypes.Core.Dict]].fail(
                         f"Stream initialization failed: {init_result.error}",
                     )
 
@@ -599,11 +589,6 @@ class SingerWMSStreamProcessor:
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("WMS schema change handling failed: %s", stream_name)
             return FlextResult[None].fail(f"Schema change handling failed: {e}")
-
-
-# =============================================================================
-# MAIN TARGET IMPLEMENTATION (from singer/target.py)
-# =============================================================================
 
 
 class SingerTargetOracleWMS:
@@ -798,10 +783,6 @@ class SingerTargetOracleWMS:
             logger.exception("Failed to run Singer Target Oracle WMS")
             return FlextResult[None].fail(f"Target execution failed: {e}")
 
-
-# =============================================================================
-# PUBLIC API
-# =============================================================================
 
 __all__ = [
     "SingerTargetOracleWMS",
