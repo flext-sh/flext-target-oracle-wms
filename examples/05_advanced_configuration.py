@@ -9,7 +9,6 @@ SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
-from flext_core import FlextTypes
 
 import asyncio
 import os
@@ -17,7 +16,7 @@ from collections.abc import Coroutine
 from datetime import UTC, datetime
 from typing import cast
 
-from flext_core import FlextLogger, FlextResult
+from flext_core import FlextLogger, FlextResult, FlextTypes
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 from flext_target_oracle_wms import (

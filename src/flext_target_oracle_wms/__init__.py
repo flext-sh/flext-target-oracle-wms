@@ -3,8 +3,8 @@ SPDX-License-Identifier: MIT.
 """
 
 from __future__ import annotations
-from flext_core import FlextTypes
 
+from flext_core import FlextTypes
 
 """Oracle WMS target implementation - DRY PRODUCTION IMPLEMENTATION."""
 """
@@ -14,12 +14,10 @@ SPDX-License-Identifier: MIT
 
 
 import importlib.metadata
-
 import sys as _sys
 import types as _types
 
-from flext_core import FlextResult, FlextModels
-
+from flext_core import FlextModels, FlextResult
 from flext_meltano import (
     # Bridge integration
     FlextMeltanoBridge,
@@ -27,9 +25,9 @@ from flext_meltano import (
     FlextMeltanoConfig,
     # Enterprise services
     FlextMeltanoTargetService,
-    FlextSingerTypes,
-    FlextTargetAbstractions,
 )
+
+from flext_target_oracle_wms.cli import OracleWMSTargetCli, main
 
 # Factory patterns for easier library usage - SOLID principles
 from flext_target_oracle_wms.factory import (
@@ -52,7 +50,6 @@ from flext_target_oracle_wms.target_models import (
     WMSTableManager,
     WMSTypeConverter,
 )
-from flext_target_oracle_wms.cli import OracleWMSTargetCli, main
 
 _legacy_mod_name = "flext_target_oracle_wms.singer.target"
 _legacy_mod = _types.ModuleType(_legacy_mod_name)
@@ -77,14 +74,16 @@ __all__: FlextTypes.Core.StringList = [
     "FlextMeltanoEvent",
     # Enterprise services
     "FlextMeltanoTargetService",
+    "FlextModels",
     # === FLEXT-CORE RE-EXPORTS ===
     "FlextResult",
     # === FACTORY PATTERNS ===
     "FlextTargetFactory",
     "FlextTargetMonitoringFactory",
-    "FlextModels",
     # Authentication
     "OAuthAuthenticator",
+    # === CLI ===
+    "OracleWMSTargetCli",
     "PropertiesList",
     "Property",
     "SQLSink",
@@ -107,14 +106,12 @@ __all__: FlextTypes.Core.StringList = [
     # === METADATA ===
     "__version__",
     "__version_info__",
-    # === CLI ===
-    "OracleWMSTargetCli",
-    "main",
     "create_meltano_target_service",
     "create_monitored_oracle_wms_target",
     "create_oracle_wms_target",
     # Testing
     "get_tap_test_class",
+    "main",
     # Singer typing
     "singer_typing",
 ]
