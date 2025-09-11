@@ -9,12 +9,11 @@ SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
-from flext_core import FlextTypes
 
 import asyncio
 
 # DRY: Import REAL flext-* APIs
-from flext_core import FlextLogger
+from flext_core import FlextLogger, FlextTypes
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 # Import REAL production implementations
