@@ -1,7 +1,7 @@
 """Comprehensive tests for FlextTargetFactory - REAL flext-* API integration.
 
 These tests ensure the factory patterns make flext-* libraries easier to use
-while maintaining production quality and following SOLID principles.
+while maintaining production quality and
 
 
 
