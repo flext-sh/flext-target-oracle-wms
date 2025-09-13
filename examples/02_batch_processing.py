@@ -13,7 +13,7 @@ from __future__ import annotations
 import asyncio
 import time
 from collections.abc import Coroutine
-from typing import cast, object
+from typing import cast
 
 from flext_core import FlextLogger, FlextTypes
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function

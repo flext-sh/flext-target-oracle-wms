@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import pytest
 
-# DRY: Import from REAL implementation - NO DUPLICATION
 from flext_target_oracle_wms import (
     SingerWMSCatalogManager,
 )

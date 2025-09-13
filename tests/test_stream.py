@@ -9,8 +9,6 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 import pytest
-
-# DRY: Import from REAL implementation - NO DUPLICATION
 from flext_core import FlextResult, FlextTypes
 
 from flext_target_oracle_wms import (

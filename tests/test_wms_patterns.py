@@ -6,12 +6,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import FlextTypes
-
-object
+from unittest.mock import MagicMock, patch
 
 import pytest
-from flext_core import FlextResult
+from flext_core import FlextResult, FlextTypes
 
 from flext_target_oracle_wms import (
     WMSDataTransformer,
@@ -248,8 +246,6 @@ class TestWMSDataTransformer:
 
     def test_prepare_batch_parameters_exception_handling(self) -> None:
         """Test batch parameter preparation exception handling."""
-        from unittest.mock import patch
-
         transformer = WMSDataTransformer()
 
         # Use proper mock to simulate parameter processing failure - SOLID pattern
@@ -365,8 +361,6 @@ class TestWMSSchemaMapper:
 
     def test_map_singer_schema_to_oracle_exception_handling(self) -> None:
         """Test schema mapping exception handling."""
-        from unittest.mock import MagicMock
-
         mapper = WMSSchemaMapper()
 
         # Use proper mock to simulate schema access failure - SOLID pattern
@@ -380,8 +374,6 @@ class TestWMSSchemaMapper:
 
     def test_map_singer_type_to_oracle_exception_handling(self) -> None:
         """Test type mapping exception handling."""
-        from unittest.mock import MagicMock
-
         mapper = WMSSchemaMapper()
 
         # Use proper mock to simulate property definition access failure - SOLID pattern
@@ -485,8 +477,6 @@ class TestWMSTableManager:
 
     def test_generate_create_table_sql_schema_mapping_failure(self) -> None:
         """Test CREATE TABLE SQL generation with schema mapping failure."""
-        from unittest.mock import patch
-
         manager = WMSTableManager()
 
         # Use proper mock to simulate schema mapping failure - SOLID pattern
@@ -506,8 +496,6 @@ class TestWMSTableManager:
 
     def test_generate_create_table_sql_exception_handling(self) -> None:
         """Test CREATE TABLE SQL generation exception handling."""
-        from unittest.mock import patch
-
         manager = WMSTableManager()
 
         # Use proper mock to simulate table name processing failure - SOLID pattern
@@ -525,8 +513,6 @@ class TestWMSTableManager:
 
     def test_generate_insert_sql_exception_handling(self) -> None:
         """Test INSERT SQL generation exception handling."""
-        from unittest.mock import patch
-
         manager = WMSTableManager()
 
         # Use proper mock to simulate column processing failure - SOLID pattern
@@ -544,8 +530,6 @@ class TestWMSTableManager:
 
     def test_generate_create_table_sql_with_none_columns(self) -> None:
         """Test CREATE TABLE SQL generation when column mapping returns None."""
-        from unittest.mock import patch
-
         manager = WMSTableManager()
 
         # Use proper mock to simulate None columns return - SOLID pattern

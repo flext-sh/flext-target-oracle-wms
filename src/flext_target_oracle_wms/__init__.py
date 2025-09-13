@@ -1,35 +1,23 @@
-"""Copyright (c) 2025 FLEXT Team. All rights reserved.
+"""Flext Target Oracle WMS - Oracle WMS Target Client for FLEXT ecosystem.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT.
 """
 
 from __future__ import annotations
 
-from flext_core import FlextTypes
-
-"""Oracle WMS target implementation - DRY PRODUCTION IMPLEMENTATION."""
-"""
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-"""
-
-
 import importlib.metadata
 import sys as _sys
 import types as _types
 
-from flext_core import FlextModels, FlextResult
+from flext_core import FlextModels, FlextResult, FlextTypes
 from flext_meltano import (
-    # Bridge integration
     FlextMeltanoBridge,
-    # Configuration and validation
     FlextMeltanoConfig,
-    # Enterprise services
     FlextMeltanoTargetService,
 )
 
 from flext_target_oracle_wms.cli import OracleWMSTargetCli, main
-
-# Factory patterns for easier library usage - SOLID principles
 from flext_target_oracle_wms.factory import (
     FlextTargetFactory,
     FlextTargetMonitoringFactory,
@@ -37,13 +25,10 @@ from flext_target_oracle_wms.factory import (
     create_oracle_wms_target,
 )
 from flext_target_oracle_wms.target_client import (
-    # Main target implementation
     SingerTargetOracleWMS,
     SingerWMSCatalogManager,
     SingerWMSStreamProcessor,
 )
-
-# Import consolidated models and client classes
 from flext_target_oracle_wms.target_models import (
     WMSDataTransformer,
     WMSSchemaMapper,

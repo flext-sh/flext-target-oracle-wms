@@ -1,34 +1,13 @@
-"""Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT.
-"""
-
-from __future__ import annotations
-
-"""🚨 ARCHITECTURAL COMPLIANCE: ZERO EXCEPTION DUPLICATION using flext-core Factory.
-
-✅ REFATORAÇÃO COMPLETA: 230+ linhas de código duplicado ELIMINADAS.
-
-- ANTES: 286 linhas com 11 classes manuais de exceptions + helpers
-- DEPOIS: <60 linhas usando factory pattern limpo e DRY
-- REDUÇÃO: 230+ linhas eliminadas = ~80% redução
-- PADRÃO: Usa create_module_exception_classes() de flext-core
-- ARQUITETURA: Funcionalidades genéricas permanecem nas bibliotecas abstratas
-- EXPOSIÇÃO: API pública correta através do factory pattern
-
-Oracle WMS Target Exception Hierarchy - ZERO DUPLICATION.
-
-Copyright (c) 2025 FLEXT Contributors
-SPDX-License-Identifier: MIT
+"""Oracle WMS Target Exception Hierarchy.
 
 Domain-specific exceptions for Oracle WMS target operations using factory pattern to eliminate duplication.
-"""
-"""
+
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
 
+from __future__ import annotations
 
-# 🚨 ZERO DUPLICATION: Use flext-core exception classes
 from flext_core import FlextExceptions
 
 

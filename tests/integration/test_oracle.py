@@ -6,14 +6,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 
 import pytest
-
-# DRY: Use REAL flext-core patterns - NO EXTERNAL DEPENDENCIES
 from flext_core import FlextResult, FlextTypes
 
-# DRY: Import from REAL implementation - NO DUPLICATION
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
 # Constants from REAL Oracle WMS requirements
@@ -171,7 +168,6 @@ class TestOracleWMSIntegration:
         target = SingerTargetOracleWMS(oracle_wms_config)
 
         # Mock dependencies for testing using patch
-        from unittest.mock import patch
 
         with (
             patch.object(
