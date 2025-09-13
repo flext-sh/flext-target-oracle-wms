@@ -1,10 +1,5 @@
 """Benchmark tests for production performance measurement - REAL flext-* API usage.
 
-These benchmarks measure actual performance characteristics using REAL flext-* APIs
-following SOLID principles for comprehensive performance validation.
-
-
-
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
@@ -21,6 +16,7 @@ from flext_core import FlextTypes
 from flext_target_oracle_wms import (
     FlextTargetFactory,
     FlextTargetMonitoringFactory,
+    MonitoredTargetCreationRequest,
     SingerTargetOracleWMS,
     SingerWMSCatalogManager,
     SingerWMSStreamProcessor,
@@ -96,7 +92,6 @@ class TestFactoryPerformanceBenchmarks:
             ):
                 mock_target.return_value = MagicMock()
                 factory = FlextTargetMonitoringFactory("benchmark_monitor")
-                from flext_target_oracle_wms import MonitoredTargetCreationRequest
 
                 request = MonitoredTargetCreationRequest(
                     base_url="https://monitored-benchmark.wms.oracle.com",

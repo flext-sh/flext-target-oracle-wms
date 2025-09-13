@@ -22,7 +22,6 @@ class TestModuleInit:
     def test_version_import_fallback(self) -> None:
         """Test fallback version logic - simplified approach."""
         # Test the fallback case indirectly by verifying behavior
-        import flext_target_oracle_wms
 
         # Verify version is set correctly (either from metadata or fallback)
         assert hasattr(flext_target_oracle_wms, "__version__")
@@ -35,8 +34,6 @@ class TestModuleInit:
 
     def test_module_exports(self) -> None:
         """Test that module exports are properly defined."""
-        import flext_target_oracle_wms
-
         # Verify __all__ is defined and contains expected exports
         assert hasattr(flext_target_oracle_wms, "__all__")
         assert isinstance(flext_target_oracle_wms.__all__, list)

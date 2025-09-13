@@ -14,7 +14,7 @@ import asyncio
 import json
 from collections.abc import Coroutine
 from pathlib import Path
-from typing import cast, object
+from typing import cast
 
 from flext_core import FlextLogger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function

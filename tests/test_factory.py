@@ -1,10 +1,5 @@
 """Comprehensive tests for FlextTargetFactory - REAL flext-* API integration.
 
-These tests ensure the factory patterns make flext-* libraries easier to use
-while maintaining production quality and
-
-
-
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
@@ -13,10 +8,8 @@ from __future__ import annotations
 
 from unittest.mock import AsyncMock, MagicMock, patch
 
-# DRY: Import REAL flext-* APIs
 from flext_core import FlextResult
 
-# Import factory classes for testing
 from flext_target_oracle_wms import (
     FlextTargetFactory,
     FlextTargetMonitoringFactory,

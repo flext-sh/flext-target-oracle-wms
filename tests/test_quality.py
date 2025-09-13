@@ -1,8 +1,3 @@
-"""Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT.
-"""
-
-# !/usr/bin/env python3
 """Production Quality Tests for flext-target-oracle-wms.
 
 Validates production-ready implementation using real flext-oracle-wms API

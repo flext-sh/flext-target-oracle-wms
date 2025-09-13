@@ -6,25 +6,19 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import FlextTypes
-
-"""
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-"""
-
-
 import asyncio
 import json
 import sys
 from pathlib import Path
 
+from flext_core import FlextResult, FlextTypes
+
+from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
+
 # Removed object import - using specific types from flext-core
 # DRY: Use only essential imports - avoid FlextCliSettings env var conflicts
-from flext_core import FlextResult
 
 # DRY: Use ONLY the production-ready implementation
-from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 
 class OracleWMSTargetCli:

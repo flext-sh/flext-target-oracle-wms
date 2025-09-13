@@ -1,4 +1,4 @@
-"""FlextTargetFactory - Simplified target creation with production-ready patterns.
+"""FLEXT Target Oracle WMS Factory - Factory for creating Oracle WMS targets with pre-configured patterns.
 
 This factory implements SOLID principles to make flext-* libraries easier to use,
 providing pre-configured setups for common use cases while maintaining full flexibility.
