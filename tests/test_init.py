@@ -6,6 +6,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+import flext_target_oracle_wms
+
 
 class TestModuleInit:
     """Test module initialization and version handling."""

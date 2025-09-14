@@ -45,13 +45,13 @@ class TestWMSTypeConverter:
     )
     def test_convert_singer_to_oracle_types(
         self,
-        singer_type: str,
-        value: object,
+        _singer_type: str,
+                _value: object,
         expected: object,
     ) -> None:
         """Test Singer to Oracle type conversion with various types."""
         converter = WMSTypeConverter()
-        result = converter.convert_singer_to_oracle(singer_type, value)
+        result = converter.convert_singer_to_oracle(_singer_type, _value)
 
         assert isinstance(result, FlextResult)
         assert result.success
@@ -216,8 +216,8 @@ class TestWMSDataTransformer:
         class FailingTypeConverter(WMSTypeConverter):
             def convert_singer_to_oracle(
                 self,
-                singer_type: str,
-                value: object,
+                _singer_type: str,
+                _value: object,
             ) -> FlextResult[object]:
                 return FlextResult[None].fail("Type conversion failed")
 

@@ -24,16 +24,6 @@ from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 class OracleWMSTargetCli:
     """Oracle WMS Target CLI using REAL flext-cli patterns - NO DUPLICATION."""
 
-
-# Removed object import - using specific types from flext-core
-# DRY: Use only essential imports - avoid FlextCliSettings env var conflicts
-
-# DRY: Use ONLY the production-ready implementation
-
-
-class OracleWMSTargetCli:
-    """Oracle WMS Target CLI using REAL flext-cli patterns - NO DUPLICATION."""
-
     def __init__(self) -> None:
         """Initialize CLI with real flext-cli patterns."""
         self.name = "target-oracle-wms"
