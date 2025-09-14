@@ -520,8 +520,6 @@ class TestFactoryIntegration:
         assert hasattr(monitoring_factory, "factory")
 
         # Dependency Inversion: Uses abstractions through FlextResult
-        from flext_target_oracle_wms import create_oracle_wms_target
-
         assert callable(create_oracle_wms_target)
 
         # Verify no tight coupling to concrete implementations

@@ -48,8 +48,6 @@ class TestOracleWMSIntegration:
         target = SingerTargetOracleWMS(oracle_wms_config)
 
         # Mock the oracle_client.start() to return success using patch
-        from unittest.mock import patch
-
         with patch.object(
             target.oracle_client,
             "start",
