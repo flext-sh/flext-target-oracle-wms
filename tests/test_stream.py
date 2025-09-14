@@ -414,7 +414,7 @@ class TestSingerWMSStreamProcessorComprehensive:
 
     def test_initialize_stream_with_exception(
         self,
-        table_manager: WMSTableManager,
+        _table_manager: WMSTableManager,
         data_transformer: WMSDataTransformer,
     ) -> None:
         """Test stream initialization exception handling."""

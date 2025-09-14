@@ -1,4 +1,4 @@
-# FLEXT Target Oracle WMS - Enterprise Warehouse Management System Loading
+# FLEXT Target Oracle WMS - Warehouse Management System Loading
 
 **Type**: Singer Target | **Status**: Active Development | **Dependencies**: Python 3.13+, flext-core, flext-oracle-wms, flext-meltano, singer-sdk
 
@@ -7,21 +7,23 @@
 [![Clean Architecture](https://img.shields.io/badge/Architecture-Clean%20Architecture%20%2B%20DDD-green.svg)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 [![Coverage](https://img.shields.io/badge/coverage-90%25+-brightgreen.svg)](https://pytest.org)
 
-Singer-compliant target for loading data into Oracle Warehouse Management Systems (WMS). Built with Python 3.13+, Clean Architecture, and Domain-Driven Design patterns as part of the FLEXT enterprise data integration platform.
+Singer-compliant target for loading data into Oracle Warehouse Management Systems (WMS). Built with Python 3.13+, Clean Architecture, and Domain-Driven Design patterns as part of the FLEXT data integration platform.
 
 ## Overview
 
-FLEXT Target Oracle WMS provides enterprise-grade data loading capabilities for Oracle Warehouse Management Systems, implementing the Singer specification for standardized data integration workflows. The target supports comprehensive WMS entity management with advanced error recovery and performance optimization.
+FLEXT Target Oracle WMS provides data loading capabilities for Oracle Warehouse Management Systems, implementing the Singer specification for standardized data integration workflows. The target supports WMS entity management with error recovery and performance optimization.
+
+> For verified project capabilities and accurate status information, see [ACTUAL_CAPABILITIES.md](../../ACTUAL_CAPABILITIES.md)
 
 ### Key Features
 
 - **Oracle WMS Cloud Integration**: Complete WMS data loading including inventory, orders, shipments
-- **WMS Entity Support**: 15+ WMS entities with intelligent data transformation
+- **WMS Entity Support**: 15+ WMS entities with data transformation
 - **Factory Pattern Architecture**: Configurable target instances with flext-oracle-wms integration
-- **Enterprise Authentication**: Both Basic Auth and OAuth2 authentication methods
+- **Authentication**: Both Basic Auth and OAuth2 authentication methods
 - **Singer Protocol Compliance**: Full Singer SDK implementation with stream processing
 - **Clean Architecture**: Domain-driven design with flext-core integration
-- **Zero Tolerance Quality**: 90% test coverage with comprehensive quality gates
+- **Zero Tolerance Quality**: 90% test coverage with quality gates
 
 ## Quick Start
 
@@ -309,7 +311,7 @@ The target validates:
 
 ## Error Handling
 
-### Comprehensive Error Recovery
+### Error Recovery
 
 - **Connection Failures**: Automatic reconnection with exponential backoff
 - **Authentication Errors**: Token refresh and re-authentication
@@ -353,7 +355,7 @@ pytest -m e2e                       # End-to-end workflow tests
 
 ### Test Data
 
-The project provides comprehensive test fixtures:
+The project provides test fixtures:
 
 - **Sample WMS Data**: Representative WMS entity data for testing
 - **Mock WMS API**: Simulated WMS endpoints for isolated testing
@@ -514,7 +516,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 ### Architecture & Development
 
 - [CLAUDE.md](CLAUDE.md) - Development guidance and architectural patterns
-- [docs/](docs/) - Comprehensive project documentation
+- [docs/](docs/) - Project documentation
 
 ### Related Projects
 

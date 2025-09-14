@@ -9,6 +9,7 @@ import json
 import sys
 import traceback
 
+from flext_core import FlextTypes
 from flext_oracle_wms import FlextOracleWmsClientConfig
 from flext_oracle_wms.api_catalog import FlextOracleWmsApiVersion
 
