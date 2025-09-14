@@ -15,8 +15,7 @@ class TestModuleInit:
     def test_version_import_success(self) -> None:
         """Test successful version import from importlib.metadata."""
         # Normal case should work - just verify version exists
-        import flext_target_oracle_wms
-
+        # Module already imported at top level
         assert hasattr(flext_target_oracle_wms, "__version__")
         assert isinstance(flext_target_oracle_wms.__version__, str)
         assert len(flext_target_oracle_wms.__version__) > 0
