@@ -412,10 +412,9 @@ class TestSingerWMSStreamProcessorComprehensive:
         assert stats.records_success >= 2  # IDs 1, 3 (odd numbers)
         assert stats.records_failed >= 0  # Failed records handling may vary
 
-    @pytest.mark.usefixtures("_mock_oracle_target")
+    @pytest.mark.usefixtures("_mock_oracle_target", "_table_manager")
     def test_initialize_stream_with_exception(
         self,
-        _table_manager: WMSTableManager,
         data_transformer: WMSDataTransformer,
     ) -> None:
         """Test stream initialization exception handling."""
