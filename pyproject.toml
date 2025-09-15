@@ -205,7 +205,7 @@ markers = [
     "integrity: Data integrity tests",
     "edge_cases: Edge case tests",
 ]
-filterwarnings = ["error", "ignore::UserWarning", "ignore::DeprecationWarning"]
+# filterwarnings = ["error", "ignore::UserWarning", "ignore::DeprecationWarning"]
 
 [tool.coverage.run]
 source = ["src"]

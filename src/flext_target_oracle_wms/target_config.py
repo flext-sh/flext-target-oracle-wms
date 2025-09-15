@@ -162,15 +162,15 @@ class TargetOracleWmsConfig(FlextModels.Config):
     def to_oracle_wms_config(self) -> FlextOracleWmsClientConfig:
         """Convert to flext-oracle-wms client configuration."""
         return FlextOracleWmsClientConfig(
-            base_url=self.base_url,
-            username=self.username,
-            password=self.password,
+            oracle_wms_base_url=self.base_url,
+            oracle_wms_username=self.username,
+            oracle_wms_password=self.password,
             environment=self.environment,
-            timeout=self.timeout,
-            max_retries=self.max_retries,
+            oracle_wms_timeout=int(self.timeout),
+            oracle_wms_max_retries=self.max_retries,
             api_version=FlextOracleWmsApiVersion.LGF_V10,
-            verify_ssl=self.verify_ssl,
-            enable_logging=self.enable_logging,
+            oracle_wms_verify_ssl=self.verify_ssl,
+            oracle_wms_enable_logging=self.enable_logging,
         )
 
     def validate_business_rules(self) -> FlextResult[None]:
@@ -275,7 +275,7 @@ def create_config_with_preset(
 
         config = config_result.data
         if config is None:
-            return FlextResult[None].fail("Configuration creation returned None")
+            return FlextResult[TargetOracleWmsConfig].fail("Configuration creation returned None")
 
         # Apply preset
         return config.apply_preset(preset_name)

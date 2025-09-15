@@ -412,7 +412,7 @@ class WMSTableManager:
 
             columns = columns_result.data
             if columns is None:
-                return FlextResult[None].fail("Column mapping returned None")
+                return FlextResult[str].fail("Column mapping returned None")
 
             # Build column definitions
             column_defs = []
