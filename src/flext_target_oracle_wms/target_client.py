@@ -158,8 +158,6 @@ class SingerWMSCatalogManager:
             )
 
         stream_entry = stream_result.value
-        if stream_entry is None:
-            return FlextResult[FlextTypes.Core.Dict].fail("Stream entry is None")
         return FlextResult[FlextTypes.Core.Dict].ok(stream_entry.schema_info)
 
     def get_key_properties(
@@ -173,8 +171,6 @@ class SingerWMSCatalogManager:
             )
 
         stream_entry = stream_result.value
-        if stream_entry is None:
-            return FlextResult[FlextTypes.Core.StringList].fail("Stream entry is None")
         return FlextResult[FlextTypes.Core.StringList].ok(stream_entry.key_properties)
 
     def update_stream_metadata(
@@ -613,15 +609,15 @@ class SingerTargetOracleWMS:
         mock_mode = config.get("mock_mode", False)
 
         oracle_config = FlextOracleWmsClientConfig(
-            base_url=str(base_url),
-            username=str(username),
-            password=str(password),
+            oracle_wms_base_url=str(base_url),
+            oracle_wms_username=str(username),
+            oracle_wms_password=str(password),
             environment=str(environment),
-            timeout=float(str(timeout)),
-            max_retries=int(str(max_retries)),
+            oracle_wms_timeout=int(float(str(timeout))),
+            oracle_wms_max_retries=int(str(max_retries)),
             api_version=FlextOracleWmsApiVersion.LGF_V10,
-            verify_ssl=bool(verify_ssl),
-            enable_logging=bool(enable_logging),
+            oracle_wms_verify_ssl=bool(verify_ssl),
+            oracle_wms_enable_logging=bool(enable_logging),
         )
 
         # Check if mock mode is requested

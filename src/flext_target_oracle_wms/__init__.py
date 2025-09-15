@@ -38,7 +38,7 @@ from flext_target_oracle_wms.target_models import (
 
 _legacy_mod_name = "flext_target_oracle_wms.singer.target"
 _legacy_mod = _types.ModuleType(_legacy_mod_name)
-_legacy_mod.SingerTargetOracleWMS = SingerTargetOracleWMS
+setattr(_legacy_mod, "SingerTargetOracleWMS", SingerTargetOracleWMS)
 _sys.modules[_legacy_mod_name] = _legacy_mod
 
 # BACKWARD COMPATIBILITY: Alias to prevent API breakage
