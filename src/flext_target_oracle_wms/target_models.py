@@ -449,17 +449,14 @@ class WMSTableManager:
             table_columns = [Column(column_name, String) for column_name in columns]
 
             # Create table using SQLAlchemy Table - proper SQLAlchemy 2.0 pattern
-            table = Table(
-                table_name,
-                metadata,
-                *table_columns,
-                schema=schema_name
-            )
+            table = Table(table_name, metadata, *table_columns, schema=schema_name)
 
             # Build proper SQLAlchemy INSERT statement - NO STRING CONCATENATION
             stmt: Insert = insert(table)
 
-            logger.info(f"Generated SQLAlchemy 2.0 INSERT statement for {schema_name}.{table_name} with columns: {columns}")
+            logger.info(
+                f"Generated SQLAlchemy 2.0 INSERT statement for {schema_name}.{table_name} with columns: {columns}"
+            )
             return FlextResult[Insert].ok(stmt)
 
         except (RuntimeError, ValueError, TypeError) as e:
