@@ -21,6 +21,7 @@ from flext_oracle_wms import (
     flext_oracle_wms_format_timestamp,
     flext_oracle_wms_validate_entity_name,
 )
+from sqlalchemy import Column, Insert, MetaData, String, Table, insert
 
 logger = FlextLogger(__name__)
 # DRY: Single observability monitor instance - NO DUPLICATION
@@ -438,39 +439,32 @@ class WMSTableManager:
         table_name: str,
         schema_name: str,
         columns: FlextTypes.Core.StringList,
-    ) -> FlextResult[str]:
-        """Generate INSERT SQL for Oracle WMS."""
+    ) -> FlextResult[Insert]:
+        """Generate INSERT SQL for Oracle WMS using SQLAlchemy 2.0 Core API."""
         try:
-            quoted_columns = [f'"{col.upper()}"' for col in columns]
-            placeholders = [f":{col.lower().lstrip('_')}" for col in columns]
+            # Use SQLAlchemy 2.0 Core API - NO STRING CONCATENATION
+            metadata = MetaData()
 
-            # Build parametrized INSERT SQL (safe - uses placeholders)
-            # Note: SQL injection not possible - table/column names are controlled
-            # and parameters use proper placeholders
+            # Create table columns from provided column list
+            table_columns = [Column(column_name, String) for column_name in columns]
 
-            # Build INSERT SQL with proper quoting
-            # SQL injection is not possible - schema/table names are controlled and validated
+            # Create table using SQLAlchemy Table - proper SQLAlchemy 2.0 pattern
+            table = Table(
+                table_name,
+                metadata,
+                *table_columns,
+                schema=schema_name
+            )
 
-            # Build parametrized INSERT SQL (safe - uses placeholders)
-            # SQL injection is not possible - schema/table names are controlled and validated
-            # Ensure schema and table names are alphanumeric with underscores for safety
-            safe_schema = "".join(
-                ch for ch in schema_name if ch.isalnum() or ch == "_"
-            ).upper()
-            safe_table = "".join(
-                ch for ch in table_name if ch.isalnum() or ch == "_"
-            ).upper()
-            # Build SQL using format with pre-sanitized identifiers
-            columns_str = ", ".join(quoted_columns)
-            values_str = ", ".join(placeholders)
-            # SQL injection is not possible: schema/table sanitized, columns quoted, values parameterized
-            insert_sql = f'INSERT INTO "{safe_schema}"."{safe_table}" ({columns_str}) VALUES ({values_str})'  # noqa: S608
+            # Build proper SQLAlchemy INSERT statement - NO STRING CONCATENATION
+            stmt: Insert = insert(table)
 
-            return FlextResult[str].ok(insert_sql)
+            logger.info(f"Generated SQLAlchemy 2.0 INSERT statement for {schema_name}.{table_name} with columns: {columns}")
+            return FlextResult[Insert].ok(stmt)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("INSERT SQL generation failed")
-            return FlextResult[str].fail(f"SQL generation failed: {e}")
+            return FlextResult[Insert].fail(f"SQL generation failed: {e}")
 
 
 __all__ = [
