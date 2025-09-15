@@ -217,8 +217,8 @@ class TestWMSDataTransformer:
         class FailingTypeConverter(WMSTypeConverter):
             def convert_singer_to_oracle(
                 self,
-                singer_type: str,  # noqa: ARG002
-                value: object,  # noqa: ARG002
+                singer_type: str,
+                value: object,
             ) -> FlextResult[object]:
                 return FlextResult[object].fail("Type conversion failed")
 
