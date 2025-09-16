@@ -366,7 +366,9 @@ class FlextTargetMonitoringFactory:
 
             target = target_result.data
             if target is None:
-                return FlextResult[SingerTargetOracleWMS].fail("Target creation returned None")
+                return FlextResult[SingerTargetOracleWMS].fail(
+                    "Target creation returned None"
+                )
 
             # Initialize monitoring services
             init_result = self.monitor.flext_initialize_observability()
