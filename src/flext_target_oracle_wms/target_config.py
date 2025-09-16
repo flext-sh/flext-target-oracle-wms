@@ -275,7 +275,9 @@ def create_config_with_preset(
 
         config = config_result.data
         if config is None:
-            return FlextResult[TargetOracleWmsConfig].fail("Configuration creation returned None")
+            return FlextResult[TargetOracleWmsConfig].fail(
+                "Configuration creation returned None"
+            )
 
         # Apply preset
         return config.apply_preset(preset_name)
