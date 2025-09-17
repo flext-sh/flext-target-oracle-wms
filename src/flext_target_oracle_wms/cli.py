@@ -12,7 +12,6 @@ import sys
 from pathlib import Path
 
 from flext_core import FlextResult, FlextTypes
-
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 # Removed object import - using specific types from flext-core
@@ -22,7 +21,7 @@ from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 
 class OracleWMSTargetCli:
-    """Oracle WMS Target CLI using REAL flext-cli patterns - NO DUPLICATION."""
+    """Oracle WMS Target CLI using REAL flext-cli patterns."""
 
     def __init__(self) -> None:
         """Initialize CLI with real flext-cli patterns."""
@@ -31,7 +30,7 @@ class OracleWMSTargetCli:
         self.version = "0.9.0"
 
     async def execute(self, **kwargs: object) -> FlextResult[None]:
-        """Execute target using REAL implementation - NO DUPLICATION.
+        """Execute target using REAL implementation.
 
         SOLID REFACTORING: Reduced multiple returns (count=6) to single exit point
         using Railway-Oriented Programming pattern.
@@ -166,7 +165,7 @@ class OracleWMSTargetCli:
             return FlextResult[None].fail(f"Finalization failed: {e}")
 
     def _load_config(self, config_path: str) -> FlextTypes.Core.Dict:
-        """Load configuration from file path - NO DUPLICATION."""
+        """Load configuration from file path."""
         config_file = Path(config_path)
         if not config_file.exists():
             msg: str = f"Configuration file not found: {config_path}"

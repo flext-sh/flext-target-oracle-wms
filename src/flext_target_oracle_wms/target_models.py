@@ -12,6 +12,8 @@ from __future__ import annotations
 import json
 from collections.abc import Callable
 
+from sqlalchemy import Column, Insert, MetaData, String, Table, insert
+
 from flext_core import FlextLogger, FlextResult, FlextTypes
 from flext_observability import FlextObservabilityMonitor
 from flext_oracle_wms import (
@@ -21,10 +23,9 @@ from flext_oracle_wms import (
     flext_oracle_wms_format_timestamp,
     flext_oracle_wms_validate_entity_name,
 )
-from sqlalchemy import Column, Insert, MetaData, String, Table, insert
 
 logger = FlextLogger(__name__)
-# DRY: Single observability monitor instance - NO DUPLICATION
+# DRY: Single observability monitor instance
 _observability_monitor = FlextObservabilityMonitor()
 
 
@@ -266,7 +267,7 @@ class WMSDataTransformer:
 
     def _normalize_wms_column_name(self, name: str) -> str:
         """Normalize column name for Oracle WMS conventions."""
-        # DRY: Use shared normalization logic - NO DUPLICATION
+        # DRY: Use shared normalization logic
         return _normalize_oracle_identifier(name)
 
     def prepare_batch_parameters(
@@ -347,7 +348,7 @@ class WMSSchemaMapper:
 
     def _normalize_column_name(self, name: str) -> str:
         """Normalize column name for Oracle."""
-        # DRY: Use shared normalization logic - NO DUPLICATION
+        # DRY: Use shared normalization logic
         return _normalize_oracle_identifier(name)
 
     def _map_singer_type_to_oracle(
@@ -385,7 +386,7 @@ class WMSTableManager:
 
     def generate_table_name(self, stream_name: str, prefix: str = "") -> str:
         """Generate Oracle WMS table name from stream name."""
-        # DRY: Use shared normalization logic - NO DUPLICATION
+        # DRY: Use shared normalization logic
         table_name = _normalize_oracle_identifier(stream_name)
 
         if prefix:

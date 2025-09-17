@@ -11,9 +11,10 @@ from __future__ import annotations
 
 from typing import ClassVar
 
+from pydantic import Field, field_validator
+
 from flext_core import FlextLogger, FlextModels, FlextResult, FlextTypes
 from flext_oracle_wms import FlextOracleWmsApiVersion, FlextOracleWmsClientConfig
-from pydantic import Field, field_validator
 
 logger = FlextLogger(__name__)
 
@@ -153,11 +154,14 @@ class TargetOracleWmsConfig(FlextModels.Config):
     @field_validator("base_url")
     @classmethod
     def validate_base_url(cls, v: str) -> str:
-        """Validate base URL format."""
-        if not v.startswith(("http://", "https://")):
-            msg = "base_url must start with http:// or https://"
-            raise ValueError(msg)
-        return v.rstrip("/")
+        """Validate base URL using centralized FlextModels validation."""
+        # Use centralized FlextModels validation instead of duplicate logic
+        stripped_url = v.rstrip("/")  # Remove trailing slash
+        validation_result = FlextModels.create_validated_http_url(stripped_url)
+        if validation_result.is_failure:
+            error_msg = f"Invalid base URL: {validation_result.error}"
+            raise ValueError(error_msg)
+        return stripped_url
 
     def to_oracle_wms_config(self) -> FlextOracleWmsClientConfig:
         """Convert to flext-oracle-wms client configuration."""
@@ -176,11 +180,7 @@ class TargetOracleWmsConfig(FlextModels.Config):
     def validate_business_rules(self) -> FlextResult[None]:
         """Validate Oracle WMS configuration business rules."""
         try:
-            # Validate base URL accessibility
-            if not self.base_url.startswith(("http://", "https://")):
-                return FlextResult[None].fail(
-                    "Base URL must start with http:// or https://"
-                )
+            # URL validation is handled by field validator, so we don't need to duplicate it here
 
             # Validate timeout values
             if self.timeout <= 0:

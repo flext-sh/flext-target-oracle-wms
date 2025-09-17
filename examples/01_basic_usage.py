@@ -18,7 +18,6 @@ from typing import cast
 
 from flext_core import FlextLogger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
-
 from flext_target_oracle_wms import (
     SingerTargetOracleWMS,
 )

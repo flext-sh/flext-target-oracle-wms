@@ -9,6 +9,8 @@ from __future__ import annotations
 import json
 import sys
 
+from pydantic import Field
+
 from flext_core import (
     FlextLogger,
     FlextModels,
@@ -20,8 +22,6 @@ from flext_oracle_wms import (
     FlextOracleWmsClientConfig,
     create_oracle_wms_client,
 )
-from pydantic import Field
-
 from flext_target_oracle_wms.target_models import (
     WMSDataTransformer,
     WMSTableManager,
@@ -596,7 +596,7 @@ class SingerTargetOracleWMS:
         """Initialize Singer Target Oracle WMS."""
         self.config = config
 
-        # Use REAL flext-oracle-wms configuration - NO DUPLICATION
+        # Use REAL flext-oracle-wms configuration
         # Extract and validate configuration values
         base_url = config.get("base_url", "https://localhost/wms")
         username = config.get("username", "oracle")

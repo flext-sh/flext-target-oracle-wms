@@ -10,8 +10,8 @@ import json
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from flext_core import FlextResult
 
+from flext_core import FlextResult
 from flext_target_oracle_wms import OracleWMSTargetCli, main
 
 
