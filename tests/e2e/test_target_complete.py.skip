@@ -7,7 +7,7 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-# DRY: Import from REAL implementation - NO DUPLICATION
+# DRY: Import from REAL implementation
 from flext_core import FlextResult
 from flext_target_oracle_wms import SingerTargetOracleWMS
 

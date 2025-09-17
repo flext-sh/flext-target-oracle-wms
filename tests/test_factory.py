@@ -9,7 +9,6 @@ from __future__ import annotations
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from flext_core import FlextResult
-
 from flext_target_oracle_wms import (
     FlextTargetFactory,
     FlextTargetMonitoringFactory,

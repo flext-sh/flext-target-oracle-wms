@@ -12,7 +12,6 @@ from collections.abc import Callable
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from flext_core import FlextTypes
-
 from flext_target_oracle_wms import (
     FlextTargetFactory,
     FlextTargetMonitoringFactory,

@@ -16,7 +16,6 @@ from flext_meltano import (
     FlextMeltanoConfig,
     FlextMeltanoTargetService,
 )
-
 from flext_target_oracle_wms.cli import OracleWMSTargetCli, main
 from flext_target_oracle_wms.factory import (
     FlextTargetFactory,

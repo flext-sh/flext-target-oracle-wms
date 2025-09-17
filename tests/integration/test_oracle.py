@@ -9,8 +9,8 @@ from __future__ import annotations
 from unittest.mock import AsyncMock, patch
 
 import pytest
-from flext_core import FlextResult, FlextTypes
 
+from flext_core import FlextResult, FlextTypes
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
 # Constants from REAL Oracle WMS requirements
@@ -44,7 +44,7 @@ class TestOracleWMSIntegration:
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
         """Test SingerTarget can setup Oracle WMS client using REAL APIs."""
-        # DRY: Use REAL implementation - NO DUPLICATION
+        # DRY: Use REAL implementation
         target = SingerTargetOracleWMS(oracle_wms_config)
 
         # Mock the oracle_client.start() to return success using patch
@@ -66,7 +66,7 @@ class TestOracleWMSIntegration:
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
         """Test Singer SCHEMA message processing using REAL flext-core patterns."""
-        # DRY: Use REAL implementation - NO DUPLICATION
+        # DRY: Use REAL implementation
         target = SingerTargetOracleWMS(oracle_wms_config)
 
         # REAL Singer SCHEMA message format
@@ -96,7 +96,7 @@ class TestOracleWMSIntegration:
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
         """Test Singer RECORD message processing using REAL flext-core patterns."""
-        # DRY: Use REAL implementation - NO DUPLICATION
+        # DRY: Use REAL implementation
         target = SingerTargetOracleWMS(oracle_wms_config)
 
         # Initialize stream first (required before processing records)
@@ -136,7 +136,7 @@ class TestOracleWMSIntegration:
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
         """Test Singer STATE message processing using REAL flext-core patterns."""
-        # DRY: Use REAL implementation - NO DUPLICATION
+        # DRY: Use REAL implementation
         target = SingerTargetOracleWMS(oracle_wms_config)
 
         # REAL Singer STATE message format
@@ -162,7 +162,7 @@ class TestOracleWMSIntegration:
         self, oracle_wms_config: FlextTypes.Core.Dict
     ) -> None:
         """Test Oracle WMS Target cleanup using REAL flext-core patterns."""
-        # DRY: Use REAL implementation - NO DUPLICATION
+        # DRY: Use REAL implementation
         target = SingerTargetOracleWMS(oracle_wms_config)
 
         # Mock dependencies for testing using patch

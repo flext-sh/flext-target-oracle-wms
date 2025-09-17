@@ -16,6 +16,7 @@ import json
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+
 from flext_core import FlextTypes
 
 # Import the modules to be tested - REAL imports
