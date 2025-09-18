@@ -608,11 +608,27 @@ class SingerTargetOracleWMS:
         enable_logging = config.get("enable_logging", True)
         mock_mode = config.get("mock_mode", False)
 
+        # Environment type mapping for compatibility
+        environment_mapping = {
+            "dev": "development",
+            "test": "testing",
+            "prod": "production",
+            "production": "production",
+            "development": "development",
+            "testing": "testing",
+            "default": "development",
+        }
+
+        # Convert environment to proper string format
+        environment_str = str(environment)
+        if environment_str in environment_mapping:
+            environment_str = environment_mapping[environment_str]
+
         oracle_config = FlextOracleWmsClientConfig(
             oracle_wms_base_url=str(base_url),
             oracle_wms_username=str(username),
             oracle_wms_password=str(password),
-            environment=str(environment),
+            environment=environment_str,  # Pass mapped environment string
             oracle_wms_timeout=int(float(str(timeout))),
             oracle_wms_max_retries=int(str(max_retries)),
             api_version=FlextOracleWmsApiVersion.LGF_V10,
@@ -623,7 +639,6 @@ class SingerTargetOracleWMS:
         # Check if mock mode is requested
         self.mock_mode = bool(mock_mode)
 
-        # Create Oracle WMS client with optional mock mode
         # Create Oracle WMS client (mock mode handled via base_url/environment)
         self.oracle_client = create_oracle_wms_client(oracle_config)
 
