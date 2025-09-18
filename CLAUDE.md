@@ -1,8 +1,18 @@
 # CLAUDE.md - FLEXT Target Oracle WMS Comprehensive Quality Refactoring
 
-**Hierarchy**: PROJECT - Specific to flext-target-oracle-wms Singer target for Oracle Warehouse Management System  
-**Last Update**: 2025-01-XX  
+**Hierarchy**: PROJECT - Specific to flext-target-oracle-wms Singer target for Oracle Warehouse Management System
+**Last Update**: 2025-01-XX
 **Parent**: [FLEXT Workspace CLAUDE.md](../CLAUDE.md)
+
+## 🔗 MCP SERVER INTEGRATION
+
+| MCP Server | Purpose | Status |
+|------------|---------|--------|
+| **serena** | Singer target codebase analysis and Oracle WMS loading patterns | **ACTIVE** |
+| **sequential-thinking** | Oracle WMS data loading and Singer protocol architecture | **ACTIVE** |
+| **github** | Singer ecosystem integration and Oracle WMS target PRs | **ACTIVE** |
+
+**Usage**: `claude mcp list` for available servers, leverage for Singer-specific development patterns and Oracle WMS loading analysis.
 
 ---
 
