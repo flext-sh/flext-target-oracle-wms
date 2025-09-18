@@ -6,11 +6,11 @@
 
 ## 🔗 MCP SERVER INTEGRATION
 
-| MCP Server | Purpose | Status |
-|------------|---------|--------|
-| **serena** | Singer target codebase analysis and Oracle WMS loading patterns | **ACTIVE** |
-| **sequential-thinking** | Oracle WMS data loading and Singer protocol architecture | **ACTIVE** |
-| **github** | Singer ecosystem integration and Oracle WMS target PRs | **ACTIVE** |
+| MCP Server              | Purpose                                                         | Status     |
+| ----------------------- | --------------------------------------------------------------- | ---------- |
+| **serena**              | Singer target codebase analysis and Oracle WMS loading patterns | **ACTIVE** |
+| **sequential-thinking** | Oracle WMS data loading and Singer protocol architecture        | **ACTIVE** |
+| **github**              | Singer ecosystem integration and Oracle WMS target PRs          | **ACTIVE** |
 
 **Usage**: `claude mcp list` for available servers, leverage for Singer-specific development patterns and Oracle WMS loading analysis.
 

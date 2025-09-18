@@ -224,7 +224,7 @@ async def run_performance_batch_example() -> None:
 
 
 @flext_monitor_function(monitor)
-async def demonstrate_stream_processor_batching() -> None:
+def demonstrate_stream_processor_batching() -> None:
     """Demonstrate direct stream processor batch capabilities."""
     logger.info("Demonstrating stream processor batch processing")
 
@@ -404,11 +404,7 @@ if __name__ == "__main__":
     asyncio.run(
         cast("Coroutine[object, object, None]", run_performance_batch_example())
     )
-    asyncio.run(
-        cast(
-            "Coroutine[object, object, None]", demonstrate_stream_processor_batching()
-        ),
-    )
+    demonstrate_stream_processor_batching()
     asyncio.run(
         cast("Coroutine[object, object, None]", demonstrate_concurrent_batching())
     )

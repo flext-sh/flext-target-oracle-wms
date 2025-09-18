@@ -22,7 +22,7 @@ from flext_target_oracle_wms import (
 )
 
 
-async def test_configuration_validation() -> bool | None:
+def test_configuration_validation() -> bool | None:
     """Test configuration validation with production patterns."""
     try:
         # Test valid configuration
@@ -156,7 +156,7 @@ async def test_singer_target_interfaces() -> bool | None:
         return False
 
 
-async def test_data_transformation() -> bool | None:
+def test_data_transformation() -> bool | None:
     """Test data transformation patterns."""
     try:
         # Test type converter
@@ -220,7 +220,7 @@ async def test_data_transformation() -> bool | None:
         return False
 
 
-async def test_table_management() -> bool | None:
+def test_table_management() -> bool | None:
     """Test table management patterns."""
     try:
         manager = WMSTableManager()
@@ -282,7 +282,7 @@ async def test_table_management() -> bool | None:
         return False
 
 
-async def test_catalog_management() -> bool | None:
+def test_catalog_management() -> bool | None:
     """Test catalog management patterns."""
     try:
         manager = SingerWMSCatalogManager()
@@ -333,19 +333,23 @@ async def test_catalog_management() -> bool | None:
 async def main() -> bool:
     """Run all production quality tests."""
     tests = [
-        ("Configuration Validation", test_configuration_validation),
-        ("Singer Target Interfaces", test_singer_target_interfaces),
-        ("Data Transformation", test_data_transformation),
-        ("Table Management", test_table_management),
-        ("Catalog Management", test_catalog_management),
+        ("Configuration Validation", test_configuration_validation, False),
+        ("Singer Target Interfaces", test_singer_target_interfaces, True),
+        ("Data Transformation", test_data_transformation, False),
+        ("Table Management", test_table_management, False),
+        ("Catalog Management", test_catalog_management, False),
     ]
 
     passed = 0
     total = len(tests)
 
-    for _test_name, test_func in tests:
+    for _test_name, test_func, is_async in tests:
         try:
-            if await test_func():
+            if is_async:
+                result = await test_func()
+            else:
+                result = test_func()
+            if result:
                 passed += 1
         except Exception:
             traceback.print_exc()

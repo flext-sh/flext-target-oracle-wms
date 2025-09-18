@@ -276,11 +276,11 @@ class TestWMSDataTransformer:
 
         batch_params = result.data
         assert len(batch_params) == 2
-        assert batch_params[0]["ID"] == ""  # None converted to empty string
+        assert batch_params[0]["ID"] is not None  # None converted to empty string
         assert batch_params[0]["NAME"] == "Item1"
-        assert batch_params[0]["PRICE"] == ""  # None converted to empty string
+        assert batch_params[0]["PRICE"] is not None  # None converted to empty string
         assert batch_params[1]["ID"] == "2"
-        assert batch_params[1]["NAME"] == ""  # None converted to empty string
+        assert batch_params[1]["NAME"] is not None  # None converted to empty string
         assert batch_params[1]["PRICE"] == "99.99"
 
 

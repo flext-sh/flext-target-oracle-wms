@@ -341,7 +341,7 @@ async def run_advanced_configuration_example() -> None:
 
 
 @flext_monitor_function(monitor)
-async def demonstrate_custom_components() -> None:
+def demonstrate_custom_components() -> None:
     """Demonstrate usage of custom WMS components."""
     logger.info("Demonstrating custom WMS components")
 
@@ -395,6 +395,4 @@ if __name__ == "__main__":
     asyncio.run(
         cast("Coroutine[object, object, None]", run_advanced_configuration_example())
     )
-    asyncio.run(
-        cast("Coroutine[object, object, None]", demonstrate_custom_components())
-    )
+    demonstrate_custom_components()

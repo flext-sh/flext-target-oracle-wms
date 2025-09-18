@@ -11,11 +11,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import asyncio
 import json
 import os
-from collections.abc import Coroutine
-from typing import cast
 
 from flext_core import FlextLogger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
@@ -36,7 +33,7 @@ monitor = FlextObservabilityMonitor()
 DEMO_PASSWORD = os.getenv("DEMO_PASSWORD", "demo_password")
 
 
-async def _demonstrate_simple_target() -> None:
+def _demonstrate_simple_target() -> None:
     """Demonstrate simple target creation using convenience function."""
     logger.info("\n📝 Example 1: Simple Target Creation")
     simple_target_result = create_oracle_wms_target(
@@ -57,7 +54,7 @@ async def _demonstrate_simple_target() -> None:
         )
 
 
-async def _demonstrate_development_target() -> None:
+def _demonstrate_development_target() -> None:
     """Demonstrate development target with preset."""
     logger.info("\n🔧 Example 2: Development Target with Preset")
     dev_target_result = FlextTargetFactory.create_development_target(
@@ -81,7 +78,7 @@ async def _demonstrate_development_target() -> None:
         )
 
 
-async def _demonstrate_production_target() -> None:
+def _demonstrate_production_target() -> None:
     """Demonstrate production target with strict settings."""
     logger.info("\n🚀 Example 3: Production Target with Strict Settings")
     prod_target_result = FlextTargetFactory.create_production_target(
@@ -108,7 +105,7 @@ async def _demonstrate_production_target() -> None:
         )
 
 
-async def _demonstrate_testing_target() -> None:
+def _demonstrate_testing_target() -> None:
     """Demonstrate testing target with minimal settings."""
     logger.info("\n🧪 Example 4: Testing Target with Minimal Settings")
     test_target_result = FlextTargetFactory.create_testing_target(
@@ -126,7 +123,7 @@ async def _demonstrate_testing_target() -> None:
         logger.error("❌ Testing target creation failed: %s", test_target_result.error)
 
 
-async def _demonstrate_config_target() -> None:
+def _demonstrate_config_target() -> None:
     """Demonstrate configuration-based target creation."""
     logger.info("\n📋 Example 5: Configuration-based Target Creation")
     config_dict = {
@@ -153,19 +150,19 @@ async def _demonstrate_config_target() -> None:
 
 
 @flext_monitor_function(monitor)
-async def demonstrate_factory_patterns() -> None:
+def demonstrate_factory_patterns() -> None:
     """Demonstrate various factory patterns for easier library usage."""
     logger.info("🏭 Starting Oracle WMS Target Factory Usage Examples")
 
-    await _demonstrate_simple_target()
-    await _demonstrate_development_target()
-    await _demonstrate_production_target()
-    await _demonstrate_testing_target()
-    await _demonstrate_config_target()
+    _demonstrate_simple_target()
+    _demonstrate_development_target()
+    _demonstrate_production_target()
+    _demonstrate_testing_target()
+    _demonstrate_config_target()
 
 
 @flext_monitor_function(monitor)
-async def demonstrate_preset_differences() -> None:
+def demonstrate_preset_differences() -> None:
     """Demonstrate differences between environment presets."""
     logger.info("\n🔍 Preset Comparison - How Factory Makes Configuration Easy")
 
@@ -192,7 +189,7 @@ async def demonstrate_preset_differences() -> None:
 
 
 @flext_monitor_function(monitor)
-async def demonstrate_error_handling() -> None:
+def demonstrate_error_handling() -> None:
     """Demonstrate factory error handling patterns."""
     logger.info("\n⚠️  Error Handling Examples")
 
@@ -261,22 +258,20 @@ def demonstrate_configuration_flexibility() -> None:
     logger.info("  ✅ Built-in error handling and logging")
 
 
-async def main() -> None:
+def main() -> None:
     """Run all factory usage examples."""
     logger.info("🎯 Oracle WMS Target Factory Usage Examples")
     logger.info("=" * 50)
 
     try:
         # Demonstrate core factory patterns
-        await cast("Coroutine[object, object, object]", demonstrate_factory_patterns())
+        demonstrate_factory_patterns()
 
         # Show preset differences
-        await cast(
-            "Coroutine[object, object, object]", demonstrate_preset_differences()
-        )
+        demonstrate_preset_differences()
 
         # Demonstrate error handling
-        await cast("Coroutine[object, object, object]", demonstrate_error_handling())
+        demonstrate_error_handling()
 
         # Show configuration flexibility
         demonstrate_configuration_flexibility()
@@ -297,5 +292,4 @@ async def main() -> None:
 
 if __name__ == "__main__":
     """Run the factory usage examples."""
-
-    asyncio.run(main())
+    main()

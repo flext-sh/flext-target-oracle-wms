@@ -1,6 +1,6 @@
 # FLEXT Target Oracle WMS - Warehouse Management System Loading
 
-**Type**: Singer Target | **Status**: Active Development | **Dependencies**: Python 3.13+, flext-core, flext-oracle-wms, flext-meltano, singer-sdk
+**Type**: Singer Target | **Status**: 1.0.0 Release Preparation | **Dependencies**: Python 3.13+, flext-core, flext-oracle-wms, flext-meltano, singer-sdk
 
 [![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
 [![Singer SDK](https://img.shields.io/badge/singer--sdk-compliant-brightgreen.svg)](https://sdk.meltano.com/)

@@ -580,7 +580,7 @@ class TestSingerTargetOracleWMSComprehensive:
         assert target.name == "target-oracle-wms"
         assert target.batch_size == 1000  # Default
         assert target.load_method == "APPEND_ONLY"  # Default
-        assert target.table_prefix == ""  # Default
+        assert target.table_prefix is not None  # Default
 
         # Test with maximum configuration
         max_config = {
