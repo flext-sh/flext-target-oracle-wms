@@ -199,7 +199,7 @@ class WMSDataTransformer:
             # Basic validation - could be extended with flext-oracle-wms business rules
             if not filtered_data:
                 return FlextResult[FlextTypes.Core.Dict].fail(
-                    "Empty record cannot be processed"
+                    "Empty record cannot be processed",
                 )
 
             return FlextResult[FlextTypes.Core.Dict].ok(filtered_data)
@@ -207,7 +207,7 @@ class WMSDataTransformer:
         except (RuntimeError, ValueError, TypeError) as e:
             logger.warning("WMS filter application failed: %s", e)
             return FlextResult[FlextTypes.Core.Dict].ok(
-                record
+                record,
             )  # Fallback to original record
 
     def transform_record(
@@ -262,7 +262,7 @@ class WMSDataTransformer:
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("WMS record transformation failed")
             return FlextResult[FlextTypes.Core.Dict].fail(
-                f"Record transformation failed: {e}"
+                f"Record transformation failed: {e}",
             )
 
     def _normalize_wms_column_name(self, name: str) -> str:
@@ -305,7 +305,7 @@ class WMSDataTransformer:
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Batch parameter preparation failed")
             return FlextResult[list[FlextTypes.Core.Dict]].fail(
-                f"Parameter preparation failed: {e}"
+                f"Parameter preparation failed: {e}",
             )
 
 
@@ -326,7 +326,7 @@ class WMSSchemaMapper:
 
             if not isinstance(properties, dict):
                 return FlextResult[FlextTypes.Core.Headers].fail(
-                    "Invalid schema: properties must be a dict"
+                    "Invalid schema: properties must be a dict",
                 )
 
             for prop_name, prop_def in properties.items():
@@ -343,7 +343,7 @@ class WMSSchemaMapper:
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Schema mapping failed")
             return FlextResult[FlextTypes.Core.Headers].fail(
-                f"Schema mapping failed: {e}"
+                f"Schema mapping failed: {e}",
             )
 
     def _normalize_column_name(self, name: str) -> str:
@@ -456,7 +456,7 @@ class WMSTableManager:
             stmt: Insert = insert(table)
 
             logger.info(
-                f"Generated SQLAlchemy 2.0 INSERT statement for {schema_name}.{table_name} with columns: {columns}"
+                f"Generated SQLAlchemy 2.0 INSERT statement for {schema_name}.{table_name} with columns: {columns}",
             )
             return FlextResult[Insert].ok(stmt)
 

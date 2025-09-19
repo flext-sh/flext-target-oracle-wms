@@ -159,7 +159,7 @@ class TestOracleWMSIntegration:
 
     @pytest.mark.asyncio
     async def test_target_cleanup(
-        self, oracle_wms_config: FlextTypes.Core.Dict
+        self, oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
         """Test Oracle WMS Target cleanup using REAL flext-core patterns."""
         # DRY: Use REAL implementation

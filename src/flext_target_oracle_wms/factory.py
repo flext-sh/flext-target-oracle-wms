@@ -366,7 +366,7 @@ class FlextTargetMonitoringFactory:
             target = target_result.data
             if target is None:
                 return FlextResult[SingerTargetOracleWMS].fail(
-                    "Target creation returned None"
+                    "Target creation returned None",
                 )
 
             # Initialize monitoring services

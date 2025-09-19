@@ -50,7 +50,7 @@ class CustomWMSTypeConverter(WMSTypeConverter):
                     return FlextResult[None].ok(oracle_date)
                 except ValueError:
                     return FlextResult[None].fail(
-                        f"Invalid business date format: {value}"
+                        f"Invalid business date format: {value}",
                     )
 
         # Handle custom currency with precision
@@ -127,7 +127,7 @@ class CustomWMSDataTransformer(WMSDataTransformer):
             for field in required_fields:
                 if field not in transformed or not transformed[field]:
                     return FlextResult[None].fail(
-                        f"Missing required business field: {field}"
+                        f"Missing required business field: {field}",
                     )
 
             return FlextResult[None].ok(transformed)
@@ -393,6 +393,6 @@ if __name__ == "__main__":
     """Run advanced configuration examples."""
 
     asyncio.run(
-        cast("Coroutine[object, object, None]", run_advanced_configuration_example())
+        cast("Coroutine[object, object, None]", run_advanced_configuration_example()),
     )
     demonstrate_custom_components()

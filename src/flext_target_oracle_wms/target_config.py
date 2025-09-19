@@ -207,7 +207,7 @@ class TargetOracleWmsConfig(FlextModels.Config):
             valid_methods = {"APPEND_ONLY", "UPSERT", "REPLACE"}
             if self.load_method.upper() not in valid_methods:
                 return FlextResult[None].fail(
-                    f"Invalid load_method: {self.load_method}"
+                    f"Invalid load_method: {self.load_method}",
                 )
 
             # Validate credentials are provided
@@ -239,7 +239,7 @@ class TargetOracleWmsConfig(FlextModels.Config):
 
         except Exception as e:
             return FlextResult[TargetOracleWmsConfig].fail(
-                f"Failed to apply preset {preset_name}: {e}"
+                f"Failed to apply preset {preset_name}: {e}",
             )
 
 
@@ -289,7 +289,7 @@ def create_config_with_preset(
         config = config_result.data
         if config is None:
             return FlextResult[TargetOracleWmsConfig].fail(
-                "Configuration creation returned None"
+                "Configuration creation returned None",
             )
 
         # Apply preset
@@ -297,7 +297,7 @@ def create_config_with_preset(
 
     except Exception as e:
         return FlextResult[TargetOracleWmsConfig].fail(
-            f"Failed to create config with preset: {e}"
+            f"Failed to create config with preset: {e}",
         )
 
 

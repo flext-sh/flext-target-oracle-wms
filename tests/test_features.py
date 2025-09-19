@@ -88,7 +88,7 @@ async def production_target(
             mock_instance.connect.return_value = FlextResult[None].ok(data=True)
             mock_instance.disconnect.return_value = FlextResult[None].ok(data=True)
             mock_instance.execute.return_value = FlextResult[None].ok(
-                {"rows_affected": 1}
+                {"rows_affected": 1},
             )
 
             setup_result = await target.setup()
