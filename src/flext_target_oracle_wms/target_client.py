@@ -608,27 +608,28 @@ class SingerTargetOracleWMS:
         enable_logging = config.get("enable_logging", True)
         mock_mode = config.get("mock_mode", False)
 
-        # Environment type mapping for compatibility
-        environment_mapping = {
+        # Environment type mapping for compatibility with proper literal types
+        environment_mapping: dict[str, FlextTypes.Config.Environment] = {
             "dev": "development",
-            "test": "testing",
+            "test": "test",
             "prod": "production",
             "production": "production",
             "development": "development",
-            "testing": "testing",
+            "testing": "test",
+            "staging": "staging",
+            "local": "local",
             "default": "development",
         }
 
-        # Convert environment to proper string format
-        environment_str = str(environment)
-        if environment_str in environment_mapping:
-            environment_str = environment_mapping[environment_str]
+        # Convert environment to proper literal type
+        environment_str = str(environment).lower()
+        mapped_environment = environment_mapping.get(environment_str, "development")
 
         oracle_config = FlextOracleWmsClientConfig(
             oracle_wms_base_url=str(base_url),
             oracle_wms_username=str(username),
             oracle_wms_password=str(password),
-            environment=environment_str,  # Pass mapped environment string
+            environment=mapped_environment,  # Pass properly typed environment
             oracle_wms_timeout=int(float(str(timeout))),
             oracle_wms_max_retries=int(str(max_retries)),
             api_version=FlextOracleWmsApiVersion.LGF_V10,
