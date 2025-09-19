@@ -165,11 +165,24 @@ class TargetOracleWmsConfig(FlextModels.Config):
 
     def to_oracle_wms_config(self) -> FlextOracleWmsClientConfig:
         """Convert to flext-oracle-wms client configuration."""
+        # Map string environment to proper literal type
+        env_mapping: dict[str, FlextTypes.Config.Environment] = {
+            "development": "development",
+            "production": "production",
+            "staging": "staging",
+            "test": "test",
+            "local": "local",
+            "default": "development",  # Map default to development
+        }
+
+        # Get mapped environment or default to development
+        mapped_env = env_mapping.get(self.environment.lower(), "development")
+
         return FlextOracleWmsClientConfig(
             oracle_wms_base_url=self.base_url,
             oracle_wms_username=self.username,
             oracle_wms_password=self.password,
-            environment=self.environment,
+            environment=mapped_env,
             oracle_wms_timeout=int(self.timeout),
             oracle_wms_max_retries=self.max_retries,
             api_version=FlextOracleWmsApiVersion.LGF_V10,
