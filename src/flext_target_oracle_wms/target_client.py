@@ -148,7 +148,8 @@ class SingerWMSCatalogManager:
             return FlextResult[None].fail(f"Stream removal failed: {e}")
 
     def get_schema_for_stream(
-        self, stream_name: str,
+        self,
+        stream_name: str,
     ) -> FlextResult[FlextTypes.Core.Dict]:
         """Get schema for specific WMS stream."""
         stream_result = self.get_stream(stream_name)
@@ -161,7 +162,8 @@ class SingerWMSCatalogManager:
         return FlextResult[FlextTypes.Core.Dict].ok(stream_entry.schema_info)
 
     def get_key_properties(
-        self, stream_name: str,
+        self,
+        stream_name: str,
     ) -> FlextResult[FlextTypes.Core.StringList]:
         """Get key properties for WMS stream."""
         stream_result = self.get_stream(stream_name)
@@ -242,7 +244,8 @@ class SingerWMSCatalogManager:
             )
 
     def load_from_singer_catalog(
-        self, catalog: FlextTypes.Core.Dict,
+        self,
+        catalog: FlextTypes.Core.Dict,
     ) -> FlextResult[None]:
         """Load from Singer catalog format."""
         try:
@@ -702,7 +705,8 @@ class SingerTargetOracleWMS:
             return FlextResult[None].fail(f"Cleanup failed: {e}")
 
     def process_lines(
-        self, input_lines: FlextTypes.Core.StringList,
+        self,
+        input_lines: FlextTypes.Core.StringList,
     ) -> FlextResult[None]:
         """Process Singer messages from input lines."""
         try:
