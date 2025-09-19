@@ -9,10 +9,9 @@ import json
 import sys
 import traceback
 
-from flext_oracle_wms.api_catalog import FlextOracleWmsApiVersion
-
 from flext_core import FlextTypes
 from flext_oracle_wms import FlextOracleWmsClientConfig
+from flext_oracle_wms.api_catalog import FlextOracleWmsApiVersion
 from flext_target_oracle_wms import (
     SingerTargetOracleWMS,
     SingerWMSCatalogManager,
