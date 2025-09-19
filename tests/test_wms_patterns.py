@@ -225,7 +225,7 @@ class TestWMSDataTransformer:
         transformer = WMSDataTransformer(FailingTypeConverter())
         record = {"id": 123, "name": "test"}
         schema: FlextTypes.Core.Dict = {
-            "properties": {"id": {"type": "integer"}, "name": {"type": "string"}}
+            "properties": {"id": {"type": "integer"}, "name": {"type": "string"}},
         }
 
         # This should trigger line 122 (error handling in transform_record)
@@ -482,7 +482,7 @@ class TestWMSTableManager:
 
         # Use proper mock to simulate schema mapping failure - SOLID pattern
         with patch(
-            "flext_target_oracle_wms.target_models.WMSSchemaMapper"
+            "flext_target_oracle_wms.target_models.WMSSchemaMapper",
         ) as mock_schema_mapper_class:
             mock_schema_mapper = mock_schema_mapper_class.return_value
             mock_schema_mapper.map_singer_schema_to_oracle.return_value = FlextResult[
@@ -505,11 +505,11 @@ class TestWMSTableManager:
 
         # Use proper mock to simulate table name processing failure - SOLID pattern
         with patch(
-            "flext_target_oracle_wms.target_models.WMSSchemaMapper"
+            "flext_target_oracle_wms.target_models.WMSSchemaMapper",
         ) as mock_schema_mapper_class:
             mock_schema_mapper = mock_schema_mapper_class.return_value
             mock_schema_mapper.map_singer_schema_to_oracle.side_effect = RuntimeError(
-                "Schema mapping failed"
+                "Schema mapping failed",
             )
             schema: FlextTypes.Core.Dict = {"properties": {"id": {"type": "integer"}}}
             result = manager.generate_create_table_sql(
@@ -544,7 +544,7 @@ class TestWMSTableManager:
 
         # Use proper mock to simulate None columns return - SOLID pattern
         with patch(
-            "flext_target_oracle_wms.target_models.WMSSchemaMapper"
+            "flext_target_oracle_wms.target_models.WMSSchemaMapper",
         ) as mock_schema_mapper_class:
             mock_schema_mapper = mock_schema_mapper_class.return_value
             mock_schema_mapper.map_singer_schema_to_oracle.return_value = FlextResult[

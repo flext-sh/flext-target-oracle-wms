@@ -402,9 +402,9 @@ if __name__ == "__main__":
     """Run batch processing examples."""
 
     asyncio.run(
-        cast("Coroutine[object, object, None]", run_performance_batch_example())
+        cast("Coroutine[object, object, None]", run_performance_batch_example()),
     )
     demonstrate_stream_processor_batching()
     asyncio.run(
-        cast("Coroutine[object, object, None]", demonstrate_concurrent_batching())
+        cast("Coroutine[object, object, None]", demonstrate_concurrent_batching()),
     )

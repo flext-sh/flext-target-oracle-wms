@@ -44,7 +44,7 @@ class OracleWMSTargetCli:
             config_result = self._prepare_config(config_path_str)
             if not config_result.success:
                 result = FlextResult[None].fail(
-                    config_result.error or "Configuration failed"
+                    config_result.error or "Configuration failed",
                 )
             else:
                 config = config_result.data
@@ -90,7 +90,7 @@ class OracleWMSTargetCli:
         try:
             if config_path:
                 return FlextResult[FlextTypes.Core.Dict].ok(
-                    self._load_config(config_path)
+                    self._load_config(config_path),
                 )
 
             # Default configuration
@@ -105,7 +105,7 @@ class OracleWMSTargetCli:
             return FlextResult[FlextTypes.Core.Dict].ok(config)
         except Exception as e:
             return FlextResult[FlextTypes.Core.Dict].fail(
-                f"Configuration preparation failed: {e}"
+                f"Configuration preparation failed: {e}",
             )
 
     async def _process_stdin_messages(

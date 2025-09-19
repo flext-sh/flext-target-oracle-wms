@@ -364,7 +364,7 @@ class TestComprehensiveTargetCoverage:
             assert result.success  # Cleanup should succeed despite stop failure
 
     def test_target_finalize_comprehensive(
-        self, target_config: FlextTypes.Core.Headers
+        self, target_config: FlextTypes.Core.Headers,
     ) -> None:
         """Test finalize method with comprehensive statistics."""
         with patch("flext_oracle_wms.FlextOracleWmsClient"):

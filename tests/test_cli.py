@@ -118,7 +118,7 @@ class TestOracleWMSTargetCli:
         ) as mock_target_class:
             mock_target = MagicMock()
             mock_target.setup = AsyncMock(
-                return_value=FlextResult[None].fail("Setup failed")
+                return_value=FlextResult[None].fail("Setup failed"),
             )
             mock_target_class.return_value = mock_target
 
