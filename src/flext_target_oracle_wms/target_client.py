@@ -22,7 +22,8 @@ from flext_oracle_wms import (
     FlextOracleWmsClientConfig,
     create_oracle_wms_client,
 )
-from flext_target_oracle_wms.target_models import (
+
+from .target_models import (
     WMSDataTransformer,
     WMSTableManager,
 )
@@ -422,7 +423,7 @@ class SingerWMSStreamProcessor:
 
             for record in records:
                 process_result = self.process_record(stream_name, record)
-                if process_result.success and process_result.value is not None:
+                if process_result.success:
                     processed_records.append(process_result.value)
                 else:
                     logger.warning(
@@ -767,13 +768,12 @@ class SingerTargetOracleWMS:
                 return
 
             # Process record through stream processor
-            if self.stream_processor is not None:
-                process_result = self.stream_processor.process_record(
-                    stream_name,
-                    record,
-                )
-                if not process_result.success:
-                    logger.error("Failed to process record: %s", process_result.error)
+            process_result = self.stream_processor.process_record(
+                stream_name,
+                record,
+            )
+            if not process_result.success:
+                logger.error("Failed to process record: %s", process_result.error)
 
         except Exception:
             logger.exception("Failed to handle RECORD message")

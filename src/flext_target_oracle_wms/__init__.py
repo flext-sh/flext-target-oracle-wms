@@ -6,19 +6,19 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from flext_target_oracle_wms.cli import OracleWMSTargetCli, main
-from flext_target_oracle_wms.factory import (
+from .cli import OracleWMSTargetCli, main
+from .factory import (
     FlextTargetFactory,
     FlextTargetMonitoringFactory,
     create_monitored_oracle_wms_target,
     create_oracle_wms_target,
 )
-from flext_target_oracle_wms.target_client import (
+from .target_client import (
     SingerTargetOracleWMS,
     SingerWMSCatalogManager,
     SingerWMSStreamProcessor,
 )
-from flext_target_oracle_wms.target_models import (
+from .target_models import (
     WMSDataTransformer,
     WMSSchemaMapper,
     WMSTableManager,
