@@ -14,7 +14,8 @@ from typing import ClassVar, cast
 
 from flext_core import FlextLogger, FlextResult, FlextTypes
 from flext_observability import FlextObservabilityMonitor
-from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
+
+from .target_client import SingerTargetOracleWMS
 
 
 @dataclass
