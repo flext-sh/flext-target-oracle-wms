@@ -9,14 +9,12 @@ from __future__ import annotations
 import json
 import sys
 
+from flext_core.config.base import FlextLogger
+from flext_core.domain.models import FlextTypes
+from flext_core.domain.pydantic_base import FlextModels
+from flext_core.domain.shared_models import FlextResult
 from pydantic import Field
 
-from flext_core import (
-    FlextLogger,
-    FlextModels,
-    FlextResult,
-    FlextTypes,
-)
 from flext_oracle_wms import (
     FlextOracleWmsApiVersion,
     FlextOracleWmsClientConfig,
