@@ -9,12 +9,9 @@ from __future__ import annotations
 import json
 import sys
 
-from flext_core.config.base import FlextLogger
-from flext_core.domain.models import FlextTypes
-from flext_core.domain.pydantic_base import FlextModels
-from flext_core.domain.shared_models import FlextResult
 from pydantic import Field
 
+from flext_core import FlextLogger, FlextModels, FlextResult, FlextTypes
 from flext_oracle_wms import (
     FlextOracleWmsApiVersion,
     FlextOracleWmsClientConfig,
@@ -29,15 +26,15 @@ from .target_models import (
 logger = FlextLogger(__name__)
 
 
-class SingerWMSCatalogEntry(FlextModels.Config):
+class SingerWMSCatalogEntry(FlextModels.ArbitraryTypesModel):
     """Singer WMS catalog entry using flext-core patterns."""
 
     tap_stream_id: str
     stream: str
-    schema_info: FlextTypes.Core.Dict
-    metadata: list[FlextTypes.Core.Dict] = Field(default_factory=list)
-    key_properties: FlextTypes.Core.StringList = Field(default_factory=list)
-    bookmark_properties: FlextTypes.Core.StringList = Field(default_factory=list)
+    schema_info: dict[str, object]
+    metadata: list[dict[str, object]] = Field(default_factory=list)
+    key_properties: list[str] = Field(default_factory=list)
+    bookmark_properties: list[str] = Field(default_factory=list)
     replication_method: str = "FULL_TABLE"
     replication_key: str | None = None
 
@@ -219,10 +216,10 @@ class SingerWMSCatalogManager:
                 }
 
                 if entry.key_properties:
-                    stream_dict["key_properties"] = entry.key_properties
+                    stream_dict["key_properties"] = list(entry.key_properties)
 
                 if entry.bookmark_properties:
-                    stream_dict["bookmark_properties"] = entry.bookmark_properties
+                    stream_dict["bookmark_properties"] = list(entry.bookmark_properties)
 
                 if entry.replication_method:
                     stream_dict["replication_method"] = entry.replication_method
@@ -259,24 +256,38 @@ class SingerWMSCatalogManager:
             for stream_dict in streams:
                 if not isinstance(stream_dict, dict):
                     continue
-                stream_name = stream_dict.get("stream")
+                stream_name: str | None = stream_dict.get("stream")
 
                 # Validate stream_name is a string
                 if not isinstance(stream_name, str):
                     continue
 
+                # Type-safe extraction with proper casting
+                tap_stream_id = stream_dict.get("tap_stream_id")
+                schema_info = stream_dict.get("schema", {})
+                metadata = stream_dict.get("metadata", [])
+                key_properties = stream_dict.get("key_properties", [])
+                bookmark_properties = stream_dict.get("bookmark_properties", [])
+                replication_method = stream_dict.get("replication_method", "FULL_TABLE")
+                replication_key = stream_dict.get("replication_key")
+
                 entry = SingerWMSCatalogEntry(
-                    tap_stream_id=stream_dict.get("tap_stream_id", stream_name),
+                    tap_stream_id=str(tap_stream_id)
+                    if tap_stream_id is not None
+                    else stream_name,
                     stream=stream_name,
-                    schema_info=stream_dict["schema"],
-                    metadata=stream_dict.get("metadata", []),
-                    key_properties=stream_dict.get("key_properties", []),
-                    bookmark_properties=stream_dict.get("bookmark_properties", []),
-                    replication_method=stream_dict.get(
-                        "replication_method",
-                        "FULL_TABLE",
-                    ),
-                    replication_key=stream_dict.get("replication_key"),
+                    schema_info=schema_info,
+                    metadata=list(metadata) if isinstance(metadata, list) else [],
+                    key_properties=list(key_properties)
+                    if isinstance(key_properties, list)
+                    else [],
+                    bookmark_properties=list(bookmark_properties)
+                    if isinstance(bookmark_properties, list)
+                    else [],
+                    replication_method=str(replication_method),
+                    replication_key=str(replication_key)
+                    if replication_key is not None
+                    else None,
                 )
 
                 self._catalog_entries[stream_name] = entry
@@ -530,9 +541,15 @@ class SingerWMSStreamProcessor:
 
             # Check required fields
             for prop_name, prop_def in properties.items():
+                if not isinstance(prop_def, dict):
+                    continue
+                any_of = prop_def.get("anyOf")
                 if (
                     prop_name not in record
-                    and prop_def.get("anyOf", [{}])[0].get("type") != "null"
+                    and isinstance(any_of, list)
+                    and len(any_of) > 0
+                    and isinstance(any_of[0], dict)
+                    and any_of[0].get("type") != "null"
                 ):
                     # Field is missing and required (not nullable)
                     return FlextResult[bool].fail(
@@ -569,8 +586,12 @@ class SingerWMSStreamProcessor:
             if not isinstance(new_props, dict):
                 new_props = {}
 
-            added_fields = set(new_props.keys()) - set(old_props.keys())
-            removed_fields = set(old_props.keys()) - set(new_props.keys())
+            added_fields: set[str] = {str(k) for k in new_props} - {
+                str(k) for k in old_props
+            }
+            removed_fields: set[str] = {str(k) for k in old_props} - {
+                str(k) for k in new_props
+            }
 
             if added_fields:
                 logger.info("WMS added fields in %s: %s", stream_name, added_fields)
@@ -611,7 +632,7 @@ class SingerTargetOracleWMS:
         mock_mode = config.get("mock_mode", False)
 
         # Environment type mapping for compatibility with proper literal types
-        environment_mapping: dict[str, FlextTypes.Config.Environment] = {
+        environment_mapping: dict[str, str] = {
             "dev": "development",
             "test": "test",
             "prod": "production",
@@ -625,7 +646,22 @@ class SingerTargetOracleWMS:
 
         # Convert environment to proper literal type
         environment_str = str(environment).lower()
-        mapped_environment = environment_mapping.get(environment_str, "development")
+        mapped_environment_str = environment_mapping.get(environment_str, "development")
+
+        # Convert to proper Environment type using string literals
+        mapped_environment: FlextTypes.Config.Environment
+        if mapped_environment_str == "development":
+            mapped_environment = "development"
+        elif mapped_environment_str == "test":
+            mapped_environment = "test"
+        elif mapped_environment_str == "production":
+            mapped_environment = "production"
+        elif mapped_environment_str == "staging":
+            mapped_environment = "staging"
+        elif mapped_environment_str == "local":
+            mapped_environment = "local"
+        else:
+            mapped_environment = "development"
 
         oracle_config = FlextOracleWmsClientConfig(
             oracle_wms_base_url=str(base_url),
