@@ -24,7 +24,7 @@ from .target_client import SingerTargetOracleWMS
 class OracleWMSTargetCli:
     """Oracle WMS Target CLI using REAL flext-cli patterns."""
 
-    def __init__(self) -> None:
+    def __init__(self: object) -> None:
         """Initialize CLI with real flext-cli patterns."""
         self.name = "target-oracle-wms"
         self.description = "Oracle WMS Singer Target - Production Ready using REAL flext-oracle-wms API"
@@ -40,23 +40,31 @@ class OracleWMSTargetCli:
 
         try:
             # Load configuration
-            config_path = kwargs.get("config")
-            config_path_str = str(config_path) if config_path is not None else None
-            config_result = self._prepare_config(config_path_str)
+            config_path: dict[str, object] = kwargs.get("config")
+            config_path_str: dict[str, object] = (
+                str(config_path) if config_path is not None else None
+            )
+            config_result: FlextResult[object] = self._prepare_config(config_path_str)
             if not config_result.success:
                 result = FlextResult[None].fail(
                     config_result.error or "Configuration failed",
                 )
             else:
-                config = config_result.data
+                config: dict[str, object] = config_result.data
                 if config is None:
-                    result = FlextResult[None].fail("Configuration data is None")
+                    result: FlextResult[object] = FlextResult[None].fail(
+                        "Configuration data is None"
+                    )
                 else:
                     # Continue with target setup and processing
-                    result = await self._execute_target_pipeline(config)
+                    result: FlextResult[object] = await self._execute_target_pipeline(
+                        config
+                    )
 
         except Exception as e:
-            result = FlextResult[None].fail(f"CLI execution failed: {e}")
+            result: FlextResult[object] = FlextResult[None].fail(
+                f"CLI execution failed: {e}"
+            )
 
         return result
 
@@ -71,12 +79,12 @@ class OracleWMSTargetCli:
         target = SingerTargetOracleWMS(config)
 
         # Setup target
-        setup_result = await target.setup()
+        setup_result: FlextResult[object] = await target.setup()
         if not setup_result.success:
             return FlextResult[None].fail(f"Setup failed: {setup_result.error}")
 
         # Process messages
-        process_result = await self._process_stdin_messages(target)
+        process_result: FlextResult[object] = await self._process_stdin_messages(target)
         if not process_result.success:
             return process_result
 
@@ -95,7 +103,7 @@ class OracleWMSTargetCli:
                 )
 
             # Default configuration
-            config = {
+            config: dict[str, object] = {
                 "base_url": "https://ta29.wms.ocs.oraclecloud.com",
                 "username": "oracle",
                 "password": "oracle",
@@ -120,7 +128,9 @@ class OracleWMSTargetCli:
                 if not line:
                     continue
 
-                result = await self._process_single_message(target, line)
+                result: FlextResult[object] = await self._process_single_message(
+                    target, line
+                )
                 if not result.success:
                     return result
 
@@ -139,13 +149,13 @@ class OracleWMSTargetCli:
             message_type = message.get("type")
 
             if message_type == "SCHEMA":
-                target._handle_schema_message(message)
+                target.handle_schema_message(message)
                 return FlextResult[None].ok(None)
             if message_type == "RECORD":
-                target._handle_record_message(message)
+                target.handle_record_message(message)
                 return FlextResult[None].ok(None)
             if message_type == "STATE":
-                target._handle_state_message(message)
+                target.handle_state_message(message)
                 return FlextResult[None].ok(None)
 
             # Skip unknown message types
@@ -167,12 +177,12 @@ class OracleWMSTargetCli:
 
     def _load_config(self, config_path: str) -> FlextTypes.Core.Dict:
         """Load configuration from file path."""
-        config_file = Path(config_path)
+        config_file: dict[str, object] = Path(config_path)
         if not config_file.exists():
             msg: str = f"Configuration file not found: {config_path}"
             raise FileNotFoundError(msg)
 
-        config_text = config_file.read_text(encoding="utf-8")
+        config_text: dict[str, object] = config_file.read_text(encoding="utf-8")
         return dict(json.loads(config_text))
 
 
@@ -190,7 +200,9 @@ def main() -> None:
             config_path = sys.argv[2]
 
         # Execute CLI with parsed arguments
-        result = asyncio.run(cli_instance.execute(config=config_path))
+        result: FlextResult[object] = asyncio.run(
+            cli_instance.execute(config=config_path)
+        )
 
         if not result.success:
             sys.stderr.write(f"Execution failed: {result.error}\n")

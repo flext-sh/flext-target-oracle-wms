@@ -12,31 +12,31 @@ from flext_core import FlextExceptions
 
 
 # Oracle WMS Target exception hierarchy using flext-core base classes
-class FlextTargetOracleWmsError(FlextExceptions._Error):
+class FlextTargetOracleWmsError(FlextExceptions.Error):
     """Base error for Oracle WMS target operations."""
 
 
-class FlextTargetOracleWmsValidationError(FlextExceptions._ValidationError):
+class FlextTargetOracleWmsValidationError(FlextExceptions.ValidationError):
     """Oracle WMS target validation errors."""
 
 
-class FlextTargetOracleWmsConfigurationError(FlextExceptions._ConfigurationError):
+class FlextTargetOracleWmsConfigurationError(FlextExceptions.ConfigurationError):
     """Oracle WMS target configuration errors."""
 
 
-class FlextTargetOracleWmsProcessingError(FlextExceptions._ProcessingError):
+class FlextTargetOracleWmsProcessingError(FlextExceptions.ProcessingError):
     """Oracle WMS target processing errors."""
 
 
-class FlextTargetOracleWmsConnectionError(FlextExceptions._ConnectionError):
+class FlextTargetOracleWmsConnectionError(FlextExceptions.ConnectionError):
     """Oracle WMS target connection errors."""
 
 
-class FlextTargetOracleWmsAuthenticationError(FlextExceptions._AuthenticationError):
+class FlextTargetOracleWmsAuthenticationError(FlextExceptions.AuthenticationError):
     """Oracle WMS target authentication errors."""
 
 
-class FlextTargetOracleWmsTimeoutError(FlextExceptions._TimeoutError):
+class FlextTargetOracleWmsTimeoutError(FlextExceptions.TimeoutError):
     """Oracle WMS target timeout errors."""
 
 

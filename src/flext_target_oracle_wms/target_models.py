@@ -42,7 +42,7 @@ def _normalize_oracle_identifier(name: str) -> str:
     oracle_identifier_max_length = 30
 
     # Use flext-oracle-wms validation first
-    validation_result = flext_oracle_wms_validate_entity_name(name)
+    validation_result: FlextResult[object] = flext_oracle_wms_validate_entity_name(name)
     if validation_result.success:
         # Additional Oracle identifier normalization
         normalized = name.replace(" ", "_").replace("-", "_").upper()
@@ -113,7 +113,7 @@ class WMSTypeConverter:
     SOLID REFACTORING: Integrate with flext-oracle-wms dynamic processing.
     """
 
-    def __init__(self) -> None:
+    def __init__(self: object) -> None:
         """Initialize WMS type converter with flext-oracle-wms integration."""
         # Use flext-oracle-wms dynamic processing for type inference
         self.schema_processor = FlextOracleWmsDynamicSchemaProcessor()
@@ -134,7 +134,7 @@ class WMSTypeConverter:
                 return FlextResult[object].ok(None)
 
             # REFACTORING: Use strategy pattern to reduce return statements
-            result = self._convert_by_type(singer_type, value)
+            result: FlextResult[object] = self._convert_by_type(singer_type, value)
             return FlextResult[object].ok(result)
 
         except (RuntimeError, ValueError, TypeError) as e:
@@ -194,7 +194,7 @@ class WMSDataTransformer:
         try:
             # Apply basic WMS entity validation using flext-oracle-wms
             # This ensures data quality before Oracle insertion
-            filtered_data = record.copy()
+            filtered_data: dict[str, object] = record.copy()
 
             # Basic validation - could be extended with flext-oracle-wms business rules
             if not filtered_data:
@@ -221,7 +221,7 @@ class WMSDataTransformer:
         """
         try:
             # First apply flext-oracle-wms filtering if available
-            filter_result = self._apply_wms_filters(record)
+            filter_result: FlextResult[object] = self._apply_wms_filters(record)
             if not filter_result.success:
                 return filter_result
 
@@ -233,9 +233,9 @@ class WMSDataTransformer:
                 oracle_key = self._normalize_wms_column_name(key)
 
                 if schema:
-                    properties = schema.get("properties", {})
+                    properties: dict[str, object] = schema.get("properties", {})
                     if isinstance(properties, dict):
-                        prop_def = properties.get(key, {})
+                        prop_def: dict[str, object] = properties.get(key, {})
                         if isinstance(prop_def, dict):
                             singer_type = prop_def.get("type", "string")
                         else:
@@ -312,7 +312,7 @@ class WMSDataTransformer:
 class WMSSchemaMapper:
     """Map Singer schemas to Oracle WMS schemas using flext-core patterns."""
 
-    def __init__(self) -> None:
+    def __init__(self: object) -> None:
         """Initialize WMS schema mapper."""
 
     def map_singer_schema_to_oracle(
@@ -322,7 +322,7 @@ class WMSSchemaMapper:
         """Map Singer schema to Oracle WMS column definitions."""
         try:
             oracle_columns = {}
-            properties = schema.get("properties", {})
+            properties: dict[str, object] = schema.get("properties", {})
 
             if not isinstance(properties, dict):
                 return FlextResult[FlextTypes.Core.Headers].fail(
@@ -331,7 +331,9 @@ class WMSSchemaMapper:
 
             for prop_name, prop_def in properties.items():
                 oracle_name = self._normalize_column_name(prop_name)
-                oracle_type_result = self._map_singer_type_to_oracle(prop_def)
+                oracle_type_result: FlextResult[object] = (
+                    self._map_singer_type_to_oracle(prop_def)
+                )
 
                 if oracle_type_result.success and oracle_type_result.data is not None:
                     oracle_columns[oracle_name] = oracle_type_result.data
@@ -381,7 +383,7 @@ class WMSSchemaMapper:
 class WMSTableManager:
     """Manage Oracle WMS tables using flext-core patterns."""
 
-    def __init__(self) -> None:
+    def __init__(self: object) -> None:
         """Initialize WMS table manager."""
 
     def generate_table_name(self, stream_name: str, prefix: str = "") -> str:
@@ -404,7 +406,9 @@ class WMSTableManager:
         """Generate CREATE TABLE SQL for Oracle WMS."""
         try:
             schema_mapper = WMSSchemaMapper()
-            columns_result = schema_mapper.map_singer_schema_to_oracle(schema)
+            columns_result: FlextResult[object] = (
+                schema_mapper.map_singer_schema_to_oracle(schema)
+            )
 
             if not columns_result.success:
                 return FlextResult[str].fail(
@@ -444,7 +448,7 @@ class WMSTableManager:
         """Generate INSERT SQL for Oracle WMS using SQLAlchemy 2.0 Core API."""
         try:
             # Use SQLAlchemy 2.0 Core API - NO STRING CONCATENATION
-            metadata = MetaData()
+            metadata: dict[str, object] = MetaData()
 
             # Create table columns from provided column list
             table_columns = [Column(column_name, String) for column_name in columns]
