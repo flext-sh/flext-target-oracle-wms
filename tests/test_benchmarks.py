@@ -30,7 +30,7 @@ from flext_target_oracle_wms import (
 class TestFactoryPerformanceBenchmarks:
     """Benchmark factory pattern performance for production optimization."""
 
-    def test_factory_target_creation_benchmark(self, benchmark: Callable) -> None:
+    def test_self(self, benchmark: Callable) -> None:
         """Benchmark target creation performance with factory patterns."""
 
         def create_target_with_factory() -> SingerTargetOracleWMS:
@@ -52,7 +52,7 @@ class TestFactoryPerformanceBenchmarks:
         result = benchmark(create_target_with_factory)
         assert result is not None
 
-    def test_preset_configuration_benchmark(self, benchmark: Callable) -> None:
+    def test_self(self, benchmark: Callable) -> None:
         """Benchmark preset configuration application performance."""
 
         def apply_preset_configuration() -> list[dict]:
@@ -76,7 +76,7 @@ class TestFactoryPerformanceBenchmarks:
         assert len(configs) == 4
         assert all("batch_size" in config for config in configs)
 
-    def test_monitoring_factory_benchmark(self, benchmark: Callable) -> None:
+    def test_self(self, benchmark: Callable) -> None:
         """Benchmark monitoring factory creation performance."""
 
         def create_monitored_target() -> SingerTargetOracleWMS:
@@ -111,7 +111,7 @@ class TestFactoryPerformanceBenchmarks:
 class TestPatternsPerformanceBenchmarks:
     """Benchmark WMS patterns performance for optimization."""
 
-    def test_data_transformation_benchmark(self, benchmark: Callable) -> None:
+    def test_self(self, benchmark: Callable) -> None:
         """Benchmark data transformation performance."""
         # Create test data
         large_record = {f"field_{i}": f"value_{i}" for i in range(100)}
@@ -135,7 +135,7 @@ class TestPatternsPerformanceBenchmarks:
         assert transformed is not None
         assert len(transformed) > 0
 
-    def test_schema_mapping_benchmark(self, benchmark: Callable) -> None:
+    def test_self(self, benchmark: Callable) -> None:
         """Benchmark schema mapping performance."""
         # Create complex schema
         complex_schema = {
@@ -173,7 +173,7 @@ class TestPatternsPerformanceBenchmarks:
         assert mapped_schema is not None
         assert len(mapped_schema) > 0
 
-    def test_type_conversion_benchmark(self, benchmark: Callable) -> None:
+    def test_self(self, benchmark: Callable) -> None:
         """Benchmark type conversion performance."""
         converter = WMSTypeConverter()
         # Test data with various types
@@ -188,7 +188,7 @@ class TestPatternsPerformanceBenchmarks:
 
         def convert_all_types() -> FlextTypes.Core.List:
             """Convert all types - measured operation."""
-            results = []
+            results: list[object] = []
             for singer_type, value in test_conversions:
                 result = converter.convert_singer_to_oracle(singer_type, value)
                 assert result.success
@@ -199,7 +199,7 @@ class TestPatternsPerformanceBenchmarks:
         converted = benchmark(convert_all_types)
         assert len(converted) == len(test_conversions)
 
-    def test_table_sql_generation_benchmark(self, benchmark: Callable) -> None:
+    def test_self(self, benchmark: Callable) -> None:
         """Benchmark SQL generation performance."""
         manager = WMSTableManager()
         # Complex schema for SQL generation
@@ -239,7 +239,7 @@ class TestPatternsPerformanceBenchmarks:
 class TestStreamPerformanceBenchmarks:
     """Benchmark stream processing performance."""
 
-    def test_stream_processing_benchmark(self, benchmark: Callable) -> None:
+    def test_self(self, benchmark: Callable) -> None:
         """Benchmark stream processing performance."""
         table_manager = WMSTableManager()
         data_transformer = WMSDataTransformer()
@@ -285,7 +285,7 @@ class TestStreamPerformanceBenchmarks:
 class TestCatalogPerformanceBenchmarks:
     """Benchmark catalog management performance."""
 
-    def test_catalog_operations_benchmark(self, benchmark: Callable) -> None:
+    def test_self(self, benchmark: Callable) -> None:
         """Benchmark catalog operations performance."""
         manager = SingerWMSCatalogManager()
         # Generate multiple streams for catalog
@@ -336,7 +336,7 @@ class TestCatalogPerformanceBenchmarks:
 class TestIntegrationPerformanceBenchmarks:
     """Benchmark complete integration workflows."""
 
-    def test_end_to_end_performance_benchmark(self, benchmark: Callable) -> None:
+    def test_self(self, benchmark: Callable) -> None:
         """Benchmark complete end-to-end workflow performance."""
 
         async def complete_workflow() -> dict | None:
@@ -412,7 +412,7 @@ class TestIntegrationPerformanceBenchmarks:
 class TestMemoryEfficiencyBenchmarks:
     """Benchmark memory efficiency for large-scale operations."""
 
-    def test_memory_efficient_batch_processing(self, benchmark: Callable) -> None:
+    def test_self(self, benchmark: Callable) -> None:
         """Benchmark memory usage during large batch processing."""
         table_manager = WMSTableManager()
         data_transformer = WMSDataTransformer()

@@ -282,7 +282,7 @@ class WMSDataTransformer:
         try:
             # Use flext-oracle-wms chunking for optimal performance
             chunked_records = self.chunk_processor(records, chunk_size=1000)
-            batch_params = []
+            batch_params: list[dict[str, object]] = []
 
             for chunk in chunked_records:
                 for record in chunk:
@@ -420,7 +420,7 @@ class WMSTableManager:
                 return FlextResult[str].fail("Column mapping returned None")
 
             # Build column definitions
-            column_defs = []
+            column_defs: list[str] = []
             for col_name, col_type in columns.items():
                 column_defs.append(f'"{col_name}" {col_type}')
 
