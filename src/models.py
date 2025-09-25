@@ -417,12 +417,14 @@ class FlextTargetOracleWmsModels(FlextModels):
             result = FlextModels.create_validated_http_url(v)
             if result.is_failure:
                 raise ValueError(result.error)
-            return result.unwrap()
+            # Convert FlextModels.Url back to string for Pydantic
+            return str(result.unwrap())
 
         @field_validator("environment")
         @classmethod
         def validate_environment(cls, v: str) -> str:
             """Validate environment."""
+            # Iterate directly over enum members
             valid_environments = [
                 e.value for e in FlextConstants.Environment.ConfigEnvironment
             ]

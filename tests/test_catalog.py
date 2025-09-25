@@ -358,7 +358,7 @@ class TestSingerWMSCatalogManagerComprehensive:
             (10, 10),
         ],
     )
-    def test_catalog_scaling(self, stream_count: int, expected_count: int) -> None:
+    def test_self(self, stream_count: int, expected_count: int) -> None:
         """Test catalog manager performance with various stream counts."""
         manager = SingerWMSCatalogManager()
 

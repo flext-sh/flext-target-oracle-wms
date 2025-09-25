@@ -26,7 +26,7 @@ class TestExamplesCodeQuality:
         """Get all Python example files."""
         return list(examples_dir.glob("*.py"))
 
-    def test_examples_directory_exists(self, examples_dir: Path) -> None:
+    def test_self(self, examples_dir: Path) -> None:
         """Test that examples directory exists and contains files."""
         assert examples_dir.exists(), "Examples directory must exist"
         assert examples_dir.is_dir(), "Examples path must be a directory"
@@ -47,7 +47,7 @@ class TestExamplesCodeQuality:
                 f"Required example file {expected_file} must exist"
             )
 
-    def test_examples_use_real_flext_imports(self, example_files: list[Path]) -> None:
+    def test_self(self, example_files: list[Path]) -> None:
         """Test that examples use REAL flext-* imports, not fallbacks."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
@@ -96,7 +96,7 @@ class TestExamplesCodeQuality:
                     f"{example_file.name} contains forbidden pattern: {pattern}"
                 )
 
-    def test_examples_have_proper_docstrings(self, example_files: list[Path]) -> None:
+    def test_self(self, example_files: list[Path]) -> None:
         """Test that examples have comprehensive docstrings."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
@@ -132,7 +132,7 @@ class TestExamplesCodeQuality:
                     f"{example_file.name} must have 80%+ functions documented"
                 )
 
-    def test_examples_use_async_patterns(self, example_files: list[Path]) -> None:
+    def test_self(self, example_files: list[Path]) -> None:
         """Test that examples use proper async/await patterns."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
@@ -157,7 +157,7 @@ class TestExamplesCodeQuality:
                     f"{example_file.name} has async functions but no await statements"
                 )
 
-    def test_examples_handle_errors_properly(self, example_files: list[Path]) -> None:
+    def test_self(self, example_files: list[Path]) -> None:
         """Test that examples implement proper error handling."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
@@ -190,7 +190,7 @@ class TestExamplesCodeQuality:
                     f"{example_file.name} mentions errors but has no error handling"
                 )
 
-    def test_examples_use_real_configuration(self, example_files: list[Path]) -> None:
+    def test_self(self, example_files: list[Path]) -> None:
         """Test that examples use realistic configuration patterns."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
@@ -232,7 +232,7 @@ class TestExamplesCodeQuality:
                 f"{example_file.name} must contain Oracle WMS specific patterns"
             )
 
-    def test_examples_have_main_blocks(self, example_files: list[Path]) -> None:
+    def test_self(self, example_files: list[Path]) -> None:
         """Test that examples have proper main execution blocks."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
