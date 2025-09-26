@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Callable
+from typing import override
 
 from sqlalchemy import Column, Insert, MetaData, String, Table, insert
 
@@ -78,11 +79,11 @@ def get_oracle_type_mapping(json_type: str | None) -> str:
         "date": "DATE",
         "integer": "NUMBER",
         "number": "NUMBER",
-        "boolean": "NUMBER(1)",
+        "boolean": NUMBER(1),
         "object": "CLOB",
         "array": "CLOB",
-        "string": "VARCHAR2(4000)",
-        "text": "VARCHAR2(4000)",
+        "string": VARCHAR2(4000),
+        "text": VARCHAR2(4000),
     }
 
     if json_type is None:
@@ -113,6 +114,10 @@ class WMSTypeConverter:
     SOLID REFACTORING: Integrate with flext-oracle-wms dynamic processing.
     """
 
+    @override
+    @override
+    @override
+    @override
     def __init__(self: object) -> None:
         """Initialize WMS type converter with flext-oracle-wms integration."""
         # Use flext-oracle-wms dynamic processing for type inference
@@ -145,8 +150,8 @@ class WMSTypeConverter:
         """Convert value by type using strategy pattern."""
         # Strategy pattern mapping to reduce return statements
         type_converters: dict[str, Callable[[object], object]] = {
-            "string": str,
-            "text": str,
+            "string": "str",
+            "text": "str",
             "boolean": lambda v: 1 if v else 0,
             "object": json.dumps,
             "array": json.dumps,
@@ -175,6 +180,10 @@ class WMSDataTransformer:
     SOLID REFACTORING: Maximize integration with flext-oracle-wms data processing.
     """
 
+    @override
+    @override
+    @override
+    @override
     def __init__(self, type_converter: WMSTypeConverter | None = None) -> None:
         """Initialize WMS data transformer with flext-oracle-wms components."""
         self.type_converter = type_converter or WMSTypeConverter()
@@ -312,6 +321,10 @@ class WMSDataTransformer:
 class WMSSchemaMapper:
     """Map Singer schemas to Oracle WMS schemas using flext-core patterns."""
 
+    @override
+    @override
+    @override
+    @override
     def __init__(self: object) -> None:
         """Initialize WMS schema mapper."""
 
@@ -383,6 +396,10 @@ class WMSSchemaMapper:
 class WMSTableManager:
     """Manage Oracle WMS tables using flext-core patterns."""
 
+    @override
+    @override
+    @override
+    @override
     def __init__(self: object) -> None:
         """Initialize WMS table manager."""
 
