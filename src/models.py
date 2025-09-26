@@ -45,8 +45,8 @@ class FlextTargetOracleWmsModels(FlextModels):
             use_enum_values=True,
             arbitrary_types_allowed=True,
             validate_return=True,
-            ser_json_timedelta="iso8601",
-            ser_json_bytes="base64",
+            ser_json_timedelta=iso8601,
+            ser_json_bytes=base64,
             serialize_by_alias=True,
             populate_by_name=True,
             str_strip_whitespace=True,
@@ -55,9 +55,9 @@ class FlextTargetOracleWmsModels(FlextModels):
             validate_default=True,
             # Custom encoders for complex types
             json_encoders={
-                Path: str,
+                Path: "str",
                 datetime: lambda dt: dt.isoformat(),
-                Decimal: float,
+                Decimal: "float",
             },
         )
 
@@ -86,7 +86,7 @@ class FlextTargetOracleWmsModels(FlextModels):
             min_length=1,
         )
         operation: Literal["INSERT", "UPDATE", "DELETE", "UPSERT"] = Field(
-            default="INSERT",
+            default=INSERT,
             description="Database operation type",
         )
         timestamp: datetime = Field(
@@ -204,7 +204,7 @@ class FlextTargetOracleWmsModels(FlextModels):
             max_length=128,
         )
         load_method: str = Field(
-            default="APPEND_ONLY",
+            default=APPEND_ONLY,
             description="Data load method",
         )
         created_at: datetime = Field(
@@ -213,7 +213,7 @@ class FlextTargetOracleWmsModels(FlextModels):
         )
         status: Literal["PENDING", "PROCESSING", "COMPLETED", "FAILED", "CANCELLED"] = (
             Field(
-                default="PENDING",
+                default=PENDING,
                 description="Batch processing status",
             )
         )
@@ -497,7 +497,7 @@ class FlextTargetOracleWmsModels(FlextModels):
         )
         status: Literal["PENDING", "RUNNING", "COMPLETED", "FAILED", "CANCELLED"] = (
             Field(
-                default="PENDING",
+                default=PENDING,
                 description="Operation status",
             )
         )

@@ -6,7 +6,7 @@ SRC_DIR := src
 TESTS_DIR := tests
 
 # Quality standards
-MIN_COVERAGE := 90
+MIN_COVERAGE := 100
 
 # Singer configuration
 TARGET_CONFIG := config.json
@@ -27,42 +27,42 @@ setup: install-dev ## Complete project setup
 	$(POETRY) run pre-commit install
 
 # Quality gates
-validate: lint type-check security test ## Run all quality gates
+validate: lint type-check security test ## Run all quality gates (MANDATORY ORDER)
 
 check: lint type-check ## Quick health check
 
-lint: ## Run linting
-	$(POETRY) run ruff check $(SRC_DIR) $(TESTS_DIR)
+lint: ## Run linting (ZERO TOLERANCE)
+	$(POETRY) run ruff check .
 
 format: ## Format code
-	$(POETRY) run ruff format $(SRC_DIR) $(TESTS_DIR)
+	$(POETRY) run ruff format .
 
-type-check: ## Run type checking
-	$(POETRY) run mypy $(SRC_DIR) --strict
+type-check: ## Run type checking with Pyrefly (ZERO TOLERANCE)
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run pyrefly check .
 
 security: ## Run security scanning
 	$(POETRY) run bandit -r $(SRC_DIR)
 	$(POETRY) run pip-audit
 
 fix: ## Auto-fix issues
-	$(POETRY) run ruff check $(SRC_DIR) $(TESTS_DIR) --fix
-	$(POETRY) run ruff format $(SRC_DIR) $(TESTS_DIR)
+	$(POETRY) run ruff check . --fix
+	$(POETRY) run ruff format .
 
 # Testing
-test: ## Run tests with coverage
+test: ## Run tests with 100% coverage (MANDATORY)
 	$(POETRY) run pytest $(TESTS_DIR) --cov=$(SRC_DIR) --cov-report=term-missing --cov-fail-under=$(MIN_COVERAGE)
 
 test-unit: ## Run unit tests
-	$(POETRY) run pytest $(TESTS_DIR) -m "not integration" -v
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run pytest -m "not integration" -v
 
-test-integration: ## Run integration tests
-	$(POETRY) run pytest $(TESTS_DIR) -m integration -v
+test-integration: ## Run integration tests with Docker
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run pytest -m integration -v
 
 test-singer: ## Run Singer protocol tests
 	$(POETRY) run pytest $(TESTS_DIR) -m singer -v
 
 test-fast: ## Run tests without coverage
-	$(POETRY) run pytest $(TESTS_DIR) -v
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run pytest -v
 
 coverage-html: ## Generate HTML coverage report
 	$(POETRY) run pytest $(TESTS_DIR) --cov=$(SRC_DIR) --cov-report=html
@@ -72,7 +72,7 @@ load: ## Run target data loading
 	$(POETRY) run target-oracle-wms --config $(TARGET_CONFIG) --state $(TARGET_STATE)
 
 validate-target-config: ## Validate target configuration
-	$(POETRY) run python -c "import json; json.load(open('$(TARGET_CONFIG)'))"
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "import json; json.load(open('$(TARGET_CONFIG)'))"
 
 test-target: ## Test target functionality
 	$(POETRY) run target-oracle-wms --about
@@ -83,19 +83,19 @@ dry-run: ## Run target in dry-run mode
 
 # Oracle WMS operations
 wms-connect: ## Test Oracle WMS connection
-	$(POETRY) run python -c "from flext_target_oracle_wms.client import test_connection; test_connection()"
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "from flext_target_oracle_wms.client import test_connection; test_connection()"
 
 wms-schema: ## Validate Oracle WMS schema
-	$(POETRY) run python -c "from flext_target_oracle_wms.schema import validate_schema; validate_schema()"
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "from flext_target_oracle_wms.schema import validate_schema; validate_schema()"
 
 wms-write-test: ## Test Oracle WMS write operations
-	$(POETRY) run python -c "from flext_target_oracle_wms.operations import test_write; test_write()"
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "from flext_target_oracle_wms.operations import test_write; test_write()"
 
 wms-entity-check: ## Test Oracle WMS entity validation
-	$(POETRY) run python -c "from flext_target_oracle_wms.entities import test_entities; test_entities()"
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "from flext_target_oracle_wms.entities import test_entities; test_entities()"
 
 wms-sync-test: ## Test Oracle WMS synchronization
-	$(POETRY) run python -c "from flext_target_oracle_wms.sync import test_sync; test_sync()"
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "from flext_target_oracle_wms.sync import test_sync; test_sync()"
 
 # Build
 build: ## Build package
@@ -122,14 +122,14 @@ deps-audit: ## Audit dependencies
 
 # Development
 shell: ## Open Python shell
-	$(POETRY) run python
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python
 
 pre-commit: ## Run pre-commit hooks
 	$(POETRY) run pre-commit run --all-files
 
 # Maintenance
 clean: ## Clean build artifacts
-	rm -rf build/ dist/ *.egg-info/ .pytest_cache/ htmlcov/ .coverage .mypy_cache/ .ruff_cache/
+	rm -rf build/ dist/ *.egg-info/ .pytest_cache/ htmlcov/ .coverage .mypy_cache/ .pyrefly_cache/ .ruff_cache/
 	rm -rf $(TARGET_STATE) logs/ *.log target_spec.json wms_schema_*.json
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 	find . -type f -name "*.pyc" -delete 2>/dev/null || true
@@ -143,7 +143,7 @@ reset: clean-all setup ## Reset project
 diagnose: ## Project diagnostics
 	@echo "Python: $$(python --version)"
 	@echo "Poetry: $$($(POETRY) --version)"
-	@echo "Singer SDK: $$($(POETRY) run python -c 'import singer_sdk; print(singer_sdk.__version__)' 2>/dev/null || echo 'Not available')"
+	@echo "Singer SDK: $$(PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c 'import singer_sdk; print(singer_sdk.__version__)' 2>/dev/null || echo 'Not available')"
 	@$(POETRY) env info
 
 doctor: diagnose check ## Health check

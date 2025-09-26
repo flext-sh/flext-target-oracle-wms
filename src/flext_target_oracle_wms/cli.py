@@ -10,6 +10,7 @@ import asyncio
 import json
 import sys
 from pathlib import Path
+from typing import override
 
 from flext_core import FlextResult, FlextTypes
 
@@ -24,12 +25,14 @@ from .target_client import SingerTargetOracleWMS
 class OracleWMSTargetCli:
     """Oracle WMS Target CLI using REAL flext-cli patterns."""
 
+    @override
     def __init__(self: object) -> None:
         """Initialize CLI with real flext-cli patterns."""
         self.name = "target-oracle-wms"
         self.description = "Oracle WMS Singer Target - Production Ready using REAL flext-oracle-wms API"
         self.version = "0.9.0"
 
+    @override
     async def execute(self, **kwargs: object) -> FlextResult[None]:
         """Execute target using REAL implementation.
 

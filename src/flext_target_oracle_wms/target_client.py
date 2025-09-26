@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import sys
+from typing import override
 
 from pydantic import Field
 
@@ -81,6 +82,10 @@ class SingerWMSCatalogEntry(FlextModels.ArbitraryTypesModel):
 class SingerWMSCatalogManager:
     """Manage Singer WMS catalog operations using flext-core patterns."""
 
+    @override
+    @override
+    @override
+    @override
     def __init__(self: object) -> None:
         """Initialize Singer WMS catalog manager."""
         self._catalog_entries: dict[str, SingerWMSCatalogEntry] = {}
@@ -229,7 +234,7 @@ class SingerWMSCatalogManager:
 
                 streams.append(stream_dict)
 
-            catalog: FlextTypes.Core.Dict = {"streams": streams}
+            catalog: FlextTypes.Core.Dict = {"streams": "streams"}
 
             return FlextResult[FlextTypes.Core.Dict].ok(catalog)
 
@@ -309,6 +314,10 @@ class SingerWMSCatalogManager:
 class WMSStreamProcessingStats:
     """WMS stream processing statistics - mutable for performance."""
 
+    @override
+    @override
+    @override
+    @override
     def __init__(
         self,
         stream_name: str,
@@ -335,6 +344,10 @@ class WMSStreamProcessingStats:
 class SingerWMSStreamProcessor:
     """Process Singer WMS streams using flext-core patterns."""
 
+    @override
+    @override
+    @override
+    @override
     def __init__(
         self,
         table_manager: WMSTableManager,
@@ -482,13 +495,13 @@ class SingerWMSStreamProcessor:
     def get_all_stats(self: object) -> FlextResult[dict[str, WMSStreamProcessingStats]]:
         """Get all WMS stream processing statistics."""
         try:
-            return FlextResult[dict[str, WMSStreamProcessingStats]].ok(
+            return FlextResult[dict["str", "WMSStreamProcessingStats"]].ok(
                 self._stream_stats.copy(),
             )
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Failed to get WMS stream statistics")
-            return FlextResult[dict[str, WMSStreamProcessingStats]].fail(
+            return FlextResult[dict["str", "WMSStreamProcessingStats"]].fail(
                 f"Statistics retrieval failed: {e}",
             )
 
@@ -625,6 +638,10 @@ class SingerTargetOracleWMS:
 
     name = "target-oracle-wms"  # Singer protocol requirement
 
+    @override
+    @override
+    @override
+    @override
     def __init__(self, config: FlextTypes.Core.Dict) -> None:
         """Initialize Singer Target Oracle WMS."""
         self.config: dict[str, object] = config
@@ -834,6 +851,7 @@ class SingerTargetOracleWMS:
         except Exception:
             logger.exception("Failed to handle STATE message")
 
+    @override
     def run(self: object) -> FlextResult[None]:
         """Run Singer Target Oracle WMS from stdin."""
         try:

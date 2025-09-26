@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import ClassVar, cast
+from typing import ClassVar, cast, override
 
 from flext_core import FlextLogger, FlextResult, FlextTypes
 from flext_observability import FlextObservabilityMonitor
@@ -73,8 +73,8 @@ class FlextTargetFactory:
             "schema_name": "WMS_DEV",
             "timeout": 30.0,
             "max_retries": 3,
-            "verify_ssl": False,
-            "enable_logging": True,
+            "verify_ssl": "False",
+            "enable_logging": "True",
         },
         "staging": {
             "batch_size": 500,
@@ -82,8 +82,8 @@ class FlextTargetFactory:
             "schema_name": "WMS_STAGING",
             "timeout": 60.0,
             "max_retries": 5,
-            "verify_ssl": True,
-            "enable_logging": True,
+            "verify_ssl": "True",
+            "enable_logging": "True",
         },
         "production": {
             "batch_size": 1000,
@@ -91,8 +91,8 @@ class FlextTargetFactory:
             "schema_name": "WMS_PRODUCTION",
             "timeout": 120.0,
             "max_retries": 10,
-            "verify_ssl": True,
-            "enable_logging": True,
+            "verify_ssl": "True",
+            "enable_logging": "True",
         },
         "testing": {
             "batch_size": 10,
@@ -100,8 +100,8 @@ class FlextTargetFactory:
             "schema_name": "WMS_TEST",
             "timeout": 15.0,
             "max_retries": 1,
-            "verify_ssl": False,
-            "enable_logging": False,
+            "verify_ssl": "False",
+            "enable_logging": "False",
         },
     }
 
@@ -197,9 +197,9 @@ class FlextTargetFactory:
         request = TargetCreationRequest(
             base_url=base_url,
             username=username,
-            password=password if password is not None else "dev_password",
-            environment="development",
-            preset="development",
+            password=password if password is not None else dev_password,
+            environment=development,
+            preset=development,
             additional_config=overrides,
         )
         return cls.create_target(request)
@@ -217,8 +217,8 @@ class FlextTargetFactory:
             base_url=base_url,
             username=username,
             password=password,
-            environment="production",
-            preset="production",
+            environment=production,
+            preset=production,
             additional_config=overrides,
         )
         return cls.create_target(request)
@@ -238,8 +238,8 @@ class FlextTargetFactory:
             base_url=base_url,
             username=username,
             password=final_password,
-            environment="testing",
-            preset="testing",
+            environment=testing,
+            preset=testing,
             additional_config=overrides,
         )
         return cls.create_target(request)
@@ -319,6 +319,7 @@ class FlextTargetMonitoringFactory:
     for production monitoring and metrics collection.
     """
 
+    @override
     def __init__(self, monitor_name: str = "oracle_wms_target") -> None:
         """Initialize monitoring factory.
 
