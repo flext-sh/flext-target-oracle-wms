@@ -13,6 +13,7 @@ from .factory import (
     create_monitored_oracle_wms_target,
     create_oracle_wms_target,
 )
+from .models import FlextTargetOracleWmsModels
 from .target_client import (
     SingerTargetOracleWMS,
     SingerWMSCatalogManager,
@@ -24,10 +25,13 @@ from .target_models import (
     WMSTableManager,
     WMSTypeConverter,
 )
+from .utilities import FlextTargetOracleWmsUtilities
 
 __all__: list[str] = [
     "FlextTargetFactory",
     "FlextTargetMonitoringFactory",
+    "FlextTargetOracleWmsModels",  # Primary [Project]Models class
+    "FlextTargetOracleWmsUtilities",
     "OracleWMSTargetCli",
     "SingerTargetOracleWMS",
     "SingerWMSCatalogManager",
