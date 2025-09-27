@@ -12,7 +12,7 @@ from typing import override
 
 from pydantic import Field
 
-from flext_core import FlextLogger, FlextModels, FlextResult, FlextTypes
+from flext_core import FlextConfig, FlextLogger, FlextResult, FlextTypes
 from flext_oracle_wms import (
     FlextOracleWmsApiVersion,
     FlextOracleWmsClientConfig,
@@ -27,7 +27,7 @@ from .target_models import (
 logger = FlextLogger(__name__)
 
 
-class SingerWMSCatalogEntry(FlextModels.ArbitraryTypesModel):
+class SingerWMSCatalogEntry(FlextConfig):
     """Singer WMS catalog entry using flext-core patterns."""
 
     tap_stream_id: str

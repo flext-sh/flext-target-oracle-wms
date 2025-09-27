@@ -197,9 +197,9 @@ class FlextTargetFactory:
         request = TargetCreationRequest(
             base_url=base_url,
             username=username,
-            password=password if password is not None else dev_password,
-            environment=development,
-            preset=development,
+            password=password if password is not None else "dev_password",
+            environment="development",
+            preset="development",
             additional_config=overrides,
         )
         return cls.create_target(request)
@@ -238,8 +238,8 @@ class FlextTargetFactory:
             base_url=base_url,
             username=username,
             password=final_password,
-            environment=testing,
-            preset=testing,
+            environment="testing",
+            preset="testing",
             additional_config=overrides,
         )
         return cls.create_target(request)
