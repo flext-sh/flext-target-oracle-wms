@@ -6,10 +6,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from datetime import UTC
+from datetime import UTC, datetime
 from typing import Any, ClassVar
 
 from flext_core import FlextResult, FlextUtilities
+from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants
 
 
 class FlextTargetOracleWmsUtilities(FlextUtilities):
@@ -325,8 +326,6 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                     transformed["company_code"] = company_code
 
                 # Add WMS audit fields
-                from datetime import datetime
-
                 current_time = datetime.now(UTC).isoformat()
                 transformed["load_timestamp"] = current_time
                 transformed["load_source"] = "SINGER_TARGET"
@@ -453,10 +452,17 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                 hints = {}
 
                 # Base hints for WMS operations
-                if operation_type.upper() == "INSERT" and record_count > 1000:
+                if (
+                    operation_type.upper() == "INSERT"
+                    and record_count
+                    > FlextTargetOracleWmsConstants.OracleWms.BULK_OPERATION_THRESHOLD
+                ):
                     hints["bulk_collect"] = "FORALL"
                     hints["append_hint"] = "APPEND"
-                    if record_count > 5000:
+                    if (
+                        record_count
+                        > FlextTargetOracleWmsConstants.OracleWms.PARALLEL_OPERATION_THRESHOLD
+                    ):
                         hints["parallel_hint"] = (
                             f"PARALLEL({FlextTargetOracleWmsUtilities.WMS_DEFAULT_PARALLEL_DEGREE})"
                         )
@@ -471,7 +477,10 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                     hints["index_hint"] = "INDEX(ord, WMS_ORDER_STATUS_IDX)"
 
                 # Performance optimization hints
-                if record_count > 10000:
+                if (
+                    record_count
+                    > FlextTargetOracleWmsConstants.OracleWms.HIGH_VOLUME_THRESHOLD
+                ):
                     hints["memory_hint"] = "USE_HASH(a,b)"
                     hints["temp_tablespace"] = "TEMP"
 
@@ -646,9 +655,13 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                 "parallel_degree",
                 FlextTargetOracleWmsUtilities.WMS_DEFAULT_PARALLEL_DEGREE,
             )
-            if parallel_degree <= 0 or parallel_degree > 32:
+            if (
+                parallel_degree <= 0
+                or parallel_degree
+                > FlextTargetOracleWmsConstants.OracleWms.MAX_PARALLEL_DEGREE
+            ):
                 return FlextResult[dict[str, Any]].fail(
-                    "Parallel degree must be between 1 and 32"
+                    f"Parallel degree must be between 1 and {FlextTargetOracleWmsConstants.OracleWms.MAX_PARALLEL_DEGREE}"
                 )
 
             # Validate timeout
@@ -656,9 +669,13 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                 "connection_timeout",
                 FlextTargetOracleWmsUtilities.WMS_DEFAULT_CONNECTION_TIMEOUT,
             )
-            if timeout <= 0 or timeout > 600:
+            if (
+                timeout <= 0
+                or timeout
+                > FlextTargetOracleWmsConstants.OracleWms.MAX_CONNECTION_TIMEOUT
+            ):
                 return FlextResult[dict[str, Any]].fail(
-                    "Connection timeout must be between 1 and 600 seconds"
+                    f"Connection timeout must be between 1 and {FlextTargetOracleWmsConstants.OracleWms.MAX_CONNECTION_TIMEOUT} seconds"
                 )
 
             return FlextResult[dict[str, Any]].ok(config)
@@ -682,8 +699,6 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
 
             """
             try:
-                from datetime import datetime
-
                 state = {
                     "entities": entity_states,
                     "target_type": "oracle_wms",
@@ -718,8 +733,6 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
 
             """
             try:
-                from datetime import datetime
-
                 updated_state = current_state.copy()
 
                 if "entities" not in updated_state:
@@ -871,3 +884,8 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
     ) -> FlextResult[dict[str, Any]]:
         """Proxy to ConfigValidation.validate_wms_connection_config."""
         return self.ConfigValidation.validate_wms_connection_config(config)
+
+
+__all__ = [
+    "FlextTargetOracleWmsUtilities",
+]

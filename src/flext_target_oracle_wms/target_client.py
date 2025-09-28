@@ -18,8 +18,7 @@ from flext_oracle_wms import (
     FlextOracleWmsClientConfig,
     create_oracle_wms_client,
 )
-
-from .target_models import (
+from flext_target_oracle_wms.target_models import (
     WMSDataTransformer,
     WMSTableManager,
 )
@@ -82,9 +81,6 @@ class SingerWMSCatalogEntry(FlextConfig):
 class SingerWMSCatalogManager:
     """Manage Singer WMS catalog operations using flext-core patterns."""
 
-    @override
-    @override
-    @override
     @override
     def __init__(self: object) -> None:
         """Initialize Singer WMS catalog manager."""
@@ -315,9 +311,6 @@ class WMSStreamProcessingStats:
     """WMS stream processing statistics - mutable for performance."""
 
     @override
-    @override
-    @override
-    @override
     def __init__(
         self,
         stream_name: str,
@@ -344,9 +337,6 @@ class WMSStreamProcessingStats:
 class SingerWMSStreamProcessor:
     """Process Singer WMS streams using flext-core patterns."""
 
-    @override
-    @override
-    @override
     @override
     def __init__(
         self,
@@ -638,9 +628,6 @@ class SingerTargetOracleWMS:
 
     name = "target-oracle-wms"  # Singer protocol requirement
 
-    @override
-    @override
-    @override
     @override
     def __init__(self, config: FlextTypes.Core.Dict) -> None:
         """Initialize Singer Target Oracle WMS."""

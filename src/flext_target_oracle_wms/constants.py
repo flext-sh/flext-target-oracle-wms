@@ -18,8 +18,6 @@ class FlextTargetOracleWmsConstants(FlextConstants):
     comprehensive organization, validation limits, and security considerations.
     """
 
-    # Project identification (Final attributes inherited from FlextConstants)
-    # PROJECT_PREFIX, PROJECT_NAME inherited from FlextConstants
     PROJECT_VERSION: Final[str] = "1.0.0"
     PROJECT_DESCRIPTION: Final[str] = "Oracle WMS target for FLEXT data pipeline"
 
@@ -59,6 +57,21 @@ class FlextTargetOracleWmsConstants(FlextConstants):
         # SSL configuration
         DEFAULT_SSL_VERIFY: Final[bool] = True
         DEFAULT_SSL_TIMEOUT: Final[int] = 30
+
+        # Performance thresholds
+        BULK_OPERATION_THRESHOLD: Final[int] = 1000
+        PARALLEL_OPERATION_THRESHOLD: Final[int] = 5000
+        HIGH_VOLUME_THRESHOLD: Final[int] = 10000
+
+        # Validation limits
+        MAX_PARALLEL_DEGREE: Final[int] = 32
+        MAX_CONNECTION_TIMEOUT: Final[int] = 600
+
+        # Location validation
+        MIN_LOCATION_PARTS: Final[int] = 2
+
+        # Processing time validation
+        PROCESSING_TIME_TOLERANCE: Final[float] = 0.1
 
     class LoadMethods:
         """Data load method constants."""

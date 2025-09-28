@@ -6,31 +6,31 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from .cli import OracleWMSTargetCli, main
-from .factory import (
+from flext_target_oracle_wms.cli import OracleWMSTargetCli, main
+from flext_target_oracle_wms.factory import (
     FlextTargetFactory,
     FlextTargetMonitoringFactory,
     create_monitored_oracle_wms_target,
     create_oracle_wms_target,
 )
-from .models import FlextTargetOracleWmsModels
-from .target_client import (
+from flext_target_oracle_wms.models import FlextTargetOracleWmsModels
+from flext_target_oracle_wms.target_client import (
     SingerTargetOracleWMS,
     SingerWMSCatalogManager,
     SingerWMSStreamProcessor,
 )
-from .target_models import (
+from flext_target_oracle_wms.target_models import (
     WMSDataTransformer,
     WMSSchemaMapper,
     WMSTableManager,
     WMSTypeConverter,
 )
-from .utilities import FlextTargetOracleWmsUtilities
+from flext_target_oracle_wms.utilities import FlextTargetOracleWmsUtilities
 
 __all__: list[str] = [
     "FlextTargetFactory",
     "FlextTargetMonitoringFactory",
-    "FlextTargetOracleWmsModels",  # Primary [Project]Models class
+    "FlextTargetOracleWmsModels",
     "FlextTargetOracleWmsUtilities",
     "OracleWMSTargetCli",
     "SingerTargetOracleWMS",

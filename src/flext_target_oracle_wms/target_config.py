@@ -32,6 +32,7 @@ from flext_core import (
     FlextTypes,
 )
 from flext_oracle_wms import FlextOracleWmsApiVersion, FlextOracleWmsClientConfig
+from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants
 
 logger = FlextLogger(__name__)
 
@@ -44,7 +45,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
     """
 
     model_config = SettingsConfigDict(
-        env_prefix=FLEXT_TARGET_ORACLE_WMS_,
+        env_prefix="FLEXT_TARGET_ORACLE_WMS_",
         case_sensitive=False,
         env_file=".env",
         env_file_encoding="utf-8",
@@ -143,7 +144,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
         le=100000,
     )
     load_method: str = Field(
-        default=APPEND_ONLY,
+        default=FlextTargetOracleWmsConstants.LoadMethods.APPEND_ONLY,
         description="Data load method",
         min_length=1,
         max_length=50,
@@ -154,7 +155,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
         max_length=50,
     )
     default_target_schema: str = Field(
-        default=WMS_TARGET,
+        default="WMS_TARGET",
         description="Default schema for target tables",
         min_length=1,
         max_length=128,
@@ -588,6 +589,69 @@ class FlextTargetOracleWmsConfig(FlextConfig):
                 "plugin_timeout": self.plugin_timeout,
             },
         }
+
+    @classmethod
+    def get_global_instance(cls) -> Self:
+        """Get the global singleton instance using enhanced FlextConfig pattern."""
+        return cls.get_or_create_shared_instance(project_name="flext-target-oracle-wms")
+
+    @classmethod
+    def create_for_development(cls, **overrides: object) -> Self:
+        """Create configuration for development environment."""
+        dev_overrides: dict[str, object] = {
+            "batch_size": 100,
+            "table_prefix": "DEV_",
+            "default_target_schema": "WMS_DEV",
+            "timeout": 30.0,
+            "max_retries": 3,
+            "verify_ssl": False,
+            "debug_mode": True,
+            "mock_mode": False,
+            **overrides,
+        }
+        return cls.get_or_create_shared_instance(
+            project_name="flext-target-oracle-wms", **dev_overrides
+        )
+
+    @classmethod
+    def create_for_production(cls, **overrides: object) -> Self:
+        """Create configuration for production environment."""
+        prod_overrides: dict[str, object] = {
+            "batch_size": 1000,
+            "table_prefix": "PROD_",
+            "default_target_schema": "WMS_PRODUCTION",
+            "timeout": 120.0,
+            "max_retries": 10,
+            "verify_ssl": True,
+            "debug_mode": False,
+            "mock_mode": False,
+            "encryption_enabled": True,
+            "audit_logging": True,
+            **overrides,
+        }
+        return cls.get_or_create_shared_instance(
+            project_name="flext-target-oracle-wms", **prod_overrides
+        )
+
+    @classmethod
+    def create_for_testing(cls, **overrides: object) -> Self:
+        """Create configuration for testing environment."""
+        test_overrides: dict[str, object] = {
+            "batch_size": 10,
+            "table_prefix": "TEST_",
+            "default_target_schema": "WMS_TEST",
+            "timeout": 15.0,
+            "max_retries": 1,
+            "verify_ssl": False,
+            "debug_mode": True,
+            "mock_mode": True,
+            "encryption_enabled": False,
+            "audit_logging": False,
+            **overrides,
+        }
+        return cls.get_or_create_shared_instance(
+            project_name="flext-target-oracle-wms", **test_overrides
+        )
 
 
 def create_config_from_dict(
