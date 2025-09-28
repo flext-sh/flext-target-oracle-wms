@@ -13,13 +13,7 @@ from pathlib import Path
 from typing import override
 
 from flext_core import FlextResult, FlextTypes
-
-from .target_client import SingerTargetOracleWMS
-
-# Removed object import - using specific types from flext-core
-# DRY: Use only essential imports - avoid FlextCliSettings env var conflicts
-
-# DRY: Use ONLY the production-ready implementation
+from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 
 class OracleWMSTargetCli:

@@ -14,8 +14,7 @@ from typing import ClassVar, cast, override
 
 from flext_core import FlextLogger, FlextResult, FlextTypes
 from flext_observability import FlextObservabilityMonitor
-
-from .target_client import SingerTargetOracleWMS
+from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 
 @dataclass
@@ -217,8 +216,8 @@ class FlextTargetFactory:
             base_url=base_url,
             username=username,
             password=password,
-            environment=production,
-            preset=production,
+            environment="production",
+            preset="production",
             additional_config=overrides,
         )
         return cls.create_target(request)

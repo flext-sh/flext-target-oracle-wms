@@ -6,22 +6,14 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
+import re
 from datetime import UTC, datetime
 from typing import Literal
 
 from pydantic import Field, SecretStr
 
-from flext_core import FlextModels, FlextResult, FlextUtilities
-
-# Import individual classes for backward compatibility
-from .target_models import (
-    WMSDataTransformer,
-    WMSSchemaMapper,
-    WMSTableManager,
-    WMSTypeConverter,
-    get_oracle_type_mapping,
-    get_wms_metadata_columns,
-)
+from flext_core import FlextModels, FlextResult
+from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants
 
 
 class FlextTargetOracleWmsModels(FlextModels):
@@ -189,7 +181,10 @@ class FlextTargetOracleWmsModels(FlextModels):
                 # Validate location ID format (typically hierarchical)
                 if "-" in self.location_id:
                     parts = self.location_id.split("-")
-                    if len(parts) < 2:
+                    if (
+                        len(parts)
+                        < FlextTargetOracleWmsConstants.OracleWms.MIN_LOCATION_PARTS
+                    ):
                         errors.append(
                             "Location ID with hyphens must have at least 2 parts"
                         )
@@ -415,18 +410,20 @@ class FlextTargetOracleWmsModels(FlextModels):
                     errors.append(f"Status must be one of: {', '.join(valid_statuses)}")
 
                 # Validate date logic
-                if self.ship_date and self.requested_ship_date:
-                    if self.ship_date < self.requested_ship_date:
-                        errors.append("Ship date cannot be before requested ship date")
+                if (
+                    self.ship_date
+                    and self.requested_ship_date
+                    and self.ship_date < self.requested_ship_date
+                ):
+                    errors.append("Ship date cannot be before requested ship date")
 
                 # Validate postal code format (basic US format)
-                if self.ship_to_country == "US":
-                    import re
-
-                    if not re.match(r"^\d{5}(-\d{4})?$", self.ship_to_postal_code):
-                        errors.append(
-                            "US postal code must be in format 12345 or 12345-6789"
-                        )
+                if self.ship_to_country == "US" and not re.match(
+                    r"^\d{5}(-\d{4})?$", self.ship_to_postal_code
+                ):
+                    errors.append(
+                        "US postal code must be in format 12345 or 12345-6789"
+                    )
 
                 if errors:
                     return FlextResult[None].fail("; ".join(errors))
@@ -536,7 +533,10 @@ class FlextTargetOracleWmsModels(FlextModels):
                     expected_avg = (
                         self.processing_duration_ms / self.total_records_processed
                     )
-                    if abs(self.average_processing_time_ms - expected_avg) > 0.1:
+                    if (
+                        abs(self.average_processing_time_ms - expected_avg)
+                        > FlextTargetOracleWmsConstants.OracleWms.PROCESSING_TIME_TOLERANCE
+                    ):
                         return FlextResult[None].fail(
                             "Average processing time inconsistent with total duration"
                         )
@@ -604,14 +604,6 @@ class FlextTargetOracleWmsModels(FlextModels):
         )
 
 
-# Backward compatibility exports
 __all__ = [
     "FlextTargetOracleWmsModels",
-    # Legacy exports for backward compatibility
-    "WMSDataTransformer",
-    "WMSSchemaMapper",
-    "WMSTableManager",
-    "WMSTypeConverter",
-    "get_oracle_type_mapping",
-    "get_wms_metadata_columns",
 ]
