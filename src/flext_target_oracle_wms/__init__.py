@@ -14,6 +14,7 @@ from flext_target_oracle_wms.factory import (
     create_oracle_wms_target,
 )
 from flext_target_oracle_wms.models import FlextTargetOracleWmsModels
+from flext_target_oracle_wms.protocols import FlextTargetOracleWmsProtocols
 from flext_target_oracle_wms.target_client import (
     SingerTargetOracleWMS,
     SingerWMSCatalogManager,
@@ -31,6 +32,7 @@ __all__: list[str] = [
     "FlextTargetFactory",
     "FlextTargetMonitoringFactory",
     "FlextTargetOracleWmsModels",
+    "FlextTargetOracleWmsProtocols",
     "FlextTargetOracleWmsUtilities",
     "OracleWMSTargetCli",
     "SingerTargetOracleWMS",
