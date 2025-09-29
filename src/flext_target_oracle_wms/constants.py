@@ -16,7 +16,12 @@ class FlextTargetOracleWmsConstants(FlextConstants):
 
     Enhanced Oracle WMS Target constants extending FlextConstants with
     comprehensive organization, validation limits, and security considerations.
+
+    Composes with FlextOracleWmsConstants to avoid duplication and ensure consistency.
     """
+
+    # Import Oracle WMS-specific constants from flext-oracle-wms (composition pattern)
+    from flext_oracle_wms.constants import FlextOracleWmsConstants
 
     PROJECT_VERSION: Final[str] = "1.0.0"
     PROJECT_DESCRIPTION: Final[str] = "Oracle WMS target for FLEXT data pipeline"
@@ -24,20 +29,28 @@ class FlextTargetOracleWmsConstants(FlextConstants):
     class OracleWms:
         """Oracle WMS specific constants with comprehensive configuration."""
 
-        # Connection defaults
-        DEFAULT_TIMEOUT: Final[int] = 30
-        DEFAULT_MAX_RETRIES: Final[int] = 3
-        DEFAULT_BATCH_SIZE: Final[int] = 1000
-        DEFAULT_CONNECTION_POOL_SIZE: Final[int] = 10
-        DEFAULT_CONNECTION_POOL_MAX: Final[int] = 20
+        # Connection defaults from FlextOracleWmsConstants
+        DEFAULT_TIMEOUT: Final[int] = FlextOracleWmsConstants.Connection.DEFAULT_TIMEOUT
+        DEFAULT_MAX_RETRIES: Final[int] = (
+            FlextOracleWmsConstants.Connection.DEFAULT_MAX_RETRIES
+        )
+        DEFAULT_BATCH_SIZE: Final[int] = (
+            FlextOracleWmsConstants.Processing.DEFAULT_BATCH_SIZE
+        )
+        DEFAULT_CONNECTION_POOL_SIZE: Final[int] = (
+            FlextOracleWmsConstants.Connection.DEFAULT_POOL_SIZE
+        )
+        DEFAULT_CONNECTION_POOL_MAX: Final[int] = (
+            FlextOracleWmsConstants.Connection.MAX_POOL_SIZE
+        )
 
         # Connection limits
         MIN_TIMEOUT: Final[int] = 1
-        MAX_TIMEOUT: Final[int] = 3600
+        MAX_TIMEOUT: Final[int] = FlextOracleWmsConstants.Connection.MAX_TIMEOUT
         MIN_MAX_RETRIES: Final[int] = 0
         MAX_MAX_RETRIES: Final[int] = 10
         MIN_BATCH_SIZE: Final[int] = 1
-        MAX_BATCH_SIZE: Final[int] = 100000
+        MAX_BATCH_SIZE: Final[int] = FlextOracleWmsConstants.Processing.MAX_BATCH_SIZE
         MIN_CONNECTION_POOL_SIZE: Final[int] = 1
         MAX_CONNECTION_POOL_SIZE: Final[int] = 100
         MIN_CONNECTION_POOL_MAX: Final[int] = 1
@@ -50,16 +63,22 @@ class FlextTargetOracleWmsConstants(FlextConstants):
         MAX_TABLE_NAME_LENGTH: Final[int] = 128
         MAX_SCHEMA_NAME_LENGTH: Final[int] = 128
 
-        # API configuration
-        DEFAULT_API_VERSION: Final[str] = "LGF_V10"
-        SUPPORTED_API_VERSIONS: Final[list[str]] = ["LGF_V10", "LGF_V11", "LGF_V12"]
+        # API configuration from FlextOracleWmsConstants
+        DEFAULT_API_VERSION: Final[str] = FlextOracleWmsConstants.Api.DEFAULT_VERSION
+        SUPPORTED_API_VERSIONS: Final[list[str]] = (
+            FlextOracleWmsConstants.Api.SUPPORTED_VERSIONS
+        )
 
         # SSL configuration
         DEFAULT_SSL_VERIFY: Final[bool] = True
-        DEFAULT_SSL_TIMEOUT: Final[int] = 30
+        DEFAULT_SSL_TIMEOUT: Final[int] = (
+            FlextOracleWmsConstants.Connection.DEFAULT_TIMEOUT
+        )
 
-        # Performance thresholds
-        BULK_OPERATION_THRESHOLD: Final[int] = 1000
+        # Performance thresholds from FlextOracleWmsConstants
+        BULK_OPERATION_THRESHOLD: Final[int] = (
+            FlextOracleWmsConstants.Processing.BULK_THRESHOLD
+        )
         PARALLEL_OPERATION_THRESHOLD: Final[int] = 5000
         HIGH_VOLUME_THRESHOLD: Final[int] = 10000
 
@@ -123,10 +142,12 @@ class FlextTargetOracleWmsConstants(FlextConstants):
             BATCH_STATUS_CANCELLED,
         }
 
-        # Batch size limits
+        # Batch size limits from FlextOracleWmsConstants
         MIN_BATCH_SIZE: Final[int] = 1
-        MAX_BATCH_SIZE: Final[int] = 100000
-        DEFAULT_BATCH_SIZE: Final[int] = 1000
+        MAX_BATCH_SIZE: Final[int] = FlextOracleWmsConstants.Processing.MAX_BATCH_SIZE
+        DEFAULT_BATCH_SIZE: Final[int] = (
+            FlextOracleWmsConstants.Processing.DEFAULT_BATCH_SIZE
+        )
         OPTIMAL_BATCH_SIZE: Final[int] = 5000
 
         # Batch processing timeouts
@@ -135,7 +156,9 @@ class FlextTargetOracleWmsConstants(FlextConstants):
         MAX_BATCH_TIMEOUT: Final[int] = 3600  # 1 hour
 
         # Batch retry configuration
-        DEFAULT_BATCH_RETRIES: Final[int] = 3
+        DEFAULT_BATCH_RETRIES: Final[int] = (
+            FlextOracleWmsConstants.Connection.DEFAULT_MAX_RETRIES
+        )
         MAX_BATCH_RETRIES: Final[int] = 10
         BATCH_RETRY_DELAY: Final[float] = 5.0  # seconds
 
