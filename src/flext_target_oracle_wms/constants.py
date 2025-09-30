@@ -9,6 +9,7 @@ from __future__ import annotations
 from typing import Final
 
 from flext_core import FlextConstants
+from flext_oracle_wms import FlextOracleWmsConstants
 
 
 class FlextTargetOracleWmsConstants(FlextConstants):
