@@ -43,7 +43,7 @@ class TestSingerWMSCatalogManagerComprehensive:
         result = manager.get_schema_for_stream("nonexistent_stream")
         assert not result.success
         assert result.error is not None
-        assert "not found" in result.error.lower()
+        assert result.error is not None and "not found" in result.error.lower()
 
     def test_get_key_properties_existing(self) -> None:
         """Test getting key properties for existing stream."""
@@ -67,7 +67,7 @@ class TestSingerWMSCatalogManagerComprehensive:
         result = manager.get_key_properties("nonexistent_stream")
         assert not result.success
         assert result.error is not None
-        assert "not found" in result.error.lower()
+        assert result.error is not None and "not found" in result.error.lower()
 
     def test_update_stream_metadata_existing(self) -> None:
         """Test updating metadata for existing stream."""
@@ -104,7 +104,7 @@ class TestSingerWMSCatalogManagerComprehensive:
         result = manager.update_stream_metadata("nonexistent_stream", metadata)
         assert not result.success
         assert result.error is not None
-        assert "not found" in result.error.lower()
+        assert result.error is not None and "not found" in result.error.lower()
 
     def test_to_singer_catalog_empty(self) -> None:
         """Test converting empty catalog to Singer format."""

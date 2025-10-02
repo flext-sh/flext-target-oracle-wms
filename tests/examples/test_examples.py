@@ -142,12 +142,13 @@ class TestExamplesCodeQuality:
 
             # Check for functions
             has_function = False
+            has_await = False
 
             for node in ast.walk(tree):
                 if isinstance(node, ast.FunctionDef):
                     has_function = True
                 elif isinstance(node, ast.Await):
-                    pass
+                    has_await = True
 
             # Examples should use patterns for production readiness
             if "" in content.lower():

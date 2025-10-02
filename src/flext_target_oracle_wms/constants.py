@@ -8,8 +8,9 @@ from __future__ import annotations
 
 from typing import Final
 
+from flext_oracle_wms.constants import FlextOracleWmsConstants
+
 from flext_core import FlextConstants
-from flext_oracle_wms import FlextOracleWmsConstants
 
 
 class FlextTargetOracleWmsConstants(FlextConstants):
@@ -20,9 +21,6 @@ class FlextTargetOracleWmsConstants(FlextConstants):
 
     Composes with FlextOracleWmsConstants to avoid duplication and ensure consistency.
     """
-
-    # Import Oracle WMS-specific constants from flext-oracle-wms (composition pattern)
-    from flext_oracle_wms.constants import FlextOracleWmsConstants
 
     PROJECT_VERSION: Final[str] = "1.0.0"
     PROJECT_DESCRIPTION: Final[str] = "Oracle WMS target for FLEXT data pipeline"

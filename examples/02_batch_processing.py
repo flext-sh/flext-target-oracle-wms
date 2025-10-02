@@ -11,8 +11,6 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import time
-from collections.abc import Coroutine
-from typing import cast
 
 from flext_core import FlextLogger, FlextTypes
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
@@ -161,7 +159,7 @@ def _process_batch_size(target: SingerTargetOracleWMS, batch_size: int) -> None:
     )
 
     # Memory cleanup between batches
-    sleep(1)
+    time.sleep(1)
 
 
 @flext_monitor_function(monitor)
@@ -328,7 +326,7 @@ def demonstrate_concurrent_batching() -> None:
             schema_tasks.append(task)
 
         # Execute schema setup concurrently
-        schema_results = gather(*schema_tasks, return_exceptions=True)
+        schema_results = [task() for task in schema_tasks]
 
         successful_streams = []
         for i, result in enumerate(schema_results):
@@ -378,7 +376,7 @@ def demonstrate_concurrent_batching() -> None:
         ]
 
         concurrent_start = time.time()
-        gather(*concurrent_tasks)
+        [task() for task in concurrent_tasks]
         concurrent_time = time.time() - concurrent_start
 
         total_records = len(successful_streams) * 1000
@@ -400,10 +398,6 @@ def demonstrate_concurrent_batching() -> None:
 if __name__ == "__main__":
     """Run batch processing examples."""
 
-    run(
-        cast("Coroutine[object, object, None]", run_performance_batch_example()),
-    )
+    run_performance_batch_example()
     demonstrate_stream_processor_batching()
-    run(
-        cast("Coroutine[object, object, None]", demonstrate_concurrent_batching()),
-    )
+    demonstrate_concurrent_batching()

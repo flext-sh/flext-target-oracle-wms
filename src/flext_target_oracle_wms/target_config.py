@@ -12,7 +12,7 @@ from __future__ import annotations
 import warnings
 from datetime import datetime
 from pathlib import Path
-from typing import Any, ClassVar, Self
+from typing import ClassVar, Self
 
 from pydantic import (
     Field,
@@ -374,7 +374,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
         return self.memory_limit_mb * 1024 * 1024
 
     # Enhanced preset configurations
-    PRESETS: ClassVar[dict[str, dict[str, Any]]] = {
+    PRESETS: ClassVar[dict[str, dict[str, object]]] = {
         "development": {
             "batch_size": 100,
             "table_prefix": "DEV_",
@@ -545,7 +545,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
                 f"Failed to apply preset {preset_name}: {e}"
             )
 
-    def get_config_summary(self) -> dict[str, Any]:
+    def get_config_summary(self) -> dict[str, object]:
         """Get comprehensive configuration summary."""
         return {
             "connection": {

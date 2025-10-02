@@ -11,7 +11,6 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import os
-from collections.abc import Coroutine
 from datetime import UTC, datetime
 from typing import cast
 
@@ -391,7 +390,5 @@ def demonstrate_custom_components() -> None:
 if __name__ == "__main__":
     """Run advanced configuration examples."""
 
-    run(
-        cast("Coroutine[object, object, None]", run_advanced_configuration_example()),
-    )
+    run_advanced_configuration_example()
     demonstrate_custom_components()

@@ -470,7 +470,7 @@ class TestSingerWMSStreamProcessorComprehensive:
         result = processor.process_record("exception_stream", record)
         assert not result.success
         assert result.error is not None
-        assert "Record processing failed" in result.error
+        assert result.error is not None and "Record processing failed" in result.error
 
         # Verify stats reflect the failure
         stats_result = processor.get_stream_stats("exception_stream")
@@ -647,7 +647,7 @@ class TestSingerWMSStreamProcessorComprehensive:
         result = stream_processor.finalize_stream("nonexistent_stream")
         assert not result.success
         assert result.error is not None
-        assert "not found" in result.error.lower()
+        assert result.error is not None and "not found" in result.error.lower()
 
     def test_finalize_stream_exception_handling(
         self,
