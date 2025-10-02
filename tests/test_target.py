@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -33,8 +33,7 @@ class TestSingerTargetOracleWMSComprehensive:
             "default_target_schema": "WMS_TEST",
         }
 
-    @pytest.mark.asyncio
-    async def test_setup_with_oracle_client_failure(
+    def test_setup_with_oracle_client_failure(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -45,17 +44,16 @@ class TestSingerTargetOracleWMSComprehensive:
         with patch.object(
             target.oracle_client,
             "start",
-            new_callable=AsyncMock,
+            new_callable=Mock,
         ) as mock_start:
             mock_start.return_value = FlextResult[None].fail("Connection failed")
 
-            result = await target.setup()
+            result = target.setup()
             assert not result.success
             assert result.error is not None
             assert "Connection failed" in result.error
 
-    @pytest.mark.asyncio
-    async def test_setup_with_exception(
+    def test_setup_with_exception(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -66,17 +64,16 @@ class TestSingerTargetOracleWMSComprehensive:
         with patch.object(
             target.oracle_client,
             "start",
-            new_callable=AsyncMock,
+            new_callable=Mock,
         ) as mock_start:
             mock_start.side_effect = RuntimeError("Unexpected error")
 
-            result = await target.setup()
+            result = target.setup()
             assert not result.success
             assert result.error is not None
             assert "Setup failed" in result.error
 
-    @pytest.mark.asyncio
-    async def test_process_schema_message_invalid_type(
+    def test_process_schema_message_invalid_type(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -89,13 +86,12 @@ class TestSingerTargetOracleWMSComprehensive:
             "schema": {"type": "object"},
         }
 
-        result = await target.process_schema_message(invalid_message)
+        result = target.process_schema_message(invalid_message)
         assert not result.success
         assert result.error is not None
         assert "Not a SCHEMA message" in result.error
 
-    @pytest.mark.asyncio
-    async def test_process_schema_message_missing_stream(
+    def test_process_schema_message_missing_stream(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -108,13 +104,12 @@ class TestSingerTargetOracleWMSComprehensive:
             "schema": {"type": "object"},
         }
 
-        result = await target.process_schema_message(invalid_message)
+        result = target.process_schema_message(invalid_message)
         assert not result.success
         assert result.error is not None
         assert "missing stream or schema" in result.error
 
-    @pytest.mark.asyncio
-    async def test_process_schema_message_missing_schema(
+    def test_process_schema_message_missing_schema(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -127,13 +122,12 @@ class TestSingerTargetOracleWMSComprehensive:
             # Missing schema
         }
 
-        result = await target.process_schema_message(invalid_message)
+        result = target.process_schema_message(invalid_message)
         assert not result.success
         assert result.error is not None
         assert "missing stream or schema" in result.error
 
-    @pytest.mark.asyncio
-    async def test_process_schema_message_catalog_failure(
+    def test_process_schema_message_catalog_failure(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -150,13 +144,12 @@ class TestSingerTargetOracleWMSComprehensive:
                 "schema": {"type": "object", "properties": {"id": {"type": "integer"}}},
             }
 
-            result = await target.process_schema_message(schema_message)
+            result = target.process_schema_message(schema_message)
             assert not result.success
             assert result.error is not None
             assert "Catalog add failed" in result.error
 
-    @pytest.mark.asyncio
-    async def test_process_schema_message_stream_init_failure(
+    def test_process_schema_message_stream_init_failure(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -173,13 +166,12 @@ class TestSingerTargetOracleWMSComprehensive:
                 "schema": {"type": "object", "properties": {"id": {"type": "integer"}}},
             }
 
-            result = await target.process_schema_message(schema_message)
+            result = target.process_schema_message(schema_message)
             assert not result.success
             assert result.error is not None
             assert "Stream init failed" in result.error
 
-    @pytest.mark.asyncio
-    async def test_process_schema_message_table_creation_failure(
+    def test_process_schema_message_table_creation_failure(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -199,13 +191,12 @@ class TestSingerTargetOracleWMSComprehensive:
                 "schema": {"type": "object", "properties": {"id": {"type": "integer"}}},
             }
 
-            result = await target.process_schema_message(schema_message)
+            result = target.process_schema_message(schema_message)
             assert not result.success
             assert result.error is not None
             assert "SQL generation failed" in result.error
 
-    @pytest.mark.asyncio
-    async def test_process_schema_message_exception_handling(
+    def test_process_schema_message_exception_handling(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -222,13 +213,12 @@ class TestSingerTargetOracleWMSComprehensive:
                 "schema": {"type": "object"},
             }
 
-            result = await target.process_schema_message(schema_message)
+            result = target.process_schema_message(schema_message)
             assert not result.success
             assert result.error is not None
             assert "SCHEMA processing failed" in result.error
 
-    @pytest.mark.asyncio
-    async def test_process_record_message_invalid_type(
+    def test_process_record_message_invalid_type(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -241,13 +231,12 @@ class TestSingerTargetOracleWMSComprehensive:
             "record": {"id": 1},
         }
 
-        result = await target.process_record_message(invalid_message)
+        result = target.process_record_message(invalid_message)
         assert not result.success
         assert result.error is not None
         assert "Not a RECORD message" in result.error
 
-    @pytest.mark.asyncio
-    async def test_process_record_message_missing_fields(
+    def test_process_record_message_missing_fields(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -260,7 +249,7 @@ class TestSingerTargetOracleWMSComprehensive:
             "record": {"id": 1},
         }
 
-        result = await target.process_record_message(invalid_message1)
+        result = target.process_record_message(invalid_message1)
         assert not result.success
         assert result.error is not None
         assert "missing stream or record" in result.error
@@ -271,13 +260,12 @@ class TestSingerTargetOracleWMSComprehensive:
             "stream": "test_table",
         }
 
-        result = await target.process_record_message(invalid_message2)
+        result = target.process_record_message(invalid_message2)
         assert not result.success
         assert result.error is not None
         assert "missing stream or record" in result.error
 
-    @pytest.mark.asyncio
-    async def test_process_record_message_stream_processing_failure(
+    def test_process_record_message_stream_processing_failure(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -296,13 +284,12 @@ class TestSingerTargetOracleWMSComprehensive:
                 "record": {"id": 1, "name": "Test"},
             }
 
-            result = await target.process_record_message(record_message)
+            result = target.process_record_message(record_message)
             assert not result.success
             assert result.error is not None
             assert "Record processing failed" in result.error
 
-    @pytest.mark.asyncio
-    async def test_process_record_message_insertion_failure(
+    def test_process_record_message_insertion_failure(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -313,7 +300,7 @@ class TestSingerTargetOracleWMSComprehensive:
         with patch.object(
             target,
             "_insert_record",
-            new_callable=AsyncMock,
+            new_callable=Mock,
         ) as mock_insert:
             mock_insert.return_value = FlextResult[None].fail("Insertion failed")
 
@@ -323,7 +310,7 @@ class TestSingerTargetOracleWMSComprehensive:
                 "record": {"id": 1, "name": "Test"},
             }
 
-            result = await target.process_record_message(record_message)
+            result = target.process_record_message(record_message)
             assert not result.success
             assert result.error is not None
             assert (
@@ -369,8 +356,7 @@ class TestSingerTargetOracleWMSComprehensive:
         assert result.error is not None
         assert "STATE processing failed" in result.error
 
-    @pytest.mark.asyncio
-    async def test_ensure_table_exists_no_client(
+    def test_ensure_table_exists_no_client(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -378,7 +364,7 @@ class TestSingerTargetOracleWMSComprehensive:
         target = SingerTargetOracleWMS(oracle_wms_config)
         target.oracle_client = None  # Simulate uninitialized client
 
-        result = await target._ensure_table_exists(
+        result = target._ensure_table_exists(
             "test_table",
             "test_schema",
             "CREATE TABLE test",
@@ -387,8 +373,7 @@ class TestSingerTargetOracleWMSComprehensive:
         assert result.error is not None
         assert "Oracle WMS client not initialized" in result.error
 
-    @pytest.mark.asyncio
-    async def test_ensure_table_exists_exception(
+    def test_ensure_table_exists_exception(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -398,7 +383,7 @@ class TestSingerTargetOracleWMSComprehensive:
         # Mock to raise exception
         with patch.object(target, "oracle_client", None):
             # Force an exception by accessing None
-            result = await target._ensure_table_exists(
+            result = target._ensure_table_exists(
                 "test_table",
                 "test_schema",
                 "CREATE TABLE test",
@@ -407,8 +392,7 @@ class TestSingerTargetOracleWMSComprehensive:
             assert result.error is not None
             assert "Oracle WMS client not initialized" in result.error
 
-    @pytest.mark.asyncio
-    async def test_insert_record_complex_data_types(
+    def test_insert_record_complex_data_types(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -426,12 +410,11 @@ class TestSingerTargetOracleWMSComprehensive:
             "created_at": "2023-01-01T12:00:00Z",
         }
 
-        result = await target._insert_record("complex_stream", complex_record)
+        result = target._insert_record("complex_stream", complex_record)
         # Should succeed with proper parameter preparation
         assert result.success
 
-    @pytest.mark.asyncio
-    async def test_insert_record_with_underscores(
+    def test_insert_record_with_underscores(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -445,12 +428,11 @@ class TestSingerTargetOracleWMSComprehensive:
             "regular_field": "regular",
         }
 
-        result = await target._insert_record("underscore_stream", underscore_record)
+        result = target._insert_record("underscore_stream", underscore_record)
         # Should handle underscore fields properly
         assert result.success
 
-    @pytest.mark.asyncio
-    async def test_insert_record_exception_handling(
+    def test_insert_record_exception_handling(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -464,7 +446,7 @@ class TestSingerTargetOracleWMSComprehensive:
         ) as mock_table_name:
             mock_table_name.side_effect = RuntimeError("Name generation failed")
 
-            result = await target._insert_record("error_stream", {"id": 1})
+            result = target._insert_record("error_stream", {"id": 1})
             assert not result.success
             assert result.error is not None
             assert "Record insertion failed" in result.error
@@ -523,8 +505,7 @@ class TestSingerTargetOracleWMSComprehensive:
             assert result.error is not None
             assert "Finalization failed" in result.error
 
-    @pytest.mark.asyncio
-    async def test_cleanup_with_client_stop_failure(
+    def test_cleanup_with_client_stop_failure(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -535,16 +516,15 @@ class TestSingerTargetOracleWMSComprehensive:
         with patch.object(
             target.oracle_client,
             "stop",
-            new_callable=AsyncMock,
+            new_callable=Mock,
         ) as mock_stop:
             mock_stop.return_value = FlextResult[None].fail("Stop failed")
 
-            result = await target.cleanup()
+            result = target.cleanup()
             # Should succeed despite client stop failure (logs warning)
             assert result.success
 
-    @pytest.mark.asyncio
-    async def test_cleanup_exception_handling(
+    def test_cleanup_exception_handling(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -555,11 +535,11 @@ class TestSingerTargetOracleWMSComprehensive:
         with patch.object(
             target.oracle_client,
             "stop",
-            new_callable=AsyncMock,
+            new_callable=Mock,
         ) as mock_stop:
             mock_stop.side_effect = RuntimeError("Unexpected error")
 
-            result = await target.cleanup()
+            result = target.cleanup()
             assert not result.success
             assert result.error is not None
             assert "Cleanup failed" in result.error
@@ -595,8 +575,7 @@ class TestSingerTargetOracleWMSComprehensive:
         assert target_max.plugin_enabled is True
         assert target_max.plugin_directory == "/custom/plugins"
 
-    @pytest.mark.asyncio
-    async def test_complete_workflow_with_errors(
+    def test_complete_workflow_with_errors(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -608,19 +587,19 @@ class TestSingerTargetOracleWMSComprehensive:
             patch.object(
                 target.oracle_client,
                 "start",
-                new_callable=AsyncMock,
+                new_callable=Mock,
             ) as mock_start,
             patch.object(
                 target.oracle_client,
                 "stop",
-                new_callable=AsyncMock,
+                new_callable=Mock,
             ) as mock_stop,
         ):
             mock_start.return_value = FlextResult[None].ok(None)
             mock_stop.return_value = FlextResult[None].ok(None)
 
             # Setup
-            setup_result = await target.setup()
+            setup_result = target.setup()
             assert setup_result.success
 
             # Process valid SCHEMA
@@ -629,7 +608,7 @@ class TestSingerTargetOracleWMSComprehensive:
                 "stream": "valid_table",
                 "schema": {"type": "object", "properties": {"id": {"type": "integer"}}},
             }
-            schema_result = await target.process_schema_message(valid_schema)
+            schema_result = target.process_schema_message(valid_schema)
             assert schema_result.success
 
             # Process invalid SCHEMA (should fail)
@@ -638,7 +617,7 @@ class TestSingerTargetOracleWMSComprehensive:
                 "stream": "",  # Empty stream name
                 "schema": {"type": "object"},
             }
-            invalid_result = await target.process_schema_message(invalid_schema)
+            invalid_result = target.process_schema_message(invalid_schema)
             assert not invalid_result.success
 
             # Process valid RECORD
@@ -647,7 +626,7 @@ class TestSingerTargetOracleWMSComprehensive:
                 "stream": "valid_table",
                 "record": {"id": 123},
             }
-            record_result = await target.process_record_message(valid_record)
+            record_result = target.process_record_message(valid_record)
             assert record_result.success
 
             # Process valid STATE
@@ -664,5 +643,5 @@ class TestSingerTargetOracleWMSComprehensive:
             assert finalize_result.data is not None
 
             # Cleanup
-            cleanup_result = await target.cleanup()
+            cleanup_result = target.cleanup()
             assert cleanup_result.success

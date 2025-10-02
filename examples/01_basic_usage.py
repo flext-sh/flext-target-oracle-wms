@@ -10,7 +10,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import asyncio
 import json
 from collections.abc import Coroutine
 from pathlib import Path
@@ -30,7 +29,7 @@ monitor = FlextObservabilityMonitor()
 
 
 @flext_monitor_function(monitor)
-async def run_basic_example() -> None:
+def run_basic_example() -> None:
     """Run basic Oracle WMS target example with REAL configuration."""
     logger.info("Starting basic Oracle WMS target example")
 
@@ -61,7 +60,7 @@ async def run_basic_example() -> None:
 
     try:
         # Setup target - REAL flext-core patterns
-        setup_result = await target.setup()
+        setup_result = target.setup()
         if not setup_result.success:
             logger.error(f"Target setup failed: {setup_result.error}")
             return
@@ -90,7 +89,7 @@ async def run_basic_example() -> None:
         }
 
         # Process schema - REAL Singer protocol
-        schema_result = await target.process_schema_message(schema_message)
+        schema_result = target.process_schema_message(schema_message)
         if not schema_result.success:
             logger.error(f"Schema processing failed: {schema_result.error}")
             return
@@ -140,7 +139,7 @@ async def run_basic_example() -> None:
                 "time_extracted": "2024-01-15T12:00:00Z",
             }
 
-            record_result = await target.process_record_message(record_message)
+            record_result = target.process_record_message(record_message)
             if not record_result.success:
                 logger.error(f"Record processing failed: {record_result.error}")
                 continue
@@ -177,7 +176,7 @@ async def run_basic_example() -> None:
         raise
     finally:
         # Cleanup using REAL implementation
-        cleanup_result = await target.cleanup()
+        cleanup_result = target.cleanup()
         if not cleanup_result.success:
             logger.error(f"Target cleanup failed: {cleanup_result.error}")
         else:
@@ -222,9 +221,9 @@ def run_from_singer_files() -> None:
 
             if message["type"] == "SCHEMA":
                 # Use sync version for demo simplicity
-                result = asyncio.run(target.process_schema_message(message))
+                result = run(target.process_schema_message(message))
             elif message["type"] == "RECORD":
-                result = asyncio.run(target.process_record_message(message))
+                result = run(target.process_record_message(message))
             elif message["type"] == "STATE":
                 result = target.process_state_message(message)
             else:
@@ -241,10 +240,10 @@ def run_from_singer_files() -> None:
         raise
     finally:
         # Cleanup
-        asyncio.run(target.cleanup())
+        run(target.cleanup())
 
 
 if __name__ == "__main__":
     """Run the basic usage example."""
-    asyncio.run(cast("Coroutine[object, object, None]", run_basic_example()))
+    run(cast("Coroutine[object, object, None]", run_basic_example()))
     run_from_singer_files()

@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 from flext_core import FlextResult
 from flext_target_oracle_wms import (
@@ -301,9 +301,9 @@ class TestFlextTargetMonitoringFactory:
         mock_target_class.return_value = mock_target
 
         # Mock target methods
-        mock_target.setup = AsyncMock()
-        mock_target.cleanup = AsyncMock()
-        mock_target.process_record_message = AsyncMock()
+        mock_target.setup = Mock()
+        mock_target.cleanup = Mock()
+        mock_target.process_record_message = Mock()
 
         factory = FlextTargetMonitoringFactory()
 

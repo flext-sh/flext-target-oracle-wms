@@ -134,30 +134,27 @@ class TestExamplesCodeQuality:
                     f"{example_file.name} must have 80%+ functions documented"
                 )
 
-    def test_examples_use_async_await_patterns(self, example_files: list[Path]) -> None:
-        """Test that examples use proper async/await patterns."""
+    def test_examples_use_await_patterns(self, example_files: list[Path]) -> None:
+        """Test that examples use proper /patterns."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
             tree = ast.parse(content, filename=str(example_file))
 
-            # Check for async functions
-            has_async_function = False
-            has_await = False
+            # Check for functions
+            has_function = False
 
             for node in ast.walk(tree):
-                if isinstance(node, ast.AsyncFunctionDef):
-                    has_async_function = True
+                if isinstance(node, ast.FunctionDef):
+                    has_function = True
                 elif isinstance(node, ast.Await):
-                    has_await = True
+                    pass
 
-            # Examples should use async patterns for production readiness
-            if "async" in content.lower():
-                assert has_async_function, (
-                    f"{example_file.name} mentions async but has no async functions"
+            # Examples should use patterns for production readiness
+            if "" in content.lower():
+                assert has_function, (
+                    f"{example_file.name} mentions but has no functions"
                 )
-                assert has_await, (
-                    f"{example_file.name} has async functions but no await statements"
-                )
+                assert has_await, f"{example_file.name} has functions but no statements"
 
     def test_examples_implement_error_handling(self, example_files: list[Path]) -> None:
         """Test that examples implement proper error handling."""
@@ -249,7 +246,7 @@ class TestExamplesCodeQuality:
             # Check for example execution
             main_patterns = [
                 "print(",
-                "asyncio.run(",
+                "run(",
                 "run_",
                 "demonstrate_",
             ]

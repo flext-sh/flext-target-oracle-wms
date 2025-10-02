@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 object
-from unittest.mock import AsyncMock
+from unittest.mock import Mock
 
 import pytest
 
@@ -44,7 +44,7 @@ class TestTargetComplete:
         assert target.stream_processor is not None
 
     @pytest.mark.e2e
-    async def test_stream_processing_workflow(self, sample_config: FlextTypes.Core.Dict) -> None:
+    def test_stream_processing_workflow(self, sample_config: FlextTypes.Core.Dict) -> None:
         """Test complete stream processing workflow - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -63,18 +63,18 @@ class TestTargetComplete:
                 "key_properties": ["id"]
             }
             
-            schema_result = await target.process_schema_message(schema_message)
+            schema_result = target.process_schema_message(schema_message)
             assert schema_result.success
 
     @pytest.mark.e2e
-    async def test_record_processing_workflow(self, sample_config: FlextTypes.Core.Dict) -> None:
+    def test_record_processing_workflow(self, sample_config: FlextTypes.Core.Dict) -> None:
         """Test complete record processing workflow - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
         # Mock Oracle WMS client using patch
         from unittest.mock import patch
         
-        with patch.object(target.oracle_client, 'start', new_callable=AsyncMock) as mock_start:
+        with patch.object(target.oracle_client, 'start', new_callable=Mock) as mock_start:
             mock_start.return_value = FlextResult.ok(None)
         
         # Test schema for a common stream
@@ -95,7 +95,7 @@ class TestTargetComplete:
             "key_properties": ["id"]
         }
         
-        schema_result = await target.process_schema_message(schema_message)
+        schema_result = target.process_schema_message(schema_message)
         assert schema_result.success
         
         # Process record
@@ -110,18 +110,18 @@ class TestTargetComplete:
             "time_extracted": "2024-01-01T12:00:00Z"
         }
         
-        record_result = await target.process_record_message(record_message)
+        record_result = target.process_record_message(record_message)
         assert record_result.success
 
     @pytest.mark.e2e
-    async def test_business_logic_integration(self, sample_config: FlextTypes.Core.Dict) -> None:
+    def test_business_logic_integration(self, sample_config: FlextTypes.Core.Dict) -> None:
         """Test business logic integration - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
         # Mock Oracle WMS client using patch
         from unittest.mock import patch
         
-        with patch.object(target.oracle_client, 'start', new_callable=AsyncMock) as mock_start:
+        with patch.object(target.oracle_client, 'start', new_callable=Mock) as mock_start:
             mock_start.return_value = FlextResult.ok(None)
         
         # Test different business logic modules
@@ -148,7 +148,7 @@ class TestTargetComplete:
                 "key_properties": [list(business_schemas[stream_name]["properties"].keys())[0]]
             }
             
-            result = await target.process_schema_message(schema_message)
+            result = target.process_schema_message(schema_message)
             assert result.success
 
     @pytest.mark.e2e
@@ -172,14 +172,14 @@ class TestTargetComplete:
         assert target.stream_processor is not None
 
     @pytest.mark.e2e
-    async def test_error_handling_workflow(self, sample_config: FlextTypes.Core.Dict) -> None:
+    def test_error_handling_workflow(self, sample_config: FlextTypes.Core.Dict) -> None:
         """Test error handling throughout the target workflow - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
         # Mock Oracle WMS client using patch
         from unittest.mock import patch
         
-        with patch.object(target.oracle_client, 'start', new_callable=AsyncMock) as mock_start:
+        with patch.object(target.oracle_client, 'start', new_callable=Mock) as mock_start:
             mock_start.return_value = FlextResult.ok(None)
         
         # Test with invalid message types
@@ -192,21 +192,21 @@ class TestTargetComplete:
         for invalid_message in invalid_messages:
             # Test that invalid messages are handled gracefully
             if invalid_message.get("type") == "SCHEMA":
-                result = await target.process_schema_message(invalid_message)
+                result = target.process_schema_message(invalid_message)
                 assert not result.success  # Should fail gracefully
             elif invalid_message.get("type") == "INVALID":
                 result = target.process_state_message(invalid_message)
                 assert not result.success  # Should fail gracefully
 
     @pytest.mark.e2e
-    async def test_multi_stream_handling(self, sample_config: FlextTypes.Core.Dict) -> None:
+    def test_multi_stream_handling(self, sample_config: FlextTypes.Core.Dict) -> None:
         """Test handling multiple streams simultaneously - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
         # Mock Oracle WMS client using patch
         from unittest.mock import patch
         
-        with patch.object(target.oracle_client, 'start', new_callable=AsyncMock) as mock_start:
+        with patch.object(target.oracle_client, 'start', new_callable=Mock) as mock_start:
             mock_start.return_value = FlextResult.ok(None)
         
         # Test multiple streams can be processed
@@ -221,7 +221,7 @@ class TestTargetComplete:
                 "key_properties": ["id"]
             }
             
-            schema_result = await target.process_schema_message(schema_message)
+            schema_result = target.process_schema_message(schema_message)
             assert schema_result.success
         
         # Process records for each stream
@@ -233,11 +233,11 @@ class TestTargetComplete:
                 "time_extracted": "2024-01-01T12:00:00Z"
             }
             
-            record_result = await target.process_record_message(record_message)
+            record_result = target.process_record_message(record_message)
             assert record_result.success
 
     @pytest.mark.e2e
-    async def test_memory_efficiency(self, sample_config: FlextTypes.Core.Dict) -> None:
+    def test_memory_efficiency(self, sample_config: FlextTypes.Core.Dict) -> None:
         """Test that target operations are memory efficient - REAL implementation."""
         # Test that multiple target instances don't accumulate memory
         for i in range(5):
@@ -246,14 +246,14 @@ class TestTargetComplete:
             # Mock Oracle WMS client using patch
             from unittest.mock import patch
             
-            with patch.object(target.oracle_client, 'start', new_callable=AsyncMock) as mock_start, \
-                 patch.object(target.oracle_client, 'stop', new_callable=AsyncMock) as mock_stop:
+            with patch.object(target.oracle_client, 'start', new_callable=Mock) as mock_start, \
+                 patch.object(target.oracle_client, 'stop', new_callable=Mock) as mock_stop:
                 
                 mock_start.return_value = FlextResult.ok(None)
                 mock_stop.return_value = FlextResult.ok(None)
                 
                 # Test complete lifecycle
-                setup_result = await target.setup()
+                setup_result = target.setup()
                 assert setup_result.success
                 
                 # Process a minimal schema and record
@@ -264,7 +264,7 @@ class TestTargetComplete:
                     "key_properties": ["id"]
                 }
                 
-                await target.process_schema_message(schema_message)
+                target.process_schema_message(schema_message)
                 
                 record_message = {
                     "type": "RECORD",
@@ -273,10 +273,10 @@ class TestTargetComplete:
                     "time_extracted": "2024-01-01T12:00:00Z"
                 }
                 
-                await target.process_record_message(record_message)
+                target.process_record_message(record_message)
                 
                 # Clean up
-                cleanup_result = await target.cleanup()
+                cleanup_result = target.cleanup()
                 assert cleanup_result.success
                 
                 del target
