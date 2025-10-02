@@ -22,7 +22,7 @@ Demonstrates fundamental Oracle WMS target usage with real configuration:
 - ✅ Real Oracle WMS Cloud SaaS configuration
 - ✅ Singer protocol compliance (SCHEMA, RECORD, STATE messages)
 - ✅ Inventory data processing with proper field mapping
-- ✅ Async/await patterns with flext-core error handling
+- ✅ /patterns with flext-core error handling
 - ✅ File-based Singer message processing
 - ✅ Proper cleanup and resource management
 
@@ -46,7 +46,7 @@ config = {
 
 # Real implementation with error handling
 target = SingerTargetOracleWMS(config)
-setup_result = await target.setup()
+setup_result = target.setup()
 if not setup_result.success:
     logger.error(f"Setup failed: {setup_result.error}")
 ```
@@ -116,7 +116,7 @@ concurrent_tasks = [
     process_stream_batch(stream_name, 1000)
     for stream_name in successful_streams
 ]
-await asyncio.gather(*concurrent_tasks)
+gather(*concurrent_tasks)
 ```
 
 ### 4. [error_handling.py](./error_handling.py)
@@ -145,13 +145,13 @@ config = {
 }
 
 # Retry with backoff
-async def retry_with_backoff(operation: object, max_retries: int = 3) -> FlextResult[object]:
+def retry_with_backoff(operation: object, max_retries: int = 3) -> FlextResult[object]:
     for attempt in range(max_retries):
         try:
-            return await operation()
+            return operation()
         except Exception as e:
             backoff_time = 2 ** attempt
-            await asyncio.sleep(backoff_time)
+            sleep(backoff_time)
 ```
 
 ## 🚀 Running the Examples

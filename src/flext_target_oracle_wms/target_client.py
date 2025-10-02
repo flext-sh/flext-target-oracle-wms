@@ -716,11 +716,11 @@ class SingerTargetOracleWMS:
         self.plugin_enabled = config.get("enable_plugins", False)
         self.plugin_directory = config.get("plugin_directory", "./plugins")
 
-    async def setup(self) -> FlextResult[None]:
+    def setup(self) -> FlextResult[None]:
         """Set up Oracle WMS Target using REAL flext-oracle-wms client."""
         try:
             # Start Oracle WMS client - REAL API
-            start_result: FlextResult[object] = await self.oracle_client.initialize()
+            start_result: FlextResult[object] = self.oracle_client.initialize()
             if not start_result.success:
                 return FlextResult[None].fail(
                     f"Oracle WMS connection failed: {start_result.error}",
@@ -739,7 +739,7 @@ class SingerTargetOracleWMS:
             logger.exception("Oracle WMS Target setup failed")
             return FlextResult[None].fail(f"Setup failed: {e}")
 
-    async def cleanup(self) -> FlextResult[None]:
+    def cleanup(self) -> FlextResult[None]:
         """Cleanup Oracle WMS Target resources."""
         try:
             # Stop Oracle WMS client

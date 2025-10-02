@@ -6,15 +6,14 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import asyncio
 import gc
 import os
 import random
 import time
-from collections.abc import AsyncGenerator
+from collections.abc import Generator
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from unittest.mock import AsyncMock, patch
+from unittest.mock import Mock, patch
 
 import psutil
 import pytest
@@ -74,16 +73,16 @@ def production_config() -> FlextTypes.Core.Dict:
 
 
 @pytest.fixture
-async def production_target(
+def production_target(
     production_config: FlextTypes.Core.Dict,
-) -> AsyncGenerator[SingerTargetOracleWMS]:
+) -> Generator[SingerTargetOracleWMS]:
     """Production-ready target fixture with full lifecycle."""
     target = SingerTargetOracleWMS(production_config)
 
     try:
         # Mock the Oracle client setup for testing
         with patch("flext_oracle_wms.FlextOracleWmsClient") as mock_client:
-            mock_instance = AsyncMock()
+            mock_instance = Mock()
             mock_client.return_value = mock_instance
             mock_instance.connect.return_value = FlextResult[None].ok(data=True)
             mock_instance.disconnect.return_value = FlextResult[None].ok(data=True)
@@ -91,12 +90,12 @@ async def production_target(
                 {"rows_affected": 1},
             )
 
-            setup_result = await target.setup()
+            setup_result = target.setup()
             assert setup_result.success, f"Target setup failed: {setup_result.error}"
 
             yield target
     finally:
-        cleanup_result = await target.cleanup()
+        cleanup_result = target.cleanup()
         if not cleanup_result.success:
             pytest.fail(f"Target cleanup failed: {cleanup_result.error}")
 
@@ -104,9 +103,8 @@ async def production_target(
 class TestProductionLoadTesting:
     """Production load testing scenarios."""
 
-    @pytest.mark.asyncio
     @pytest.mark.performance
-    async def test_high_volume_record_processing(
+    def test_high_volume_record_processing(
         self,
         production_target: SingerTargetOracleWMS,
     ) -> None:
@@ -136,7 +134,7 @@ class TestProductionLoadTesting:
             "bookmark_properties": ["updated_at"],
         }
 
-        schema_result = await production_target.process_schema_message(schema_message)
+        schema_result = production_target.process_schema_message(schema_message)
         assert schema_result.success, f"Schema setup failed: {schema_result.error}"
 
         # Load test parameters
@@ -188,7 +186,7 @@ class TestProductionLoadTesting:
                 )
 
             # Process batch concurrently
-            batch_results = await asyncio.gather(*batch_tasks, return_exceptions=True)
+            batch_results = gather(*batch_tasks, return_exceptions=True)
 
             for result in batch_results:
                 if isinstance(result, Exception):
@@ -233,9 +231,8 @@ class TestProductionLoadTesting:
             f"Memory usage too high: {metrics.memory_usage_mb:.1f}MB"
         )
 
-    @pytest.mark.asyncio
     @pytest.mark.stress
-    async def test_concurrent_stream_processing(
+    def test_concurrent_stream_processing(
         self,
         production_target: SingerTargetOracleWMS,
     ) -> None:
@@ -265,11 +262,11 @@ class TestProductionLoadTesting:
             setup_tasks.append(production_target.process_schema_message(schema_message))
 
         # Setup all schemas
-        setup_results = await asyncio.gather(*setup_tasks)
+        setup_results = gather(*setup_tasks)
         for result in setup_results:
             assert result.success, f"Schema setup failed: {result.error}"
 
-        async def process_stream_load(stream_id: int) -> tuple[int, int, float]:
+        def process_stream_load(stream_id: int) -> tuple[int, int, float]:
             """Process load for a single stream."""
             start_time = time.time()
             processed = 0
@@ -297,7 +294,7 @@ class TestProductionLoadTesting:
                 tasks.append(production_target.process_record_message(record_message))
 
             # Process all records for this stream
-            results = await asyncio.gather(*tasks, return_exceptions=True)
+            results = gather(*tasks, return_exceptions=True)
 
             for result in results:
                 if isinstance(result, Exception):
@@ -318,7 +315,7 @@ class TestProductionLoadTesting:
             process_stream_load(stream_id) for stream_id in range(stream_count)
         ]
 
-        stream_results = await asyncio.gather(*stream_tasks)
+        stream_results = gather(*stream_tasks)
 
         total_duration = time.time() - start_time
         memory_end = self._get_memory_usage()
@@ -348,9 +345,8 @@ class TestProductionLoadTesting:
             f"Too many records failed: {total_processed}/{expected_records}"
         )
 
-    @pytest.mark.asyncio
     @pytest.mark.resilience
-    async def test_error_recovery_and_resilience(
+    def test_error_recovery_and_resilience(
         self,
         production_target: SingerTargetOracleWMS,
     ) -> None:
@@ -370,7 +366,7 @@ class TestProductionLoadTesting:
             "key_properties": ["id"],
         }
 
-        await production_target.process_schema_message(schema_message)
+        production_target.process_schema_message(schema_message)
 
         # Test scenarios with various error conditions
         test_scenarios: list[FlextTypes.Core.Dict] = [
@@ -448,14 +444,14 @@ class TestProductionLoadTesting:
                         "process_record_message",
                         return_value=FlextResult[None].fail("Simulated failure"),
                     ):
-                        result = await production_target.process_record_message(
+                        result = production_target.process_record_message(
                             record_message,
                         )
                         if not result.success:
                             scenario_errors += 1
                 else:
                     # Normal processing
-                    result = await production_target.process_record_message(
+                    result = production_target.process_record_message(
                         record_message,
                     )
                     if result.success:
@@ -479,9 +475,8 @@ class TestProductionLoadTesting:
             f"Overall resilience too low: {overall_success_rate:.1f}%"
         )
 
-    @pytest.mark.asyncio
     @pytest.mark.performance
-    async def test_memory_efficiency_large_records(
+    def test_memory_efficiency_large_records(
         self,
         production_target: SingerTargetOracleWMS,
     ) -> None:
@@ -504,7 +499,7 @@ class TestProductionLoadTesting:
             "key_properties": ["id"],
         }
 
-        await production_target.process_schema_message(schema_message)
+        production_target.process_schema_message(schema_message)
 
         # Memory monitoring
         initial_memory = self._get_memory_usage()
@@ -542,7 +537,7 @@ class TestProductionLoadTesting:
                 "time_extracted": datetime.now(UTC).isoformat(),
             }
 
-            result = await production_target.process_record_message(record_message)
+            result = production_target.process_record_message(record_message)
             if result.success:
                 processed += 1
 
@@ -589,9 +584,8 @@ class TestProductionLoadTesting:
 class TestProductionDataIntegrity:
     """Production data integrity and consistency tests."""
 
-    @pytest.mark.asyncio
     @pytest.mark.integrity
-    async def test_transactional_consistency(
+    def test_transactional_consistency(
         self,
         production_target: SingerTargetOracleWMS,
     ) -> None:
@@ -615,7 +609,7 @@ class TestProductionDataIntegrity:
             "key_properties": ["order_id"],
         }
 
-        await production_target.process_schema_message(schema_message)
+        production_target.process_schema_message(schema_message)
 
         # Test data consistency across related records
         test_orders = [
@@ -653,7 +647,7 @@ class TestProductionDataIntegrity:
                 "time_extracted": datetime.now(UTC).isoformat(),
             }
 
-            result = await production_target.process_record_message(record_message)
+            result = production_target.process_record_message(record_message)
             assert result.success, f"Order processing failed: {result.error}"
             # DRY: Use result data or original data as fallback (common in targets)
             processed_data = result.data if result.data is not None else order_data
@@ -685,9 +679,8 @@ class TestProductionDataIntegrity:
                 f"Total amount calculation error: {processed_order['total_amount']} vs {expected_total}"
             )
 
-    @pytest.mark.asyncio
     @pytest.mark.integrity
-    async def test_duplicate_handling_and_idempotency(
+    def test_duplicate_handling_and_idempotency(
         self,
         production_target: SingerTargetOracleWMS,
     ) -> None:
@@ -708,7 +701,7 @@ class TestProductionDataIntegrity:
             "key_properties": ["id"],
         }
 
-        await production_target.process_schema_message(schema_message)
+        production_target.process_schema_message(schema_message)
 
         # Create record with duplicates and updates
         base_record = {
@@ -756,7 +749,7 @@ class TestProductionDataIntegrity:
                 "time_extracted": datetime.now(UTC).isoformat(),
             }
 
-            result = await production_target.process_record_message(record_message)
+            result = production_target.process_record_message(record_message)
             results.append((i, result, record_data))
 
             # All operations should succeed (idempotent)
@@ -774,16 +767,15 @@ class TestProductionDataIntegrity:
                 "time_extracted": datetime.now(UTC).isoformat(),
             }
 
-            result = await production_target.process_record_message(record_message)
+            result = production_target.process_record_message(record_message)
             assert result.success, f"Idempotency test failed: {result.error}"
 
 
 class TestProductionEdgeCases:
     """Production edge cases and boundary condition tests."""
 
-    @pytest.mark.asyncio
     @pytest.mark.edge_cases
-    async def test_extreme_data_values(
+    def test_extreme_data_values(
         self,
         production_target: SingerTargetOracleWMS,
     ) -> None:
@@ -809,7 +801,7 @@ class TestProductionEdgeCases:
             "key_properties": ["id"],
         }
 
-        await production_target.process_schema_message(schema_message)
+        production_target.process_schema_message(schema_message)
 
         # Extreme test cases
         extreme_records = [
@@ -863,7 +855,7 @@ class TestProductionEdgeCases:
             }
 
             try:
-                result = await production_target.process_record_message(record_message)
+                result = production_target.process_record_message(record_message)
 
                 if result.success:
                     processed_count += 1
@@ -886,9 +878,8 @@ class TestProductionEdgeCases:
         if warnings:
             pass
 
-    @pytest.mark.asyncio
     @pytest.mark.edge_cases
-    async def test_malformed_messages(
+    def test_malformed_messages(
         self,
         production_target: SingerTargetOracleWMS,
     ) -> None:
@@ -907,7 +898,7 @@ class TestProductionEdgeCases:
             "key_properties": ["id"],
         }
 
-        await production_target.process_schema_message(valid_schema)
+        production_target.process_schema_message(valid_schema)
 
         # Test malformed messages
         malformed_messages = [
@@ -969,11 +960,11 @@ class TestProductionEdgeCases:
 
                 # Attempt to process malformed message
                 if malformed_message.get("type") == "RECORD":
-                    result = await production_target.process_record_message(
+                    result = production_target.process_record_message(
                         malformed_message,
                     )
                 elif malformed_message.get("type") == "SCHEMA":
-                    result = await production_target.process_schema_message(
+                    result = production_target.process_schema_message(
                         malformed_message,
                     )
                 elif malformed_message.get("type") == "STATE":
@@ -1005,9 +996,8 @@ class TestProductionEdgeCases:
         if errors_logged:
             pass  # Show first 3 errors
 
-    @pytest.mark.asyncio
     @pytest.mark.edge_cases
-    async def test_resource_exhaustion_scenarios(
+    def test_resource_exhaustion_scenarios(
         self,
         production_target: SingerTargetOracleWMS,
     ) -> None:
@@ -1026,7 +1016,7 @@ class TestProductionEdgeCases:
             "key_properties": ["id"],
         }
 
-        await production_target.process_schema_message(schema_message)
+        production_target.process_schema_message(schema_message)
 
         # Test 1: Memory exhaustion simulation
         large_data_records = []
@@ -1050,7 +1040,7 @@ class TestProductionEdgeCases:
                 # Check memory before processing
                 memory_before = self._get_memory_usage()
 
-                result = await production_target.process_record_message(record_message)
+                result = production_target.process_record_message(record_message)
 
                 # Check memory after processing
                 memory_after = self._get_memory_usage()
@@ -1072,7 +1062,7 @@ class TestProductionEdgeCases:
         # Simulate many concurrent connections
         successful_connections = 0
 
-        async def simulate_connection_load() -> bool:
+        def simulate_connection_load() -> bool:
             """Simulate a connection-heavy operation."""
             try:
                 # Create temporary target to simulate new connection
@@ -1085,7 +1075,7 @@ class TestProductionEdgeCases:
                     "setup",
                     return_value=FlextResult[None].ok(data=True),
                 ):
-                    setup_result = await temp_target.setup()
+                    setup_result = temp_target.setup()
                     return setup_result.success
             except Exception:
                 return False
@@ -1093,7 +1083,7 @@ class TestProductionEdgeCases:
         # Create many concurrent connection tasks
         connection_tasks = [simulate_connection_load() for i in range(50)]
 
-        connection_results = await asyncio.gather(
+        connection_results = gather(
             *connection_tasks,
             return_exceptions=True,
         )

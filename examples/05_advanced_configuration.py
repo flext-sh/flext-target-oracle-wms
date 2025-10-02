@@ -10,7 +10,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import asyncio
 import os
 from collections.abc import Coroutine
 from datetime import UTC, datetime
@@ -137,7 +136,7 @@ class CustomWMSDataTransformer(WMSDataTransformer):
 
 
 @flext_monitor_function(monitor)
-async def run_advanced_configuration_example() -> None:
+def run_advanced_configuration_example() -> None:
     """Demonstrate advanced configuration with custom components."""
     logger.info("Starting advanced configuration example")
 
@@ -185,7 +184,7 @@ async def run_advanced_configuration_example() -> None:
 
     try:
         # Setup with advanced configuration
-        setup_result = await target.setup()
+        setup_result = target.setup()
         if not setup_result.success:
             logger.error(f"Advanced setup failed: {setup_result.error}")
             return
@@ -235,7 +234,7 @@ async def run_advanced_configuration_example() -> None:
             "bookmark_properties": ["modified_at"],
         }
 
-        schema_result = await target.process_schema_message(advanced_schema)
+        schema_result = target.process_schema_message(advanced_schema)
         if not schema_result.success:
             logger.error(f"Advanced schema failed: {schema_result.error}")
             return
@@ -299,7 +298,7 @@ async def run_advanced_configuration_example() -> None:
                 "time_extracted": "2024-01-16T12:00:00Z",
             }
 
-            record_result = await target.process_record_message(record_message)
+            record_result = target.process_record_message(record_message)
             if not record_result.success:
                 logger.error(f"Complex record failed: {record_result.error}")
                 continue
@@ -318,7 +317,7 @@ async def run_advanced_configuration_example() -> None:
             },
         }
 
-        invalid_result = await target.process_record_message(invalid_record)
+        invalid_result = target.process_record_message(invalid_record)
         if not invalid_result.success:
             logger.info(f"Invalid record correctly rejected: {invalid_result.error}")
         else:
@@ -337,7 +336,7 @@ async def run_advanced_configuration_example() -> None:
         logger.exception("Advanced configuration example failed")
         raise
     finally:
-        await target.cleanup()
+        target.cleanup()
 
 
 @flext_monitor_function(monitor)
@@ -392,7 +391,7 @@ def demonstrate_custom_components() -> None:
 if __name__ == "__main__":
     """Run advanced configuration examples."""
 
-    asyncio.run(
+    run(
         cast("Coroutine[object, object, None]", run_advanced_configuration_example()),
     )
     demonstrate_custom_components()

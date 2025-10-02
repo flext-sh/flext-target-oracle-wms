@@ -10,7 +10,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import asyncio
 import time
 from collections.abc import Coroutine
 from typing import cast
@@ -107,7 +106,7 @@ def _create_batch_schema() -> FlextTypes.Core.Dict:
     }
 
 
-async def _process_batch_size(target: SingerTargetOracleWMS, batch_size: int) -> None:
+def _process_batch_size(target: SingerTargetOracleWMS, batch_size: int) -> None:
     """Process a specific batch size and log performance metrics."""
     logger.info(f"Testing batch size: {batch_size}")
 
@@ -135,7 +134,7 @@ async def _process_batch_size(target: SingerTargetOracleWMS, batch_size: int) ->
                 "time_extracted": "2024-01-15T12:00:00Z",
             }
 
-            record_result = await target.process_record_message(record_message)
+            record_result = target.process_record_message(record_message)
             if record_result.success:
                 success_count += 1
             else:
@@ -162,11 +161,11 @@ async def _process_batch_size(target: SingerTargetOracleWMS, batch_size: int) ->
     )
 
     # Memory cleanup between batches
-    await asyncio.sleep(1)
+    sleep(1)
 
 
 @flext_monitor_function(monitor)
-async def run_performance_batch_example() -> None:
+def run_performance_batch_example() -> None:
     """Demonstrate high-performance batch processing."""
     logger.info("Starting performance batch processing example")
 
@@ -176,7 +175,7 @@ async def run_performance_batch_example() -> None:
     try:
         # Setup for batch processing
         setup_start = time.time()
-        setup_result = await target.setup()
+        setup_result = target.setup()
         if not setup_result.success:
             logger.error(f"Batch setup failed: {setup_result.error}")
             return
@@ -187,7 +186,7 @@ async def run_performance_batch_example() -> None:
         # Process schema
         batch_schema = _create_batch_schema()
         schema_start = time.time()
-        schema_result = await target.process_schema_message(batch_schema)
+        schema_result = target.process_schema_message(batch_schema)
         if not schema_result.success:
             logger.error(f"Batch schema failed: {schema_result.error}")
             return
@@ -198,7 +197,7 @@ async def run_performance_batch_example() -> None:
         # Test different batch sizes for performance comparison
         batch_sizes = [1000, 5000, 10000, 25000]
         for batch_size in batch_sizes:
-            await _process_batch_size(target, batch_size)
+            _process_batch_size(target, batch_size)
 
         # Finalize with statistics
         finalize_start = time.time()
@@ -218,7 +217,7 @@ async def run_performance_batch_example() -> None:
         raise
     finally:
         cleanup_start = time.time()
-        await target.cleanup()
+        target.cleanup()
         cleanup_time = time.time() - cleanup_start
         logger.info(f"Batch cleanup completed in {cleanup_time:.2f}s")
 
@@ -285,7 +284,7 @@ def demonstrate_stream_processor_batching() -> None:
 
 
 @flext_monitor_function(monitor)
-async def demonstrate_concurrent_batching() -> None:
+def demonstrate_concurrent_batching() -> None:
     """Demonstrate concurrent batch processing with multiple streams."""
     logger.info("Demonstrating concurrent batch processing")
 
@@ -303,7 +302,7 @@ async def demonstrate_concurrent_batching() -> None:
     target = SingerTargetOracleWMS(config)
 
     try:
-        await target.setup()
+        target.setup()
 
         # Define multiple streams for concurrent processing
         streams = ["stream_a", "stream_b", "stream_c", "stream_d", "stream_e"]
@@ -329,7 +328,7 @@ async def demonstrate_concurrent_batching() -> None:
             schema_tasks.append(task)
 
         # Execute schema setup concurrently
-        schema_results = await asyncio.gather(*schema_tasks, return_exceptions=True)
+        schema_results = gather(*schema_tasks, return_exceptions=True)
 
         successful_streams = []
         for i, result in enumerate(schema_results):
@@ -342,7 +341,7 @@ async def demonstrate_concurrent_batching() -> None:
         logger.info(f"Successfully setup {len(successful_streams)} concurrent streams")
 
         # Process records concurrently across streams
-        async def process_stream_batch(stream_name: str, record_count: int) -> None:
+        def process_stream_batch(stream_name: str, record_count: int) -> None:
             """Process a batch of records for a specific stream."""
             records = [
                 {
@@ -363,7 +362,7 @@ async def demonstrate_concurrent_batching() -> None:
                     "time_extracted": "2024-01-15T12:00:00Z",
                 }
 
-                await target.process_record_message(record_message)
+                target.process_record_message(record_message)
 
             elapsed = time.time() - start_time
             rate = len(records) / elapsed if elapsed > 0 else 0
@@ -379,7 +378,7 @@ async def demonstrate_concurrent_batching() -> None:
         ]
 
         concurrent_start = time.time()
-        await asyncio.gather(*concurrent_tasks)
+        gather(*concurrent_tasks)
         concurrent_time = time.time() - concurrent_start
 
         total_records = len(successful_streams) * 1000
@@ -395,16 +394,16 @@ async def demonstrate_concurrent_batching() -> None:
         logger.exception("Concurrent batch processing failed")
         raise
     finally:
-        await target.cleanup()
+        target.cleanup()
 
 
 if __name__ == "__main__":
     """Run batch processing examples."""
 
-    asyncio.run(
+    run(
         cast("Coroutine[object, object, None]", run_performance_batch_example()),
     )
     demonstrate_stream_processor_batching()
-    asyncio.run(
+    run(
         cast("Coroutine[object, object, None]", demonstrate_concurrent_batching()),
     )

@@ -6,10 +6,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import asyncio
 import gc
 from collections.abc import Callable
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 from flext_core import FlextTypes
 from flext_target_oracle_wms import (
@@ -359,7 +358,7 @@ class TestIntegrationPerformanceBenchmarks:
     ) -> None:
         """Benchmark complete end-to-end workflow performance."""
 
-        async def complete_workflow() -> dict | None:
+        def complete_workflow() -> dict | None:
             """Complete workflow - measured operation."""
             config = {
                 "base_url": "https://e2e-benchmark.wms.oracle.com",
@@ -369,7 +368,7 @@ class TestIntegrationPerformanceBenchmarks:
             }
             with patch("flext_oracle_wms.FlextOracleWmsClient") as mock_client_class:
                 # Setup mocked client for performance testing
-                mock_client = AsyncMock()
+                mock_client = Mock()
                 mock_client_class.return_value = mock_client
                 mock_client.start.return_value = MagicMock(success=True)
                 mock_client.stop.return_value = MagicMock(success=True)
@@ -379,7 +378,7 @@ class TestIntegrationPerformanceBenchmarks:
                 )
                 target = SingerTargetOracleWMS(config)
                 # 1. Setup
-                setup_result = await target.setup()
+                setup_result = target.setup()
                 assert setup_result.success
                 # 2. Process schema
                 schema_message = {
@@ -395,7 +394,7 @@ class TestIntegrationPerformanceBenchmarks:
                     },
                     "key_properties": ["id"],
                 }
-                schema_result = await target.process_schema_message(schema_message)
+                schema_result = target.process_schema_message(schema_message)
                 assert schema_result.success
                 # 3. Process multiple records
                 for i in range(20):
@@ -409,21 +408,21 @@ class TestIntegrationPerformanceBenchmarks:
                         },
                         "time_extracted": "2024-01-15T12:00:00Z",
                     }
-                    record_result = await target.process_record_message(record_message)
+                    record_result = target.process_record_message(record_message)
                     assert record_result.success
                 # 4. Finalize
                 finalize_result = target.finalize()
                 assert finalize_result.success
                 # 5. Cleanup
-                cleanup_result = await target.cleanup()
+                cleanup_result = target.cleanup()
                 assert cleanup_result.success
                 return finalize_result.data
 
         # Benchmark complete workflow
-        # Note: asyncio.run needed for benchmark with async functions
+        # Note: run needed for benchmark with functions
 
         def sync_wrapper() -> dict | None:
-            return asyncio.run(complete_workflow())
+            return complete_workflow()
 
         result = benchmark(sync_wrapper)
         assert result is not None

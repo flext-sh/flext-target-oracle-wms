@@ -10,8 +10,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import asyncio
-
 # DRY: Import REAL flext-* APIs
 from flext_core import FlextLogger, FlextTypes
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
@@ -67,7 +65,7 @@ def get_error_demo_config() -> FlextTypes.Core.Dict:
     }
 
 
-async def demonstrate_setup_error_handling(
+def demonstrate_setup_error_handling(
     config: FlextTypes.Core.Dict,
 ) -> SingerTargetOracleWMS | None:
     """Single Responsibility: Demonstrate setup and connection error handling.
@@ -77,7 +75,7 @@ async def demonstrate_setup_error_handling(
     logger.info("Test 1: Setup error scenarios")
     target = SingerTargetOracleWMS(config)
 
-    setup_result = await target.setup()
+    setup_result = target.setup()
     if not setup_result.success:
         logger.error(f"Setup failed as expected for demo: {setup_result.error}")
         logger.info("Implementing setup retry logic...")
@@ -88,7 +86,7 @@ async def demonstrate_setup_error_handling(
         fallback_config["max_retries"] = 5  # More retries
 
         target = SingerTargetOracleWMS(fallback_config)
-        setup_result = await target.setup()
+        setup_result = target.setup()
 
         if setup_result.success:
             logger.info("Setup successful with fallback configuration")
@@ -99,7 +97,7 @@ async def demonstrate_setup_error_handling(
     return target
 
 
-async def demonstrate_schema_validation_errors(target: SingerTargetOracleWMS) -> None:
+def demonstrate_schema_validation_errors(target: SingerTargetOracleWMS) -> None:
     """Single Responsibility: Demonstrate schema validation error handling.
 
     SOLID REFACTORING: Extract schema validation into focused function.
@@ -121,17 +119,17 @@ async def demonstrate_schema_validation_errors(target: SingerTargetOracleWMS) ->
         "key_properties": ["id"],
     }
 
-    schema_result = await target.process_schema_message(valid_schema)
+    schema_result = target.process_schema_message(valid_schema)
     if schema_result.success:
         logger.info("Valid schema processed successfully")
     else:
         logger.error(f"Valid schema failed: {schema_result.error}")
 
     # Test invalid schemas
-    await _test_invalid_schemas(target)
+    _test_invalid_schemas(target)
 
 
-async def _test_invalid_schemas(target: SingerTargetOracleWMS) -> None:
+def _test_invalid_schemas(target: SingerTargetOracleWMS) -> None:
     """Helper: Test invalid schema handling.
 
     SOLID REFACTORING: Extract invalid schema testing into helper function.
@@ -156,7 +154,7 @@ async def _test_invalid_schemas(target: SingerTargetOracleWMS) -> None:
 
     for invalid_schema in invalid_schemas:
         try:
-            schema_result = await target.process_schema_message(invalid_schema)
+            schema_result = target.process_schema_message(invalid_schema)
             if not schema_result.success:
                 logger.info(f"Invalid schema properly rejected: {schema_result.error}")
             else:
@@ -166,7 +164,7 @@ async def _test_invalid_schemas(target: SingerTargetOracleWMS) -> None:
 
 
 @flext_monitor_function(monitor)
-async def demonstrate_error_handling() -> None:
+def demonstrate_error_handling() -> None:
     """Orchestrate comprehensive error handling demonstration.
 
     SOLID REFACTORING: Reduced complexity from 61 to ~8 by breaking down monolithic
@@ -178,24 +176,24 @@ async def demonstrate_error_handling() -> None:
     config = get_error_demo_config()
 
     # Test setup error handling
-    target = await demonstrate_setup_error_handling(config)
+    target = demonstrate_setup_error_handling(config)
     if target is None:
         logger.error("Unable to establish target connection - ending demonstration")
         return
 
     # Test schema validation errors
-    await demonstrate_schema_validation_errors(target)
+    demonstrate_schema_validation_errors(target)
 
     # Test data processing errors
-    await demonstrate_data_processing_errors(target)
+    demonstrate_data_processing_errors(target)
 
     # Test recovery scenarios
-    await demonstrate_recovery_scenarios(target)
+    demonstrate_recovery_scenarios(target)
 
     logger.info("Error handling demonstration completed")
 
 
-async def demonstrate_data_processing_errors(target: SingerTargetOracleWMS) -> None:
+def demonstrate_data_processing_errors(target: SingerTargetOracleWMS) -> None:
     """Single Responsibility: Demonstrate data processing error handling.
 
     SOLID REFACTORING: Extract data processing errors into focused function.
@@ -214,7 +212,7 @@ async def demonstrate_data_processing_errors(target: SingerTargetOracleWMS) -> N
     }
 
     try:
-        record_result = await target.process_record_message(valid_record)
+        record_result = target.process_record_message(valid_record)
         if record_result.success:
             logger.info("Valid record processed successfully")
         else:
@@ -223,7 +221,7 @@ async def demonstrate_data_processing_errors(target: SingerTargetOracleWMS) -> N
         logger.info(f"Valid record processing raised exception: {e}")
 
 
-async def demonstrate_recovery_scenarios(target: SingerTargetOracleWMS) -> None:
+def demonstrate_recovery_scenarios(target: SingerTargetOracleWMS) -> None:
     """Single Responsibility: Demonstrate recovery and resilience scenarios.
 
     SOLID REFACTORING: Extract recovery scenarios into focused function.
@@ -235,7 +233,7 @@ async def demonstrate_recovery_scenarios(target: SingerTargetOracleWMS) -> None:
 
     try:
         # Test graceful shutdown and restart
-        cleanup_result = await target.cleanup()
+        cleanup_result = target.cleanup()
         if cleanup_result.success:
             logger.info("Target cleanup successful")
         else:
@@ -253,4 +251,4 @@ if __name__ == "__main__":
     SOLID REFACTORING: Simplified main execution using the orchestrated functions.
     """
     # Example code - MyPy type checking relaxed for demonstration
-    asyncio.run(demonstrate_error_handling())
+    run(demonstrate_error_handling())

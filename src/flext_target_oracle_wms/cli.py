@@ -6,7 +6,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import asyncio
 import json
 import sys
 from pathlib import Path
@@ -27,7 +26,7 @@ class OracleWMSTargetCli:
         self.version = "0.9.0"
 
     @override
-    async def execute(self, **kwargs: object) -> FlextResult[None]:
+    def execute(self, **kwargs: object) -> FlextResult[None]:
         """Execute target using REAL implementation.
 
         SOLID REFACTORING: Reduced multiple returns (count=6) to single exit point
@@ -54,9 +53,7 @@ class OracleWMSTargetCli:
                     )
                 else:
                     # Continue with target setup and processing
-                    result: FlextResult[object] = await self._execute_target_pipeline(
-                        config
-                    )
+                    result: FlextResult[object] = self._execute_target_pipeline(config)
 
         except Exception as e:
             result: FlextResult[object] = FlextResult[None].fail(
@@ -65,7 +62,7 @@ class OracleWMSTargetCli:
 
         return result
 
-    async def _execute_target_pipeline(
+    def _execute_target_pipeline(
         self,
         config: FlextTypes.Core.Dict,
     ) -> FlextResult[None]:
@@ -76,17 +73,17 @@ class OracleWMSTargetCli:
         target = SingerTargetOracleWMS(config)
 
         # Setup target
-        setup_result: FlextResult[object] = await target.setup()
+        setup_result: FlextResult[object] = target.setup()
         if not setup_result.success:
             return FlextResult[None].fail(f"Setup failed: {setup_result.error}")
 
         # Process messages
-        process_result: FlextResult[object] = await self._process_stdin_messages(target)
+        process_result: FlextResult[object] = self._process_stdin_messages(target)
         if not process_result.success:
             return process_result
 
         # Finalize and cleanup
-        return await self._finalize_target(target)
+        return self._finalize_target(target)
 
     def _prepare_config(
         self,
@@ -114,7 +111,7 @@ class OracleWMSTargetCli:
                 f"Configuration preparation failed: {e}",
             )
 
-    async def _process_stdin_messages(
+    def _process_stdin_messages(
         self,
         target: SingerTargetOracleWMS,
     ) -> FlextResult[None]:
@@ -125,9 +122,7 @@ class OracleWMSTargetCli:
                 if not line:
                     continue
 
-                result: FlextResult[object] = await self._process_single_message(
-                    target, line
-                )
+                result: FlextResult[object] = self._process_single_message(target, line)
                 if not result.success:
                     return result
 
@@ -135,7 +130,7 @@ class OracleWMSTargetCli:
         except Exception as e:
             return FlextResult[None].fail(f"Message processing failed: {e}")
 
-    async def _process_single_message(
+    def _process_single_message(
         self,
         target: SingerTargetOracleWMS,
         line: str,
@@ -161,13 +156,13 @@ class OracleWMSTargetCli:
         except json.JSONDecodeError as e:
             return FlextResult[None].fail(f"Invalid JSON: {e}")
 
-    async def _finalize_target(
+    def _finalize_target(
         self,
         target: SingerTargetOracleWMS,
     ) -> FlextResult[None]:
         """Finalize target processing and cleanup."""
         try:
-            await target.cleanup()
+            target.cleanup()
             return FlextResult[None].ok(None)
         except Exception as e:
             return FlextResult[None].fail(f"Finalization failed: {e}")
@@ -197,9 +192,7 @@ def main() -> None:
             config_path = sys.argv[2]
 
         # Execute CLI with parsed arguments
-        result: FlextResult[object] = asyncio.run(
-            cli_instance.execute(config=config_path)
-        )
+        result: FlextResult[object] = cli_instance.execute(config=config_path)
 
         if not result.success:
             sys.stderr.write(f"Execution failed: {result.error}\n")

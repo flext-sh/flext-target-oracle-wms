@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -38,8 +38,7 @@ class TestOracleWMSIntegration:
             "default_target_schema": "WMS_TEST",
         }
 
-    @pytest.mark.asyncio
-    async def test_singer_target_setup(
+    def test_singer_target_setup(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -51,17 +50,16 @@ class TestOracleWMSIntegration:
         with patch.object(
             target.oracle_client,
             "start",
-            new_callable=AsyncMock,
+            new_callable=Mock,
         ) as mock_start:
             mock_start.return_value = FlextResult[None].ok(None)
 
             # Test setup using REAL flext-core patterns
-            setup_result = await target.setup()
+            setup_result = target.setup()
             assert setup_result.success
             assert setup_result.error is None
 
-    @pytest.mark.asyncio
-    async def test_schema_message_processing(
+    def test_schema_message_processing(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -86,12 +84,11 @@ class TestOracleWMSIntegration:
         }
 
         # Test SCHEMA message processing using REAL flext-core patterns
-        schema_result = await target.process_schema_message(schema_message)
+        schema_result = target.process_schema_message(schema_message)
         assert schema_result.success
         assert schema_result.error is None
 
-    @pytest.mark.asyncio
-    async def test_record_message_processing(
+    def test_record_message_processing(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -126,12 +123,11 @@ class TestOracleWMSIntegration:
         }
 
         # Test RECORD message processing using REAL flext-core patterns
-        record_result = await target.process_record_message(record_message)
+        record_result = target.process_record_message(record_message)
         assert record_result.success
         assert record_result.error is None
 
-    @pytest.mark.asyncio
-    async def test_state_message_processing(
+    def test_state_message_processing(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -157,8 +153,7 @@ class TestOracleWMSIntegration:
         assert state_result.success
         assert state_result.error is None
 
-    @pytest.mark.asyncio
-    async def test_target_cleanup(
+    def test_target_cleanup(
         self,
         oracle_wms_config: FlextTypes.Core.Dict,
     ) -> None:
@@ -172,20 +167,20 @@ class TestOracleWMSIntegration:
             patch.object(
                 target.oracle_client,
                 "start",
-                new_callable=AsyncMock,
+                new_callable=Mock,
             ) as mock_start,
             patch.object(
                 target.oracle_client,
                 "stop",
-                new_callable=AsyncMock,
+                new_callable=Mock,
             ) as mock_stop,
         ):
             mock_start.return_value = FlextResult[None].ok(None)
             mock_stop.return_value = FlextResult[None].ok(None)
 
             # Test setup and cleanup cycle
-            await target.setup()
-            cleanup_result = await target.cleanup()
+            target.setup()
+            cleanup_result = target.cleanup()
 
             assert cleanup_result.success
             assert cleanup_result.error is None

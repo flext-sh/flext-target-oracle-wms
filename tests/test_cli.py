@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import json
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
@@ -62,8 +62,7 @@ class TestOracleWMSTargetCli:
         ):
             cli._load_config("invalid.json")
 
-    @pytest.mark.asyncio
-    async def test_execute_with_config_file(self) -> None:
+    def test_execute_with_config_file(self) -> None:
         """Test CLI execution with configuration file."""
         cli = OracleWMSTargetCli()
         config_data = {
@@ -80,16 +79,15 @@ class TestOracleWMSTargetCli:
             patch("sys.stdin", []),
         ):  # Empty stdin
             mock_target = MagicMock()
-            mock_target.setup = AsyncMock(return_value=FlextResult[None].ok(None))
+            mock_target.setup = Mock(return_value=FlextResult[None].ok(None))
             mock_target.finalize.return_value = FlextResult[None].ok({"total": 0})
-            mock_target.cleanup = AsyncMock()
+            mock_target.cleanup = Mock()
             mock_target_class.return_value = mock_target
 
-            result = await cli.execute(config="config.json")
+            result = cli.execute(config="config.json")
             assert result.success
 
-    @pytest.mark.asyncio
-    async def test_execute_with_default_config(self) -> None:
+    def test_execute_with_default_config(self) -> None:
         """Test CLI execution with default configuration."""
         cli = OracleWMSTargetCli()
 
@@ -100,16 +98,15 @@ class TestOracleWMSTargetCli:
             patch("sys.stdin", []),
         ):  # Empty stdin
             mock_target = MagicMock()
-            mock_target.setup = AsyncMock(return_value=FlextResult[None].ok(None))
+            mock_target.setup = Mock(return_value=FlextResult[None].ok(None))
             mock_target.finalize.return_value = FlextResult[None].ok({"total": 0})
-            mock_target.cleanup = AsyncMock()
+            mock_target.cleanup = Mock()
             mock_target_class.return_value = mock_target
 
-            result = await cli.execute()
+            result = cli.execute()
             assert result.success
 
-    @pytest.mark.asyncio
-    async def test_execute_setup_failure(self) -> None:
+    def test_execute_setup_failure(self) -> None:
         """Test CLI execution when target setup fails."""
         cli = OracleWMSTargetCli()
 
@@ -117,18 +114,17 @@ class TestOracleWMSTargetCli:
             "flext_target_oracle_wms.cli.SingerTargetOracleWMS",
         ) as mock_target_class:
             mock_target = MagicMock()
-            mock_target.setup = AsyncMock(
+            mock_target.setup = Mock(
                 return_value=FlextResult[None].fail("Setup failed"),
             )
             mock_target_class.return_value = mock_target
 
-            result = await cli.execute()
+            result = cli.execute()
             assert not result.success
             assert result.error is not None
             assert "Setup failed" in result.error
 
-    @pytest.mark.asyncio
-    async def test_execute_with_singer_messages(self) -> None:
+    def test_execute_with_singer_messages(self) -> None:
         """Test CLI execution with Singer messages."""
         cli = OracleWMSTargetCli()
 
@@ -146,26 +142,25 @@ class TestOracleWMSTargetCli:
             patch("sys.stdin", mock_messages),
         ):
             mock_target = MagicMock()
-            mock_target.setup = AsyncMock(return_value=FlextResult[None].ok(None))
-            mock_target.process_schema_message = AsyncMock(
+            mock_target.setup = Mock(return_value=FlextResult[None].ok(None))
+            mock_target.process_schema_message = Mock(
                 return_value=FlextResult[None].ok(None),
             )
-            mock_target.process_record_message = AsyncMock(
+            mock_target.process_record_message = Mock(
                 return_value=FlextResult[None].ok(None),
             )
             mock_target.process_state_message.return_value = FlextResult[None].ok(None)
             mock_target.finalize.return_value = FlextResult[None].ok({"total": 1})
-            mock_target.cleanup = AsyncMock()
+            mock_target.cleanup = Mock()
             mock_target_class.return_value = mock_target
 
-            result = await cli.execute()
+            result = cli.execute()
             assert result.success
             mock_target.process_schema_message.assert_called_once()
             mock_target.process_record_message.assert_called_once()
             mock_target.process_state_message.assert_called_once()
 
-    @pytest.mark.asyncio
-    async def test_execute_with_invalid_json(self) -> None:
+    def test_execute_with_invalid_json(self) -> None:
         """Test CLI execution with invalid JSON input."""
         cli = OracleWMSTargetCli()
 
@@ -176,16 +171,15 @@ class TestOracleWMSTargetCli:
             patch("sys.stdin", ["invalid json"]),
         ):
             mock_target = MagicMock()
-            mock_target.setup = AsyncMock(return_value=FlextResult[None].ok(None))
+            mock_target.setup = Mock(return_value=FlextResult[None].ok(None))
             mock_target_class.return_value = mock_target
 
-            result = await cli.execute()
+            result = cli.execute()
             assert not result.success
             assert result.error is not None
             assert "Invalid JSON" in result.error
 
-    @pytest.mark.asyncio
-    async def test_execute_message_processing_failure(self) -> None:
+    def test_execute_message_processing_failure(self) -> None:
         """Test CLI execution when message processing fails."""
         cli = OracleWMSTargetCli()
 
@@ -196,19 +190,18 @@ class TestOracleWMSTargetCli:
             patch("sys.stdin", ['{"type": "SCHEMA", "stream": "test", "schema": {}}']),
         ):
             mock_target = MagicMock()
-            mock_target.setup = AsyncMock(return_value=FlextResult[None].ok(None))
-            mock_target.process_schema_message = AsyncMock(
+            mock_target.setup = Mock(return_value=FlextResult[None].ok(None))
+            mock_target.process_schema_message = Mock(
                 return_value=FlextResult[None].fail("Processing failed"),
             )
             mock_target_class.return_value = mock_target
 
-            result = await cli.execute()
+            result = cli.execute()
             assert not result.success
             assert result.error is not None
             assert "Processing failed" in result.error
 
-    @pytest.mark.asyncio
-    async def test_execute_exception_handling(self) -> None:
+    def test_execute_exception_handling(self) -> None:
         """Test CLI execution exception handling."""
         cli = OracleWMSTargetCli()
 
@@ -216,7 +209,7 @@ class TestOracleWMSTargetCli:
             "flext_target_oracle_wms.cli.SingerTargetOracleWMS",
             side_effect=Exception("Test error"),
         ):
-            result = await cli.execute()
+            result = cli.execute()
             assert not result.success
             assert result.error is not None
             assert "CLI execution failed" in result.error
@@ -231,11 +224,11 @@ class TestMainFunction:
         """Test basic main function execution."""
         with (
             patch("flext_target_oracle_wms.cli.OracleWMSTargetCli") as mock_cli_class,
-            patch("asyncio.run") as mock_run,
+            patch("run") as mock_run,
             patch("sys.argv", ["target-oracle-wms"]),
         ):
             mock_cli = MagicMock()
-            mock_cli.execute = AsyncMock(return_value=FlextResult[None].ok(None))
+            mock_cli.execute = Mock(return_value=FlextResult[None].ok(None))
             mock_cli_class.return_value = mock_cli
             mock_run.return_value = FlextResult[None].ok(None)
 
@@ -247,11 +240,11 @@ class TestMainFunction:
         """Test main function with config argument."""
         with (
             patch("flext_target_oracle_wms.cli.OracleWMSTargetCli") as mock_cli_class,
-            patch("asyncio.run") as mock_run,
+            patch("run") as mock_run,
             patch("sys.argv", ["target-oracle-wms", "--config", "config.json"]),
         ):
             mock_cli = MagicMock()
-            mock_cli.execute = AsyncMock(return_value=FlextResult[None].ok(None))
+            mock_cli.execute = Mock(return_value=FlextResult[None].ok(None))
             mock_cli_class.return_value = mock_cli
             mock_run.return_value = FlextResult[None].ok(None)
 
@@ -265,7 +258,7 @@ class TestMainFunction:
         """Test main function when CLI setup fails (now tests execution failure since setup was removed)."""
         with (
             patch("flext_target_oracle_wms.cli.OracleWMSTargetCli") as mock_cli_class,
-            patch("asyncio.run") as mock_run,
+            patch("run") as mock_run,
             patch("sys.stderr"),
         ):
             mock_cli = MagicMock()
@@ -280,7 +273,7 @@ class TestMainFunction:
         """Test main function when execution fails."""
         with (
             patch("flext_target_oracle_wms.cli.OracleWMSTargetCli") as mock_cli_class,
-            patch("asyncio.run") as mock_run,
+            patch("run") as mock_run,
             patch("sys.stderr"),
         ):
             mock_cli = MagicMock()
@@ -294,7 +287,7 @@ class TestMainFunction:
     def test_main_keyboard_interrupt(self) -> None:
         """Test main function with keyboard interrupt."""
         with (
-            patch("asyncio.run", side_effect=KeyboardInterrupt()),
+            patch("run", side_effect=KeyboardInterrupt()),
             patch("sys.stderr"),
             patch("sys.exit") as mock_exit,
         ):
@@ -304,7 +297,7 @@ class TestMainFunction:
     def test_main_general_exception(self) -> None:
         """Test main function with general exception."""
         with (
-            patch("asyncio.run", side_effect=Exception("Test error")),
+            patch("run", side_effect=Exception("Test error")),
             patch("sys.stderr"),
             patch("sys.exit") as mock_exit,
         ):

@@ -6,9 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, patch
-
-import pytest
+from unittest.mock import Mock, patch
 
 from flext_core import FlextResult
 from flext_target_oracle_wms import SingerTargetOracleWMS
@@ -166,8 +164,7 @@ class TestSingerTargetComponents:
         assert target.plugin_enabled is True
         assert target.plugin_directory == "./custom_plugins"
 
-    @pytest.mark.asyncio
-    async def test_target_lifecycle(self) -> None:
+    def test_target_lifecycle(self) -> None:
         """Test complete target lifecycle - REAL implementation."""
         config = {"base_url": "https://test.wms.example.com"}
         target = SingerTargetOracleWMS(config)
@@ -178,19 +175,19 @@ class TestSingerTargetComponents:
             patch.object(
                 target.oracle_client,
                 "start",
-                new_callable=AsyncMock,
+                new_callable=Mock,
             ) as mock_start,
             patch.object(
                 target.oracle_client,
                 "stop",
-                new_callable=AsyncMock,
+                new_callable=Mock,
             ) as mock_stop,
         ):
             mock_start.return_value = FlextResult[None].ok(None)
             mock_stop.return_value = FlextResult[None].ok(None)
 
             # Test setup
-            setup_result = await target.setup()
+            setup_result = target.setup()
             assert setup_result.success
 
             # Test finalization
@@ -199,5 +196,5 @@ class TestSingerTargetComponents:
             assert finalize_result.data is not None
 
             # Test cleanup
-            cleanup_result = await target.cleanup()
+            cleanup_result = target.cleanup()
             assert cleanup_result.success
