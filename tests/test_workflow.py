@@ -242,7 +242,10 @@ class TestComprehensiveTargetCoverage:
 
                 assert not result.success
                 assert result.error is not None
-                assert "Oracle WMS connection failed" in result.error
+                assert (
+                    result.error is not None
+                    and "Oracle WMS connection failed" in result.error
+                )
 
     def test_target_message_processing_edge_cases(
         self,
@@ -257,21 +260,25 @@ class TestComprehensiveTargetCoverage:
             result = target.process_schema_message(incomplete_schema)
             assert not result.success
             assert result.error is not None
-            assert "missing stream or schema" in result.error
+            assert (
+                result.error is not None and "missing stream or schema" in result.error
+            )
 
             # Test RECORD message with missing fields
             incomplete_record = {"type": "RECORD", "stream": "test"}
             result = target.process_record_message(incomplete_record)
             assert not result.success
             assert result.error is not None
-            assert "missing stream or record" in result.error
+            assert (
+                result.error is not None and "missing stream or record" in result.error
+            )
 
             # Test STATE message with invalid type
             invalid_state = {"type": "INVALID", "value": {}}
             result = target.process_state_message(invalid_state)
             assert not result.success
             assert result.error is not None
-            assert "Not a STATE message" in result.error
+            assert result.error is not None and "Not a STATE message" in result.error
 
     def test_target_table_management_coverage(
         self,
@@ -293,7 +300,10 @@ class TestComprehensiveTargetCoverage:
             )
             assert not result.success
             assert result.error is not None
-            assert "Oracle WMS client not initialized" in result.error
+            assert (
+                result.error is not None
+                and "Oracle WMS client not initialized" in result.error
+            )
 
             # Test _ensure_table_exists with exception - patch the method itself
             target.oracle_client = mock_client

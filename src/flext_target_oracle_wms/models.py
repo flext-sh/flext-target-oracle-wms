@@ -15,6 +15,18 @@ from pydantic import Field, SecretStr
 from flext_core import FlextModels, FlextResult
 from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants
 
+# Oracle WMS constants
+oauth2 = "oauth2"
+basic = "basic"
+WMS_CONNECTION = "WMS_CONNECTION"
+WMS_AUTHENTICATION = "WMS_AUTHENTICATION"
+WMS_BUSINESS_RULE = "WMS_BUSINESS_RULE"
+WMS_VALIDATION = "WMS_VALIDATION"
+SINGER_PROTOCOL = "SINGER_PROTOCOL"
+DATA_TRANSFORMATION = "DATA_TRANSFORMATION"
+PERFORMANCE = "PERFORMANCE"
+CONFIGURATION = "CONFIGURATION"
+
 
 class FlextTargetOracleWmsModels(FlextModels):
     """Oracle WMS target models extending flext-core FlextModels.
@@ -28,7 +40,7 @@ class FlextTargetOracleWmsModels(FlextModels):
         """Oracle WMS authentication configuration with comprehensive auth support."""
 
         base_url: str = Field(..., description="Oracle WMS base URL")
-        auth_method: Literal["oauth2", "basic", "api_key"] = Field(
+        auth_method: Literal[oauth2, basic, api_key] = Field(
             default="oauth2", description="Authentication method"
         )
 
@@ -565,14 +577,14 @@ class FlextTargetOracleWmsModels(FlextModels):
         """Error context for WMS target error handling."""
 
         error_type: Literal[
-            "WMS_CONNECTION",
-            "WMS_AUTHENTICATION",
-            "WMS_BUSINESS_RULE",
-            "WMS_VALIDATION",
-            "SINGER_PROTOCOL",
-            "DATA_TRANSFORMATION",
-            "PERFORMANCE",
-            "CONFIGURATION",
+            WMS_CONNECTION,
+            WMS_AUTHENTICATION,
+            WMS_BUSINESS_RULE,
+            WMS_VALIDATION,
+            SINGER_PROTOCOL,
+            DATA_TRANSFORMATION,
+            PERFORMANCE,
+            CONFIGURATION,
         ] = Field(..., description="Error category")
 
         # Context information

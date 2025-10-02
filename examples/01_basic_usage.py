@@ -11,9 +11,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import json
-from collections.abc import Coroutine
 from pathlib import Path
-from typing import cast
 
 from flext_core import FlextLogger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
@@ -221,9 +219,9 @@ def run_from_singer_files() -> None:
 
             if message["type"] == "SCHEMA":
                 # Use sync version for demo simplicity
-                result = run(target.process_schema_message(message))
+                result = target.process_schema_message_sync(message)
             elif message["type"] == "RECORD":
-                result = run(target.process_record_message(message))
+                result = target.process_record_message_sync(message)
             elif message["type"] == "STATE":
                 result = target.process_state_message(message)
             else:
@@ -240,10 +238,10 @@ def run_from_singer_files() -> None:
         raise
     finally:
         # Cleanup
-        run(target.cleanup())
+        target.cleanup_sync()
 
 
 if __name__ == "__main__":
     """Run the basic usage example."""
-    run(cast("Coroutine[object, object, None]", run_basic_example()))
+    run_basic_example()
     run_from_singer_files()
