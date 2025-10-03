@@ -39,21 +39,15 @@ class FlextTargetOracleWmsTypes(FlextTypes):
         """Singer target protocol complex types."""
 
         type TargetConfiguration = dict[
-            str, str | int | bool | dict[str, FlextTypes.Core.ConfigValue]
+            str, str | int | bool | dict[str, FlextTypes.ConfigValue]
         ]
         type StreamConfiguration = dict[
-            str, str | bool | dict[str, FlextTypes.Core.JsonValue]
+            str, str | bool | dict[str, FlextTypes.JsonValue]
         ]
-        type MessageProcessing = dict[
-            str, str | list[dict[str, FlextTypes.Core.JsonValue]]
-        ]
-        type RecordHandling = dict[
-            str, str | dict[str, FlextTypes.Core.JsonValue] | bool
-        ]
-        type StateManagement = dict[str, str | dict[str, FlextTypes.Core.JsonValue]]
-        type BatchProcessing = dict[
-            str, str | int | dict[str, FlextTypes.Core.JsonValue]
-        ]
+        type MessageProcessing = dict[str, str | list[dict[str, FlextTypes.JsonValue]]]
+        type RecordHandling = dict[str, str | dict[str, FlextTypes.JsonValue] | bool]
+        type StateManagement = dict[str, str | dict[str, FlextTypes.JsonValue]]
+        type BatchProcessing = dict[str, str | int | dict[str, FlextTypes.JsonValue]]
 
     # =========================================================================
     # ORACLE WMS WAREHOUSE TYPES - Complex warehouse management types
@@ -63,15 +57,15 @@ class FlextTargetOracleWmsTypes(FlextTypes):
         """Oracle WMS warehouse management complex types."""
 
         type WarehouseConfiguration = dict[
-            str, str | int | bool | dict[str, FlextTypes.Core.ConfigValue]
+            str, str | int | bool | dict[str, FlextTypes.ConfigValue]
         ]
         type FacilityDefinition = dict[
-            str, str | list[str] | dict[str, FlextTypes.Core.JsonValue]
+            str, str | FlextTypes.StringList | dict[str, FlextTypes.JsonValue]
         ]
-        type LocationManagement = dict[str, str | dict[str, FlextTypes.Core.JsonValue]]
-        type ZoneConfiguration = dict[str, str | dict[str, object]]
-        type WarehouseMetadata = dict[str, str | dict[str, FlextTypes.Core.JsonValue]]
-        type LayoutDefinition = dict[str, str | bool | dict[str, object]]
+        type LocationManagement = dict[str, str | dict[str, FlextTypes.JsonValue]]
+        type ZoneConfiguration = dict[str, str | FlextTypes.Dict]
+        type WarehouseMetadata = dict[str, str | dict[str, FlextTypes.JsonValue]]
+        type LayoutDefinition = dict[str, str | bool | FlextTypes.Dict]
 
     # =========================================================================
     # WMS INVENTORY TYPES - Complex inventory management types
@@ -81,17 +75,15 @@ class FlextTargetOracleWmsTypes(FlextTypes):
         """Oracle WMS inventory management complex types."""
 
         type InventoryConfiguration = dict[
-            str, str | int | bool | dict[str, FlextTypes.Core.ConfigValue]
+            str, str | int | bool | dict[str, FlextTypes.ConfigValue]
         ]
-        type ItemMasterData = dict[str, str | dict[str, FlextTypes.Core.JsonValue]]
+        type ItemMasterData = dict[str, str | dict[str, FlextTypes.JsonValue]]
         type StockLevelTracking = dict[
-            str, int | float | dict[str, FlextTypes.Core.ConfigValue]
+            str, int | float | dict[str, FlextTypes.ConfigValue]
         ]
-        type AllocationManagement = dict[str, int | str | dict[str, object]]
-        type InventoryMetrics = dict[
-            str, int | float | dict[str, FlextTypes.Core.JsonValue]
-        ]
-        type CycleCountData = dict[str, str | int | dict[str, object]]
+        type AllocationManagement = dict[str, int | str | FlextTypes.Dict]
+        type InventoryMetrics = dict[str, int | float | dict[str, FlextTypes.JsonValue]]
+        type CycleCountData = dict[str, str | int | FlextTypes.Dict]
 
     # =========================================================================
     # WMS ORDER MANAGEMENT TYPES - Complex order processing types
@@ -101,17 +93,15 @@ class FlextTargetOracleWmsTypes(FlextTypes):
         """Oracle WMS order management complex types."""
 
         type OrderConfiguration = dict[
-            str, str | int | dict[str, FlextTypes.Core.ConfigValue]
+            str, str | int | dict[str, FlextTypes.ConfigValue]
         ]
-        type OrderProcessing = dict[
-            str, str | bool | dict[str, FlextTypes.Core.JsonValue]
-        ]
-        type FulfillmentWorkflow = dict[str, str | int | dict[str, object]]
-        type PickingInstructions = dict[str, str | dict[str, FlextTypes.Core.JsonValue]]
+        type OrderProcessing = dict[str, str | bool | dict[str, FlextTypes.JsonValue]]
+        type FulfillmentWorkflow = dict[str, str | int | FlextTypes.Dict]
+        type PickingInstructions = dict[str, str | dict[str, FlextTypes.JsonValue]]
         type ShippingConfiguration = dict[
-            str, bool | str | dict[str, FlextTypes.Core.ConfigValue]
+            str, bool | str | dict[str, FlextTypes.ConfigValue]
         ]
-        type OrderTracking = dict[str, str | int | dict[str, object]]
+        type OrderTracking = dict[str, str | int | FlextTypes.Dict]
 
     # =========================================================================
     # WMS LABOR MANAGEMENT TYPES - Complex workforce management types
@@ -121,17 +111,17 @@ class FlextTargetOracleWmsTypes(FlextTypes):
         """Oracle WMS labor management complex types."""
 
         type LaborConfiguration = dict[
-            str, str | bool | dict[str, FlextTypes.Core.ConfigValue]
+            str, str | bool | dict[str, FlextTypes.ConfigValue]
         ]
         type WorkforceManagement = dict[
-            str, int | float | dict[str, FlextTypes.Core.JsonValue]
+            str, int | float | dict[str, FlextTypes.JsonValue]
         ]
-        type TaskAssignment = dict[str, str | dict[str, FlextTypes.Core.JsonValue]]
-        type ProductivityMetrics = dict[str, float | int | dict[str, object]]
+        type TaskAssignment = dict[str, str | dict[str, FlextTypes.JsonValue]]
+        type ProductivityMetrics = dict[str, float | int | FlextTypes.Dict]
         type PerformanceTracking = dict[
-            str, int | float | dict[str, FlextTypes.Core.JsonValue]
+            str, int | float | dict[str, FlextTypes.JsonValue]
         ]
-        type WorkforceScheduling = dict[str, str | int | dict[str, object]]
+        type WorkforceScheduling = dict[str, str | int | FlextTypes.Dict]
 
     # =========================================================================
     # WMS TRANSPORTATION TYPES - Complex transportation management types
@@ -141,15 +131,15 @@ class FlextTargetOracleWmsTypes(FlextTypes):
         """Oracle WMS transportation management complex types."""
 
         type TransportConfiguration = dict[
-            str, str | int | bool | dict[str, FlextTypes.Core.ConfigValue]
+            str, str | int | bool | dict[str, FlextTypes.ConfigValue]
         ]
-        type CarrierManagement = dict[str, str | dict[str, FlextTypes.Core.JsonValue]]
-        type ShipmentTracking = dict[str, str | dict[str, FlextTypes.Core.JsonValue]]
-        type DeliveryScheduling = dict[str, str | bool | dict[str, object]]
-        type TransportMetrics = dict[
-            str, int | float | dict[str, FlextTypes.Core.JsonValue]
+        type CarrierManagement = dict[str, str | dict[str, FlextTypes.JsonValue]]
+        type ShipmentTracking = dict[str, str | dict[str, FlextTypes.JsonValue]]
+        type DeliveryScheduling = dict[str, str | bool | FlextTypes.Dict]
+        type TransportMetrics = dict[str, int | float | dict[str, FlextTypes.JsonValue]]
+        type RouteOptimization = dict[
+            str, str | FlextTypes.StringList | FlextTypes.Dict
         ]
-        type RouteOptimization = dict[str, str | list[str] | dict[str, object]]
 
     # =========================================================================
     # DATA TRANSFORMATION TYPES - Complex data transformation types
@@ -159,13 +149,13 @@ class FlextTargetOracleWmsTypes(FlextTypes):
         """Data transformation complex types."""
 
         type TransformationConfiguration = dict[
-            str, str | bool | dict[str, FlextTypes.Core.ConfigValue]
+            str, str | bool | dict[str, FlextTypes.ConfigValue]
         ]
-        type FieldMapping = dict[str, str | list[str] | dict[str, object]]
-        type DataValidation = dict[str, str | dict[str, FlextTypes.Core.JsonValue]]
-        type TypeConversion = dict[str, bool | str | dict[str, object]]
-        type FilteringRules = dict[str, str | dict[str, FlextTypes.Core.JsonValue]]
-        type TransformationResult = dict[str, dict[str, FlextTypes.Core.JsonValue]]
+        type FieldMapping = dict[str, str | FlextTypes.StringList | FlextTypes.Dict]
+        type DataValidation = dict[str, str | dict[str, FlextTypes.JsonValue]]
+        type TypeConversion = dict[str, bool | str | FlextTypes.Dict]
+        type FilteringRules = dict[str, str | dict[str, FlextTypes.JsonValue]]
+        type TransformationResult = dict[str, dict[str, FlextTypes.JsonValue]]
 
     # =========================================================================
     # STREAM PROCESSING TYPES - Complex stream handling types
@@ -175,13 +165,13 @@ class FlextTargetOracleWmsTypes(FlextTypes):
         """Stream processing complex types."""
 
         type StreamConfiguration = dict[
-            str, str | bool | int | dict[str, FlextTypes.Core.ConfigValue]
+            str, str | bool | int | dict[str, FlextTypes.ConfigValue]
         ]
-        type StreamMetadata = dict[str, str | dict[str, FlextTypes.Core.JsonValue]]
-        type StreamRecord = dict[str, FlextTypes.Core.JsonValue | dict[str, object]]
-        type StreamState = dict[str, str | int | dict[str, FlextTypes.Core.JsonValue]]
-        type StreamBookmark = dict[str, str | int | dict[str, object]]
-        type StreamSchema = dict[str, str | dict[str, FlextTypes.Core.JsonValue] | bool]
+        type StreamMetadata = dict[str, str | dict[str, FlextTypes.JsonValue]]
+        type StreamRecord = dict[str, FlextTypes.JsonValue | FlextTypes.Dict]
+        type StreamState = dict[str, str | int | dict[str, FlextTypes.JsonValue]]
+        type StreamBookmark = dict[str, str | int | FlextTypes.Dict]
+        type StreamSchema = dict[str, str | dict[str, FlextTypes.JsonValue] | bool]
 
     # =========================================================================
     # ERROR HANDLING TYPES - Complex error management types
@@ -191,18 +181,14 @@ class FlextTargetOracleWmsTypes(FlextTypes):
         """Error handling complex types."""
 
         type ErrorConfiguration = dict[
-            str, bool | str | int | dict[str, FlextTypes.Core.ConfigValue]
+            str, bool | str | int | dict[str, FlextTypes.ConfigValue]
         ]
-        type ErrorRecovery = dict[str, str | bool | dict[str, object]]
-        type ErrorReporting = dict[
-            str, str | int | dict[str, FlextTypes.Core.JsonValue]
-        ]
-        type ErrorClassification = dict[str, str | int | dict[str, object]]
-        type ErrorMetrics = dict[
-            str, int | float | dict[str, FlextTypes.Core.JsonValue]
-        ]
+        type ErrorRecovery = dict[str, str | bool | FlextTypes.Dict]
+        type ErrorReporting = dict[str, str | int | dict[str, FlextTypes.JsonValue]]
+        type ErrorClassification = dict[str, str | int | FlextTypes.Dict]
+        type ErrorMetrics = dict[str, int | float | dict[str, FlextTypes.JsonValue]]
         type ErrorTracking = list[
-            dict[str, str | int | dict[str, FlextTypes.Core.JsonValue]]
+            dict[str, str | int | dict[str, FlextTypes.JsonValue]]
         ]
 
     # =========================================================================
@@ -244,19 +230,17 @@ class FlextTargetOracleWmsTypes(FlextTypes):
 
         # Singer target Oracle WMS-specific project configurations
         type SingerTargetOracleWmsProjectConfig = dict[
-            str, FlextTypes.Core.ConfigValue | object
+            str, FlextTypes.ConfigValue | object
         ]
-        type WmsLoaderConfig = dict[str, str | int | bool | list[str]]
-        type SingerProtocolConfig = dict[str, bool | str | dict[str, object]]
-        type TargetOracleWmsPipelineConfig = dict[
-            str, FlextTypes.Core.ConfigValue | object
-        ]
+        type WmsLoaderConfig = dict[str, str | int | bool | FlextTypes.StringList]
+        type SingerProtocolConfig = dict[str, bool | str | FlextTypes.Dict]
+        type TargetOracleWmsPipelineConfig = dict[str, FlextTypes.ConfigValue | object]
 
 
 # =============================================================================
 # PUBLIC API EXPORTS - Singer Oracle WMS target TypeVars and types
 # =============================================================================
 
-__all__: list[str] = [
+__all__: FlextTypes.StringList = [
     "FlextTargetOracleWmsTypes",
 ]

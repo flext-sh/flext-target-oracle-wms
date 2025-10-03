@@ -10,6 +10,7 @@ import traceback
 
 from flext_oracle_wms import FlextOracleWmsConfig
 
+from flext_core import FlextTypes
 from flext_target_oracle_wms import (
     SingerTargetOracleWMS,
     SingerWMSCatalogManager,
@@ -76,7 +77,7 @@ def test_singer_target_interfaces() -> bool | None:
     try:
         # Create target with test configuration
 
-        config: dict[str, object] = {
+        config: FlextTypes.Dict = {
             "base_url": "https://test.example.com/wms",
             "username": "test_user",
             "password": "test_pass",

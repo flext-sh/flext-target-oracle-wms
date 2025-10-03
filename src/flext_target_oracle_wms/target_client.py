@@ -10,14 +10,14 @@ import json
 import sys
 from typing import override
 
-from pydantic import Field
-
-from flext_core import FlextConfig, FlextLogger, FlextResult, FlextTypes
 from flext_oracle_wms import (
     FlextOracleWmsApiVersion,
     FlextOracleWmsClientConfig,
     create_oracle_wms_client,
 )
+from pydantic import Field
+
+from flext_core import FlextConfig, FlextLogger, FlextResult, FlextTypes
 from flext_target_oracle_wms.target_models import (
     WMSDataTransformer,
     WMSTableManager,
@@ -31,10 +31,10 @@ class SingerWMSCatalogEntry(FlextConfig):
 
     tap_stream_id: str
     stream: str
-    schema_info: dict[str, object]
-    metadata: list[dict[str, object]] = Field(default_factory=list)
-    key_properties: list[str] = Field(default_factory=list)
-    bookmark_properties: list[str] = Field(default_factory=list)
+    schema_info: FlextTypes.Dict
+    metadata: list[FlextTypes.Dict] = Field(default_factory=list)
+    key_properties: FlextTypes.StringList = Field(default_factory=list)
+    bookmark_properties: FlextTypes.StringList = Field(default_factory=list)
     replication_method: str = "FULL_TABLE"
     replication_key: str | None = None
 
@@ -89,8 +89,8 @@ class SingerWMSCatalogManager:
     def add_stream(
         self,
         stream_name: str,
-        schema: FlextTypes.Core.Dict,
-        metadata: list[FlextTypes.Core.Dict] | None = None,
+        schema: FlextTypes.Dict,
+        metadata: list[FlextTypes.Dict] | None = None,
     ) -> FlextResult[None]:
         """Add WMS stream to catalog."""
         try:
@@ -119,15 +119,15 @@ class SingerWMSCatalogManager:
 
         return FlextResult[SingerWMSCatalogEntry].ok(self._catalog_entries[stream_name])
 
-    def list_streams(self: object) -> FlextResult[FlextTypes.Core.StringList]:
+    def list_streams(self: object) -> FlextResult[FlextTypes.StringList]:
         """List all WMS streams in catalog."""
         try:
             streams = list(self._catalog_entries.keys())
-            return FlextResult[FlextTypes.Core.StringList].ok(streams)
+            return FlextResult[FlextTypes.StringList].ok(streams)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Failed to list WMS streams")
-            return FlextResult[FlextTypes.Core.StringList].fail(
+            return FlextResult[FlextTypes.StringList].fail(
                 f"Stream listing failed: {e}",
             )
 
@@ -147,35 +147,35 @@ class SingerWMSCatalogManager:
     def get_schema_for_stream(
         self,
         stream_name: str,
-    ) -> FlextResult[FlextTypes.Core.Dict]:
+    ) -> FlextResult[FlextTypes.Dict]:
         """Get schema for specific WMS stream."""
         stream_result: FlextResult[object] = self.get_stream(stream_name)
         if not stream_result.success:
-            return FlextResult[FlextTypes.Core.Dict].fail(
+            return FlextResult[FlextTypes.Dict].fail(
                 stream_result.error or "Stream not found",
             )
 
         stream_entry = stream_result.value
-        return FlextResult[FlextTypes.Core.Dict].ok(stream_entry.schema_info)
+        return FlextResult[FlextTypes.Dict].ok(stream_entry.schema_info)
 
     def get_key_properties(
         self,
         stream_name: str,
-    ) -> FlextResult[FlextTypes.Core.StringList]:
+    ) -> FlextResult[FlextTypes.StringList]:
         """Get key properties for WMS stream."""
         stream_result: FlextResult[object] = self.get_stream(stream_name)
         if not stream_result.success:
-            return FlextResult[FlextTypes.Core.StringList].fail(
+            return FlextResult[FlextTypes.StringList].fail(
                 stream_result.error or "Stream not found",
             )
 
         stream_entry = stream_result.value
-        return FlextResult[FlextTypes.Core.StringList].ok(stream_entry.key_properties)
+        return FlextResult[FlextTypes.StringList].ok(stream_entry.key_properties)
 
     def update_stream_metadata(
         self,
         stream_name: str,
-        metadata: list[FlextTypes.Core.Dict],
+        metadata: list[FlextTypes.Dict],
     ) -> FlextResult[None]:
         """Update metadata for WMS stream."""
         try:
@@ -203,7 +203,7 @@ class SingerWMSCatalogManager:
             logger.exception("Failed to update WMS stream metadata: %s", stream_name)
             return FlextResult[None].fail(f"Metadata update failed: {e}")
 
-    def to_singer_catalog(self: object) -> FlextResult[FlextTypes.Core.Dict]:
+    def to_singer_catalog(self: object) -> FlextResult[FlextTypes.Dict]:
         """Convert to Singer catalog format."""
         try:
             streams = []
@@ -230,25 +230,25 @@ class SingerWMSCatalogManager:
 
                 streams.append(stream_dict)
 
-            catalog: FlextTypes.Core.Dict = {"streams": "streams"}
+            catalog: FlextTypes.Dict = {"streams": "streams"}
 
-            return FlextResult[FlextTypes.Core.Dict].ok(catalog)
+            return FlextResult[FlextTypes.Dict].ok(catalog)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Failed to convert to Singer WMS catalog")
-            return FlextResult[FlextTypes.Core.Dict].fail(
+            return FlextResult[FlextTypes.Dict].fail(
                 f"Catalog conversion failed: {e}",
             )
 
     def load_from_singer_catalog(
         self,
-        catalog: FlextTypes.Core.Dict,
+        catalog: FlextTypes.Dict,
     ) -> FlextResult[None]:
         """Load from Singer catalog format."""
         try:
             self._catalog_entries.clear()
 
-            streams: list[object] = catalog.get("streams", [])
+            streams: FlextTypes.List = catalog.get("streams", [])
             if not isinstance(streams, list):
                 return FlextResult[None].fail(
                     "Invalid catalog format: streams must be a list",
@@ -265,10 +265,10 @@ class SingerWMSCatalogManager:
 
                 # Type-safe extraction with proper casting
                 tap_stream_id = stream_dict.get("tap_stream_id")
-                schema_info: dict[str, object] = stream_dict.get("schema", {})
-                metadata: dict[str, object] = stream_dict.get("metadata", [])
-                key_properties: list[object] = stream_dict.get("key_properties", [])
-                bookmark_properties: list[object] = stream_dict.get(
+                schema_info: FlextTypes.Dict = stream_dict.get("schema", {})
+                metadata: FlextTypes.Dict = stream_dict.get("metadata", [])
+                key_properties: FlextTypes.List = stream_dict.get("key_properties", [])
+                bookmark_properties: FlextTypes.List = stream_dict.get(
                     "bookmark_properties", []
                 )
                 replication_method = stream_dict.get("replication_method", "FULL_TABLE")
@@ -314,7 +314,7 @@ class WMSStreamProcessingStats:
     def __init__(
         self,
         stream_name: str,
-        schema: FlextTypes.Core.Dict | None = None,
+        schema: FlextTypes.Dict | None = None,
     ) -> None:
         """Initialize stream processing statistics."""
         self.stream_name = stream_name
@@ -323,7 +323,7 @@ class WMSStreamProcessingStats:
         self.records_success = 0
         self.records_failed = 0
         self.batches_processed = 0
-        self.errors: FlextTypes.Core.StringList = []
+        self.errors: FlextTypes.StringList = []
         self.schema_validation_enabled = bool(schema and schema.get("properties"))
 
     @property
@@ -351,11 +351,11 @@ class SingerWMSStreamProcessor:
     def initialize_stream(
         self,
         stream_name: str,
-        schema: FlextTypes.Core.Dict,
+        schema: FlextTypes.Dict,
     ) -> FlextResult[None]:
         """Initialize WMS stream processing with schema validation."""
         try:
-            # Validate schema structure (schema is already typed as FlextTypes.Core.Dict)
+            # Validate schema structure (schema is already typed as FlextTypes.Dict)
             if "type" not in schema:
                 return FlextResult[None].fail(
                     f"Schema missing 'type' field for stream {stream_name}",
@@ -380,8 +380,8 @@ class SingerWMSStreamProcessor:
     def process_record(
         self,
         stream_name: str,
-        record: FlextTypes.Core.Dict,
-    ) -> FlextResult[FlextTypes.Core.Dict]:
+        record: FlextTypes.Dict,
+    ) -> FlextResult[FlextTypes.Dict]:
         """Process single Singer WMS record."""
         try:
             if stream_name not in self._stream_stats:
@@ -389,7 +389,7 @@ class SingerWMSStreamProcessor:
                     stream_name, {}
                 )
                 if not init_result.success:
-                    return FlextResult[FlextTypes.Core.Dict].fail(
+                    return FlextResult[FlextTypes.Dict].fail(
                         f"Stream initialization failed: {init_result.error}",
                     )
 
@@ -404,29 +404,29 @@ class SingerWMSStreamProcessor:
                 stats.errors.append(
                     f"Record transformation failed: {transform_result.error}",
                 )
-                return FlextResult[FlextTypes.Core.Dict].fail(
+                return FlextResult[FlextTypes.Dict].fail(
                     transform_result.error or "Transform failed",
                 )
 
             stats.records_processed += 1
             stats.records_success += 1
 
-            return FlextResult[FlextTypes.Core.Dict].ok(transform_result.value or {})
+            return FlextResult[FlextTypes.Dict].ok(transform_result.value or {})
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("WMS record processing failed for stream: %s", stream_name)
             if stream_name in self._stream_stats:
                 self._stream_stats[stream_name].records_failed += 1
                 self._stream_stats[stream_name].errors.append(str(e))
-            return FlextResult[FlextTypes.Core.Dict].fail(
+            return FlextResult[FlextTypes.Dict].fail(
                 f"Record processing failed: {e}",
             )
 
     def process_batch(
         self,
         stream_name: str,
-        records: list[FlextTypes.Core.Dict],
-    ) -> FlextResult[list[FlextTypes.Core.Dict]]:
+        records: list[FlextTypes.Dict],
+    ) -> FlextResult[list[FlextTypes.Dict]]:
         """Process batch of Singer WMS records."""
         try:
             if stream_name not in self._stream_stats:
@@ -434,7 +434,7 @@ class SingerWMSStreamProcessor:
                     stream_name, {}
                 )
                 if not init_result.success:
-                    return FlextResult[list[FlextTypes.Core.Dict]].fail(
+                    return FlextResult[list[FlextTypes.Dict]].fail(
                         f"Stream initialization failed: {init_result.error}",
                     )
 
@@ -462,11 +462,11 @@ class SingerWMSStreamProcessor:
                 len(records),
             )
 
-            return FlextResult[list[FlextTypes.Core.Dict]].ok(processed_records)
+            return FlextResult[list[FlextTypes.Dict]].ok(processed_records)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("WMS batch processing failed for stream: %s", stream_name)
-            return FlextResult[list[FlextTypes.Core.Dict]].fail(
+            return FlextResult[list[FlextTypes.Dict]].fail(
                 f"Batch processing failed: {e}",
             )
 
@@ -540,12 +540,12 @@ class SingerWMSStreamProcessor:
 
     def validate_record_schema(
         self,
-        record: FlextTypes.Core.Dict,
-        expected_schema: FlextTypes.Core.Dict,
+        record: FlextTypes.Dict,
+        expected_schema: FlextTypes.Dict,
     ) -> FlextResult[bool]:
         """Validate WMS record against expected schema."""
         try:
-            properties: dict[str, object] = expected_schema.get("properties", {})
+            properties: FlextTypes.Dict = expected_schema.get("properties", {})
 
             if not isinstance(properties, dict):
                 return FlextResult[bool].fail(
@@ -581,8 +581,8 @@ class SingerWMSStreamProcessor:
     def handle_schema_change(
         self,
         stream_name: str,
-        old_schema: FlextTypes.Core.Dict,
-        new_schema: FlextTypes.Core.Dict,
+        old_schema: FlextTypes.Dict,
+        new_schema: FlextTypes.Dict,
     ) -> FlextResult[None]:
         """Handle schema changes for WMS stream."""
         try:
@@ -590,8 +590,8 @@ class SingerWMSStreamProcessor:
             logger.info("WMS schema change detected for stream: %s", stream_name)
 
             # Compare schemas and identify changes
-            old_props: dict[str, object] = old_schema.get("properties", {})
-            new_props: dict[str, object] = new_schema.get("properties", {})
+            old_props: FlextTypes.Dict = old_schema.get("properties", {})
+            new_props: FlextTypes.Dict = new_schema.get("properties", {})
 
             # Validate that properties are dicts
             if not isinstance(old_props, dict):
@@ -629,9 +629,9 @@ class SingerTargetOracleWMS:
     name = "target-oracle-wms"  # Singer protocol requirement
 
     @override
-    def __init__(self, config: FlextTypes.Core.Dict) -> None:
+    def __init__(self, config: FlextTypes.Dict) -> None:
         """Initialize Singer Target Oracle WMS."""
-        self.config: dict[str, object] = config
+        self.config: FlextTypes.Dict = config
 
         # Use REAL flext-oracle-wms configuration
         # Extract and validate configuration values
@@ -646,7 +646,7 @@ class SingerTargetOracleWMS:
         mock_mode = config.get("mock_mode", False)
 
         # Environment type mapping for compatibility with proper literal types
-        environment_mapping: dict[str, str] = {
+        environment_mapping: FlextTypes.StringDict = {
             "dev": "development",
             "test": "test",
             "prod": "production",
@@ -698,7 +698,7 @@ class SingerTargetOracleWMS:
         # Initialize WMS components using target_models
         self.catalog_manager = SingerWMSCatalogManager()
         self.table_manager = WMSTableManager()
-        self.data_transformer: dict[str, object] = WMSDataTransformer()
+        self.data_transformer: FlextTypes.Dict = WMSDataTransformer()
         self.stream_processor = SingerWMSStreamProcessor(
             self.table_manager,
             self.data_transformer,
@@ -755,7 +755,7 @@ class SingerTargetOracleWMS:
 
     def process_lines(
         self,
-        input_lines: FlextTypes.Core.StringList,
+        input_lines: FlextTypes.StringList,
     ) -> FlextResult[None]:
         """Process Singer messages from input lines."""
         try:
@@ -787,11 +787,11 @@ class SingerTargetOracleWMS:
             logger.exception("Failed to process Singer messages")
             return FlextResult[None].fail(f"Message processing failed: {e}")
 
-    def _handle_schema_message(self, message: FlextTypes.Core.Dict) -> None:
+    def _handle_schema_message(self, message: FlextTypes.Dict) -> None:
         """Handle Singer SCHEMA message."""
         try:
             stream_name = str(message.get("stream", ""))
-            schema: dict[str, object] = message.get("schema", {})
+            schema: FlextTypes.Dict = message.get("schema", {})
 
             if not isinstance(schema, dict):
                 logger.error("Invalid schema format for stream: %s", stream_name)
@@ -807,11 +807,11 @@ class SingerTargetOracleWMS:
         except Exception:
             logger.exception("Failed to handle SCHEMA message")
 
-    def _handle_record_message(self, message: FlextTypes.Core.Dict) -> None:
+    def _handle_record_message(self, message: FlextTypes.Dict) -> None:
         """Handle Singer RECORD message."""
         try:
             stream_name = str(message.get("stream", ""))
-            record: dict[str, object] = message.get("record", {})
+            record: FlextTypes.Dict = message.get("record", {})
 
             if not isinstance(record, dict):
                 logger.error("Invalid record format for stream: %s", stream_name)
@@ -828,10 +828,10 @@ class SingerTargetOracleWMS:
         except Exception:
             logger.exception("Failed to handle RECORD message")
 
-    def _handle_state_message(self, message: FlextTypes.Core.Dict) -> None:
+    def _handle_state_message(self, message: FlextTypes.Dict) -> None:
         """Handle Singer STATE message."""
         try:
-            state: dict[str, object] = message.get("value", {})
+            state: FlextTypes.Dict = message.get("value", {})
             logger.debug("Received state update: %s", state)
             # State handling implementation would go here
 
@@ -850,15 +850,15 @@ class SingerTargetOracleWMS:
             logger.exception("Failed to run Singer Target Oracle WMS")
             return FlextResult[None].fail(f"Target execution failed: {e}")
 
-    def handle_schema_message(self, message: FlextTypes.Core.Dict) -> None:
+    def handle_schema_message(self, message: FlextTypes.Dict) -> None:
         """Public method to handle schema messages."""
         self._handle_schema_message(message)
 
-    def handle_record_message(self, message: FlextTypes.Core.Dict) -> None:
+    def handle_record_message(self, message: FlextTypes.Dict) -> None:
         """Public method to handle record messages."""
         self._handle_record_message(message)
 
-    def handle_state_message(self, message: FlextTypes.Core.Dict) -> None:
+    def handle_state_message(self, message: FlextTypes.Dict) -> None:
         """Public method to handle state messages."""
         self._handle_state_message(message)
 

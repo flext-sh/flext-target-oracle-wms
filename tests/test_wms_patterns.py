@@ -166,7 +166,7 @@ class TestWMSDataTransformer:
             "is_active": True,
             "price": 99.99,
         }
-        schema: FlextTypes.Core.Dict = {
+        schema: FlextTypes.Dict = {
             "properties": {
                 "id": {"type": "integer"},
                 "name": {"type": "string"},
@@ -224,7 +224,7 @@ class TestWMSDataTransformer:
 
         transformer = WMSDataTransformer(FailingTypeConverter())
         record = {"id": 123, "name": "test"}
-        schema: FlextTypes.Core.Dict = {
+        schema: FlextTypes.Dict = {
             "properties": {"id": {"type": "integer"}, "name": {"type": "string"}},
         }
 
@@ -268,7 +268,7 @@ class TestWMSDataTransformer:
     def test_prepare_batch_parameters_with_none_values(self) -> None:
         """Test batch parameter preparation with None values."""
         transformer = WMSDataTransformer()
-        records: list[FlextTypes.Core.Dict] = [
+        records: list[FlextTypes.Dict] = [
             {"ID": None, "NAME": "Item1", "PRICE": None},
             {"ID": 2, "NAME": None, "PRICE": 99.99},
         ]
@@ -299,7 +299,7 @@ class TestWMSSchemaMapper:
     def test_map_singer_schema_to_oracle_basic(self) -> None:
         """Test basic Singer schema to Oracle mapping."""
         mapper = WMSSchemaMapper()
-        schema: FlextTypes.Core.Dict = {
+        schema: FlextTypes.Dict = {
             "properties": {
                 "id": {"type": "integer"},
                 "name": {"type": "string"},
@@ -340,7 +340,7 @@ class TestWMSSchemaMapper:
     def test_map_schema_with_unknown_types(self) -> None:
         """Test schema mapping with unknown types."""
         mapper = WMSSchemaMapper()
-        schema: FlextTypes.Core.Dict = {
+        schema: FlextTypes.Dict = {
             "properties": {
                 "unknown_field": {"type": "unknown_type"},
                 "no_type_field": {},
@@ -358,7 +358,7 @@ class TestWMSSchemaMapper:
     def test_map_empty_schema(self) -> None:
         """Test mapping empty schema."""
         mapper = WMSSchemaMapper()
-        schema: FlextTypes.Core.Dict = {"properties": {}}
+        schema: FlextTypes.Dict = {"properties": {}}
 
         result = mapper.map_singer_schema_to_oracle(schema)
         assert result.success
@@ -431,7 +431,7 @@ class TestWMSTableManager:
     def test_generate_create_table_sql(self) -> None:
         """Test CREATE TABLE SQL generation."""
         manager = WMSTableManager()
-        schema: FlextTypes.Core.Dict = {
+        schema: FlextTypes.Dict = {
             "properties": {
                 "id": {"type": "integer"},
                 "name": {"type": "string"},
@@ -492,7 +492,7 @@ class TestWMSTableManager:
             mock_schema_mapper.map_singer_schema_to_oracle.return_value = FlextResult[
                 None
             ].fail("Schema mapping failed")
-            schema: FlextTypes.Core.Dict = {"properties": {"id": {"type": "integer"}}}
+            schema: FlextTypes.Dict = {"properties": {"id": {"type": "integer"}}}
             result = manager.generate_create_table_sql(
                 "TEST_TABLE",
                 "WMS_SCHEMA",
@@ -515,7 +515,7 @@ class TestWMSTableManager:
             mock_schema_mapper.map_singer_schema_to_oracle.side_effect = RuntimeError(
                 "Schema mapping failed",
             )
-            schema: FlextTypes.Core.Dict = {"properties": {"id": {"type": "integer"}}}
+            schema: FlextTypes.Dict = {"properties": {"id": {"type": "integer"}}}
             result = manager.generate_create_table_sql(
                 "TEST_TABLE",
                 "WMS_SCHEMA",
@@ -555,7 +555,7 @@ class TestWMSTableManager:
                 None
             ].ok(None)
 
-            schema: FlextTypes.Core.Dict = {"properties": {"id": {"type": "integer"}}}
+            schema: FlextTypes.Dict = {"properties": {"id": {"type": "integer"}}}
             result = manager.generate_create_table_sql(
                 "TEST_TABLE",
                 "WMS_SCHEMA",

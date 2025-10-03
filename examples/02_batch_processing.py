@@ -12,8 +12,9 @@ from __future__ import annotations
 
 import time
 
-from flext_core import FlextLogger, FlextTypes
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
+
+from flext_core import FlextLogger, FlextTypes
 from flext_target_oracle_wms import (
     SingerTargetOracleWMS,
     SingerWMSStreamProcessor,
@@ -28,7 +29,7 @@ logger = FlextLogger(__name__)
 monitor = FlextObservabilityMonitor()
 
 
-def generate_test_data(num_records: int) -> list[FlextTypes.Core.Dict]:
+def generate_test_data(num_records: int) -> list[FlextTypes.Dict]:
     """Generate test data for batch processing demonstration."""
     logger.info(f"Generating {num_records} test records")
 
@@ -53,7 +54,7 @@ def generate_test_data(num_records: int) -> list[FlextTypes.Core.Dict]:
     return records
 
 
-def _create_batch_config() -> FlextTypes.Core.Dict:
+def _create_batch_config() -> FlextTypes.Dict:
     """Create optimized configuration for batch processing."""
     return {
         "base_url": "https://batch.wms.oracle.com",
@@ -78,7 +79,7 @@ def _create_batch_config() -> FlextTypes.Core.Dict:
     }
 
 
-def _create_batch_schema() -> FlextTypes.Core.Dict:
+def _create_batch_schema() -> FlextTypes.Dict:
     """Create optimized schema for batch processing."""
     return {
         "type": "SCHEMA",

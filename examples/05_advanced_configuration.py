@@ -14,8 +14,9 @@ import os
 from datetime import UTC, datetime
 from typing import cast
 
-from flext_core import FlextLogger, FlextResult, FlextTypes
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
+
+from flext_core import FlextLogger, FlextResult, FlextTypes
 from flext_target_oracle_wms import (
     SingerTargetOracleWMS,
     WMSDataTransformer,
@@ -85,9 +86,9 @@ class CustomWMSDataTransformer(WMSDataTransformer):
 
     def transform_record(
         self,
-        record: FlextTypes.Core.Dict,
-        schema: FlextTypes.Core.Dict | None = None,
-    ) -> FlextResult[FlextTypes.Core.Dict]:
+        record: FlextTypes.Dict,
+        schema: FlextTypes.Dict | None = None,
+    ) -> FlextResult[FlextTypes.Dict]:
         """Transform record with business validations."""
         # Apply standard transformation first
         base_result = super().transform_record(record, schema)
@@ -374,7 +375,7 @@ def demonstrate_custom_components() -> None:
     # Custom schema mapper
     schema_mapper = WMSSchemaMapper()
 
-    test_schema: FlextTypes.Core.Dict = {
+    test_schema: FlextTypes.Dict = {
         "properties": {
             "business_date": {"type": "business_date"},
             "amount": {"type": "business_currency"},

@@ -12,8 +12,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import ClassVar, cast, override
 
-from flext_core import FlextLogger, FlextResult, FlextTypes
 from flext_observability import FlextObservabilityMonitor
+
+from flext_core import FlextLogger, FlextResult, FlextTypes
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 
@@ -30,7 +31,7 @@ class TargetCreationRequest:
     password: str
     environment: str = "development"
     preset: str | None = None
-    additional_config: FlextTypes.Core.Dict | None = None
+    additional_config: FlextTypes.Dict | None = None
 
     def __post_init__(self: object) -> None:
         """Initialize additional_config if not provided."""
@@ -65,7 +66,7 @@ class FlextTargetFactory:
     """
 
     # Common configuration presets for different environments
-    PRESETS: ClassVar[dict[str, FlextTypes.Core.Dict]] = {
+    PRESETS: ClassVar[FlextTypes.NestedDict] = {
         "development": {
             "batch_size": 100,
             "table_prefix": "DEV_",
@@ -127,7 +128,7 @@ class FlextTargetFactory:
             )
 
             # Start with base configuration
-            config: FlextTypes.Core.Dict = {
+            config: FlextTypes.Dict = {
                 "base_url": request.base_url,
                 "username": request.username,
                 "password": request.password,
@@ -246,7 +247,7 @@ class FlextTargetFactory:
     @classmethod
     def create_from_config_dict(
         cls,
-        config: FlextTypes.Core.Dict,
+        config: FlextTypes.Dict,
     ) -> FlextResult[SingerTargetOracleWMS]:
         """Create target from configuration dictionary.
 

@@ -302,7 +302,7 @@ class TestSingerWMSStreamProcessorComprehensive:
         schema = {"type": "object", "properties": {"id": {"type": "integer"}}}
         stream_processor.initialize_stream("edge_test", schema)
 
-        empty_record: FlextTypes.Core.Dict = {}
+        empty_record: FlextTypes.Dict = {}
         result = stream_processor.process_record("edge_test", empty_record)
         # Should handle gracefully
         assert result.success
@@ -378,9 +378,9 @@ class TestSingerWMSStreamProcessorComprehensive:
         mixed_transformer = MagicMock()
 
         def mixed_transform(
-            record: FlextTypes.Core.Dict,
-            _schema: FlextTypes.Core.Dict | None = None,
-        ) -> FlextResult[FlextTypes.Core.Dict]:
+            record: FlextTypes.Dict,
+            _schema: FlextTypes.Dict | None = None,
+        ) -> FlextResult[FlextTypes.Dict]:
             """Transform that fails for even IDs."""
             if record.get("id", 0) % 2 == 0:
                 return FlextResult[None].fail(f"Failed for ID {record['id']}")
@@ -538,9 +538,9 @@ class TestSingerWMSStreamProcessorComprehensive:
         mock_transformer = MagicMock()
 
         def selective_transform(
-            record: FlextTypes.Core.Dict,
-            _schema: FlextTypes.Core.Dict | None = None,
-        ) -> FlextResult[FlextTypes.Core.Dict]:
+            record: FlextTypes.Dict,
+            _schema: FlextTypes.Dict | None = None,
+        ) -> FlextResult[FlextTypes.Dict]:
             if record.get("id", 0) % 2 == 0:
                 return FlextResult[None].fail("Even ID failed")
             return FlextResult[None].ok({"ID": record["id"]})
