@@ -197,9 +197,9 @@ class TestPatternsPerformanceBenchmarks:
             + [("array", list(range(i, i + 5))) for i in range(10)]
         )
 
-        def convert_all_types() -> FlextTypes.Core.List:
+        def convert_all_types() -> FlextTypes.List:
             """Convert all types - measured operation."""
-            results: list[object] = []
+            results: FlextTypes.List = []
             for singer_type, value in test_conversions:
                 result = converter.convert_singer_to_oracle(singer_type, value)
                 assert result.success
