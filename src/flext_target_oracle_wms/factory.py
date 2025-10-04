@@ -12,9 +12,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import ClassVar, cast, override
 
+from flext_core import FlextLogger, FlextResult, FlextTypes
 from flext_observability import FlextObservabilityMonitor
 
-from flext_core import FlextLogger, FlextResult, FlextTypes
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 
