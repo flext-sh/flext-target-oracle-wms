@@ -8,9 +8,9 @@ import json
 import sys
 import traceback
 
+from flext_core import FlextTypes
 from flext_oracle_wms import FlextOracleWmsConfig
 
-from flext_core import FlextTypes
 from flext_target_oracle_wms import (
     SingerTargetOracleWMS,
     SingerWMSCatalogManager,

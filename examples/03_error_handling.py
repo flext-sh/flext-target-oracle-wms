@@ -10,10 +10,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_observability import FlextObservabilityMonitor, flext_monitor_function
-
 # DRY: Import REAL flext-* APIs
 from flext_core import FlextLogger, FlextTypes
+from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 # Import REAL production implementations
 from flext_target_oracle_wms import SingerTargetOracleWMS

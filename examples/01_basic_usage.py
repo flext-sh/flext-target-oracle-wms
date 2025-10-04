@@ -13,9 +13,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from flext_core import FlextLogger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
-from flext_core import FlextLogger
 from flext_target_oracle_wms import (
     SingerTargetOracleWMS,
 )

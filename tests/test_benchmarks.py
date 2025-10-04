@@ -11,6 +11,7 @@ from collections.abc import Callable
 from unittest.mock import MagicMock, Mock, patch
 
 from flext_core import FlextTypes
+
 from flext_target_oracle_wms import (
     FlextTargetFactory,
     FlextTargetMonitoringFactory,
@@ -58,7 +59,7 @@ class TestFactoryPerformanceBenchmarks:
     ) -> None:
         """Benchmark preset configuration application performance."""
 
-        def apply_preset_configuration() -> list[dict]:
+        def apply_preset_configuration() -> list[FlextTypes.Dict]:
             """Apply preset configuration - measured operation."""
             factory = FlextTargetFactory()
             # Simulate multiple preset applications

@@ -75,6 +75,17 @@
         from    = "src"
         include = "flext_target_oracle_wms"
 
+[tool.pyrefly]
+    python-version = "3.13"
+    search-path = [
+        "../flext-core/src",
+        "../flext-meltano/src",
+        "../flext-oracle-wms/src",
+        "../flext-observability/src",
+        "src",
+        "tests",
+    ]
+
 [tool.deptry]
     known_first_party = [
         "flext_target_oracle_wms",

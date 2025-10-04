@@ -10,6 +10,7 @@ from datetime import UTC, datetime
 from typing import ClassVar
 
 from flext_core import FlextResult, FlextTypes, FlextUtilities
+
 from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants
 
 
