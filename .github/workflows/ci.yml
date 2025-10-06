@@ -49,7 +49,7 @@ jobs:
         run: poetry run mypy src/
 
       - name: Run tests
-        run: poetry run pytest tests/ -v --cov=src/target_oracle_wms --cov-report=xml --cov-report=term-missing
+        run: poetry run pytest tests/ -v --cov=src/flext_target_oracle_wms --cov-report=xml --cov-report=term-missing
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3

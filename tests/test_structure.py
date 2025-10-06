@@ -18,11 +18,11 @@ def test_import_from_correct_module() -> None:
 
 
 def test_no_dual_structure() -> None:
-    """Test that old target_oracle_wms module doesn't exist."""
+    """Test that old flext_target_oracle_wms module doesn't exist."""
     try:
-        spec = importlib.util.find_spec("target_oracle_wms")
+        spec = importlib.util.find_spec("flext_target_oracle_wms")
         if spec is not None:
-            msg = "target_oracle_wms module should not exist"
+            msg = "flext_target_oracle_wms module should not exist"
             raise AssertionError(msg)
     except ImportError:
         # This is expected
