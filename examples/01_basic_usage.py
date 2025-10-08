@@ -192,11 +192,10 @@ def run_from_singer_files() -> None:
         config = json.loads(config_file.read_text(encoding="utf-8"))
     else:
         # Use demo configuration
-        config = {
+        config: dict[str, object] = {
             "base_url": "https://example.wms.oracle.com",
             "username": "demo_user",
             "password": "demo_password",
-            "environment": "demo",
             "batch_size": 500,
             "table_prefix": "SINGER_",
             "schema_name": "WMS_SINGER",
@@ -228,14 +227,14 @@ def run_from_singer_files() -> None:
                     continue
             elif message["type"] == "RECORD":
                 try:
-                    target.handle_record_message(message)  # type: ignore[arg-type]
+                    target.handle_record_message(message)
                     result = None  # Success
                 except Exception as e:
                     logger.exception(f"Record processing failed: {e}")
                     continue
             elif message["type"] == "STATE":
                 try:
-                    target.handle_state_message(message)  # type: ignore[arg-type]
+                    target.handle_state_message(message)
                     result = None  # Success
                 except Exception as e:
                     logger.exception(f"State processing failed: {e}")

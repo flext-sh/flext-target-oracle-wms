@@ -11,7 +11,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import json
 import os
 
 from flext_core import FlextLogger
@@ -20,6 +19,7 @@ from flext_observability import FlextObservabilityMonitor, flext_monitor_functio
 # Import factory patterns for easier usage
 from flext_target_oracle_wms import (
     FlextTargetFactory,
+    TargetCreationRequest,
     create_oracle_wms_target,
 )
 
@@ -126,7 +126,7 @@ def _demonstrate_testing_target() -> None:
 def _demonstrate_config_target() -> None:
     """Demonstrate configuration-based target creation."""
     logger.info("\n📋 Example 5: Configuration-based Target Creation")
-    config_dict = {
+    config_dict: dict[str, object] = {
         "base_url": "https://config.wms.oracle.com",
         "username": "config_user",
         "password": DEMO_PASSWORD,
@@ -200,62 +200,25 @@ def demonstrate_error_handling() -> None:
         # Missing username and password
     }
 
-    error_result = FlextTargetFactory.create_from_config_dict(incomplete_config)
+    error_result = FlextTargetFactory.create_from_config_dict(incomplete_config)  # type: ignore[arg-type]
     if not error_result.success:
         logger.info("✅ Handled missing config gracefully: %s", error_result.error)
 
     # Example 2: Unknown preset handling
     logger.info("\n⚠️  Example: Unknown Preset")
     unknown_preset_result = FlextTargetFactory.create_target(
-        base_url="https://test.wms.oracle.com",
-        username="test_user",
-        password=DEMO_PASSWORD,
-        preset="unknown_preset",
+        TargetCreationRequest(
+            base_url="https://test.wms.oracle.com",
+            username="test_user",
+            password=DEMO_PASSWORD,
+            environment="test",
+        )
     )
 
-    if unknown_preset_result.success:
+    if unknown_preset_result.is_success:
         logger.info("✅ Unknown preset handled gracefully with fallback to defaults")
     else:
         logger.error("❌ Unexpected error: %s", unknown_preset_result.error)
-
-
-def demonstrate_configuration_flexibility() -> None:
-    """Demonstrate configuration flexibility and customization."""
-    logger.info("\n🔧 Configuration Flexibility Examples")
-
-    # Show how factory enables easy customization while maintaining defaults
-    logger.info("\n📝 Creating custom configurations with factory:")
-
-    # Custom development configuration
-    custom_dev_config = {
-        **FlextTargetFactory.PRESETS["development"],
-        "debug_mode": True,
-        "log_level": "DEBUG",
-        "enable_sql_logging": True,
-    }
-    logger.info(
-        "Custom Development Config: %s",
-        json.dumps(custom_dev_config, indent=2),
-    )
-
-    # Custom production configuration
-    custom_prod_config = {
-        **FlextTargetFactory.PRESETS["production"],
-        "connection_pool_size": 50,
-        "enable_clustering": True,
-        "backup_strategy": "incremental",
-    }
-    logger.info(
-        "Custom Production Config: %s",
-        json.dumps(custom_prod_config, indent=2),
-    )
-
-    logger.info("\n💡 Benefits of Factory Pattern:")
-    logger.info("  ✅ Sensible defaults for each environment")
-    logger.info("  ✅ Easy customization without losing base configuration")
-    logger.info("  ✅ Consistent configuration across projects")
-    logger.info("  ✅ Type-safe configuration with validation")
-    logger.info("  ✅ Built-in error handling and logging")
 
 
 def main() -> None:
