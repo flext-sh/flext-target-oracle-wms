@@ -354,16 +354,6 @@ class FlextTargetOracleWmsConfig(FlextConfig):
         return self.timeout + (self.max_retries * 5.0)  # 5 seconds per retry
 
     @computed_field
-    def is_production(self) -> bool:
-        """Check if running in production environment."""
-        return self.environment.lower() == "production"
-
-    @computed_field
-    def is_development(self) -> bool:
-        """Check if running in development environment."""
-        return self.environment.lower() in {"development", "dev", "local"}
-
-    @computed_field
     def connection_string(self) -> str:
         """Generate connection string for Oracle WMS."""
         return f"{self.username}@{self.base_url}"
@@ -497,21 +487,6 @@ class FlextTargetOracleWmsConfig(FlextConfig):
                 return FlextResult[None].fail("Username cannot be empty")
             if not self.password.strip():
                 return FlextResult[None].fail("Password cannot be empty")
-
-            # Validate production settings
-            if self.is_production:
-                if self.debug_mode:
-                    return FlextResult[None].fail(
-                        "Debug mode must be disabled in production"
-                    )
-                if not self.verify_ssl:
-                    return FlextResult[None].fail(
-                        "SSL verification must be enabled in production"
-                    )
-                if not self.encryption_enabled:
-                    return FlextResult[None].fail(
-                        "Encryption must be enabled in production"
-                    )
 
             # Validate plugin settings
             if self.enable_plugins and not Path(self.plugin_directory).exists():

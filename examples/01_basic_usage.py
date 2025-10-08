@@ -12,8 +12,9 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import cast
 
-from flext_core import FlextLogger
+from flext_core import FlextLogger, FlextTypes
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 from flext_target_oracle_wms import (
@@ -37,22 +38,19 @@ def run_basic_example() -> None:
         "base_url": "https://example.wms.oracle.com",
         "username": "demo_user",
         "password": "demo_password",
-        "environment": "demo",
         "batch_size": 1000,
         "table_prefix": "DEMO_",
         "schema_name": "WMS_DEMO",
     }
 
     # OPTION 1: Traditional direct instantiation
-    target = SingerTargetOracleWMS(config)
+    target = SingerTargetOracleWMS(cast("FlextTypes.Dict", config))
 
     # OPTION 2: Factory pattern for easier usage (alternative approach)
     # factory_result = create_oracle_wms_target(
     #     base_url="https://example.wms.oracle.com",
     #     username="demo_user",
     #     password="demo_password"
-    #     environment="demo",
-    #     preset="development"  # Automatically sets optimal dev settings
     # )
     # if factory_result.success:
     #     target = factory_result.data
@@ -88,12 +86,12 @@ def run_basic_example() -> None:
         }
 
         # Process schema - REAL Singer protocol
-        schema_result = target.process_schema_message(schema_message)
-        if not schema_result.success:
-            logger.error(f"Schema processing failed: {schema_result.error}")
+        try:
+            target.handle_schema_message(schema_message)  # type: ignore[arg-type]
+            logger.info("Schema processed successfully")
+        except Exception as e:
+            logger.exception(f"Schema processing failed: {e}")
             return
-
-        logger.info("Schema processed successfully")
 
         # Process REAL inventory records
         inventory_records = [
@@ -138,9 +136,11 @@ def run_basic_example() -> None:
                 "time_extracted": "2024-01-15T12:00:00Z",
             }
 
-            record_result = target.process_record_message(record_message)
-            if not record_result.success:
-                logger.error(f"Record processing failed: {record_result.error}")
+            try:
+                target.handle_record_message(record_message)  # type: ignore[arg-type]
+                logger.debug("Record processed successfully")
+            except Exception as e:
+                logger.exception(f"Record processing failed: {e}")
                 continue
 
             logger.info(f"Processed record for item {record_data['item_id']}")
@@ -157,16 +157,16 @@ def run_basic_example() -> None:
             },
         }
 
-        state_result = target.process_state_message(state_message)
-        if not state_result.success:
-            logger.error(f"State processing failed: {state_result.error}")
-        else:
+        try:
+            target.handle_state_message(state_message)  # type: ignore[arg-type]
             logger.info("State processed successfully")
+        except Exception as e:
+            logger.exception(f"State processing failed: {e}")
 
         # Finalize target - REAL cleanup
-        finalize_result = target.finalize()
-        if not finalize_result.success:
-            logger.error(f"Target finalization failed: {finalize_result.error}")
+        cleanup_result = target.cleanup()
+        if not cleanup_result.success:
+            logger.error(f"Target cleanup failed: {cleanup_result.error}")
         else:
             logger.info("Target finalized successfully")
 
@@ -203,7 +203,7 @@ def run_from_singer_files() -> None:
         }
 
     # Create target
-    target = SingerTargetOracleWMS(config)
+    target = SingerTargetOracleWMS(cast("FlextTypes.Dict", config))
 
     # Example of processing Singer format input
     singer_messages = [
@@ -220,17 +220,32 @@ def run_from_singer_files() -> None:
 
             if message["type"] == "SCHEMA":
                 # Use sync version for demo simplicity
-                result = target.process_schema_message_sync(message)
+                try:
+                    target.handle_schema_message(message)
+                    result = None  # Success
+                except Exception as e:
+                    logger.exception(f"Schema processing failed: {e}")
+                    continue
             elif message["type"] == "RECORD":
-                result = target.process_record_message_sync(message)
+                try:
+                    target.handle_record_message(message)  # type: ignore[arg-type]
+                    result = None  # Success
+                except Exception as e:
+                    logger.exception(f"Record processing failed: {e}")
+                    continue
             elif message["type"] == "STATE":
-                result = target.process_state_message(message)
+                try:
+                    target.handle_state_message(message)  # type: ignore[arg-type]
+                    result = None  # Success
+                except Exception as e:
+                    logger.exception(f"State processing failed: {e}")
+                    continue
             else:
                 logger.warning(f"Unknown message type: {message['type']}")
                 continue
 
-            if not result.success:
-                logger.error(f"Message processing failed: {result.error}")
+            if result is not None:
+                logger.error(f"Message processing failed: {result}")
             else:
                 logger.debug(f"Processed {message['type']} message successfully")
 
@@ -239,7 +254,7 @@ def run_from_singer_files() -> None:
         raise
     finally:
         # Cleanup
-        target.cleanup_sync()
+        target.cleanup()
 
 
 if __name__ == "__main__":
