@@ -116,7 +116,7 @@ def demonstrate_schema_validation_errors(target: SingerTargetOracleWMS) -> None:
         "key_properties": ["id"],
     }
 
-    target.handle_schema_message(valid_schema)  # type: ignore[arg-type]
+    target.handle_schema_message(valid_schema)
     logger.info("Valid schema processed successfully")
 
     # Test invalid schemas
@@ -148,7 +148,7 @@ def _test_invalid_schemas(target: SingerTargetOracleWMS) -> None:
 
     for invalid_schema in invalid_schemas:
         try:
-            target.handle_schema_message(invalid_schema)  # type: ignore[arg-type]
+            target.handle_schema_message(invalid_schema)
             logger.info("Invalid schema processed (expected to fail)")
         except Exception as e:
             logger.info(f"Invalid schema caused exception as expected: {e}")
@@ -203,7 +203,7 @@ def demonstrate_data_processing_errors(target: SingerTargetOracleWMS) -> None:
     }
 
     try:
-        target.handle_record_message(valid_record)  # type: ignore[arg-type]
+        target.handle_record_message(valid_record)
         logger.info("Valid record processed successfully")
     except Exception as e:
         logger.info(f"Valid record processing raised exception: {e}")
