@@ -23,7 +23,6 @@
     ]
     description = "FLEXT Target Oracle WMS - Singer Target for Oracle WMS Data"
     keywords = [
-        "",
         "data-loading",
         "enterprise",
         "etl",

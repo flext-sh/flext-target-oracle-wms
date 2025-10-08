@@ -78,7 +78,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
     # Oracle WMS Connection with enhanced validation
     base_url: str = Field(
         description="Oracle WMS base URL",
-        examples=["https://ta29.wms.ocs.oraclecloud.com"],
+        examples=["https://invalid.wms.ocs.oraclecloud.com"],
         min_length=1,
         max_length=500,
     )

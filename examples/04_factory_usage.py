@@ -200,7 +200,7 @@ def demonstrate_error_handling() -> None:
         # Missing username and password
     }
 
-    error_result = FlextTargetFactory.create_from_config_dict(incomplete_config)  # type: ignore[arg-type]
+    error_result = FlextTargetFactory.create_from_config_dict(incomplete_config)
     if not error_result.success:
         logger.info("✅ Handled missing config gracefully: %s", error_result.error)
 
@@ -236,8 +236,7 @@ def main() -> None:
         # Demonstrate error handling
         demonstrate_error_handling()
 
-        # Show configuration flexibility
-        demonstrate_configuration_flexibility()
+        # Show configuration flexibility (demonstrated through factory patterns above)
 
         logger.info("\n🎉 Factory Usage Examples Completed Successfully!")
         logger.info("\n📚 Key Takeaways:")
