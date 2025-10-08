@@ -25,7 +25,7 @@ def test_configuration_validation() -> bool | None:
     try:
         # Test valid configuration
         valid_config = FlextOracleWmsConfig(
-            oracle_wms_base_url="https://ta29.wms.ocs.oraclecloud.com/raizen_test",
+            oracle_wms_base_url="https://invalid.wms.ocs.oraclecloud.com/company_unknow",
             oracle_wms_username="test_user",
             oracle_wms_password="test_pass",
             api_version="LGF_V10",
@@ -121,9 +121,8 @@ def test_data_transformation() -> bool | None:
             converted = result.data
             if singer_type == "object":
                 # JSON string comparison
-                if isinstance(converted, str):
-                    if json.loads(converted) != input_value:
-                        return False
+                if isinstance(converted, str) and json.loads(converted) != input_value:
+                    return False
             elif converted != expected:
                 return False
 

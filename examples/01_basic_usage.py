@@ -87,7 +87,7 @@ def run_basic_example() -> None:
 
         # Process schema - REAL Singer protocol
         try:
-            target.handle_schema_message(schema_message)  # type: ignore[arg-type]
+            target.handle_schema_message(schema_message)
             logger.info("Schema processed successfully")
         except Exception as e:
             logger.exception(f"Schema processing failed: {e}")
@@ -137,7 +137,7 @@ def run_basic_example() -> None:
             }
 
             try:
-                target.handle_record_message(record_message)  # type: ignore[arg-type]
+                target.handle_record_message(record_message)
                 logger.debug("Record processed successfully")
             except Exception as e:
                 logger.exception(f"Record processing failed: {e}")
@@ -158,7 +158,7 @@ def run_basic_example() -> None:
         }
 
         try:
-            target.handle_state_message(state_message)  # type: ignore[arg-type]
+            target.handle_state_message(state_message)
             logger.info("State processed successfully")
         except Exception as e:
             logger.exception(f"State processing failed: {e}")

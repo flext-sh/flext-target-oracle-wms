@@ -99,7 +99,7 @@ class OracleWMSTargetCli:
 
             # Default configuration
             config: FlextTypes.Dict = {
-                "base_url": "https://ta29.wms.ocs.oraclecloud.com",
+                "base_url": "https://invalid.wms.ocs.oraclecloud.com",
                 "username": "oracle",
                 "password": "oracle",
                 "environment": "default",
