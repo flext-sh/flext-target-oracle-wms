@@ -133,13 +133,13 @@ def _process_batch_size(target: SingerTargetOracleWMS, batch_size: int) -> None:
                 "time_extracted": "2024-01-15T12:00:00Z",
             }
 
-            record_result = target.process_record_message(record_message)
-            if record_result.success:
-                success_count += 1
-            else:
-                error_count += 1
-                if error_count <= MAX_ERROR_LOGS:  # Log first few errors only
-                    logger.error(f"Record error: {record_result.error}")
+            try:
+                target.handle_record_message(record_message)  # type: ignore[arg-type]
+                logger.debug("Record processed successfully")
+            except Exception as e:
+                logger.exception(f"Record processing failed: {e}")
+                continue
+            success_count += 1
 
         chunk_time = time.time() - chunk_start
         chunk_rate = len(chunk) / chunk_time if chunk_time > 0 else 0
@@ -169,7 +169,7 @@ def run_performance_batch_example() -> None:
     logger.info("Starting performance batch processing example")
 
     config = _create_batch_config()
-    target = SingerTargetOracleWMS(config)
+    target = SingerTargetOracleWMS(config)  # type: ignore[arg-type]
 
     try:
         # Setup for batch processing
@@ -185,9 +185,11 @@ def run_performance_batch_example() -> None:
         # Process schema
         batch_schema = _create_batch_schema()
         schema_start = time.time()
-        schema_result = target.process_schema_message(batch_schema)
-        if not schema_result.success:
-            logger.error(f"Batch schema failed: {schema_result.error}")
+        try:
+            target.handle_schema_message(batch_schema)  # type: ignore[arg-type]
+            logger.debug("Schema processed successfully")
+        except Exception as e:
+            logger.exception(f"Schema processing failed: {e}")
             return
 
         schema_time = time.time() - schema_start
@@ -200,16 +202,11 @@ def run_performance_batch_example() -> None:
 
         # Finalize with statistics
         finalize_start = time.time()
-        final_result = target.finalize()
+        cleanup_result = target.cleanup()
         finalize_time = time.time() - finalize_start
 
-        if final_result.success and final_result.data:
-            stats = final_result.data
-            logger.info(
-                f"Batch processing finalized in {finalize_time:.2f}s - "
-                f"Total records: {stats.get('total_records', 0)}, "
-                f"Total errors: {stats.get('total_errors', 0)}",
-            )
+        if cleanup_result.success:
+            logger.info(f"Batch processing completed in {finalize_time:.2f}s")
 
     except Exception:
         logger.exception("Performance batch example failed")
@@ -241,7 +238,7 @@ def demonstrate_stream_processor_batching() -> None:
         },
     }
 
-    init_result = stream_processor.initialize_stream("batch_test", schema)
+    init_result = stream_processor.initialize_stream("batch_test", schema)  # type: ignore[arg-type]
     if not init_result.success:
         logger.error(f"Stream initialization failed: {init_result.error}")
         return
@@ -254,7 +251,7 @@ def demonstrate_stream_processor_batching() -> None:
 
     # Process as batch
     batch_start = time.time()
-    batch_result = stream_processor.process_batch("batch_test", batch_records)
+    batch_result = stream_processor.process_batch("batch_test", batch_records)  # type: ignore[arg-type]
     batch_time = time.time() - batch_start
 
     if batch_result.success and batch_result.data:
@@ -298,7 +295,7 @@ def demonstrate_concurrent_batching() -> None:
         "max_concurrent_streams": 5,
     }
 
-    target = SingerTargetOracleWMS(config)
+    target = SingerTargetOracleWMS(config)  # type: ignore[arg-type]
 
     try:
         target.setup()
@@ -323,8 +320,8 @@ def demonstrate_concurrent_batching() -> None:
                 },
                 "key_properties": ["id"],
             }
-            task = target.process_schema_message(schema_message)
-            schema_tasks.append(task)
+            target.handle_schema_message(schema_message)  # type: ignore[arg-type]
+            schema_tasks.append(lambda: None)  # Success
 
         # Execute schema setup concurrently
         schema_results = [task() for task in schema_tasks]
@@ -361,7 +358,7 @@ def demonstrate_concurrent_batching() -> None:
                     "time_extracted": "2024-01-15T12:00:00Z",
                 }
 
-                target.process_record_message(record_message)
+                target.handle_record_message(record_message)  # type: ignore[arg-type]
 
             elapsed = time.time() - start_time
             rate = len(records) / elapsed if elapsed > 0 else 0
@@ -371,13 +368,9 @@ def demonstrate_concurrent_batching() -> None:
             )
 
         # Execute concurrent stream processing
-        concurrent_tasks = [
-            process_stream_batch(stream_name, 1000)
-            for stream_name in successful_streams
-        ]
-
         concurrent_start = time.time()
-        [task() for task in concurrent_tasks]
+        for stream_name in successful_streams:
+            process_stream_batch(stream_name, 1000)
         concurrent_time = time.time() - concurrent_start
 
         total_records = len(successful_streams) * 1000

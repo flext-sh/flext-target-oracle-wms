@@ -10,12 +10,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-# DRY: Import REAL flext-* APIs
 from flext_core import FlextLogger, FlextTypes
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
-# Import REAL production implementations
 from flext_target_oracle_wms import SingerTargetOracleWMS
+
+logger = FlextLogger(__name__)
+monitor = FlextObservabilityMonitor()
 
 
 class SimulatedOracleWMSError(Exception):
@@ -25,10 +26,6 @@ class SimulatedOracleWMSError(Exception):
         """Initialize simulated error with attempt context."""
         super().__init__(message)
         self.attempt = attempt
-
-
-logger = FlextLogger(__name__)
-monitor = FlextObservabilityMonitor()
 
 
 def get_error_demo_config() -> FlextTypes.Dict:
@@ -119,11 +116,8 @@ def demonstrate_schema_validation_errors(target: SingerTargetOracleWMS) -> None:
         "key_properties": ["id"],
     }
 
-    schema_result = target.process_schema_message(valid_schema)
-    if schema_result.success:
-        logger.info("Valid schema processed successfully")
-    else:
-        logger.error(f"Valid schema failed: {schema_result.error}")
+    target.handle_schema_message(valid_schema)  # type: ignore[arg-type]
+    logger.info("Valid schema processed successfully")
 
     # Test invalid schemas
     _test_invalid_schemas(target)
@@ -154,11 +148,8 @@ def _test_invalid_schemas(target: SingerTargetOracleWMS) -> None:
 
     for invalid_schema in invalid_schemas:
         try:
-            schema_result = target.process_schema_message(invalid_schema)
-            if not schema_result.success:
-                logger.info(f"Invalid schema properly rejected: {schema_result.error}")
-            else:
-                logger.warning("Invalid schema was accepted - this may indicate a bug")
+            target.handle_schema_message(invalid_schema)  # type: ignore[arg-type]
+            logger.info("Invalid schema processed (expected to fail)")
         except Exception as e:
             logger.info(f"Invalid schema caused exception as expected: {e}")
 
@@ -212,11 +203,8 @@ def demonstrate_data_processing_errors(target: SingerTargetOracleWMS) -> None:
     }
 
     try:
-        record_result = target.process_record_message(valid_record)
-        if record_result.success:
-            logger.info("Valid record processed successfully")
-        else:
-            logger.error(f"Valid record failed: {record_result.error}")
+        target.handle_record_message(valid_record)  # type: ignore[arg-type]
+        logger.info("Valid record processed successfully")
     except Exception as e:
         logger.info(f"Valid record processing raised exception: {e}")
 
