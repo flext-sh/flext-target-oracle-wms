@@ -6,10 +6,9 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from flext_target_oracle_wms.__version__ import __version__, __version_info__
-
 from flext_core import FlextTypes
 
+from flext_target_oracle_wms.__version__ import __version__, __version_info__
 from flext_target_oracle_wms.cli import OracleWMSTargetCli, main
 from flext_target_oracle_wms.factory import (
     FlextTargetFactory,
@@ -46,6 +45,8 @@ __all__: FlextTypes.StringList = [
     "WMSSchemaMapper",
     "WMSTableManager",
     "WMSTypeConverter",
+    "__version__",
+    "__version_info__",
     "create_monitored_oracle_wms_target",
     "create_oracle_wms_target",
     "main",
