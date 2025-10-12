@@ -10,7 +10,7 @@ import gc
 from collections.abc import Callable
 from unittest.mock import MagicMock, Mock, patch
 
-from flext_core import FlextTypes
+from flext_core import FlextCore
 
 from flext_target_oracle_wms import (
     FlextTargetFactory,
@@ -59,7 +59,7 @@ class TestFactoryPerformanceBenchmarks:
     ) -> None:
         """Benchmark preset configuration application performance."""
 
-        def apply_preset_configuration() -> list[FlextTypes.Dict]:
+        def apply_preset_configuration() -> list[FlextCore.Types.Dict]:
             """Apply preset configuration - measured operation."""
             factory = FlextTargetFactory()
             # Simulate multiple preset applications
@@ -198,9 +198,9 @@ class TestPatternsPerformanceBenchmarks:
             + [("array", list(range(i, i + 5))) for i in range(10)]
         )
 
-        def convert_all_types() -> FlextTypes.List:
+        def convert_all_types() -> FlextCore.Types.List:
             """Convert all types - measured operation."""
-            results: FlextTypes.List = []
+            results: FlextCore.Types.List = []
             for singer_type, value in test_conversions:
                 result = converter.convert_singer_to_oracle(singer_type, value)
                 assert result.success

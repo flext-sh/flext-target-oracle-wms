@@ -9,7 +9,7 @@ from __future__ import annotations
 from unittest.mock import Mock, patch
 
 import pytest
-from flext_core import FlextResult, FlextTypes
+from flext_core import FlextCore
 
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
@@ -23,7 +23,7 @@ class TestOracleWMSIntegration:
     """Integration tests using REAL flext-oracle-wms client patterns."""
 
     @pytest.fixture
-    def oracle_wms_config(self) -> FlextTypes.Dict:
+    def oracle_wms_config(self) -> FlextCore.Types.Dict:
         """Oracle WMS configuration using REAL API parameters."""
         return {
             "base_url": "https://test.wms.ocs.oraclecloud.com",
@@ -40,7 +40,7 @@ class TestOracleWMSIntegration:
 
     def test_singer_target_setup(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: FlextCore.Types.Dict,
     ) -> None:
         """Test SingerTarget can setup Oracle WMS client using REAL APIs."""
         # DRY: Use REAL implementation
@@ -52,7 +52,7 @@ class TestOracleWMSIntegration:
             "start",
             new_callable=Mock,
         ) as mock_start:
-            mock_start.return_value = FlextResult[None].ok(None)
+            mock_start.return_value = FlextCore.Result[None].ok(None)
 
             # Test setup using REAL flext-core patterns
             setup_result = target.setup()
@@ -61,7 +61,7 @@ class TestOracleWMSIntegration:
 
     def test_schema_message_processing(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: FlextCore.Types.Dict,
     ) -> None:
         """Test Singer SCHEMA message processing using REAL flext-core patterns."""
         # DRY: Use REAL implementation
@@ -90,7 +90,7 @@ class TestOracleWMSIntegration:
 
     def test_record_message_processing(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: FlextCore.Types.Dict,
     ) -> None:
         """Test Singer RECORD message processing using REAL flext-core patterns."""
         # DRY: Use REAL implementation
@@ -129,7 +129,7 @@ class TestOracleWMSIntegration:
 
     def test_state_message_processing(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: FlextCore.Types.Dict,
     ) -> None:
         """Test Singer STATE message processing using REAL flext-core patterns."""
         # DRY: Use REAL implementation
@@ -155,7 +155,7 @@ class TestOracleWMSIntegration:
 
     def test_target_cleanup(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: FlextCore.Types.Dict,
     ) -> None:
         """Test Oracle WMS Target cleanup using REAL flext-core patterns."""
         # DRY: Use REAL implementation
@@ -175,8 +175,8 @@ class TestOracleWMSIntegration:
                 new_callable=Mock,
             ) as mock_stop,
         ):
-            mock_start.return_value = FlextResult[None].ok(None)
-            mock_stop.return_value = FlextResult[None].ok(None)
+            mock_start.return_value = FlextCore.Result[None].ok(None)
+            mock_stop.return_value = FlextCore.Result[None].ok(None)
 
             # Test setup and cleanup cycle
             target.setup()
