@@ -9,7 +9,7 @@ from __future__ import annotations
 from unittest.mock import MagicMock, patch
 
 import pytest
-from flext_core import FlextResult, FlextTypes
+from flext_core import FlextCore
 
 from flext_target_oracle_wms import (
     WMSDataTransformer,
@@ -53,7 +53,7 @@ class TestWMSTypeConverter:
         converter = WMSTypeConverter()
         result = converter.convert_singer_to_oracle(singer_type, value)
 
-        assert isinstance(result, FlextResult)
+        assert isinstance(result, FlextCore.Result)
         assert result.success
         assert result.data == expected
 
@@ -62,7 +62,7 @@ class TestWMSTypeConverter:
         converter = WMSTypeConverter()
         result = converter.convert_singer_to_oracle("string", None)
 
-        assert isinstance(result, FlextResult)
+        assert isinstance(result, FlextCore.Result)
         assert result.success
         assert result.data is None
 
@@ -71,7 +71,7 @@ class TestWMSTypeConverter:
         converter = WMSTypeConverter()
         result = converter.convert_singer_to_oracle("integer", "not_a_number")
 
-        assert isinstance(result, FlextResult)
+        assert isinstance(result, FlextCore.Result)
         assert result.success  # Should succeed with fallback to string
         assert result.data == "not_a_number"  # Fallback to string conversion
 
@@ -89,9 +89,9 @@ class TestWMSTypeConverter:
         # This should trigger JSON encoding error and fallback to string
         result = converter.convert_singer_to_oracle("object", bad_obj)
 
-        # Should succeed with string fallback - use REAL FlextResult typing
+        # Should succeed with string fallback - use REAL FlextCore.Result typing
 
-        assert isinstance(result, FlextResult)
+        assert isinstance(result, FlextCore.Result)
         assert result.success
         if result.data is not None:
             assert result.data == "BadJSONObject string representation"
@@ -104,7 +104,7 @@ class TestWMSTypeConverter:
         complex_obj = {"nested": {"array": [1, 2, 3], "bool": True}}
         result = converter.convert_singer_to_oracle("object", complex_obj)
 
-        assert isinstance(result, FlextResult)
+        assert isinstance(result, FlextCore.Result)
         assert result.success
         assert result.data is not None
         assert isinstance(result.data, str)
@@ -113,8 +113,8 @@ class TestWMSTypeConverter:
         # Test array
         test_array = ["item1", "item2", {"key": "value"}]
         result = converter.convert_singer_to_oracle("array", test_array)
-        # Use REAL FlextResult typing - DRY approach
-        assert isinstance(result, FlextResult)
+        # Use REAL FlextCore.Result typing - DRY approach
+        assert isinstance(result, FlextCore.Result)
         assert result.success
         if result.data is not None:
             assert isinstance(result.data, str)
@@ -166,7 +166,7 @@ class TestWMSDataTransformer:
             "is_active": True,
             "price": 99.99,
         }
-        schema: FlextTypes.Dict = {
+        schema: FlextCore.Types.Dict = {
             "properties": {
                 "id": {"type": "integer"},
                 "name": {"type": "string"},
@@ -219,12 +219,12 @@ class TestWMSDataTransformer:
                 self,
                 _singer_type: str,
                 _value: object,
-            ) -> FlextResult[object]:
-                return FlextResult[object].fail("Type conversion failed")
+            ) -> FlextCore.Result[object]:
+                return FlextCore.Result[object].fail("Type conversion failed")
 
         transformer = WMSDataTransformer(FailingTypeConverter())
         record = {"id": 123, "name": "test"}
-        schema: FlextTypes.Dict = {
+        schema: FlextCore.Types.Dict = {
             "properties": {"id": {"type": "integer"}, "name": {"type": "string"}},
         }
 
@@ -268,7 +268,7 @@ class TestWMSDataTransformer:
     def test_prepare_batch_parameters_with_none_values(self) -> None:
         """Test batch parameter preparation with None values."""
         transformer = WMSDataTransformer()
-        records: list[FlextTypes.Dict] = [
+        records: list[FlextCore.Types.Dict] = [
             {"ID": None, "NAME": "Item1", "PRICE": None},
             {"ID": 2, "NAME": None, "PRICE": 99.99},
         ]
@@ -299,7 +299,7 @@ class TestWMSSchemaMapper:
     def test_map_singer_schema_to_oracle_basic(self) -> None:
         """Test basic Singer schema to Oracle mapping."""
         mapper = WMSSchemaMapper()
-        schema: FlextTypes.Dict = {
+        schema: FlextCore.Types.Dict = {
             "properties": {
                 "id": {"type": "integer"},
                 "name": {"type": "string"},
@@ -340,7 +340,7 @@ class TestWMSSchemaMapper:
     def test_map_schema_with_unknown_types(self) -> None:
         """Test schema mapping with unknown types."""
         mapper = WMSSchemaMapper()
-        schema: FlextTypes.Dict = {
+        schema: FlextCore.Types.Dict = {
             "properties": {
                 "unknown_field": {"type": "unknown_type"},
                 "no_type_field": {},
@@ -358,7 +358,7 @@ class TestWMSSchemaMapper:
     def test_map_empty_schema(self) -> None:
         """Test mapping empty schema."""
         mapper = WMSSchemaMapper()
-        schema: FlextTypes.Dict = {"properties": {}}
+        schema: FlextCore.Types.Dict = {"properties": {}}
 
         result = mapper.map_singer_schema_to_oracle(schema)
         assert result.success
@@ -431,7 +431,7 @@ class TestWMSTableManager:
     def test_generate_create_table_sql(self) -> None:
         """Test CREATE TABLE SQL generation."""
         manager = WMSTableManager()
-        schema: FlextTypes.Dict = {
+        schema: FlextCore.Types.Dict = {
             "properties": {
                 "id": {"type": "integer"},
                 "name": {"type": "string"},
@@ -489,10 +489,10 @@ class TestWMSTableManager:
             "flext_target_oracle_wms.target_models.WMSSchemaMapper",
         ) as mock_schema_mapper_class:
             mock_schema_mapper = mock_schema_mapper_class.return_value
-            mock_schema_mapper.map_singer_schema_to_oracle.return_value = FlextResult[
-                None
-            ].fail("Schema mapping failed")
-            schema: FlextTypes.Dict = {"properties": {"id": {"type": "integer"}}}
+            mock_schema_mapper.map_singer_schema_to_oracle.return_value = (
+                FlextCore.Result[None].fail("Schema mapping failed")
+            )
+            schema: FlextCore.Types.Dict = {"properties": {"id": {"type": "integer"}}}
             result = manager.generate_create_table_sql(
                 "TEST_TABLE",
                 "WMS_SCHEMA",
@@ -515,7 +515,7 @@ class TestWMSTableManager:
             mock_schema_mapper.map_singer_schema_to_oracle.side_effect = RuntimeError(
                 "Schema mapping failed",
             )
-            schema: FlextTypes.Dict = {"properties": {"id": {"type": "integer"}}}
+            schema: FlextCore.Types.Dict = {"properties": {"id": {"type": "integer"}}}
             result = manager.generate_create_table_sql(
                 "TEST_TABLE",
                 "WMS_SCHEMA",
@@ -551,11 +551,11 @@ class TestWMSTableManager:
             "flext_target_oracle_wms.target_models.WMSSchemaMapper",
         ) as mock_schema_mapper_class:
             mock_schema_mapper = mock_schema_mapper_class.return_value
-            mock_schema_mapper.map_singer_schema_to_oracle.return_value = FlextResult[
-                None
-            ].ok(None)
+            mock_schema_mapper.map_singer_schema_to_oracle.return_value = (
+                FlextCore.Result[None].ok(None)
+            )
 
-            schema: FlextTypes.Dict = {"properties": {"id": {"type": "integer"}}}
+            schema: FlextCore.Types.Dict = {"properties": {"id": {"type": "integer"}}}
             result = manager.generate_create_table_sql(
                 "TEST_TABLE",
                 "WMS_SCHEMA",

@@ -8,7 +8,7 @@ import json
 import sys
 import traceback
 
-from flext_core import FlextTypes
+from flext_core import FlextCore
 from flext_oracle_wms import FlextOracleWmsConfig
 
 from flext_target_oracle_wms import (
@@ -77,7 +77,7 @@ def test_singer_target_interfaces() -> bool | None:
     try:
         # Create target with test configuration
 
-        config: FlextTypes.Dict = {
+        config: FlextCore.Types.Dict = {
             "base_url": "https://test.example.com/wms",
             "username": "test_user",
             "password": "test_pass",

@@ -12,7 +12,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import ClassVar, cast, override
 
-from flext_core import FlextLogger, FlextResult, FlextTypes
+from flext_core import FlextCore
 from flext_observability import FlextObservabilityMonitor
 
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
@@ -31,7 +31,7 @@ class TargetCreationRequest:
     password: str
     environment: str = "development"
     preset: str | None = None
-    additional_config: FlextTypes.Dict | None = None
+    additional_config: FlextCore.Types.Dict | None = None
 
     def __post_init__(self: object) -> None:
         """Initialize additional_config if not provided."""
@@ -51,7 +51,7 @@ class MonitoredTargetCreationRequest(TargetCreationRequest):
 
 
 # Get logger using flext-core patterns
-logger = FlextLogger(__name__)
+logger = FlextCore.Logger(__name__)
 
 
 class FlextTargetFactory:
@@ -66,7 +66,7 @@ class FlextTargetFactory:
     """
 
     # Common configuration presets for different environments
-    PRESETS: ClassVar[FlextTypes.NestedDict] = {
+    PRESETS: ClassVar[FlextCore.Types.NestedDict] = {
         "development": {
             "batch_size": 100,
             "table_prefix": "DEV_",
@@ -109,7 +109,7 @@ class FlextTargetFactory:
     def create_target(
         cls,
         request: TargetCreationRequest,
-    ) -> FlextResult[SingerTargetOracleWMS]:
+    ) -> FlextCore.Result[SingerTargetOracleWMS]:
         """Create Oracle WMS target with smart defaults and presets.
 
         SOLID REFACTORING: Reduced parameter count from 6 to 1 using Parameter Object Pattern.
@@ -118,7 +118,7 @@ class FlextTargetFactory:
             request: TargetCreationRequest containing all target creation parameters
 
         Returns:
-            FlextResult containing configured target or error
+            FlextCore.Result containing configured target or error
 
         """
         try:
@@ -128,7 +128,7 @@ class FlextTargetFactory:
             )
 
             # Start with base configuration
-            config: FlextTypes.Dict = {
+            config: FlextCore.Types.Dict = {
                 "base_url": request.base_url,
                 "username": request.username,
                 "password": request.password,
@@ -154,12 +154,12 @@ class FlextTargetFactory:
                 request.environment,
                 request.preset,
             )
-            return FlextResult[SingerTargetOracleWMS].ok(target)
+            return FlextCore.Result[SingerTargetOracleWMS].ok(target)
 
         except Exception as e:
             error_msg: str = f"Failed to create Oracle WMS target: {e}"
             logger.exception(error_msg)
-            return FlextResult[SingerTargetOracleWMS].fail(error_msg)
+            return FlextCore.Result[SingerTargetOracleWMS].fail(error_msg)
 
     @classmethod
     def create_target_legacy(
@@ -170,7 +170,7 @@ class FlextTargetFactory:
         environment: str = "development",
         preset: str | None = None,
         **additional_config: object,
-    ) -> FlextResult[SingerTargetOracleWMS]:
+    ) -> FlextCore.Result[SingerTargetOracleWMS]:
         """Legacy method for backward compatibility - delegates to Parameter Object version.
 
         SOLID REFACTORING: Maintains backward compatibility while using improved Parameter Object Pattern.
@@ -192,7 +192,7 @@ class FlextTargetFactory:
         username: str = "dev_user",
         password: str | None = None,
         **overrides: object,
-    ) -> FlextResult[SingerTargetOracleWMS]:
+    ) -> FlextCore.Result[SingerTargetOracleWMS]:
         """Create development target with optimized settings."""
         request = TargetCreationRequest(
             base_url=base_url,
@@ -211,7 +211,7 @@ class FlextTargetFactory:
         username: str,
         password: str,
         **overrides: object,
-    ) -> FlextResult[SingerTargetOracleWMS]:
+    ) -> FlextCore.Result[SingerTargetOracleWMS]:
         """Create production target with optimized settings."""
         request = TargetCreationRequest(
             base_url=base_url,
@@ -230,7 +230,7 @@ class FlextTargetFactory:
         username: str = "test_user",
         password: str | None = None,  # Test password is acceptable for testing
         **overrides: object,
-    ) -> FlextResult[SingerTargetOracleWMS]:
+    ) -> FlextCore.Result[SingerTargetOracleWMS]:
         """Create testing target with optimized settings."""
         # Use default test password if none provided
         final_password = password if password is not None else "test_password"
@@ -247,15 +247,15 @@ class FlextTargetFactory:
     @classmethod
     def create_from_config_dict(
         cls,
-        config: FlextTypes.Dict,
-    ) -> FlextResult[SingerTargetOracleWMS]:
+        config: FlextCore.Types.Dict,
+    ) -> FlextCore.Result[SingerTargetOracleWMS]:
         """Create target from configuration dictionary.
 
         Args:
             config: Complete configuration dictionary
 
         Returns:
-            FlextResult containing configured target or error
+            FlextCore.Result containing configured target or error
 
         """
         try:
@@ -268,7 +268,7 @@ class FlextTargetFactory:
                     f"Missing required configuration fields: {missing_fields}"
                 )
                 logger.error(error_msg)
-                return FlextResult[SingerTargetOracleWMS].fail(error_msg)
+                return FlextCore.Result[SingerTargetOracleWMS].fail(error_msg)
 
             # Extract preset if specified
             preset = config.pop("preset", None)
@@ -293,7 +293,7 @@ class FlextTargetFactory:
 
             for is_valid, error_msg in type_checks:
                 if not is_valid:
-                    return FlextResult[SingerTargetOracleWMS].fail(error_msg)
+                    return FlextCore.Result[SingerTargetOracleWMS].fail(error_msg)
 
             # Use cast after validation - types are guaranteed by validation above
             request = TargetCreationRequest(
@@ -309,7 +309,7 @@ class FlextTargetFactory:
         except Exception as e:
             creation_error_msg: str = f"Failed to create target from config: {e}"
             logger.exception(creation_error_msg)
-            return FlextResult[SingerTargetOracleWMS].fail(creation_error_msg)
+            return FlextCore.Result[SingerTargetOracleWMS].fail(creation_error_msg)
 
 
 class FlextTargetMonitoringFactory:
@@ -330,7 +330,7 @@ class FlextTargetMonitoringFactory:
             object: Description of return value.
 
         """
-        # Initialize monitor with proper FlextContainer
+        # Initialize monitor with proper FlextCore.Container
         self.monitor = FlextObservabilityMonitor()
         self.monitor_name = monitor_name
         self.factory = FlextTargetFactory()
@@ -338,7 +338,7 @@ class FlextTargetMonitoringFactory:
     def create_monitored_target(
         self,
         request: MonitoredTargetCreationRequest,
-    ) -> FlextResult[SingerTargetOracleWMS]:
+    ) -> FlextCore.Result[SingerTargetOracleWMS]:
         """Create monitored target with observability integration.
 
         SOLID REFACTORING: Reduced parameter count from 6 to 1 using Parameter Object Pattern.
@@ -347,7 +347,7 @@ class FlextTargetMonitoringFactory:
             request: MonitoredTargetCreationRequest containing all target creation parameters
 
         Returns:
-            FlextResult containing monitored target or error
+            FlextCore.Result containing monitored target or error
 
         """
         try:
@@ -360,7 +360,7 @@ class FlextTargetMonitoringFactory:
                 preset=request.preset,
                 additional_config=request.additional_config,
             )
-            target_result: FlextResult[object] = self.factory.create_target(
+            target_result: FlextCore.Result[object] = self.factory.create_target(
                 target_request
             )
 
@@ -369,37 +369,39 @@ class FlextTargetMonitoringFactory:
 
             target = target_result.data
             if target is None:
-                return FlextResult[SingerTargetOracleWMS].fail(
+                return FlextCore.Result[SingerTargetOracleWMS].fail(
                     "Target creation returned None",
                 )
 
             # Initialize monitoring services
-            init_result: FlextResult[object] = (
+            init_result: FlextCore.Result[object] = (
                 self.monitor.flext_initialize_observability()
             )
             if not init_result.success:
                 logger.warning("Failed to initialize monitoring: %s", init_result.error)
                 # Continue without monitoring rather than fail
-                return FlextResult[SingerTargetOracleWMS].ok(target)
+                return FlextCore.Result[SingerTargetOracleWMS].ok(target)
 
             # Start monitoring
-            start_result: FlextResult[object] = self.monitor.flext_start_monitoring()
+            start_result: FlextCore.Result[object] = (
+                self.monitor.flext_start_monitoring()
+            )
             if not start_result.success:
                 logger.warning("Failed to start monitoring: %s", start_result.error)
                 # Continue without monitoring rather than fail
-                return FlextResult[SingerTargetOracleWMS].ok(target)
+                return FlextCore.Result[SingerTargetOracleWMS].ok(target)
 
             # Add basic monitoring through logging - KISS approach
             logger.info(
                 "Created monitored target for %s with observability integration",
                 request.environment,
             )
-            return FlextResult[SingerTargetOracleWMS].ok(target)
+            return FlextCore.Result[SingerTargetOracleWMS].ok(target)
 
         except Exception as e:
             error_msg: str = f"Failed to create monitored target: {e}"
             logger.exception(error_msg)
-            return FlextResult[SingerTargetOracleWMS].fail(error_msg)
+            return FlextCore.Result[SingerTargetOracleWMS].fail(error_msg)
 
 
 # DRY: Export factory functions for easy access
@@ -410,7 +412,7 @@ def create_oracle_wms_target(
     environment: str = "development",
     preset: str | None = None,
     **config: object,
-) -> FlextResult[SingerTargetOracleWMS]:
+) -> FlextCore.Result[SingerTargetOracleWMS]:
     """Create Oracle WMS target.
 
     This is a simplified interface to the FlextTargetFactory for easy usage.
@@ -429,7 +431,7 @@ def create_oracle_wms_target(
 
 def create_monitored_oracle_wms_target(
     request: MonitoredTargetCreationRequest,
-) -> FlextResult[SingerTargetOracleWMS]:
+) -> FlextCore.Result[SingerTargetOracleWMS]:
     """Create monitored Oracle WMS target.
 
     SOLID REFACTORING: Reduced arguments from 6 to 1 using Parameter Object Pattern.

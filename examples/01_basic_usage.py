@@ -14,7 +14,7 @@ import json
 from pathlib import Path
 from typing import cast
 
-from flext_core import FlextLogger, FlextTypes
+from flext_core import FlextCore
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 from flext_target_oracle_wms import (
@@ -22,7 +22,7 @@ from flext_target_oracle_wms import (
 )
 
 # Get logger using flext-core patterns
-logger = FlextLogger(__name__)
+logger = FlextCore.Logger(__name__)
 
 # Monitor using flext-observability
 monitor = FlextObservabilityMonitor()
@@ -44,7 +44,7 @@ def run_basic_example() -> None:
     }
 
     # OPTION 1: Traditional direct instantiation
-    target = SingerTargetOracleWMS(cast("FlextTypes.Dict", config))
+    target = SingerTargetOracleWMS(cast("FlextCore.Types.Dict", config))
 
     # OPTION 2: Factory pattern for easier usage (alternative approach)
     # factory_result = create_oracle_wms_target(
@@ -192,7 +192,7 @@ def run_from_singer_files() -> None:
         config = json.loads(config_file.read_text(encoding="utf-8"))
     else:
         # Use demo configuration
-        config: dict[str, object] = {
+        config: FlextCore.Types.Dict = {
             "base_url": "https://example.wms.oracle.com",
             "username": "demo_user",
             "password": "demo_password",
@@ -202,7 +202,7 @@ def run_from_singer_files() -> None:
         }
 
     # Create target
-    target = SingerTargetOracleWMS(cast("FlextTypes.Dict", config))
+    target = SingerTargetOracleWMS(cast("FlextCore.Types.Dict", config))
 
     # Example of processing Singer format input
     singer_messages = [

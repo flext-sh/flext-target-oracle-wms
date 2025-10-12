@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 from typing import override
 
-from flext_core import FlextResult, FlextTypes
+from flext_core import FlextCore
 
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
@@ -27,37 +27,41 @@ class OracleWMSTargetCli:
         self.version = "0.9.0"
 
     @override
-    def execute(self, **kwargs: object) -> FlextResult[None]:
+    def execute(self, **kwargs: object) -> FlextCore.Result[None]:
         """Execute target using REAL implementation.
 
         SOLID REFACTORING: Reduced multiple returns (count=6) to single exit point
         using Railway-Oriented Programming pattern.
         """
-        result: FlextResult[None] = FlextResult[None].ok(None)
+        result: FlextCore.Result[None] = FlextCore.Result[None].ok(None)
 
         try:
             # Load configuration
-            config_path: FlextTypes.Dict = kwargs.get("config")
-            config_path_str: FlextTypes.Dict = (
+            config_path: FlextCore.Types.Dict = kwargs.get("config")
+            config_path_str: FlextCore.Types.Dict = (
                 str(config_path) if config_path is not None else None
             )
-            config_result: FlextResult[object] = self._prepare_config(config_path_str)
+            config_result: FlextCore.Result[object] = self._prepare_config(
+                config_path_str
+            )
             if not config_result.success:
-                result = FlextResult[None].fail(
+                result = FlextCore.Result[None].fail(
                     config_result.error or "Configuration failed",
                 )
             else:
-                config: FlextTypes.Dict = config_result.data
+                config: FlextCore.Types.Dict = config_result.data
                 if config is None:
-                    result: FlextResult[object] = FlextResult[None].fail(
+                    result: FlextCore.Result[object] = FlextCore.Result[None].fail(
                         "Configuration data is None"
                     )
                 else:
                     # Continue with target setup and processing
-                    result: FlextResult[object] = self._execute_target_pipeline(config)
+                    result: FlextCore.Result[object] = self._execute_target_pipeline(
+                        config
+                    )
 
         except Exception as e:
-            result: FlextResult[object] = FlextResult[None].fail(
+            result: FlextCore.Result[object] = FlextCore.Result[None].fail(
                 f"CLI execution failed: {e}"
             )
 
@@ -65,8 +69,8 @@ class OracleWMSTargetCli:
 
     def _execute_target_pipeline(
         self,
-        config: FlextTypes.Dict,
-    ) -> FlextResult[None]:
+        config: FlextCore.Types.Dict,
+    ) -> FlextCore.Result[None]:
         """Execute the target pipeline with railway-oriented programming.
 
         SOLID REFACTORING: Extract target pipeline execution to reduce complexity.
@@ -74,12 +78,12 @@ class OracleWMSTargetCli:
         target = SingerTargetOracleWMS(config)
 
         # Setup target
-        setup_result: FlextResult[object] = target.setup()
+        setup_result: FlextCore.Result[object] = target.setup()
         if not setup_result.success:
-            return FlextResult[None].fail(f"Setup failed: {setup_result.error}")
+            return FlextCore.Result[None].fail(f"Setup failed: {setup_result.error}")
 
         # Process messages
-        process_result: FlextResult[object] = self._process_stdin_messages(target)
+        process_result: FlextCore.Result[object] = self._process_stdin_messages(target)
         if not process_result.success:
             return process_result
 
@@ -89,16 +93,16 @@ class OracleWMSTargetCli:
     def _prepare_config(
         self,
         config_path: str | None,
-    ) -> FlextResult[FlextTypes.Dict]:
+    ) -> FlextCore.Result[FlextCore.Types.Dict]:
         """Prepare configuration from path or defaults."""
         try:
             if config_path:
-                return FlextResult[FlextTypes.Dict].ok(
+                return FlextCore.Result[FlextCore.Types.Dict].ok(
                     self._load_config(config_path),
                 )
 
             # Default configuration
-            config: FlextTypes.Dict = {
+            config: FlextCore.Types.Dict = {
                 "base_url": "https://invalid.wms.ocs.oraclecloud.com",
                 "username": "oracle",
                 "password": "oracle",
@@ -106,16 +110,16 @@ class OracleWMSTargetCli:
                 "timeout": 30.0,
                 "max_retries": 3,
             }
-            return FlextResult[FlextTypes.Dict].ok(config)
+            return FlextCore.Result[FlextCore.Types.Dict].ok(config)
         except Exception as e:
-            return FlextResult[FlextTypes.Dict].fail(
+            return FlextCore.Result[FlextCore.Types.Dict].fail(
                 f"Configuration preparation failed: {e}",
             )
 
     def _process_stdin_messages(
         self,
         target: SingerTargetOracleWMS,
-    ) -> FlextResult[None]:
+    ) -> FlextCore.Result[None]:
         """Process stdin messages following Singer protocol."""
         try:
             for raw_line in sys.stdin:
@@ -123,19 +127,21 @@ class OracleWMSTargetCli:
                 if not line:
                     continue
 
-                result: FlextResult[object] = self._process_single_message(target, line)
+                result: FlextCore.Result[object] = self._process_single_message(
+                    target, line
+                )
                 if not result.success:
                     return result
 
-            return FlextResult[None].ok(None)
+            return FlextCore.Result[None].ok(None)
         except Exception as e:
-            return FlextResult[None].fail(f"Message processing failed: {e}")
+            return FlextCore.Result[None].fail(f"Message processing failed: {e}")
 
     def _process_single_message(
         self,
         target: SingerTargetOracleWMS,
         line: str,
-    ) -> FlextResult[None]:
+    ) -> FlextCore.Result[None]:
         """Process a single Singer message."""
         try:
             message = json.loads(line)
@@ -143,39 +149,39 @@ class OracleWMSTargetCli:
 
             if message_type == "SCHEMA":
                 target.handle_schema_message(message)
-                return FlextResult[None].ok(None)
+                return FlextCore.Result[None].ok(None)
             if message_type == "RECORD":
                 target.handle_record_message(message)
-                return FlextResult[None].ok(None)
+                return FlextCore.Result[None].ok(None)
             if message_type == "STATE":
                 target.handle_state_message(message)
-                return FlextResult[None].ok(None)
+                return FlextCore.Result[None].ok(None)
 
             # Skip unknown message types
-            return FlextResult[None].ok(None)
+            return FlextCore.Result[None].ok(None)
 
         except json.JSONDecodeError as e:
-            return FlextResult[None].fail(f"Invalid JSON: {e}")
+            return FlextCore.Result[None].fail(f"Invalid JSON: {e}")
 
     def _finalize_target(
         self,
         target: SingerTargetOracleWMS,
-    ) -> FlextResult[None]:
+    ) -> FlextCore.Result[None]:
         """Finalize target processing and cleanup."""
         try:
             target.cleanup()
-            return FlextResult[None].ok(None)
+            return FlextCore.Result[None].ok(None)
         except Exception as e:
-            return FlextResult[None].fail(f"Finalization failed: {e}")
+            return FlextCore.Result[None].fail(f"Finalization failed: {e}")
 
-    def _load_config(self, config_path: str) -> FlextTypes.Dict:
+    def _load_config(self, config_path: str) -> FlextCore.Types.Dict:
         """Load configuration from file path."""
-        config_file: FlextTypes.Dict = Path(config_path)
+        config_file: FlextCore.Types.Dict = Path(config_path)
         if not config_file.exists():
             msg: str = f"Configuration file not found: {config_path}"
             raise FileNotFoundError(msg)
 
-        config_text: FlextTypes.Dict = config_file.read_text(encoding="utf-8")
+        config_text: FlextCore.Types.Dict = config_file.read_text(encoding="utf-8")
         return dict(json.loads(config_text))
 
 
@@ -193,7 +199,7 @@ def main() -> None:
             config_path = sys.argv[2]
 
         # Execute CLI with parsed arguments
-        result: FlextResult[object] = cli_instance.execute(config=config_path)
+        result: FlextCore.Result[object] = cli_instance.execute(config=config_path)
 
         if not result.success:
             sys.stderr.write(f"Execution failed: {result.error}\n")

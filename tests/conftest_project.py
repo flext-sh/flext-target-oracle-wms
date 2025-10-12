@@ -11,11 +11,11 @@ from collections.abc import Generator
 from pathlib import Path
 
 import pytest
-from flext_core import FlextTypes
+from flext_core import FlextCore
 
 
 @pytest.fixture
-def config() -> FlextTypes.Dict:
+def config() -> FlextCore.Types.Dict:
     """Return a test configuration."""
     return {
         "base_url": "https://test.oracle.com/wms/api/v1",
@@ -38,7 +38,7 @@ def temp_output_dir() -> Generator[Path]:
 
 
 @pytest.fixture
-def sample_inventory_records() -> list[FlextTypes.Dict]:
+def sample_inventory_records() -> list[FlextCore.Types.Dict]:
     """Return sample inventory records."""
     return [
         {
@@ -63,7 +63,7 @@ def sample_inventory_records() -> list[FlextTypes.Dict]:
 
 
 @pytest.fixture
-def sample_order_records() -> list[FlextTypes.Dict]:
+def sample_order_records() -> list[FlextCore.Types.Dict]:
     """Return sample order records."""
     return [
         {
@@ -86,7 +86,7 @@ def sample_order_records() -> list[FlextTypes.Dict]:
 
 
 @pytest.fixture
-def sample_task_records() -> list[FlextTypes.Dict]:
+def sample_task_records() -> list[FlextCore.Types.Dict]:
     """Return sample task records."""
     return [
         {
@@ -111,7 +111,7 @@ def sample_task_records() -> list[FlextTypes.Dict]:
 
 
 @pytest.fixture
-def singer_schema() -> FlextTypes.Dict:
+def singer_schema() -> FlextCore.Types.Dict:
     """Return a sample Singer schema."""
     return {
         "type": "object",

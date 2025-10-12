@@ -10,12 +10,12 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import FlextLogger, FlextTypes
+from flext_core import FlextCore
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
-logger = FlextLogger(__name__)
+logger = FlextCore.Logger(__name__)
 monitor = FlextObservabilityMonitor()
 
 
@@ -28,7 +28,7 @@ class SimulatedOracleWMSError(Exception):
         self.attempt = attempt
 
 
-def get_error_demo_config() -> FlextTypes.Dict:
+def get_error_demo_config() -> FlextCore.Types.Dict:
     """Single Responsibility: Get error demonstration configuration.
 
     SOLID REFACTORING: Extract configuration into separate function following
@@ -63,7 +63,7 @@ def get_error_demo_config() -> FlextTypes.Dict:
 
 
 def demonstrate_setup_error_handling(
-    config: FlextTypes.Dict,
+    config: FlextCore.Types.Dict,
 ) -> SingerTargetOracleWMS | None:
     """Single Responsibility: Demonstrate setup and connection error handling.
 

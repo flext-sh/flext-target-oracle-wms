@@ -8,35 +8,35 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import FlextExceptions
+from flext_core import FlextCore
 
 
 # Oracle WMS Target exception hierarchy using flext-core base classes
-class FlextTargetOracleWmsError(FlextExceptions.Error):
+class FlextTargetOracleWmsError(FlextCore.Exceptions.Error):
     """Base error for Oracle WMS target operations."""
 
 
-class FlextTargetOracleWmsValidationError(FlextExceptions.ValidationError):
+class FlextTargetOracleWmsValidationError(FlextCore.Exceptions.ValidationError):
     """Oracle WMS target validation errors."""
 
 
-class FlextTargetOracleWmsConfigurationError(FlextExceptions.ConfigurationError):
+class FlextTargetOracleWmsConfigurationError(FlextCore.Exceptions.ConfigurationError):
     """Oracle WMS target configuration errors."""
 
 
-class FlextTargetOracleWmsProcessingError(FlextExceptions.ProcessingError):
+class FlextTargetOracleWmsProcessingError(FlextCore.Exceptions.ProcessingError):
     """Oracle WMS target processing errors."""
 
 
-class FlextTargetOracleWmsConnectionError(FlextExceptions.ConnectionError):
+class FlextTargetOracleWmsConnectionError(FlextCore.Exceptions.ConnectionError):
     """Oracle WMS target connection errors."""
 
 
-class FlextTargetOracleWmsAuthenticationError(FlextExceptions.AuthenticationError):
+class FlextTargetOracleWmsAuthenticationError(FlextCore.Exceptions.AuthenticationError):
     """Oracle WMS target authentication errors."""
 
 
-class FlextTargetOracleWmsTimeoutError(FlextExceptions.TimeoutError):
+class FlextTargetOracleWmsTimeoutError(FlextCore.Exceptions.TimeoutError):
     """Oracle WMS target timeout errors."""
 
 

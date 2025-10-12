@@ -14,7 +14,7 @@ import os
 from datetime import UTC, datetime
 from typing import cast
 
-from flext_core import FlextLogger, FlextResult, FlextTypes
+from flext_core import FlextCore
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 from flext_target_oracle_wms import (
@@ -25,7 +25,7 @@ from flext_target_oracle_wms import (
     WMSTypeConverter,
 )
 
-logger = FlextLogger(__name__)
+logger = FlextCore.Logger(__name__)
 monitor = FlextObservabilityMonitor()
 
 
@@ -36,7 +36,7 @@ class CustomWMSTypeConverter(WMSTypeConverter):
         self,
         singer_type: str,
         value: object,
-    ) -> FlextResult[object]:
+    ) -> FlextCore.Result[object]:
         """Custom conversion with business rules."""
         # Handle custom business types
         if singer_type == "business_date":
@@ -46,9 +46,9 @@ class CustomWMSTypeConverter(WMSTypeConverter):
                 try:
                     dt = datetime.strptime(value, "%Y-%m-%d").replace(tzinfo=UTC)
                     oracle_date = dt.strftime("%d-%b-%Y").upper()
-                    return FlextResult[None].ok(oracle_date)
+                    return FlextCore.Result[None].ok(oracle_date)
                 except ValueError:
-                    return FlextResult[None].fail(
+                    return FlextCore.Result[None].fail(
                         f"Invalid business date format: {value}",
                     )
 
@@ -56,7 +56,7 @@ class CustomWMSTypeConverter(WMSTypeConverter):
         elif singer_type == "business_currency":
             if isinstance(value, (int, float)) and value is not None:
                 # Round to 2 decimal places for currency
-                return FlextResult[None].ok(round(float(value), 2))
+                return FlextCore.Result[None].ok(round(float(value), 2))
 
         # Handle custom status enums
         elif singer_type == "wms_status" and isinstance(value, str):
@@ -69,12 +69,12 @@ class CustomWMSTypeConverter(WMSTypeConverter):
                 "archived": "Z",
             }
             mapped_status = status_mapping.get(value.lower(), value)
-            return FlextResult[None].ok(mapped_status)
+            return FlextCore.Result[None].ok(mapped_status)
 
         # Delegate to parent for standard types - ensure proper typing
         parent_result = super().convert_singer_to_oracle(singer_type, value)
 
-        return cast("FlextResult[object]", parent_result)
+        return cast("FlextCore.Result[object]", parent_result)
 
 
 class CustomWMSDataTransformer(WMSDataTransformer):
@@ -86,9 +86,9 @@ class CustomWMSDataTransformer(WMSDataTransformer):
 
     def transform_record(
         self,
-        record: FlextTypes.Dict,
-        schema: FlextTypes.Dict | None = None,
-    ) -> FlextResult[FlextTypes.Dict]:
+        record: FlextCore.Types.Dict,
+        schema: FlextCore.Types.Dict | None = None,
+    ) -> FlextCore.Result[FlextCore.Types.Dict]:
         """Transform record with business validations."""
         # Apply standard transformation first
         base_result = super().transform_record(record, schema)
@@ -97,7 +97,7 @@ class CustomWMSDataTransformer(WMSDataTransformer):
 
         transformed = base_result.data
         if transformed is None:
-            return FlextResult[None].fail("Base transformation returned None")
+            return FlextCore.Result[None].fail("Base transformation returned None")
 
         # Apply business-specific transformations
         try:
@@ -125,14 +125,14 @@ class CustomWMSDataTransformer(WMSDataTransformer):
             required_fields = ["ITEM_ID", "LOCATION_ID"]
             for field in required_fields:
                 if field not in transformed or not transformed[field]:
-                    return FlextResult[None].fail(
+                    return FlextCore.Result[None].fail(
                         f"Missing required business field: {field}",
                     )
 
-            return FlextResult[None].ok(transformed)
+            return FlextCore.Result[None].ok(transformed)
 
         except Exception as e:
-            return FlextResult[None].fail(f"Business transformation failed: {e}")
+            return FlextCore.Result[None].fail(f"Business transformation failed: {e}")
 
 
 @flext_monitor_function(monitor)
@@ -375,7 +375,7 @@ def demonstrate_custom_components() -> None:
     # Custom schema mapper
     schema_mapper = WMSSchemaMapper()
 
-    test_schema: FlextTypes.Dict = {
+    test_schema: FlextCore.Types.Dict = {
         "properties": {
             "business_date": {"type": "business_date"},
             "amount": {"type": "business_currency"},

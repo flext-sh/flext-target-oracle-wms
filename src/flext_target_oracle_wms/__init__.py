@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from flext_core import FlextTypes
+from flext_core import FlextCore
 
 from flext_target_oracle_wms.__version__ import __version__, __version_info__
 from flext_target_oracle_wms.cli import OracleWMSTargetCli, main
@@ -31,7 +31,7 @@ from flext_target_oracle_wms.target_models import (
 )
 from flext_target_oracle_wms.utilities import FlextTargetOracleWmsUtilities
 
-__all__: FlextTypes.StringList = [
+__all__: FlextCore.Types.StringList = [
     "FlextTargetFactory",
     "FlextTargetMonitoringFactory",
     "FlextTargetOracleWmsModels",

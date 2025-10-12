@@ -365,17 +365,17 @@ class TestExamplesFlextIntegration:
     """Test that examples properly integrate with flext-* ecosystem."""
 
     def test_examples_use_flext_result_pattern(self) -> None:
-        """Test that examples use FlextResult pattern correctly."""
+        """Test that examples use FlextCore.Result pattern correctly."""
         examples_dir = Path(__file__).parents[2] / "examples"
         example_files = list(examples_dir.glob("*.py"))
 
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
 
-            if "FlextResult" in content:
-                # Must use proper FlextResult patterns
+            if "FlextCore.Result" in content:
+                # Must use proper FlextCore.Result patterns
                 assert ".success" in content, (
-                    f"{example_file.name} uses FlextResult but not .success"
+                    f"{example_file.name} uses FlextCore.Result but not .success"
                 )
                 assert ".error" in content or "result.data" in content, (
                     f"{example_file.name} must check result.error or result.data"
@@ -389,10 +389,10 @@ class TestExamplesFlextIntegration:
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
 
-            if "FlextLogger" in content:
+            if "FlextCore.Logger" in content:
                 # Must use logger properly
-                assert "logger = FlextLogger(__name__)" in content, (
-                    f"{example_file.name} must use FlextLogger(__name__) pattern"
+                assert "logger = FlextCore.Logger(__name__)" in content, (
+                    f"{example_file.name} must use FlextCore.Logger(__name__) pattern"
                 )
                 assert "logger.info(" in content or "logger.error(" in content, (
                     f"{example_file.name} must actually use the logger"
