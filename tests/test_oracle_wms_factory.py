@@ -235,7 +235,7 @@ class TestFlextTargetFactory:
             )
 
     def test_create_from_config_dict_missing_fields(self) -> None:
-        """Test creating target from config dict with missing required fields."""
+        """Test creating target from config dict[str, object] with missing required fields."""
         config = {
             "base_url": "https://incomplete.wms.oracle.com",
             # Missing username and password
@@ -255,7 +255,7 @@ class TestFlextTargetFactory:
         assert result.error is not None and "password" in result.error
 
     def test_create_from_config_dict_exception(self) -> None:
-        """Test config dict creation with exception handling."""
+        """Test config dict[str, object] creation with exception handling."""
         config = {
             "base_url": "https://error.wms.oracle.com",
             "username": "error_user",

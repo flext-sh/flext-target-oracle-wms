@@ -132,7 +132,7 @@ class TestPatternsPerformanceBenchmarks:
         )
         transformer = WMSDataTransformer()
 
-        def transform_large_record() -> dict:
+        def transform_large_record() -> dict[str, object]:
             """Transform large record - measured operation."""
             result = transformer.transform_record(large_record, None)
             assert result.success
@@ -172,7 +172,7 @@ class TestPatternsPerformanceBenchmarks:
         )
         mapper = WMSSchemaMapper()
 
-        def map_complex_schema() -> dict:
+        def map_complex_schema() -> dict[str, object]:
             """Map complex schema - measured operation."""
             result = mapper.map_singer_schema_to_oracle(complex_schema)
             assert result.success
@@ -283,7 +283,7 @@ class TestStreamPerformanceBenchmarks:
             for i in range(100)
         ]
 
-        def process_batch_records() -> dict:
+        def process_batch_records() -> dict[str, object]:
             """Process batch of records - measured operation."""
             result = processor.process_batch("benchmark_stream", test_records)
             assert result.success
@@ -327,7 +327,7 @@ class TestCatalogPerformanceBenchmarks:
             }
             test_streams.append(stream_data)
 
-        def perform_catalog_operations() -> dict:
+        def perform_catalog_operations() -> dict[str, object]:
             """Perform multiple catalog operations - measured operation."""
             # Add streams
             for stream_data in test_streams:
@@ -359,7 +359,7 @@ class TestIntegrationPerformanceBenchmarks:
     ) -> None:
         """Benchmark complete end-to-end workflow performance."""
 
-        def complete_workflow() -> dict | None:
+        def complete_workflow() -> dict[str, object] | None:
             """Complete workflow - measured operation."""
             config = {
                 "base_url": "https://e2e-benchmark.wms.oracle.com",
@@ -422,7 +422,7 @@ class TestIntegrationPerformanceBenchmarks:
         # Benchmark complete workflow
         # Note: run needed for benchmark with functions
 
-        def sync_wrapper() -> dict | None:
+        def sync_wrapper() -> dict[str, object] | None:
             return complete_workflow()
 
         result = benchmark(sync_wrapper)
@@ -451,7 +451,7 @@ class TestMemoryEfficiencyBenchmarks:
         init_result = processor.initialize_stream("memory_test", schema)
         assert init_result.success
 
-        def process_large_batch() -> dict:
+        def process_large_batch() -> dict[str, object]:
             """Process large batch efficiently - measured operation."""
             # Force garbage collection before measurement
             gc.collect()
