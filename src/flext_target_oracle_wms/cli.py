@@ -182,7 +182,7 @@ class OracleWMSTargetCli:
             raise FileNotFoundError(msg)
 
         config_text: FlextCore.Types.Dict = config_file.read_text(encoding="utf-8")
-        return dict(json.loads(config_text))
+        return dict[str, object](json.loads(config_text))
 
 
 def main() -> None:
