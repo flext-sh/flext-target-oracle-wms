@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import os
 
-from flext_core import FlextCore
+from flext_core import FlextLogger, FlextTypes
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 # Import factory patterns for easier usage
@@ -25,7 +25,7 @@ from flext_target_oracle_wms import (
 )
 
 # Get logger using flext-core patterns
-logger = FlextCore.Logger(__name__)
+logger = FlextLogger(__name__)
 
 # Monitor using flext-observability
 monitor = FlextObservabilityMonitor()
@@ -127,7 +127,7 @@ def _demonstrate_testing_target() -> None:
 def _demonstrate_config_target() -> None:
     """Demonstrate configuration-based target creation."""
     logger.info("\n📋 Example 5: Configuration-based Target Creation")
-    config_dict: FlextCore.Types.Dict = {
+    config_dict: FlextTypes.Dict = {
         "base_url": "https://config.wms.oracle.com",
         "username": "config_user",
         "password": DEMO_PASSWORD,

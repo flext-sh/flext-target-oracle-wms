@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, Mock, patch
 
-from flext_core import FlextCore
+from flext_core import FlextResult
 
 from flext_target_oracle_wms import (
     FlextTargetFactory,
@@ -221,7 +221,7 @@ class TestFlextTargetFactory:
         }
 
         with patch.object(FlextTargetFactory, "create_target") as mock_create:
-            mock_create.return_value = FlextCore.Result[None].ok(MagicMock())
+            mock_create.return_value = FlextResult[None].ok(MagicMock())
 
             result = FlextTargetFactory.create_from_config_dict(config)
 
@@ -355,7 +355,7 @@ class TestFlextTargetMonitoringFactory:
         with patch.object(
             factory.factory,
             "create_target",
-            return_value=FlextCore.Result[None].fail("Base creation failed"),
+            return_value=FlextResult[None].fail("Base creation failed"),
         ):
             result = factory.create_monitored_target(
                 base_url="https://fail.wms.oracle.com",
@@ -409,7 +409,7 @@ class TestFactoryConvenienceFunctions:
     ) -> None:
         """Test convenience function for creating Oracle WMS target."""
         mock_target = MagicMock()
-        mock_create_target.return_value = FlextCore.Result[None].ok(mock_target)
+        mock_create_target.return_value = FlextResult[None].ok(mock_target)
 
         result = create_oracle_wms_target(
             base_url="https://convenience.wms.oracle.com",
@@ -441,7 +441,7 @@ class TestFactoryConvenienceFunctions:
         mock_factory = MagicMock()
         mock_factory_class.return_value = mock_factory
         mock_target = MagicMock()
-        mock_factory.create_monitored_target.return_value = FlextCore.Result[None].ok(
+        mock_factory.create_monitored_target.return_value = FlextResult[None].ok(
             mock_target,
         )
 
@@ -546,7 +546,7 @@ class TestFactoryIntegration:
         assert hasattr(monitoring_factory, "monitor")
         assert hasattr(monitoring_factory, "factory")
 
-        # Dependency Inversion: Uses abstractions through FlextCore.Result
+        # Dependency Inversion: Uses abstractions through FlextResult
         assert callable(create_oracle_wms_target)
 
         # Verify no tight coupling to concrete implementations

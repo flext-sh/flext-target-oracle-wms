@@ -1,6 +1,27 @@
 """End-to-end tests for complete target functionality - DRY REFACTORED."""
 
 from __future__ import annotations
+from flext_core import FlextBus
+
+from flext_core import FlextConfig
+from flext_core import FlextConstants
+from flext_core import FlextContainer
+from flext_core import FlextContext
+from flext_core import FlextDecorators
+from flext_core import FlextDispatcher
+from flext_core import FlextExceptions
+from flext_core import FlextHandlers
+from flext_core import FlextLogger
+from flext_core import FlextMixins
+from flext_core import FlextModels
+from flext_core import FlextProcessors
+from flext_core import FlextProtocols
+from flext_core import FlextRegistry
+from flext_core import FlextResult
+from flext_core import FlextRuntime
+from flext_core import FlextService
+from flext_core import FlextTypes
+from flext_core import FlextUtilities
 
 object
 from unittest.mock import Mock
@@ -8,7 +29,26 @@ from unittest.mock import Mock
 import pytest
 
 # DRY: Import from REAL implementation
-from flext_core import FlextCore
+from flext_core import FlextBus
+from flext_core import FlextConfig
+from flext_core import FlextConstants
+from flext_core import FlextContainer
+from flext_core import FlextContext
+from flext_core import FlextDecorators
+from flext_core import FlextDispatcher
+from flext_core import FlextExceptions
+from flext_core import FlextHandlers
+from flext_core import FlextLogger
+from flext_core import FlextMixins
+from flext_core import FlextModels
+from flext_core import FlextProcessors
+from flext_core import FlextProtocols
+from flext_core import FlextRegistry
+from flext_core import FlextResult
+from flext_core import FlextRuntime
+from flext_core import FlextService
+from flext_core import FlextTypes
+from flext_core import FlextUtilities
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
 
@@ -16,7 +56,7 @@ class TestTargetComplete:
     """End-to-end tests for complete target workflow - REAL implementation."""
 
     @pytest.fixture
-    def sample_config(self) -> FlextCore.Types.Dict:
+    def sample_config(self) -> FlextTypes.Dict:
         """Sample configuration for testing."""
         return {
             "base_url": "https://test.wms.oracle.com",
@@ -28,7 +68,7 @@ class TestTargetComplete:
         }
 
     @pytest.mark.e2e
-    def test_complete_target_initialization(self, sample_config: FlextCore.Types.Dict) -> None:
+    def test_complete_target_initialization(self, sample_config: FlextTypes.Dict) -> None:
         """Test complete target initialization workflow - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -44,7 +84,7 @@ class TestTargetComplete:
         assert target.stream_processor is not None
 
     @pytest.mark.e2e
-    def test_stream_processing_workflow(self, sample_config: FlextCore.Types.Dict) -> None:
+    def test_stream_processing_workflow(self, sample_config: FlextTypes.Dict) -> None:
         """Test complete stream processing workflow - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -67,7 +107,7 @@ class TestTargetComplete:
             assert schema_result.success
 
     @pytest.mark.e2e
-    def test_record_processing_workflow(self, sample_config: FlextCore.Types.Dict) -> None:
+    def test_record_processing_workflow(self, sample_config: FlextTypes.Dict) -> None:
         """Test complete record processing workflow - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -75,7 +115,7 @@ class TestTargetComplete:
         from unittest.mock import patch
         
         with patch.object(target.oracle_client, 'start', new_callable=Mock) as mock_start:
-            mock_start.return_value = FlextCore.Result.ok(None)
+            mock_start.return_value = FlextResult.ok(None)
         
         # Test schema for a common stream
         test_schema = {
@@ -114,7 +154,7 @@ class TestTargetComplete:
         assert record_result.success
 
     @pytest.mark.e2e
-    def test_business_logic_integration(self, sample_config: FlextCore.Types.Dict) -> None:
+    def test_business_logic_integration(self, sample_config: FlextTypes.Dict) -> None:
         """Test business logic integration - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -122,7 +162,7 @@ class TestTargetComplete:
         from unittest.mock import patch
         
         with patch.object(target.oracle_client, 'start', new_callable=Mock) as mock_start:
-            mock_start.return_value = FlextCore.Result.ok(None)
+            mock_start.return_value = FlextResult.ok(None)
         
         # Test different business logic modules
         business_streams = ["inventory", "orders", "warehouse"]
@@ -152,7 +192,7 @@ class TestTargetComplete:
             assert result.success
 
     @pytest.mark.e2e
-    def test_configuration_validation_complete(self, sample_config: FlextCore.Types.Dict) -> None:
+    def test_configuration_validation_complete(self, sample_config: FlextTypes.Dict) -> None:
         """Test complete configuration validation - REAL implementation."""
         # Test with valid config
         target = SingerTargetOracleWMS(sample_config)
@@ -172,7 +212,7 @@ class TestTargetComplete:
         assert target.stream_processor is not None
 
     @pytest.mark.e2e
-    def test_error_handling_workflow(self, sample_config: FlextCore.Types.Dict) -> None:
+    def test_error_handling_workflow(self, sample_config: FlextTypes.Dict) -> None:
         """Test error handling throughout the target workflow - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -180,7 +220,7 @@ class TestTargetComplete:
         from unittest.mock import patch
         
         with patch.object(target.oracle_client, 'start', new_callable=Mock) as mock_start:
-            mock_start.return_value = FlextCore.Result.ok(None)
+            mock_start.return_value = FlextResult.ok(None)
         
         # Test with invalid message types
         invalid_messages = [
@@ -199,7 +239,7 @@ class TestTargetComplete:
                 assert not result.success  # Should fail gracefully
 
     @pytest.mark.e2e
-    def test_multi_stream_handling(self, sample_config: FlextCore.Types.Dict) -> None:
+    def test_multi_stream_handling(self, sample_config: FlextTypes.Dict) -> None:
         """Test handling multiple streams simultaneously - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -207,7 +247,7 @@ class TestTargetComplete:
         from unittest.mock import patch
         
         with patch.object(target.oracle_client, 'start', new_callable=Mock) as mock_start:
-            mock_start.return_value = FlextCore.Result.ok(None)
+            mock_start.return_value = FlextResult.ok(None)
         
         # Test multiple streams can be processed
         streams = ["inventory", "orders", "facility"]
@@ -237,7 +277,7 @@ class TestTargetComplete:
             assert record_result.success
 
     @pytest.mark.e2e
-    def test_memory_efficiency(self, sample_config: FlextCore.Types.Dict) -> None:
+    def test_memory_efficiency(self, sample_config: FlextTypes.Dict) -> None:
         """Test that target operations are memory efficient - REAL implementation."""
         # Test that multiple target instances don't accumulate memory
         for i in range(5):
@@ -249,8 +289,8 @@ class TestTargetComplete:
             with patch.object(target.oracle_client, 'start', new_callable=Mock) as mock_start, \
                  patch.object(target.oracle_client, 'stop', new_callable=Mock) as mock_stop:
                 
-                mock_start.return_value = FlextCore.Result.ok(None)
-                mock_stop.return_value = FlextCore.Result.ok(None)
+                mock_start.return_value = FlextResult.ok(None)
+                mock_stop.return_value = FlextResult.ok(None)
                 
                 # Test complete lifecycle
                 setup_result = target.setup()

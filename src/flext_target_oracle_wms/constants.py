@@ -9,14 +9,14 @@ from __future__ import annotations
 
 from typing import Final
 
-from flext_core import FlextCore
+from flext_core import FlextConstants, FlextTypes
 from flext_oracle_wms.constants import FlextOracleWmsConstants
 
 
-class FlextTargetOracleWmsConstants(FlextCore.Constants):
+class FlextTargetOracleWmsConstants(FlextConstants):
     """Oracle WMS target loading-specific constants following flext-core patterns.
 
-    Enhanced Oracle WMS Target constants extending FlextCore.Constants with
+    Enhanced Oracle WMS Target constants extending FlextConstants with
     comprehensive organization, validation limits, and security considerations.
 
     Composes with FlextOracleWmsConstants to avoid duplication and ensure consistency.
@@ -64,7 +64,7 @@ class FlextTargetOracleWmsConstants(FlextCore.Constants):
 
         # API configuration from FlextOracleWmsConstants
         DEFAULT_API_VERSION: Final[str] = FlextOracleWmsConstants.Api.DEFAULT_VERSION
-        SUPPORTED_API_VERSIONS: Final[FlextCore.Types.StringList] = (
+        SUPPORTED_API_VERSIONS: Final[FlextTypes.StringList] = (
             FlextOracleWmsConstants.Api.SUPPORTED_VERSIONS
         )
 
@@ -114,7 +114,7 @@ class FlextTargetOracleWmsConstants(FlextCore.Constants):
         DEFAULT_LOAD_METHOD: Final[str] = APPEND_ONLY
 
         # Load method descriptions
-        LOAD_METHOD_DESCRIPTIONS: Final[FlextCore.Types.StringDict] = {
+        LOAD_METHOD_DESCRIPTIONS: Final[FlextTypes.StringDict] = {
             APPEND_ONLY: "Append new records only",
             UPSERT: "Insert new records or update existing ones",
             REPLACE: "Replace all records in target table",

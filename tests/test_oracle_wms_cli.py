@@ -11,7 +11,7 @@ import json
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
-from flext_core import FlextCore
+from flext_core import FlextResult
 
 from flext_target_oracle_wms import OracleWMSTargetCli, main
 
@@ -80,8 +80,8 @@ class TestOracleWMSTargetCli:
             patch("sys.stdin", []),
         ):  # Empty stdin
             mock_target = MagicMock()
-            mock_target.setup = Mock(return_value=FlextCore.Result[None].ok(None))
-            mock_target.finalize.return_value = FlextCore.Result[None].ok({"total": 0})
+            mock_target.setup = Mock(return_value=FlextResult[None].ok(None))
+            mock_target.finalize.return_value = FlextResult[None].ok({"total": 0})
             mock_target.cleanup = Mock()
             mock_target_class.return_value = mock_target
 
@@ -99,8 +99,8 @@ class TestOracleWMSTargetCli:
             patch("sys.stdin", []),
         ):  # Empty stdin
             mock_target = MagicMock()
-            mock_target.setup = Mock(return_value=FlextCore.Result[None].ok(None))
-            mock_target.finalize.return_value = FlextCore.Result[None].ok({"total": 0})
+            mock_target.setup = Mock(return_value=FlextResult[None].ok(None))
+            mock_target.finalize.return_value = FlextResult[None].ok({"total": 0})
             mock_target.cleanup = Mock()
             mock_target_class.return_value = mock_target
 
@@ -116,7 +116,7 @@ class TestOracleWMSTargetCli:
         ) as mock_target_class:
             mock_target = MagicMock()
             mock_target.setup = Mock(
-                return_value=FlextCore.Result[None].fail("Setup failed"),
+                return_value=FlextResult[None].fail("Setup failed"),
             )
             mock_target_class.return_value = mock_target
 
@@ -143,17 +143,15 @@ class TestOracleWMSTargetCli:
             patch("sys.stdin", mock_messages),
         ):
             mock_target = MagicMock()
-            mock_target.setup = Mock(return_value=FlextCore.Result[None].ok(None))
+            mock_target.setup = Mock(return_value=FlextResult[None].ok(None))
             mock_target.process_schema_message = Mock(
-                return_value=FlextCore.Result[None].ok(None),
+                return_value=FlextResult[None].ok(None),
             )
             mock_target.process_record_message = Mock(
-                return_value=FlextCore.Result[None].ok(None),
+                return_value=FlextResult[None].ok(None),
             )
-            mock_target.process_state_message.return_value = FlextCore.Result[None].ok(
-                None
-            )
-            mock_target.finalize.return_value = FlextCore.Result[None].ok({"total": 1})
+            mock_target.process_state_message.return_value = FlextResult[None].ok(None)
+            mock_target.finalize.return_value = FlextResult[None].ok({"total": 1})
             mock_target.cleanup = Mock()
             mock_target_class.return_value = mock_target
 
@@ -174,7 +172,7 @@ class TestOracleWMSTargetCli:
             patch("sys.stdin", ["invalid json"]),
         ):
             mock_target = MagicMock()
-            mock_target.setup = Mock(return_value=FlextCore.Result[None].ok(None))
+            mock_target.setup = Mock(return_value=FlextResult[None].ok(None))
             mock_target_class.return_value = mock_target
 
             result = cli.execute()
@@ -193,9 +191,9 @@ class TestOracleWMSTargetCli:
             patch("sys.stdin", ['{"type": "SCHEMA", "stream": "test", "schema": {}}']),
         ):
             mock_target = MagicMock()
-            mock_target.setup = Mock(return_value=FlextCore.Result[None].ok(None))
+            mock_target.setup = Mock(return_value=FlextResult[None].ok(None))
             mock_target.process_schema_message = Mock(
-                return_value=FlextCore.Result[None].fail("Processing failed"),
+                return_value=FlextResult[None].fail("Processing failed"),
             )
             mock_target_class.return_value = mock_target
 
@@ -231,9 +229,9 @@ class TestMainFunction:
             patch("sys.argv", ["target-oracle-wms"]),
         ):
             mock_cli = MagicMock()
-            mock_cli.execute = Mock(return_value=FlextCore.Result[None].ok(None))
+            mock_cli.execute = Mock(return_value=FlextResult[None].ok(None))
             mock_cli_class.return_value = mock_cli
-            mock_run.return_value = FlextCore.Result[None].ok(None)
+            mock_run.return_value = FlextResult[None].ok(None)
 
             with patch("sys.exit") as mock_exit:
                 main()
@@ -247,9 +245,9 @@ class TestMainFunction:
             patch("sys.argv", ["target-oracle-wms", "--config", "config.json"]),
         ):
             mock_cli = MagicMock()
-            mock_cli.execute = Mock(return_value=FlextCore.Result[None].ok(None))
+            mock_cli.execute = Mock(return_value=FlextResult[None].ok(None))
             mock_cli_class.return_value = mock_cli
-            mock_run.return_value = FlextCore.Result[None].ok(None)
+            mock_run.return_value = FlextResult[None].ok(None)
 
             with patch("sys.exit") as mock_exit:
                 main()
@@ -266,7 +264,7 @@ class TestMainFunction:
         ):
             mock_cli = MagicMock()
             mock_cli_class.return_value = mock_cli
-            mock_run.return_value = FlextCore.Result[None].fail("Execution failed")
+            mock_run.return_value = FlextResult[None].fail("Execution failed")
 
             with patch("sys.exit") as mock_exit:
                 main()
@@ -281,7 +279,7 @@ class TestMainFunction:
         ):
             mock_cli = MagicMock()
             mock_cli_class.return_value = mock_cli
-            mock_run.return_value = FlextCore.Result[None].fail("Execution failed")
+            mock_run.return_value = FlextResult[None].fail("Execution failed")
 
             with patch("sys.exit") as mock_exit:
                 main()
