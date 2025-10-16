@@ -18,7 +18,6 @@ class FlextTargetOracleWmsProtocols:
     # RE-EXPORT FOUNDATION PROTOCOLS (EXPLICIT PATTERN)
     # ============================================================================
 
-
     # ============================================================================
     # SINGER TARGET ORACLE WMS-SPECIFIC PROTOCOLS (DOMAIN NAMESPACE)
     # ============================================================================
