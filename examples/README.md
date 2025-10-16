@@ -6,7 +6,7 @@ This directory contains comprehensive examples demonstrating production-grade us
 
 All examples follow DRY (Don't Repeat Yourself) principles and use REAL implementations from the flext-\* ecosystem:
 
-- **flext-core**: FlextCore.Result, FlextCore.Logger, dependency injection patterns
+- **flext-core**: FlextResult, FlextLogger, dependency injection patterns
 - **flext-observability**: FlextObservabilityMonitor, flext_monitor_function
 - **flext-oracle-wms**: Production Oracle WMS Cloud SaaS integration
 - **Singer SDK**: Real Singer protocol implementation
@@ -30,7 +30,26 @@ Demonstrates fundamental Oracle WMS target usage with real configuration:
 
 ```python
 # DRY: Real flext-* imports
-from flext_core import FlextCore
+from flext_core import FlextBus
+from flext_core import FlextConfig
+from flext_core import FlextConstants
+from flext_core import FlextContainer
+from flext_core import FlextContext
+from flext_core import FlextDecorators
+from flext_core import FlextDispatcher
+from flext_core import FlextExceptions
+from flext_core import FlextHandlers
+from flext_core import FlextLogger
+from flext_core import FlextMixins
+from flext_core import FlextModels
+from flext_core import FlextProcessors
+from flext_core import FlextProtocols
+from flext_core import FlextRegistry
+from flext_core import FlextResult
+from flext_core import FlextRuntime
+from flext_core import FlextService
+from flext_core import FlextTypes
+from flext_core import FlextUtilities
 from flext_observability import flext_monitor_function
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
@@ -69,9 +88,9 @@ Shows sophisticated configuration and custom business logic:
 ```python
 # Custom business type converter
 class CustomWMSTypeConverter(WMSTypeConverter):
-    def convert_singer_to_oracle(self, singer_type: str, value: object) -> FlextCore.Result[object]:
+    def convert_singer_to_oracle(self, singer_type: str, value: object) -> FlextResult[object]:
         if singer_type == "business_currency":
-            return FlextCore.Result[None].ok(round(float(value), 2))
+            return FlextResult[None].ok(round(float(value), 2))
         return super().convert_singer_to_oracle(singer_type, value)
 
 # Advanced configuration
@@ -145,7 +164,7 @@ config = {
 }
 
 # Retry with backoff
-def retry_with_backoff(operation: object, max_retries: int = 3) -> FlextCore.Result[object]:
+def retry_with_backoff(operation: object, max_retries: int = 3) -> FlextResult[object]:
     for attempt in range(max_retries):
         try:
             return operation()

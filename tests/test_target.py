@@ -10,7 +10,7 @@ from __future__ import annotations
 from unittest.mock import Mock, patch
 
 import pytest
-from flext_core import FlextCore
+from flext_core import FlextResult, FlextTypes
 
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
@@ -19,7 +19,7 @@ class TestSingerTargetOracleWMSComprehensive:
     """Comprehensive tests targeting uncovered Singer target functionality."""
 
     @pytest.fixture
-    def oracle_wms_config(self) -> FlextCore.Types.Dict:
+    def oracle_wms_config(self) -> FlextTypes.Dict:
         """Oracle WMS configuration for testing."""
         return {
             "base_url": "https://test.wms.ocs.oraclecloud.com",
@@ -36,7 +36,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_setup_with_oracle_client_failure(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test setup when Oracle WMS client fails to start."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -47,7 +47,7 @@ class TestSingerTargetOracleWMSComprehensive:
             "start",
             new_callable=Mock,
         ) as mock_start:
-            mock_start.return_value = FlextCore.Result[None].fail("Connection failed")
+            mock_start.return_value = FlextResult[None].fail("Connection failed")
 
             result = target.setup()
             assert not result.success
@@ -56,7 +56,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_setup_with_exception(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test setup when unexpected exception occurs."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -76,7 +76,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_schema_message_invalid_type(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test processing message with invalid type."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -94,7 +94,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_schema_message_missing_stream(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test processing SCHEMA message with missing stream."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -112,7 +112,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_schema_message_missing_schema(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test processing SCHEMA message with missing schema."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -130,14 +130,14 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_schema_message_catalog_failure(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test processing SCHEMA message when catalog add fails."""
         target = SingerTargetOracleWMS(oracle_wms_config)
 
         # Mock catalog manager to fail
         with patch.object(target.catalog_manager, "add_stream") as mock_add:
-            mock_add.return_value = FlextCore.Result[None].fail("Catalog add failed")
+            mock_add.return_value = FlextResult[None].fail("Catalog add failed")
 
             schema_message = {
                 "type": "SCHEMA",
@@ -152,14 +152,14 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_schema_message_stream_init_failure(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test processing SCHEMA message when stream initialization fails."""
         target = SingerTargetOracleWMS(oracle_wms_config)
 
         # Mock stream processor to fail
         with patch.object(target.stream_processor, "initialize_stream") as mock_init:
-            mock_init.return_value = FlextCore.Result[None].fail("Stream init failed")
+            mock_init.return_value = FlextResult[None].fail("Stream init failed")
 
             schema_message = {
                 "type": "SCHEMA",
@@ -174,7 +174,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_schema_message_table_creation_failure(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test processing SCHEMA message when table creation fails."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -184,7 +184,7 @@ class TestSingerTargetOracleWMSComprehensive:
             target.table_manager,
             "generate_create_table_sql",
         ) as mock_sql:
-            mock_sql.return_value = FlextCore.Result[None].fail("SQL generation failed")
+            mock_sql.return_value = FlextResult[None].fail("SQL generation failed")
 
             schema_message = {
                 "type": "SCHEMA",
@@ -199,7 +199,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_schema_message_exception_handling(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test SCHEMA message processing exception handling."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -223,7 +223,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_record_message_invalid_type(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test processing message with invalid type for RECORD."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -241,7 +241,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_record_message_missing_fields(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test processing RECORD message with missing required fields."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -270,14 +270,14 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_record_message_stream_processing_failure(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test RECORD processing when stream processing fails."""
         target = SingerTargetOracleWMS(oracle_wms_config)
 
         # Mock stream processor to fail
         with patch.object(target.stream_processor, "process_record") as mock_process:
-            mock_process.return_value = FlextCore.Result[None].fail(
+            mock_process.return_value = FlextResult[None].fail(
                 "Record processing failed",
             )
 
@@ -296,7 +296,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_record_message_insertion_failure(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test RECORD processing when record insertion fails."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -307,7 +307,7 @@ class TestSingerTargetOracleWMSComprehensive:
             "_insert_record",
             new_callable=Mock,
         ) as mock_insert:
-            mock_insert.return_value = FlextCore.Result[None].fail("Insertion failed")
+            mock_insert.return_value = FlextResult[None].fail("Insertion failed")
 
             record_message = {
                 "type": "RECORD",
@@ -325,7 +325,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_state_message_invalid_type(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test processing message with invalid type for STATE."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -342,7 +342,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_state_message_json_serialization_error(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test STATE message processing with JSON serialization error."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -363,7 +363,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_ensure_table_exists_no_client(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test _ensure_table_exists when Oracle client is None."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -383,7 +383,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_ensure_table_exists_exception(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test _ensure_table_exists exception handling."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -405,7 +405,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_insert_record_complex_data_types(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test _insert_record with complex data types."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -427,7 +427,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_insert_record_with_underscores(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test _insert_record with fields containing underscores."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -445,7 +445,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_insert_record_exception_handling(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test _insert_record exception handling."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -466,16 +466,14 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_finalize_with_stream_processor_failure(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test finalize when stream processor stats retrieval fails."""
         target = SingerTargetOracleWMS(oracle_wms_config)
 
         # Mock stream processor to fail stats retrieval
         with patch.object(target.stream_processor, "get_all_stats") as mock_stats:
-            mock_stats.return_value = FlextCore.Result[None].fail(
-                "Stats retrieval failed"
-            )
+            mock_stats.return_value = FlextResult[None].fail("Stats retrieval failed")
 
             result = target.finalize()
             assert not result.success
@@ -484,14 +482,14 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_finalize_with_empty_stats(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test finalize with empty statistics."""
         target = SingerTargetOracleWMS(oracle_wms_config)
 
         # Mock stream processor to return empty stats
         with patch.object(target.stream_processor, "get_all_stats") as mock_stats:
-            mock_stats.return_value = FlextCore.Result[None].ok({})
+            mock_stats.return_value = FlextResult[None].ok({})
 
             result = target.finalize()
             assert result.success
@@ -506,7 +504,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_finalize_exception_handling(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test finalize exception handling."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -522,7 +520,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_cleanup_with_client_stop_failure(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test cleanup when Oracle client stop fails."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -533,7 +531,7 @@ class TestSingerTargetOracleWMSComprehensive:
             "stop",
             new_callable=Mock,
         ) as mock_stop:
-            mock_stop.return_value = FlextCore.Result[None].fail("Stop failed")
+            mock_stop.return_value = FlextResult[None].fail("Stop failed")
 
             result = target.cleanup()
             # Should succeed despite client stop failure (logs warning)
@@ -541,7 +539,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_cleanup_exception_handling(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test cleanup exception handling."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -561,7 +559,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_target_configuration_edge_cases(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test target with various configuration edge cases."""
         # Test with minimal configuration
@@ -592,7 +590,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_complete_workflow_with_errors(
         self,
-        oracle_wms_config: FlextCore.Types.Dict,
+        oracle_wms_config: FlextTypes.Dict,
     ) -> None:
         """Test complete workflow with mixed success and error scenarios."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -610,8 +608,8 @@ class TestSingerTargetOracleWMSComprehensive:
                 new_callable=Mock,
             ) as mock_stop,
         ):
-            mock_start.return_value = FlextCore.Result[None].ok(None)
-            mock_stop.return_value = FlextCore.Result[None].ok(None)
+            mock_start.return_value = FlextResult[None].ok(None)
+            mock_stop.return_value = FlextResult[None].ok(None)
 
             # Setup
             setup_result = target.setup()

@@ -19,7 +19,7 @@ from unittest.mock import Mock, patch
 
 import psutil
 import pytest
-from flext_core import FlextCore
+from flext_core import FlextResult, FlextTypes
 
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
@@ -55,7 +55,7 @@ class LoadTestMetrics:
 
 
 @pytest.fixture
-def production_config() -> FlextCore.Types.Dict:
+def production_config() -> FlextTypes.Dict:
     """Production-grade configuration for testing."""
     return {
         "base_url": "https://production-test.wms.oracle.com",
@@ -76,7 +76,7 @@ def production_config() -> FlextCore.Types.Dict:
 
 @pytest.fixture
 def production_target(
-    production_config: FlextCore.Types.Dict,
+    production_config: FlextTypes.Dict,
 ) -> Generator[SingerTargetOracleWMS]:
     """Production-ready target fixture with full lifecycle."""
     target = SingerTargetOracleWMS(production_config)
@@ -86,9 +86,9 @@ def production_target(
         with patch("flext_oracle_wms.FlextOracleWmsClient") as mock_client:
             mock_instance = Mock()
             mock_client.return_value = mock_instance
-            mock_instance.connect.return_value = FlextCore.Result[None].ok(data=True)
-            mock_instance.disconnect.return_value = FlextCore.Result[None].ok(data=True)
-            mock_instance.execute.return_value = FlextCore.Result[None].ok(
+            mock_instance.connect.return_value = FlextResult[None].ok(data=True)
+            mock_instance.disconnect.return_value = FlextResult[None].ok(data=True)
+            mock_instance.execute.return_value = FlextResult[None].ok(
                 {"rows_affected": 1},
             )
 
@@ -193,7 +193,7 @@ class TestProductionLoadTesting:
             for result in batch_results:
                 if isinstance(result, Exception):
                     errors += 1
-                elif isinstance(result, FlextCore.Result) and result.success:
+                elif isinstance(result, FlextResult) and result.success:
                     records_processed += 1
                 else:
                     errors += 1
@@ -301,7 +301,7 @@ class TestProductionLoadTesting:
             for result in results:
                 if isinstance(result, Exception):
                     errors += 1
-                elif isinstance(result, FlextCore.Result) and result.success:
+                elif isinstance(result, FlextResult) and result.success:
                     processed += 1
                 else:
                     errors += 1
@@ -371,7 +371,7 @@ class TestProductionLoadTesting:
         production_target.process_schema_message(schema_message)
 
         # Test scenarios with various error conditions
-        test_scenarios: list[FlextCore.Types.Dict] = [
+        test_scenarios: list[FlextTypes.Dict] = [
             # Scenario 1: Intermittent network failures
             {
                 "name": "intermittent_failures",
@@ -444,7 +444,7 @@ class TestProductionLoadTesting:
                     with patch.object(
                         production_target,
                         "process_record_message",
-                        return_value=FlextCore.Result[None].fail("Simulated failure"),
+                        return_value=FlextResult[None].fail("Simulated failure"),
                     ):
                         result = production_target.process_record_message(
                             record_message,
@@ -640,7 +640,7 @@ class TestProductionDataIntegrity:
             },
         ]
 
-        processed_orders: list[FlextCore.Types.Dict] = []
+        processed_orders: list[FlextTypes.Dict] = []
         for order_data in test_orders:
             record_message = {
                 "type": "RECORD",
@@ -1075,7 +1075,7 @@ class TestProductionEdgeCases:
                 with patch.object(
                     temp_target,
                     "setup",
-                    return_value=FlextCore.Result[None].ok(data=True),
+                    return_value=FlextResult[None].ok(data=True),
                 ):
                     setup_result = temp_target.setup()
                     return setup_result.success

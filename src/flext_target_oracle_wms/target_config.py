@@ -15,7 +15,14 @@ from datetime import datetime
 from pathlib import Path
 from typing import ClassVar, Self
 
-from flext_core import FlextCore
+from flext_core import (
+    FlextConfig,
+    FlextConstants,
+    FlextLogger,
+    FlextModels,
+    FlextResult,
+    FlextTypes,
+)
 from flext_oracle_wms import FlextOracleWmsApiVersion, FlextOracleWmsClientConfig
 from pydantic import (
     Field,
@@ -28,11 +35,11 @@ from pydantic import (
 
 from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants
 
-logger = FlextCore.Logger(__name__)
+logger = FlextLogger(__name__)
 
 
-class FlextTargetOracleWmsConfig(FlextCore.Config):
-    """Enhanced Oracle WMS Target Configuration extending FlextCore.Config.
+class FlextTargetOracleWmsConfig(FlextConfig):
+    """Enhanced Oracle WMS Target Configuration extending FlextConfig.
 
     Provides comprehensive configuration for Oracle WMS target operations
     with automatic validation, type safety, and enhanced Pydantic 2.11 features.
@@ -89,7 +96,7 @@ class FlextTargetOracleWmsConfig(FlextCore.Config):
         max_length=128,
     )
     environment: str = Field(
-        default=FlextCore.Constants.Defaults.ENVIRONMENT,
+        default=FlextConstants.Defaults.ENVIRONMENT,
         description="Environment identifier",
         examples=["development", "staging", "production"],
         min_length=1,
@@ -98,13 +105,13 @@ class FlextTargetOracleWmsConfig(FlextCore.Config):
 
     # Enhanced Connection Settings
     timeout: float = Field(
-        default=FlextCore.Constants.Network.DEFAULT_TIMEOUT,
+        default=FlextConstants.Network.DEFAULT_TIMEOUT,
         description="Request timeout in seconds",
         gt=0,
         le=3600,
     )
     max_retries: int = Field(
-        default=FlextCore.Constants.Reliability.MAX_RETRY_ATTEMPTS,
+        default=FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
         description="Maximum retry attempts",
         ge=0,
         le=10,
@@ -118,13 +125,13 @@ class FlextTargetOracleWmsConfig(FlextCore.Config):
         description="Enable request/response logging",
     )
     connection_pool_size: int = Field(
-        default=FlextCore.Constants.Performance.DEFAULT_DB_POOL_SIZE,
+        default=FlextConstants.Performance.DEFAULT_DB_POOL_SIZE,
         description="Connection pool size",
         ge=1,
         le=100,
     )
     connection_pool_max: int = Field(
-        default=FlextCore.Constants.Performance.MAX_DB_POOL_SIZE,
+        default=FlextConstants.Performance.MAX_DB_POOL_SIZE,
         description="Maximum connection pool size",
         ge=1,
         le=100,
@@ -132,7 +139,7 @@ class FlextTargetOracleWmsConfig(FlextCore.Config):
 
     # Enhanced Target Settings
     batch_size: int = Field(
-        default=FlextCore.Constants.Performance.DEFAULT_BATCH_SIZE,
+        default=FlextConstants.Performance.DEFAULT_BATCH_SIZE,
         description="Batch size for record processing",
         gt=0,
         le=100000,
@@ -204,7 +211,7 @@ class FlextTargetOracleWmsConfig(FlextCore.Config):
         description="Enable parallel processing",
     )
     max_workers: int = Field(
-        default=FlextCore.Constants.Container.MAX_WORKERS,
+        default=FlextConstants.Container.MAX_WORKERS,
         description="Maximum number of worker threads",
         ge=1,
         le=32,
@@ -246,11 +253,11 @@ class FlextTargetOracleWmsConfig(FlextCore.Config):
     @field_validator("base_url")
     @classmethod
     def validate_base_url(cls, v: str) -> str:
-        """Enhanced base URL validation using centralized FlextCore.Models validation."""
+        """Enhanced base URL validation using centralized FlextModels validation."""
         stripped_url = v.rstrip("/")  # Remove trailing slash
 
-        # Use centralized FlextCore.Models validation
-        validation_result = FlextCore.Models.create_validated_http_url(stripped_url)
+        # Use centralized FlextModels validation
+        validation_result = FlextModels.create_validated_http_url(stripped_url)
         if validation_result.is_failure:
             error_msg = f"Invalid base URL: {validation_result.error}"
             raise ValueError(error_msg)
@@ -262,7 +269,7 @@ class FlextTargetOracleWmsConfig(FlextCore.Config):
     def validate_environment(cls, v: str) -> str:
         """Validate environment against allowed values."""
         valid_environments = [
-            e.value for e in FlextCore.Constants.Environment.ConfigEnvironment
+            e.value for e in FlextConstants.Environment.ConfigEnvironment
         ]
         if v.lower() not in [env.lower() for env in valid_environments]:
             msg = f"Invalid environment: {v}. Valid environments: {valid_environments}"
@@ -358,7 +365,7 @@ class FlextTargetOracleWmsConfig(FlextCore.Config):
         return self.memory_limit_mb * 1024 * 1024
 
     # Enhanced preset configurations
-    PRESETS: ClassVar[FlextCore.Types.NestedDict] = {
+    PRESETS: ClassVar[FlextTypes.NestedDict] = {
         "development": {
             "batch_size": 100,
             "table_prefix": "DEV_",
@@ -428,7 +435,7 @@ class FlextTargetOracleWmsConfig(FlextCore.Config):
     def to_oracle_wms_config(self) -> FlextOracleWmsClientConfig:
         """Convert to flext-oracle-wms client configuration."""
         # Map string environment to proper literal type
-        env_mapping: FlextCore.Types.StringDict = {
+        env_mapping: FlextTypes.StringDict = {
             "development": "development",
             "production": "production",
             "staging": "staging",
@@ -452,16 +459,16 @@ class FlextTargetOracleWmsConfig(FlextCore.Config):
             oracle_wms_enable_logging=self.enable_logging,
         )
 
-    def validate_business_rules(self) -> FlextCore.Result[None]:
+    def validate_business_rules(self) -> FlextResult[None]:
         """Enhanced Oracle WMS configuration business rules validation."""
         try:
             # Validate timeout values
             if self.timeout <= 0:
-                return FlextCore.Result[None].fail("Timeout must be positive")
+                return FlextResult[None].fail("Timeout must be positive")
 
             # Validate batch size
             if self.batch_size <= 0:
-                return FlextCore.Result[None].fail("Batch size must be positive")
+                return FlextResult[None].fail("Batch size must be positive")
 
             # Validate load method
             valid_methods = {
@@ -472,34 +479,32 @@ class FlextTargetOracleWmsConfig(FlextCore.Config):
                 "TRUNCATE_INSERT",
             }
             if self.load_method.upper() not in valid_methods:
-                return FlextCore.Result[None].fail(
+                return FlextResult[None].fail(
                     f"Invalid load_method: {self.load_method}"
                 )
 
             # Validate credentials are provided
             if not self.username.strip():
-                return FlextCore.Result[None].fail("Username cannot be empty")
+                return FlextResult[None].fail("Username cannot be empty")
             if not self.password.strip():
-                return FlextCore.Result[None].fail("Password cannot be empty")
+                return FlextResult[None].fail("Password cannot be empty")
 
             # Validate plugin settings
             if self.enable_plugins and not Path(self.plugin_directory).exists():
-                return FlextCore.Result[None].fail(
+                return FlextResult[None].fail(
                     f"Plugin directory does not exist: {self.plugin_directory}"
                 )
 
-            return FlextCore.Result[None].ok(None)
+            return FlextResult[None].ok(None)
         except Exception as e:
-            return FlextCore.Result[None].fail(f"Configuration validation failed: {e}")
+            return FlextResult[None].fail(f"Configuration validation failed: {e}")
 
-    def apply_preset(
-        self, preset_name: str
-    ) -> FlextCore.Result[FlextTargetOracleWmsConfig]:
+    def apply_preset(self, preset_name: str) -> FlextResult[FlextTargetOracleWmsConfig]:
         """Enhanced configuration preset application."""
         try:
             if preset_name not in self.PRESETS:
                 available = list(self.PRESETS.keys())
-                return FlextCore.Result[FlextTargetOracleWmsConfig].fail(
+                return FlextResult[FlextTargetOracleWmsConfig].fail(
                     f"Unknown preset '{preset_name}'. Available: {available}"
                 )
 
@@ -509,14 +514,14 @@ class FlextTargetOracleWmsConfig(FlextCore.Config):
 
             updated_config = self.__class__(**updated_data)
             logger.info(f"Applied configuration preset: {preset_name}")
-            return FlextCore.Result[FlextTargetOracleWmsConfig].ok(updated_config)
+            return FlextResult[FlextTargetOracleWmsConfig].ok(updated_config)
 
         except Exception as e:
-            return FlextCore.Result[FlextTargetOracleWmsConfig].fail(
+            return FlextResult[FlextTargetOracleWmsConfig].fail(
                 f"Failed to apply preset {preset_name}: {e}"
             )
 
-    def get_config_summary(self) -> FlextCore.Types.Dict:
+    def get_config_summary(self) -> FlextTypes.Dict:
         """Get comprehensive configuration summary."""
         return {
             "connection": {
@@ -563,13 +568,13 @@ class FlextTargetOracleWmsConfig(FlextCore.Config):
 
     @classmethod
     def get_global_instance(cls) -> Self:
-        """Get the global singleton instance using enhanced FlextCore.Config pattern."""
+        """Get the global singleton instance using enhanced FlextConfig pattern."""
         return cls.get_or_create_shared_instance(project_name="flext-target-oracle-wms")
 
     @classmethod
     def create_for_development(cls, **overrides: object) -> Self:
         """Create configuration for development environment."""
-        dev_overrides: FlextCore.Types.Dict = {
+        dev_overrides: FlextTypes.Dict = {
             "batch_size": 100,
             "table_prefix": "DEV_",
             "default_target_schema": "WMS_DEV",
@@ -587,7 +592,7 @@ class FlextTargetOracleWmsConfig(FlextCore.Config):
     @classmethod
     def create_for_production(cls, **overrides: object) -> Self:
         """Create configuration for production environment."""
-        prod_overrides: FlextCore.Types.Dict = {
+        prod_overrides: FlextTypes.Dict = {
             "batch_size": 1000,
             "table_prefix": "PROD_",
             "default_target_schema": "WMS_PRODUCTION",
@@ -607,7 +612,7 @@ class FlextTargetOracleWmsConfig(FlextCore.Config):
     @classmethod
     def create_for_testing(cls, **overrides: object) -> Self:
         """Create configuration for testing environment."""
-        test_overrides: FlextCore.Types.Dict = {
+        test_overrides: FlextTypes.Dict = {
             "batch_size": 10,
             "table_prefix": "TEST_",
             "default_target_schema": "WMS_TEST",
@@ -626,36 +631,34 @@ class FlextTargetOracleWmsConfig(FlextCore.Config):
 
 
 def create_config_from_dict(
-    config_dict: FlextCore.Types.Dict,
-) -> FlextCore.Result[FlextTargetOracleWmsConfig]:
+    config_dict: FlextTypes.Dict,
+) -> FlextResult[FlextTargetOracleWmsConfig]:
     """Create configuration from dictionary with validation.
 
     Args:
       config_dict: Raw configuration dictionary
 
     Returns:
-      FlextCore.Result containing validated configuration or error
+      FlextResult containing validated configuration or error
 
     """
     try:
         # Use model_validate for proper type conversion from dict
-        config: FlextCore.Types.Dict = FlextTargetOracleWmsConfig.model_validate(
-            config_dict
-        )
+        config: FlextTypes.Dict = FlextTargetOracleWmsConfig.model_validate(config_dict)
         logger.debug("Configuration created and validated successfully")
-        return FlextCore.Result["FlextTargetOracleWmsConfig"].ok(config)
+        return FlextResult["FlextTargetOracleWmsConfig"].ok(config)
 
     except Exception as e:
         logger.exception("Configuration validation failed")
-        return FlextCore.Result["FlextTargetOracleWmsConfig"].fail(
+        return FlextResult["FlextTargetOracleWmsConfig"].fail(
             f"Invalid configuration: {e}"
         )
 
 
 def create_config_with_preset(
-    base_config: FlextCore.Types.Dict,
+    base_config: FlextTypes.Dict,
     preset_name: str,
-) -> FlextCore.Result[FlextTargetOracleWmsConfig]:
+) -> FlextResult[FlextTargetOracleWmsConfig]:
     """Create configuration with preset applied.
 
     Args:
@@ -663,18 +666,18 @@ def create_config_with_preset(
       preset_name: Name of preset to apply
 
     Returns:
-      FlextCore.Result containing configured instance or error
+      FlextResult containing configured instance or error
 
     """
     try:
         # Create base configuration
-        config_result: FlextCore.Result[object] = create_config_from_dict(base_config)
+        config_result: FlextResult[object] = create_config_from_dict(base_config)
         if not config_result.success:
             return config_result
 
-        config: FlextCore.Types.Dict = config_result.data
+        config: FlextTypes.Dict = config_result.data
         if config is None:
-            return FlextCore.Result["FlextTargetOracleWmsConfig"].fail(
+            return FlextResult["FlextTargetOracleWmsConfig"].fail(
                 "Configuration creation returned None",
             )
 
@@ -682,7 +685,7 @@ def create_config_with_preset(
         return config.apply_preset(preset_name)
 
     except Exception as e:
-        return FlextCore.Result["FlextTargetOracleWmsConfig"].fail(
+        return FlextResult["FlextTargetOracleWmsConfig"].fail(
             f"Failed to create config with preset: {e}",
         )
 

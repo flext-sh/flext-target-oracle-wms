@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from unittest.mock import Mock, patch
 
-from flext_core import FlextCore
+from flext_core import FlextResult
 
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
@@ -185,8 +185,8 @@ class TestSingerTargetComponents:
                 new_callable=Mock,
             ) as mock_stop,
         ):
-            mock_start.return_value = FlextCore.Result[None].ok(None)
-            mock_stop.return_value = FlextCore.Result[None].ok(None)
+            mock_start.return_value = FlextResult[None].ok(None)
+            mock_stop.return_value = FlextResult[None].ok(None)
 
             # Test setup
             setup_result = target.setup()

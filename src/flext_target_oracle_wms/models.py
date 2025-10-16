@@ -10,7 +10,7 @@ import re
 from datetime import UTC, datetime
 from typing import Literal
 
-from flext_core import FlextCore
+from flext_core import FlextModels, FlextResult, FlextTypes
 from pydantic import Field, SecretStr
 
 from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants
@@ -28,15 +28,15 @@ PERFORMANCE = "PERFORMANCE"
 CONFIGURATION = "CONFIGURATION"
 
 
-class FlextTargetOracleWmsModels(FlextCore.Models):
-    """Oracle WMS target models extending flext-core FlextCore.Models.
+class FlextTargetOracleWmsModels(FlextModels):
+    """Oracle WMS target models extending flext-core FlextModels.
 
     Provides comprehensive models for Oracle Warehouse Management System data loading,
     Singer protocol compliance, WMS business rule validation, and target operations
     following standardized patterns.
     """
 
-    class WmsAuthenticationConfig(FlextCore.Models.BaseConfig):
+    class WmsAuthenticationConfig(FlextModels.BaseConfig):
         """Oracle WMS authentication configuration with comprehensive auth support."""
 
         base_url: str = Field(..., description="Oracle WMS base URL")
@@ -82,7 +82,7 @@ class FlextTargetOracleWmsModels(FlextCore.Models):
             default=2, ge=1, le=30, description="Retry delay seconds"
         )
 
-    class WmsInventoryItem(FlextCore.Models.Entity):
+    class WmsInventoryItem(FlextModels.Entity):
         """Oracle WMS inventory item model with business validation."""
 
         item_id: str = Field(
@@ -113,7 +113,7 @@ class FlextTargetOracleWmsModels(FlextCore.Models):
             default=False, description="Serial control enabled"
         )
 
-        def validate_business_rules(self) -> FlextCore.Result[None]:
+        def validate_business_rules(self) -> FlextResult[None]:
             """Validate WMS inventory item business rules."""
             try:
                 errors = []
@@ -145,14 +145,14 @@ class FlextTargetOracleWmsModels(FlextCore.Models):
                     )
 
                 if errors:
-                    return FlextCore.Result[None].fail("; ".join(errors))
-                return FlextCore.Result[None].ok(None)
+                    return FlextResult[None].fail("; ".join(errors))
+                return FlextResult[None].ok(None)
             except Exception as e:
-                return FlextCore.Result[None].fail(
+                return FlextResult[None].fail(
                     f"WMS inventory item validation failed: {e}"
                 )
 
-    class WmsInventoryLocation(FlextCore.Models.Entity):
+    class WmsInventoryLocation(FlextModels.Entity):
         """Oracle WMS inventory location model with warehouse validation."""
 
         location_id: str = Field(
@@ -185,7 +185,7 @@ class FlextTargetOracleWmsModels(FlextCore.Models):
             default=True, description="Location receivable status"
         )
 
-        def validate_business_rules(self) -> FlextCore.Result[None]:
+        def validate_business_rules(self) -> FlextResult[None]:
             """Validate WMS inventory location business rules."""
             try:
                 errors = []
@@ -224,14 +224,14 @@ class FlextTargetOracleWmsModels(FlextCore.Models):
                     errors.append("Maximum weight must be positive")
 
                 if errors:
-                    return FlextCore.Result[None].fail("; ".join(errors))
-                return FlextCore.Result[None].ok(None)
+                    return FlextResult[None].fail("; ".join(errors))
+                return FlextResult[None].ok(None)
             except Exception as e:
-                return FlextCore.Result[None].fail(
+                return FlextResult[None].fail(
                     f"WMS inventory location validation failed: {e}"
                 )
 
-    class WmsInventoryTransaction(FlextCore.Models.Entity):
+    class WmsInventoryTransaction(FlextModels.Entity):
         """Oracle WMS inventory transaction model with audit trail."""
 
         transaction_id: str = Field(
@@ -271,7 +271,7 @@ class FlextTargetOracleWmsModels(FlextCore.Models):
             None, description="User performing transaction", max_length=50
         )
 
-        def validate_business_rules(self) -> FlextCore.Result[None]:
+        def validate_business_rules(self) -> FlextResult[None]:
             """Validate WMS inventory transaction business rules."""
             try:
                 errors = []
@@ -319,14 +319,14 @@ class FlextTargetOracleWmsModels(FlextCore.Models):
                     )
 
                 if errors:
-                    return FlextCore.Result[None].fail("; ".join(errors))
-                return FlextCore.Result[None].ok(None)
+                    return FlextResult[None].fail("; ".join(errors))
+                return FlextResult[None].ok(None)
             except Exception as e:
-                return FlextCore.Result[None].fail(
+                return FlextResult[None].fail(
                     f"WMS inventory transaction validation failed: {e}"
                 )
 
-    class WmsShipment(FlextCore.Models.Entity):
+    class WmsShipment(FlextModels.Entity):
         """Oracle WMS shipment model with carrier and tracking."""
 
         shipment_id: str = Field(
@@ -375,7 +375,7 @@ class FlextTargetOracleWmsModels(FlextCore.Models):
             default="OPEN", description="Shipment status", max_length=20
         )
 
-        def validate_business_rules(self) -> FlextCore.Result[None]:
+        def validate_business_rules(self) -> FlextResult[None]:
             """Validate WMS shipment business rules."""
             try:
                 errors = []
@@ -438,14 +438,12 @@ class FlextTargetOracleWmsModels(FlextCore.Models):
                     )
 
                 if errors:
-                    return FlextCore.Result[None].fail("; ".join(errors))
-                return FlextCore.Result[None].ok(None)
+                    return FlextResult[None].fail("; ".join(errors))
+                return FlextResult[None].ok(None)
             except Exception as e:
-                return FlextCore.Result[None].fail(
-                    f"WMS shipment validation failed: {e}"
-                )
+                return FlextResult[None].fail(f"WMS shipment validation failed: {e}")
 
-    class WmsTargetConfig(FlextCore.Models.BaseConfig):
+    class WmsTargetConfig(FlextModels.BaseConfig):
         """Oracle WMS target configuration for Singer protocol."""
 
         # WMS connection configuration
@@ -454,7 +452,7 @@ class FlextTargetOracleWmsModels(FlextCore.Models):
         )
 
         # Singer target configuration
-        stream_maps: dict[str, FlextCore.Types.StringDict] = Field(
+        stream_maps: dict[str, FlextTypes.StringDict] = Field(
             default_factory=dict, description="Stream to WMS entity mappings"
         )
 
@@ -491,7 +489,7 @@ class FlextTargetOracleWmsModels(FlextCore.Models):
             default=True, description="Enable audit logging"
         )
 
-    class WmsTargetResult(FlextCore.Models.Entity):
+    class WmsTargetResult(FlextModels.Entity):
         """Oracle WMS target operation result with comprehensive metrics."""
 
         # Processing summary
@@ -515,10 +513,10 @@ class FlextTargetOracleWmsModels(FlextCore.Models):
         )
 
         # Error tracking
-        error_messages: FlextCore.Types.StringList = Field(
+        error_messages: FlextTypes.StringList = Field(
             default_factory=list, description="Error messages"
         )
-        warning_messages: FlextCore.Types.StringList = Field(
+        warning_messages: FlextTypes.StringList = Field(
             default_factory=list, description="Warning messages"
         )
 
@@ -526,11 +524,11 @@ class FlextTargetOracleWmsModels(FlextCore.Models):
         wms_operations_executed: dict[str, int] = Field(
             default_factory=dict, description="WMS operations executed by type"
         )
-        business_rule_violations: FlextCore.Types.StringList = Field(
+        business_rule_violations: FlextTypes.StringList = Field(
             default_factory=list, description="Business rule violations"
         )
 
-        def validate_business_rules(self) -> FlextCore.Result[None]:
+        def validate_business_rules(self) -> FlextResult[None]:
             """Validate WMS target result business rules."""
             try:
                 # Validate record counts
@@ -538,7 +536,7 @@ class FlextTargetOracleWmsModels(FlextCore.Models):
                     self.successful_records + self.failed_records
                     != self.total_records_processed
                 ):
-                    return FlextCore.Result[None].fail(
+                    return FlextResult[None].fail(
                         "Sum of successful and failed records must equal total processed"
                     )
 
@@ -551,13 +549,13 @@ class FlextTargetOracleWmsModels(FlextCore.Models):
                         abs(self.average_processing_time_ms - expected_avg)
                         > FlextTargetOracleWmsConstants.OracleWms.PROCESSING_TIME_TOLERANCE
                     ):
-                        return FlextCore.Result[None].fail(
+                        return FlextResult[None].fail(
                             "Average processing time inconsistent with total duration"
                         )
 
-                return FlextCore.Result[None].ok(None)
+                return FlextResult[None].ok(None)
             except Exception as e:
-                return FlextCore.Result[None].fail(
+                return FlextResult[None].fail(
                     f"WMS target result validation failed: {e}"
                 )
 
@@ -575,7 +573,7 @@ class FlextTargetOracleWmsModels(FlextCore.Models):
                 return 0.0
             return (self.failed_records / self.total_records_processed) * 100.0
 
-    class WmsErrorContext(FlextCore.Models.BaseModel):
+    class WmsErrorContext(FlextModels.BaseModel):
         """Error context for WMS target error handling."""
 
         error_type: Literal[
@@ -602,7 +600,7 @@ class FlextTargetOracleWmsModels(FlextCore.Models):
         business_rule_violated: str | None = Field(
             None, description="Business rule violated"
         )
-        validation_failures: FlextCore.Types.StringList = Field(
+        validation_failures: FlextTypes.StringList = Field(
             default_factory=list, description="Validation failure details"
         )
 

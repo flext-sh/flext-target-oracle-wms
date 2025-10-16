@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import time
 
-from flext_core import FlextCore
+from flext_core import FlextLogger, FlextTypes
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 from flext_target_oracle_wms import (
@@ -26,11 +26,11 @@ from flext_target_oracle_wms import (
 # Constants
 MAX_ERROR_LOGS = 5  # Maximum number of errors to log per batch
 
-logger = FlextCore.Logger(__name__)
+logger = FlextLogger(__name__)
 monitor = FlextObservabilityMonitor()
 
 
-def generate_test_data(num_records: int) -> list[FlextCore.Types.Dict]:
+def generate_test_data(num_records: int) -> list[FlextTypes.Dict]:
     """Generate test data for batch processing demonstration."""
     logger.info(f"Generating {num_records} test records")
 
@@ -55,7 +55,7 @@ def generate_test_data(num_records: int) -> list[FlextCore.Types.Dict]:
     return records
 
 
-def _create_batch_config() -> FlextCore.Types.Dict:
+def _create_batch_config() -> FlextTypes.Dict:
     """Create optimized configuration for batch processing."""
     return {
         "base_url": "https://batch.wms.oracle.com",
@@ -80,7 +80,7 @@ def _create_batch_config() -> FlextCore.Types.Dict:
     }
 
 
-def _create_batch_schema() -> FlextCore.Types.Dict:
+def _create_batch_schema() -> FlextTypes.Dict:
     """Create optimized schema for batch processing."""
     return {
         "type": "SCHEMA",
