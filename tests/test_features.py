@@ -19,7 +19,7 @@ from unittest.mock import Mock, patch
 
 import psutil
 import pytest
-from flext_core import FlextResult, FlextTypes
+from flext_core import FlextResult
 
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
@@ -55,7 +55,7 @@ class LoadTestMetrics:
 
 
 @pytest.fixture
-def production_config() -> FlextTypes.Dict:
+def production_config() -> dict[str, object]:
     """Production-grade configuration for testing."""
     return {
         "base_url": "https://production-test.wms.oracle.com",
@@ -76,7 +76,7 @@ def production_config() -> FlextTypes.Dict:
 
 @pytest.fixture
 def production_target(
-    production_config: FlextTypes.Dict,
+    production_config: dict[str, object],
 ) -> Generator[SingerTargetOracleWMS]:
     """Production-ready target fixture with full lifecycle."""
     target = SingerTargetOracleWMS(production_config)
@@ -371,7 +371,7 @@ class TestProductionLoadTesting:
         production_target.process_schema_message(schema_message)
 
         # Test scenarios with various error conditions
-        test_scenarios: list[FlextTypes.Dict] = [
+        test_scenarios: list[dict[str, object]] = [
             # Scenario 1: Intermittent network failures
             {
                 "name": "intermittent_failures",
@@ -640,7 +640,7 @@ class TestProductionDataIntegrity:
             },
         ]
 
-        processed_orders: list[FlextTypes.Dict] = []
+        processed_orders: list[dict[str, object]] = []
         for order_data in test_orders:
             record_message = {
                 "type": "RECORD",

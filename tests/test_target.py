@@ -10,7 +10,7 @@ from __future__ import annotations
 from unittest.mock import Mock, patch
 
 import pytest
-from flext_core import FlextResult, FlextTypes
+from flext_core import FlextResult
 
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
@@ -19,7 +19,7 @@ class TestSingerTargetOracleWMSComprehensive:
     """Comprehensive tests targeting uncovered Singer target functionality."""
 
     @pytest.fixture
-    def oracle_wms_config(self) -> FlextTypes.Dict:
+    def oracle_wms_config(self) -> dict[str, object]:
         """Oracle WMS configuration for testing."""
         return {
             "base_url": "https://test.wms.ocs.oraclecloud.com",
@@ -36,7 +36,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_setup_with_oracle_client_failure(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test setup when Oracle WMS client fails to start."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -56,7 +56,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_setup_with_exception(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test setup when unexpected exception occurs."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -76,7 +76,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_schema_message_invalid_type(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test processing message with invalid type."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -94,7 +94,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_schema_message_missing_stream(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test processing SCHEMA message with missing stream."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -112,7 +112,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_schema_message_missing_schema(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test processing SCHEMA message with missing schema."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -130,7 +130,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_schema_message_catalog_failure(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test processing SCHEMA message when catalog add fails."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -152,7 +152,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_schema_message_stream_init_failure(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test processing SCHEMA message when stream initialization fails."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -174,7 +174,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_schema_message_table_creation_failure(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test processing SCHEMA message when table creation fails."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -199,7 +199,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_schema_message_exception_handling(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test SCHEMA message processing exception handling."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -223,7 +223,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_record_message_invalid_type(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test processing message with invalid type for RECORD."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -241,7 +241,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_record_message_missing_fields(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test processing RECORD message with missing required fields."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -270,7 +270,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_record_message_stream_processing_failure(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test RECORD processing when stream processing fails."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -296,7 +296,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_record_message_insertion_failure(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test RECORD processing when record insertion fails."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -325,7 +325,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_state_message_invalid_type(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test processing message with invalid type for STATE."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -342,7 +342,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_process_state_message_json_serialization_error(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test STATE message processing with JSON serialization error."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -363,7 +363,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_ensure_table_exists_no_client(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test _ensure_table_exists when Oracle client is None."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -383,7 +383,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_ensure_table_exists_exception(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test _ensure_table_exists exception handling."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -405,7 +405,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_insert_record_complex_data_types(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test _insert_record with complex data types."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -427,7 +427,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_insert_record_with_underscores(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test _insert_record with fields containing underscores."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -445,7 +445,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_insert_record_exception_handling(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test _insert_record exception handling."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -466,7 +466,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_finalize_with_stream_processor_failure(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test finalize when stream processor stats retrieval fails."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -482,7 +482,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_finalize_with_empty_stats(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test finalize with empty statistics."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -504,7 +504,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_finalize_exception_handling(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test finalize exception handling."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -520,7 +520,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_cleanup_with_client_stop_failure(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test cleanup when Oracle client stop fails."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -539,7 +539,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_cleanup_exception_handling(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test cleanup exception handling."""
         target = SingerTargetOracleWMS(oracle_wms_config)
@@ -559,7 +559,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_target_configuration_edge_cases(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test target with various configuration edge cases."""
         # Test with minimal configuration
@@ -590,7 +590,7 @@ class TestSingerTargetOracleWMSComprehensive:
 
     def test_complete_workflow_with_errors(
         self,
-        oracle_wms_config: FlextTypes.Dict,
+        oracle_wms_config: dict[str, object],
     ) -> None:
         """Test complete workflow with mixed success and error scenarios."""
         target = SingerTargetOracleWMS(oracle_wms_config)

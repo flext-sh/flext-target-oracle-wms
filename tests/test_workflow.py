@@ -17,7 +17,6 @@ import json
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
-from flext_core import FlextTypes
 
 # Import the modules to be tested - REAL imports
 from flext_target_oracle_wms import OracleWMSTargetCli, SingerTargetOracleWMS, main
@@ -174,7 +173,7 @@ class TestComprehensiveTargetCoverage:
     """Comprehensive target tests to achieve 100% coverage."""
 
     @pytest.fixture
-    def target_config(self) -> FlextTypes.StringDict:
+    def target_config(self) -> dict[str, str]:
         """Production target configuration."""
         return {
             "base_url": "https://test.wms.oracle.com",
@@ -188,7 +187,7 @@ class TestComprehensiveTargetCoverage:
 
     def test_target_initialization_comprehensive(
         self,
-        target_config: FlextTypes.StringDict,
+        target_config: dict[str, str],
     ) -> None:
         """Test target initialization with all configuration options."""
         # Test with plugin system enabled
@@ -216,7 +215,7 @@ class TestComprehensiveTargetCoverage:
 
     def test_target_setup_failure_scenarios(
         self,
-        target_config: FlextTypes.StringDict,
+        target_config: dict[str, str],
     ) -> None:
         """Test target setup with various failure scenarios."""
         # Test setup with Oracle client start failure
@@ -249,7 +248,7 @@ class TestComprehensiveTargetCoverage:
 
     def test_target_message_processing_edge_cases(
         self,
-        target_config: FlextTypes.StringDict,
+        target_config: dict[str, str],
     ) -> None:
         """Test message processing edge cases and error paths."""
         with patch("flext_oracle_wms.FlextOracleWmsClient"):
@@ -282,7 +281,7 @@ class TestComprehensiveTargetCoverage:
 
     def test_target_table_management_coverage(
         self,
-        target_config: FlextTypes.StringDict,
+        target_config: dict[str, str],
     ) -> None:
         """Test table management methods for full coverage."""
         with patch("flext_oracle_wms.FlextOracleWmsClient") as mock_client_class:
@@ -323,7 +322,7 @@ class TestComprehensiveTargetCoverage:
 
     def test_target_record_insertion_comprehensive(
         self,
-        target_config: FlextTypes.StringDict,
+        target_config: dict[str, str],
     ) -> None:
         """Test record insertion with comprehensive data types."""
         with patch("flext_oracle_wms.FlextOracleWmsClient"):
@@ -348,7 +347,7 @@ class TestComprehensiveTargetCoverage:
 
     def test_target_cleanup_scenarios(
         self,
-        target_config: FlextTypes.StringDict,
+        target_config: dict[str, str],
     ) -> None:
         """Test cleanup with various scenarios."""
         with patch("flext_oracle_wms.FlextOracleWmsClient") as mock_client_class:
@@ -368,7 +367,7 @@ class TestComprehensiveTargetCoverage:
 
     def test_target_finalize_comprehensive(
         self,
-        target_config: FlextTypes.StringDict,
+        target_config: dict[str, str],
     ) -> None:
         """Test finalize method with comprehensive statistics."""
         with patch("flext_oracle_wms.FlextOracleWmsClient"):

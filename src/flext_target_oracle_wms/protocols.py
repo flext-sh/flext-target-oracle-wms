@@ -2,7 +2,7 @@
 
 from typing import Protocol, runtime_checkable
 
-from flext_core import FlextProtocols, FlextResult, FlextTypes
+from flext_core import FlextProtocols, FlextResult
 
 
 class FlextTargetOracleWmsProtocols:
@@ -30,7 +30,7 @@ class FlextTargetOracleWmsProtocols:
             """Protocol for WMS data loading."""
 
             def load_data(
-                self, records: list[FlextTypes.Dict]
+                self, records: list[dict[str, object]]
             ) -> FlextResult[None]: ...
 
         @runtime_checkable
@@ -38,7 +38,7 @@ class FlextTargetOracleWmsProtocols:
             """Protocol for WMS warehouse operations."""
 
             def execute_operation(
-                self, operation: FlextTypes.Dict
+                self, operation: dict[str, object]
             ) -> FlextResult[None]: ...
 
         @runtime_checkable
@@ -46,38 +46,40 @@ class FlextTargetOracleWmsProtocols:
             """Protocol for Singer to WMS transformation."""
 
             def transform_to_wms(
-                self, record: FlextTypes.Dict
-            ) -> FlextResult[FlextTypes.Dict]: ...
+                self, record: dict[str, object]
+            ) -> FlextResult[dict[str, object]]: ...
 
         @runtime_checkable
         class WmsApiProtocol(FlextProtocols.Service, Protocol):
             """Protocol for WMS API operations."""
 
             def invoke_api(
-                self, endpoint: str, payload: FlextTypes.Dict
-            ) -> FlextResult[FlextTypes.Dict]: ...
+                self, endpoint: str, payload: dict[str, object]
+            ) -> FlextResult[dict[str, object]]: ...
 
         @runtime_checkable
         class BatchProcessingProtocol(FlextProtocols.Service, Protocol):
             """Protocol for WMS batch processing."""
 
             def process_batch(
-                self, records: list[FlextTypes.Dict]
+                self, records: list[dict[str, object]]
             ) -> FlextResult[None]: ...
 
         @runtime_checkable
         class ValidationProtocol(FlextProtocols.Service, Protocol):
             """Protocol for WMS data validation."""
 
-            def validate_wms_data(self, data: FlextTypes.Dict) -> FlextResult[bool]: ...
+            def validate_wms_data(
+                self, data: dict[str, object]
+            ) -> FlextResult[bool]: ...
 
         @runtime_checkable
         class PerformanceProtocol(FlextProtocols.Service, Protocol):
             """Protocol for WMS performance optimization."""
 
             def optimize_loading(
-                self, config: FlextTypes.Dict
-            ) -> FlextResult[FlextTypes.Dict]: ...
+                self, config: dict[str, object]
+            ) -> FlextResult[dict[str, object]]: ...
 
         @runtime_checkable
         class MonitoringProtocol(FlextProtocols.Service, Protocol):

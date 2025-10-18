@@ -10,7 +10,7 @@ import re
 from datetime import UTC, datetime
 from typing import Literal
 
-from flext_core import FlextModels, FlextResult, FlextTypes
+from flext_core import FlextModels, FlextResult
 from pydantic import Field, SecretStr
 
 from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants
@@ -452,7 +452,7 @@ class FlextTargetOracleWmsModels(FlextModels):
         )
 
         # Singer target configuration
-        stream_maps: dict[str, FlextTypes.StringDict] = Field(
+        stream_maps: dict[str, dict[str, str]] = Field(
             default_factory=dict, description="Stream to WMS entity mappings"
         )
 
@@ -513,10 +513,10 @@ class FlextTargetOracleWmsModels(FlextModels):
         )
 
         # Error tracking
-        error_messages: FlextTypes.StringList = Field(
+        error_messages: list[str] = Field(
             default_factory=list, description="Error messages"
         )
-        warning_messages: FlextTypes.StringList = Field(
+        warning_messages: list[str] = Field(
             default_factory=list, description="Warning messages"
         )
 
@@ -524,7 +524,7 @@ class FlextTargetOracleWmsModels(FlextModels):
         wms_operations_executed: dict[str, int] = Field(
             default_factory=dict, description="WMS operations executed by type"
         )
-        business_rule_violations: FlextTypes.StringList = Field(
+        business_rule_violations: list[str] = Field(
             default_factory=list, description="Business rule violations"
         )
 
@@ -600,7 +600,7 @@ class FlextTargetOracleWmsModels(FlextModels):
         business_rule_violated: str | None = Field(
             None, description="Business rule violated"
         )
-        validation_failures: FlextTypes.StringList = Field(
+        validation_failures: list[str] = Field(
             default_factory=list, description="Validation failure details"
         )
 
