@@ -23,6 +23,7 @@ from flext_core import (
     FlextResult,
     FlextTypes,
 )
+from flext_meltano import SingerConstants
 from flext_oracle_wms import FlextOracleWmsApiVersion, FlextOracleWmsClientConfig
 from pydantic import (
     Field,
@@ -268,9 +269,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
     @classmethod
     def validate_environment(cls, v: str) -> str:
         """Validate environment against allowed values."""
-        valid_environments = [
-            e.value for e in FlextConstants.Environment.ConfigEnvironment
-        ]
+        valid_environments = [e.value for e in SingerConstants.Environment]
         if v.lower() not in [env.lower() for env in valid_environments]:
             msg = f"Invalid environment: {v}. Valid environments: {valid_environments}"
             raise ValueError(msg)
@@ -435,7 +434,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
     def to_oracle_wms_config(self) -> FlextOracleWmsClientConfig:
         """Convert to flext-oracle-wms client configuration."""
         # Map string environment to proper literal type
-        env_mapping: FlextTypes.StringDict = {
+        env_mapping: dict[str, str] = {
             "development": "development",
             "production": "production",
             "staging": "staging",
@@ -521,7 +520,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
                 f"Failed to apply preset {preset_name}: {e}"
             )
 
-    def get_config_summary(self) -> FlextTypes.Dict:
+    def get_config_summary(self) -> dict[str, object]:
         """Get comprehensive configuration summary."""
         return {
             "connection": {
@@ -574,7 +573,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
     @classmethod
     def create_for_development(cls, **overrides: object) -> Self:
         """Create configuration for development environment."""
-        dev_overrides: FlextTypes.Dict = {
+        dev_overrides: dict[str, object] = {
             "batch_size": 100,
             "table_prefix": "DEV_",
             "default_target_schema": "WMS_DEV",
@@ -592,7 +591,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
     @classmethod
     def create_for_production(cls, **overrides: object) -> Self:
         """Create configuration for production environment."""
-        prod_overrides: FlextTypes.Dict = {
+        prod_overrides: dict[str, object] = {
             "batch_size": 1000,
             "table_prefix": "PROD_",
             "default_target_schema": "WMS_PRODUCTION",
@@ -612,7 +611,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
     @classmethod
     def create_for_testing(cls, **overrides: object) -> Self:
         """Create configuration for testing environment."""
-        test_overrides: FlextTypes.Dict = {
+        test_overrides: dict[str, object] = {
             "batch_size": 10,
             "table_prefix": "TEST_",
             "default_target_schema": "WMS_TEST",
@@ -631,7 +630,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
 
 
 def create_config_from_dict(
-    config_dict: FlextTypes.Dict,
+    config_dict: dict[str, object],
 ) -> FlextResult[FlextTargetOracleWmsConfig]:
     """Create configuration from dictionary with validation.
 
@@ -644,7 +643,9 @@ def create_config_from_dict(
     """
     try:
         # Use model_validate for proper type conversion from dict
-        config: FlextTypes.Dict = FlextTargetOracleWmsConfig.model_validate(config_dict)
+        config: dict[str, object] = FlextTargetOracleWmsConfig.model_validate(
+            config_dict
+        )
         logger.debug("Configuration created and validated successfully")
         return FlextResult["FlextTargetOracleWmsConfig"].ok(config)
 
@@ -656,7 +657,7 @@ def create_config_from_dict(
 
 
 def create_config_with_preset(
-    base_config: FlextTypes.Dict,
+    base_config: dict[str, object],
     preset_name: str,
 ) -> FlextResult[FlextTargetOracleWmsConfig]:
     """Create configuration with preset applied.
@@ -675,7 +676,7 @@ def create_config_with_preset(
         if not config_result.success:
             return config_result
 
-        config: FlextTypes.Dict = config_result.data
+        config: dict[str, object] = config_result.data
         if config is None:
             return FlextResult["FlextTargetOracleWmsConfig"].fail(
                 "Configuration creation returned None",

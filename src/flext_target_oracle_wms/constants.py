@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import Final
 
-from flext_core import FlextConstants, FlextTypes
+from flext_core import FlextConstants
 from flext_oracle_wms.constants import FlextOracleWmsConstants
 
 
@@ -64,7 +64,7 @@ class FlextTargetOracleWmsConstants(FlextConstants):
 
         # API configuration from FlextOracleWmsConstants
         DEFAULT_API_VERSION: Final[str] = FlextOracleWmsConstants.Api.DEFAULT_VERSION
-        SUPPORTED_API_VERSIONS: Final[FlextTypes.StringList] = (
+        SUPPORTED_API_VERSIONS: Final[list[str]] = (
             FlextOracleWmsConstants.Api.SUPPORTED_VERSIONS
         )
 
@@ -114,7 +114,7 @@ class FlextTargetOracleWmsConstants(FlextConstants):
         DEFAULT_LOAD_METHOD: Final[str] = APPEND_ONLY
 
         # Load method descriptions
-        LOAD_METHOD_DESCRIPTIONS: Final[FlextTypes.StringDict] = {
+        LOAD_METHOD_DESCRIPTIONS: Final[dict[str, str]] = {
             APPEND_ONLY: "Append new records only",
             UPSERT: "Insert new records or update existing ones",
             REPLACE: "Replace all records in target table",

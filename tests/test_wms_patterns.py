@@ -10,7 +10,7 @@ from __future__ import annotations
 from unittest.mock import MagicMock, patch
 
 import pytest
-from flext_core import FlextResult, FlextTypes
+from flext_core import FlextResult
 
 from flext_target_oracle_wms import (
     WMSDataTransformer,
@@ -167,7 +167,7 @@ class TestWMSDataTransformer:
             "is_active": True,
             "price": 99.99,
         }
-        schema: FlextTypes.Dict = {
+        schema: dict[str, object] = {
             "properties": {
                 "id": {"type": "integer"},
                 "name": {"type": "string"},
@@ -225,7 +225,7 @@ class TestWMSDataTransformer:
 
         transformer = WMSDataTransformer(FailingTypeConverter())
         record = {"id": 123, "name": "test"}
-        schema: FlextTypes.Dict = {
+        schema: dict[str, object] = {
             "properties": {"id": {"type": "integer"}, "name": {"type": "string"}},
         }
 
@@ -269,7 +269,7 @@ class TestWMSDataTransformer:
     def test_prepare_batch_parameters_with_none_values(self) -> None:
         """Test batch parameter preparation with None values."""
         transformer = WMSDataTransformer()
-        records: list[FlextTypes.Dict] = [
+        records: list[dict[str, object]] = [
             {"ID": None, "NAME": "Item1", "PRICE": None},
             {"ID": 2, "NAME": None, "PRICE": 99.99},
         ]
@@ -300,7 +300,7 @@ class TestWMSSchemaMapper:
     def test_map_singer_schema_to_oracle_basic(self) -> None:
         """Test basic Singer schema to Oracle mapping."""
         mapper = WMSSchemaMapper()
-        schema: FlextTypes.Dict = {
+        schema: dict[str, object] = {
             "properties": {
                 "id": {"type": "integer"},
                 "name": {"type": "string"},
@@ -341,7 +341,7 @@ class TestWMSSchemaMapper:
     def test_map_schema_with_unknown_types(self) -> None:
         """Test schema mapping with unknown types."""
         mapper = WMSSchemaMapper()
-        schema: FlextTypes.Dict = {
+        schema: dict[str, object] = {
             "properties": {
                 "unknown_field": {"type": "unknown_type"},
                 "no_type_field": {},
@@ -359,7 +359,7 @@ class TestWMSSchemaMapper:
     def test_map_empty_schema(self) -> None:
         """Test mapping empty schema."""
         mapper = WMSSchemaMapper()
-        schema: FlextTypes.Dict = {"properties": {}}
+        schema: dict[str, object] = {"properties": {}}
 
         result = mapper.map_singer_schema_to_oracle(schema)
         assert result.success
@@ -432,7 +432,7 @@ class TestWMSTableManager:
     def test_generate_create_table_sql(self) -> None:
         """Test CREATE TABLE SQL generation."""
         manager = WMSTableManager()
-        schema: FlextTypes.Dict = {
+        schema: dict[str, object] = {
             "properties": {
                 "id": {"type": "integer"},
                 "name": {"type": "string"},
@@ -493,7 +493,7 @@ class TestWMSTableManager:
             mock_schema_mapper.map_singer_schema_to_oracle.return_value = FlextResult[
                 None
             ].fail("Schema mapping failed")
-            schema: FlextTypes.Dict = {"properties": {"id": {"type": "integer"}}}
+            schema: dict[str, object] = {"properties": {"id": {"type": "integer"}}}
             result = manager.generate_create_table_sql(
                 "TEST_TABLE",
                 "WMS_SCHEMA",
@@ -516,7 +516,7 @@ class TestWMSTableManager:
             mock_schema_mapper.map_singer_schema_to_oracle.side_effect = RuntimeError(
                 "Schema mapping failed",
             )
-            schema: FlextTypes.Dict = {"properties": {"id": {"type": "integer"}}}
+            schema: dict[str, object] = {"properties": {"id": {"type": "integer"}}}
             result = manager.generate_create_table_sql(
                 "TEST_TABLE",
                 "WMS_SCHEMA",
@@ -556,7 +556,7 @@ class TestWMSTableManager:
                 None
             ].ok(None)
 
-            schema: FlextTypes.Dict = {"properties": {"id": {"type": "integer"}}}
+            schema: dict[str, object] = {"properties": {"id": {"type": "integer"}}}
             result = manager.generate_create_table_sql(
                 "TEST_TABLE",
                 "WMS_SCHEMA",

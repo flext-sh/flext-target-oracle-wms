@@ -11,7 +11,6 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import json
-from collections.abc import Callable
 from typing import override
 
 from flext_core import FlextLogger, FlextResult, FlextTypes
@@ -74,7 +73,7 @@ def get_oracle_type_mapping(json_type: str | None) -> str:
 
     """
     # Use flext-oracle-wms defaults where available
-    default_mappings: FlextTypes.StringDict = {
+    default_mappings: dict[str, str] = {
         "date-time": "TIMESTAMP",
         "date": "DATE",
         "integer": "NUMBER",
@@ -91,13 +90,13 @@ def get_oracle_type_mapping(json_type: str | None) -> str:
     return default_mappings.get(json_type, "VARCHAR2(4000)")
 
 
-def get_wms_metadata_columns() -> FlextTypes.StringList:
+def get_wms_metadata_columns() -> list[str]:
     """Get WMS metadata columns using flext-oracle-wms response fields.
 
     SOLID REFACTORING: Use flext-oracle-wms library constants for metadata.
 
     Returns:
-            FlextTypes.StringList:: Description of return value.
+            list[str]:: Description of return value.
 
     """
     return [
@@ -146,7 +145,7 @@ class WMSTypeConverter:
     def _convert_by_type(self, singer_type: str, value: object) -> object:
         """Convert value by type using strategy pattern."""
         # Strategy pattern mapping to reduce return statements
-        type_converters: dict[str, Callable[[object], object]] = {
+        type_converters: dict[str, FlextTypes.MiddlewareType] = {
             "string": "str",
             "text": "str",
             "boolean": lambda v: 1 if v else 0,
@@ -188,8 +187,8 @@ class WMSDataTransformer:
 
     def _apply_wms_filters(
         self,
-        record: FlextTypes.Dict,
-    ) -> FlextResult[FlextTypes.Dict]:
+        record: dict[str, object],
+    ) -> FlextResult[dict[str, object]]:
         """Apply flext-oracle-wms filters to record.
 
         SOLID REFACTORING: Use flext-oracle-wms filtering patterns for data validation.
@@ -197,27 +196,27 @@ class WMSDataTransformer:
         try:
             # Apply basic WMS entity validation using flext-oracle-wms
             # This ensures data quality before Oracle insertion
-            filtered_data: FlextTypes.Dict = record.copy()
+            filtered_data: dict[str, object] = record.copy()
 
             # Basic validation - could be extended with flext-oracle-wms business rules
             if not filtered_data:
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextResult[dict[str, object]].fail(
                     "Empty record cannot be processed",
                 )
 
-            return FlextResult[FlextTypes.Dict].ok(filtered_data)
+            return FlextResult[dict[str, object]].ok(filtered_data)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.warning("WMS filter application failed: %s", e)
-            return FlextResult[FlextTypes.Dict].ok(
+            return FlextResult[dict[str, object]].ok(
                 record,
             )  # Fallback to original record
 
     def transform_record(
         self,
-        record: FlextTypes.Dict,
-        schema: FlextTypes.Dict | None = None,
-    ) -> FlextResult[FlextTypes.Dict]:
+        record: dict[str, object],
+        schema: dict[str, object] | None = None,
+    ) -> FlextResult[dict[str, object]]:
         """Transform Singer record for Oracle WMS storage using flext-oracle-wms.
 
         SOLID REFACTORING: Maximize integration with flext-oracle-wms filtering and processing.
@@ -236,9 +235,9 @@ class WMSDataTransformer:
                 oracle_key = self._normalize_wms_column_name(key)
 
                 if schema:
-                    properties: FlextTypes.Dict = schema.get("properties", {})
+                    properties: dict[str, object] = schema.get("properties", {})
                     if isinstance(properties, dict):
-                        prop_def: FlextTypes.Dict = properties.get(key, {})
+                        prop_def: dict[str, object] = properties.get(key, {})
                         if isinstance(prop_def, dict):
                             singer_type = prop_def.get("type", "string")
                         else:
@@ -260,11 +259,11 @@ class WMSDataTransformer:
                 else:
                     transformed[oracle_key] = str(value) if value is not None else ""
 
-            return FlextResult[FlextTypes.Dict].ok(transformed)
+            return FlextResult[dict[str, object]].ok(transformed)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("WMS record transformation failed")
-            return FlextResult[FlextTypes.Dict].fail(
+            return FlextResult[dict[str, object]].fail(
                 f"Record transformation failed: {e}",
             )
 
@@ -275,9 +274,9 @@ class WMSDataTransformer:
 
     def prepare_batch_parameters(
         self,
-        records: list[FlextTypes.Dict],
-        columns: FlextTypes.StringList,
-    ) -> FlextResult[list[FlextTypes.Dict]]:
+        records: list[dict[str, object]],
+        columns: list[str],
+    ) -> FlextResult[list[dict[str, object]]]:
         """Prepare batch parameters for Oracle execution using flext-oracle-wms chunking.
 
         SOLID REFACTORING: Use flext-oracle-wms chunk_records for optimal batching.
@@ -285,11 +284,11 @@ class WMSDataTransformer:
         try:
             # Use flext-oracle-wms chunking for optimal performance
             chunked_records = self.chunk_processor(records, chunk_size=1000)
-            batch_params: list[FlextTypes.Dict] = []
+            batch_params: list[dict[str, object]] = []
 
             for chunk in chunked_records:
                 for record in chunk:
-                    params: FlextTypes.Dict = {}
+                    params: dict[str, object] = {}
                     for col in columns:
                         # Oracle bind parameters can't start with underscore
                         param_name = col.lstrip("_")
@@ -303,11 +302,11 @@ class WMSDataTransformer:
 
                     batch_params.append(params)
 
-            return FlextResult[list[FlextTypes.Dict]].ok(batch_params)
+            return FlextResult[list[dict[str, object]]].ok(batch_params)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Batch parameter preparation failed")
-            return FlextResult[list[FlextTypes.Dict]].fail(
+            return FlextResult[list[dict[str, object]]].fail(
                 f"Parameter preparation failed: {e}",
             )
 
@@ -321,15 +320,15 @@ class WMSSchemaMapper:
 
     def map_singer_schema_to_oracle(
         self,
-        schema: FlextTypes.Dict,
-    ) -> FlextResult[FlextTypes.StringDict]:
+        schema: dict[str, object],
+    ) -> FlextResult[dict[str, str]]:
         """Map Singer schema to Oracle WMS column definitions."""
         try:
             oracle_columns = {}
-            properties: FlextTypes.Dict = schema.get("properties", {})
+            properties: dict[str, object] = schema.get("properties", {})
 
             if not isinstance(properties, dict):
-                return FlextResult[FlextTypes.StringDict].fail(
+                return FlextResult[dict[str, str]].fail(
                     "Invalid schema: properties must be a dict",
                 )
 
@@ -344,11 +343,11 @@ class WMSSchemaMapper:
                 else:
                     oracle_columns[oracle_name] = "VARCHAR2(4000)"  # Fallback
 
-            return FlextResult[FlextTypes.StringDict].ok(oracle_columns)
+            return FlextResult[dict[str, str]].ok(oracle_columns)
 
         except (RuntimeError, ValueError, TypeError) as e:
             logger.exception("Schema mapping failed")
-            return FlextResult[FlextTypes.StringDict].fail(
+            return FlextResult[dict[str, str]].fail(
                 f"Schema mapping failed: {e}",
             )
 
@@ -359,14 +358,14 @@ class WMSSchemaMapper:
 
     def _map_singer_type_to_oracle(
         self,
-        prop_def: FlextTypes.Dict,
+        prop_def: dict[str, object],
     ) -> FlextResult[str]:
         """Map Singer property definition to Oracle type using flext-oracle-wms.
 
         SOLID REFACTORING: Use flext-oracle-wms library for type mapping consistency.
         """
         try:
-            # prop_def is already typed as FlextTypes.Dict
+            # prop_def is already typed as dict[str, object]
             prop_type = prop_def.get("type", "string")
             prop_format = prop_def.get("format")
 
@@ -406,7 +405,7 @@ class WMSTableManager:
         self,
         table_name: str,
         schema_name: str,
-        schema: FlextTypes.Dict,
+        schema: dict[str, object],
     ) -> FlextResult[str]:
         """Generate CREATE TABLE SQL for Oracle WMS."""
         try:
@@ -425,7 +424,7 @@ class WMSTableManager:
                 return FlextResult[str].fail("Column mapping returned None")
 
             # Build column definitions
-            column_defs: FlextTypes.StringList = []
+            column_defs: list[str] = []
             for col_name, col_type in columns.items():
                 column_defs.append(f'"{col_name}" {col_type}')
 
@@ -448,12 +447,12 @@ class WMSTableManager:
         self,
         table_name: str,
         schema_name: str,
-        columns: FlextTypes.StringList,
+        columns: list[str],
     ) -> FlextResult[Insert]:
         """Generate INSERT SQL for Oracle WMS using SQLAlchemy 2.0 Core API."""
         try:
             # Use SQLAlchemy 2.0 Core API - NO STRING CONCATENATION
-            metadata: FlextTypes.Dict = MetaData()
+            metadata: dict[str, object] = MetaData()
 
             # Create table columns from provided column list
             table_columns = [Column(column_name, String) for column_name in columns]

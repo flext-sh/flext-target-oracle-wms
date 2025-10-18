@@ -12,11 +12,10 @@ from collections.abc import Generator
 from pathlib import Path
 
 import pytest
-from flext_core import FlextTypes
 
 
 @pytest.fixture
-def config() -> FlextTypes.Dict:
+def config() -> dict[str, object]:
     """Return a test configuration."""
     return {
         "base_url": "https://test.oracle.com/wms/api/v1",
@@ -39,7 +38,7 @@ def temp_output_dir() -> Generator[Path]:
 
 
 @pytest.fixture
-def sample_inventory_records() -> list[FlextTypes.Dict]:
+def sample_inventory_records() -> list[dict[str, object]]:
     """Return sample inventory records."""
     return [
         {
@@ -64,7 +63,7 @@ def sample_inventory_records() -> list[FlextTypes.Dict]:
 
 
 @pytest.fixture
-def sample_order_records() -> list[FlextTypes.Dict]:
+def sample_order_records() -> list[dict[str, object]]:
     """Return sample order records."""
     return [
         {
@@ -87,7 +86,7 @@ def sample_order_records() -> list[FlextTypes.Dict]:
 
 
 @pytest.fixture
-def sample_task_records() -> list[FlextTypes.Dict]:
+def sample_task_records() -> list[dict[str, object]]:
     """Return sample task records."""
     return [
         {
@@ -112,7 +111,7 @@ def sample_task_records() -> list[FlextTypes.Dict]:
 
 
 @pytest.fixture
-def singer_schema() -> FlextTypes.Dict:
+def singer_schema() -> dict[str, object]:
     """Return a sample Singer schema."""
     return {
         "type": "object",

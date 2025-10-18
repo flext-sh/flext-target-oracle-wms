@@ -10,7 +10,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import ClassVar
 
-from flext_core import FlextResult, FlextTypes, FlextUtilities
+from flext_core import FlextResult, FlextUtilities
 
 from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants
 
@@ -54,9 +54,9 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
         @staticmethod
         def create_schema_message(
             stream_name: str,
-            schema: FlextTypes.Dict,
-            key_properties: FlextTypes.StringList | None = None,
-        ) -> FlextTypes.Dict:
+            schema: dict[str, object],
+            key_properties: list[str] | None = None,
+        ) -> dict[str, object]:
             """Create Singer SCHEMA message for WMS entity definition.
 
             Args:
@@ -79,9 +79,9 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
         @staticmethod
         def create_record_message(
             stream_name: str,
-            record: FlextTypes.Dict,
+            record: dict[str, object],
             time_extracted: str | None = None,
-        ) -> FlextTypes.Dict:
+        ) -> dict[str, object]:
             """Create Singer RECORD message for WMS data loading.
 
             Args:
@@ -103,7 +103,7 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             return message
 
         @staticmethod
-        def create_state_message(state: FlextTypes.Dict) -> FlextTypes.Dict:
+        def create_state_message(state: dict[str, object]) -> dict[str, object]:
             """Create Singer STATE message for WMS target checkpointing.
 
             Args:
@@ -117,8 +117,8 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
 
         @staticmethod
         def validate_singer_message(
-            message: FlextTypes.Dict,
-        ) -> FlextResult[FlextTypes.Dict]:
+            message: dict[str, object],
+        ) -> FlextResult[dict[str, object]]:
             """Validate Singer message format and required fields.
 
             Args:
@@ -129,13 +129,13 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
 
             """
             if not isinstance(message, dict):
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextResult[dict[str, object]].fail(
                     "Singer message must be a dictionary"
                 )
 
             message_type = message.get("type")
             if message_type not in {"SCHEMA", "RECORD", "STATE"}:
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextResult[dict[str, object]].fail(
                     f"Invalid Singer message type: {message_type}"
                 )
 
@@ -143,7 +143,7 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                 required_fields = ["stream", "schema"]
                 for field in required_fields:
                     if field not in message:
-                        return FlextResult[FlextTypes.Dict].fail(
+                        return FlextResult[dict[str, object]].fail(
                             f"Missing required field for SCHEMA: {field}"
                         )
 
@@ -151,17 +151,17 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                 required_fields = ["stream", "record"]
                 for field in required_fields:
                     if field not in message:
-                        return FlextResult[FlextTypes.Dict].fail(
+                        return FlextResult[dict[str, object]].fail(
                             f"Missing required field for RECORD: {field}"
                         )
 
             elif message_type == "STATE":
                 if "value" not in message:
-                    return FlextResult[FlextTypes.Dict].fail(
+                    return FlextResult[dict[str, object]].fail(
                         "Missing required field for STATE: value"
                     )
 
-            return FlextResult[FlextTypes.Dict].ok(message)
+            return FlextResult[dict[str, object]].ok(message)
 
     class WmsEntityProcessing:
         """Oracle WMS entity-specific processing utilities."""
@@ -169,9 +169,9 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
         @staticmethod
         def map_singer_stream_to_wms_entity(
             stream_name: str,
-            schema: FlextTypes.Dict,
-            wms_config: FlextTypes.Dict,
-        ) -> FlextResult[FlextTypes.Dict]:
+            schema: dict[str, object],
+            wms_config: dict[str, object],
+        ) -> FlextResult[dict[str, object]]:
             """Map Singer stream to Oracle WMS entity configuration.
 
             Args:
@@ -219,19 +219,19 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                     "business_rules": wms_config.get("business_rules", []),
                 }
 
-                return FlextResult[FlextTypes.Dict].ok(entity_mapping)
+                return FlextResult[dict[str, object]].ok(entity_mapping)
 
             except Exception as e:
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextResult[dict[str, object]].fail(
                     f"Failed to map Singer stream to WMS entity: {e}"
                 )
 
         @staticmethod
         def validate_wms_business_rules(
             entity_type: str,
-            record: FlextTypes.Dict,
-            business_rules: FlextTypes.StringList,
-        ) -> FlextResult[FlextTypes.Dict]:
+            record: dict[str, object],
+            business_rules: list[str],
+        ) -> FlextResult[dict[str, object]]:
             """Validate Oracle WMS business rules for entity record.
 
             Args:
@@ -252,7 +252,7 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                         "inventory_transactions",
                     }:
                         if not record.get("item_code"):
-                            return FlextResult[FlextTypes.Dict].fail(
+                            return FlextResult[dict[str, object]].fail(
                                 "Item code is required for inventory entities"
                             )
 
@@ -262,7 +262,7 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                         "putaways",
                     }:
                         if not record.get("location_code"):
-                            return FlextResult[FlextTypes.Dict].fail(
+                            return FlextResult[dict[str, object]].fail(
                                 "Location code is required for location-based entities"
                             )
 
@@ -272,7 +272,7 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                     }:
                         quantity = record.get("quantity", 0)
                         if not isinstance(quantity, (int, float)) or quantity < 0:
-                            return FlextResult[FlextTypes.Dict].fail(
+                            return FlextResult[dict[str, object]].fail(
                                 "Quantity must be a positive number"
                             )
 
@@ -283,14 +283,14 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                         if not record.get("order_id") and not record.get(
                             "order_number"
                         ):
-                            return FlextResult[FlextTypes.Dict].fail(
+                            return FlextResult[dict[str, object]].fail(
                                 "Order reference is required for order-based entities"
                             )
 
                     elif rule == "facility_code_valid":
                         facility_code = record.get("facility_code")
                         if not facility_code or not isinstance(facility_code, str):
-                            return FlextResult[FlextTypes.Dict].fail(
+                            return FlextResult[dict[str, object]].fail(
                                 "Valid facility code is required"
                             )
 
@@ -299,17 +299,17 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                 validated_record = record.copy()
                 validated_record["_validation_results"] = validation_results
 
-                return FlextResult[FlextTypes.Dict].ok(validated_record)
+                return FlextResult[dict[str, object]].ok(validated_record)
 
             except Exception as e:
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextResult[dict[str, object]].fail(
                     f"Failed to validate WMS business rules: {e}"
                 )
 
         @staticmethod
         def transform_record_for_wms(
-            record: FlextTypes.Dict, entity_mapping: FlextTypes.Dict
-        ) -> FlextResult[FlextTypes.Dict]:
+            record: dict[str, object], entity_mapping: dict[str, object]
+        ) -> FlextResult[dict[str, object]]:
             """Transform Singer record for Oracle WMS entity loading.
 
             Args:
@@ -366,10 +366,10 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                     wms_key = key.upper()
                     wms_record[wms_key] = value
 
-                return FlextResult[FlextTypes.Dict].ok(wms_record)
+                return FlextResult[dict[str, object]].ok(wms_record)
 
             except Exception as e:
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextResult[dict[str, object]].fail(
                     f"Failed to transform record for WMS: {e}"
                 )
 
@@ -378,8 +378,8 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
 
         @staticmethod
         def prepare_wms_bulk_operation(
-            records: list[FlextTypes.Dict], operation_config: FlextTypes.Dict
-        ) -> FlextResult[FlextTypes.Dict]:
+            records: list[dict[str, object]], operation_config: dict[str, object]
+        ) -> FlextResult[dict[str, object]]:
             """Prepare Oracle WMS bulk operation configuration.
 
             Args:
@@ -434,17 +434,17 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                     },
                 }
 
-                return FlextResult[FlextTypes.Dict].ok(bulk_operation)
+                return FlextResult[dict[str, object]].ok(bulk_operation)
 
             except Exception as e:
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextResult[dict[str, object]].fail(
                     f"Failed to prepare WMS bulk operation: {e}"
                 )
 
         @staticmethod
         def calculate_wms_performance_hints(
             entity_type: str, record_count: int, operation_type: str = "INSERT"
-        ) -> FlextResult[FlextTypes.StringDict]:
+        ) -> FlextResult[dict[str, str]]:
             """Calculate Oracle WMS performance hints for operations.
 
             Args:
@@ -492,10 +492,10 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                     hints["memory_hint"] = "USE_HASH(a,b)"
                     hints["temp_tablespace"] = "TEMP"
 
-                return FlextResult[FlextTypes.StringDict].ok(hints)
+                return FlextResult[dict[str, str]].ok(hints)
 
             except Exception as e:
-                return FlextResult[FlextTypes.StringDict].fail(
+                return FlextResult[dict[str, str]].fail(
                     f"Failed to calculate WMS performance hints: {e}"
                 )
 
@@ -505,9 +505,9 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
         @staticmethod
         def process_schema_stream(
             stream_name: str,
-            schema_message: FlextTypes.Dict,
-            wms_config: FlextTypes.Dict,
-        ) -> FlextResult[FlextTypes.Dict]:
+            schema_message: dict[str, object],
+            wms_config: dict[str, object],
+        ) -> FlextResult[dict[str, object]]:
             """Process Singer schema stream for WMS entity configuration.
 
             Args:
@@ -528,7 +528,7 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                     stream_name, schema, wms_config
                 )
                 if entity_result.is_failure:
-                    return FlextResult[FlextTypes.Dict].fail(
+                    return FlextResult[dict[str, object]].fail(
                         f"WMS entity mapping failed: {entity_result.error}"
                     )
 
@@ -546,17 +546,17 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                     },
                 }
 
-                return FlextResult[FlextTypes.Dict].ok(processed_schema)
+                return FlextResult[dict[str, object]].ok(processed_schema)
 
             except Exception as e:
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextResult[dict[str, object]].fail(
                     f"Failed to process schema stream: {e}"
                 )
 
         @staticmethod
         def batch_records_for_wms_loading(
-            records: list[FlextTypes.Dict], batch_size: int | None = None
-        ) -> FlextResult[list[list[FlextTypes.Dict]]]:
+            records: list[dict[str, object]], batch_size: int | None = None
+        ) -> FlextResult[list[list[dict[str, object]]]]:
             """Batch Singer records for efficient WMS loading operations.
 
             Args:
@@ -572,7 +572,7 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             )
 
             if actual_batch_size <= 0:
-                return FlextResult[list[list[FlextTypes.Dict]]].fail(
+                return FlextResult[list[list[dict[str, object]]]].fail(
                     "Batch size must be positive"
                 )
 
@@ -582,10 +582,10 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                     batch = records[i : i + actual_batch_size]
                     batches.append(batch)
 
-                return FlextResult[list[list[FlextTypes.Dict]]].ok(batches)
+                return FlextResult[list[list[dict[str, object]]]].ok(batches)
 
             except Exception as e:
-                return FlextResult[list[list[FlextTypes.Dict]]].fail(
+                return FlextResult[list[list[dict[str, object]]]].fail(
                     f"Failed to batch records: {e}"
                 )
 
@@ -594,8 +594,8 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
 
         @staticmethod
         def validate_wms_connection_config(
-            config: FlextTypes.Dict,
-        ) -> FlextResult[FlextTypes.Dict]:
+            config: dict[str, object],
+        ) -> FlextResult[dict[str, object]]:
             """Validate Oracle WMS connection configuration.
 
             Args:
@@ -608,7 +608,7 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             required_fields = ["base_url", "company_code", "facility_code"]
             for field in required_fields:
                 if field not in config or not config[field]:
-                    return FlextResult[FlextTypes.Dict].fail(
+                    return FlextResult[dict[str, object]].fail(
                         f"Missing required WMS config field: {field}"
                     )
 
@@ -622,23 +622,23 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                 ]
                 for field in oauth_fields:
                     if field not in config or not config[field]:
-                        return FlextResult[FlextTypes.Dict].fail(
+                        return FlextResult[dict[str, object]].fail(
                             f"Missing required OAuth2 field: {field}"
                         )
 
             # Validate base URL
             base_url = config["base_url"]
             if not base_url.startswith(("https://", "http://")):
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextResult[dict[str, object]].fail(
                     "WMS base URL must be a valid HTTP/HTTPS URL"
                 )
 
-            return FlextResult[FlextTypes.Dict].ok(config)
+            return FlextResult[dict[str, object]].ok(config)
 
         @staticmethod
         def validate_wms_target_config(
-            config: FlextTypes.Dict,
-        ) -> FlextResult[FlextTypes.Dict]:
+            config: dict[str, object],
+        ) -> FlextResult[dict[str, object]]:
             """Validate Oracle WMS target-specific configuration.
 
             Args:
@@ -656,7 +656,7 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                 batch_size <= 0
                 or batch_size > FlextTargetOracleWmsUtilities.WMS_MAX_BULK_SIZE
             ):
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextResult[dict[str, object]].fail(
                     f"Batch size must be between 1 and {FlextTargetOracleWmsUtilities.WMS_MAX_BULK_SIZE}"
                 )
 
@@ -670,7 +670,7 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                 or parallel_degree
                 > FlextTargetOracleWmsConstants.OracleWms.MAX_PARALLEL_DEGREE
             ):
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextResult[dict[str, object]].fail(
                     f"Parallel degree must be between 1 and {FlextTargetOracleWmsConstants.OracleWms.MAX_PARALLEL_DEGREE}"
                 )
 
@@ -684,20 +684,20 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                 or timeout
                 > FlextTargetOracleWmsConstants.OracleWms.MAX_CONNECTION_TIMEOUT
             ):
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextResult[dict[str, object]].fail(
                     f"Connection timeout must be between 1 and {FlextTargetOracleWmsConstants.OracleWms.MAX_CONNECTION_TIMEOUT} seconds"
                 )
 
-            return FlextResult[FlextTypes.Dict].ok(config)
+            return FlextResult[dict[str, object]].ok(config)
 
     class StateManagement:
         """Singer state management utilities for Oracle WMS target."""
 
         @staticmethod
         def create_wms_target_state(
-            entity_states: FlextTypes.Dict,
-            target_metadata: FlextTypes.Dict | None = None,
-        ) -> FlextResult[FlextTypes.Dict]:
+            entity_states: dict[str, object],
+            target_metadata: dict[str, object] | None = None,
+        ) -> FlextResult[dict[str, object]]:
             """Create Oracle WMS target state for Singer checkpointing.
 
             Args:
@@ -718,19 +718,19 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                 if target_metadata:
                     state["target_metadata"] = target_metadata
 
-                return FlextResult[FlextTypes.Dict].ok(state)
+                return FlextResult[dict[str, object]].ok(state)
 
             except Exception as e:
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextResult[dict[str, object]].fail(
                     f"Failed to create WMS target state: {e}"
                 )
 
         @staticmethod
         def update_entity_state(
-            current_state: FlextTypes.Dict,
+            current_state: dict[str, object],
             entity_type: str,
-            loading_result: FlextTypes.Dict,
-        ) -> FlextResult[FlextTypes.Dict]:
+            loading_result: dict[str, object],
+        ) -> FlextResult[dict[str, object]]:
             """Update state for a specific WMS entity.
 
             Args:
@@ -755,10 +755,10 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
                     "loading_status": loading_result.get("status", "unknown"),
                 }
 
-                return FlextResult[FlextTypes.Dict].ok(updated_state)
+                return FlextResult[dict[str, object]].ok(updated_state)
 
             except Exception as e:
-                return FlextResult[FlextTypes.Dict].fail(
+                return FlextResult[dict[str, object]].fail(
                     f"Failed to update entity state: {e}"
                 )
 
@@ -876,25 +876,25 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
 
     # Proxy methods for backward compatibility (minimal)
     def validate_singer_message(
-        self, message: FlextTypes.Dict
-    ) -> FlextResult[FlextTypes.Dict]:
+        self, message: dict[str, object]
+    ) -> FlextResult[dict[str, object]]:
         """Proxy to SingerUtilities.validate_singer_message."""
         return self.SingerUtilities.validate_singer_message(message)
 
     def validate_wms_business_rules(
         self,
         entity_type: str,
-        record: FlextTypes.Dict,
-        business_rules: FlextTypes.StringList,
-    ) -> FlextResult[FlextTypes.Dict]:
+        record: dict[str, object],
+        business_rules: list[str],
+    ) -> FlextResult[dict[str, object]]:
         """Proxy to WmsEntityProcessing.validate_wms_business_rules."""
         return self.WmsEntityProcessing.validate_wms_business_rules(
             entity_type, record, business_rules
         )
 
     def validate_wms_connection_config(
-        self, config: FlextTypes.Dict
-    ) -> FlextResult[FlextTypes.Dict]:
+        self, config: dict[str, object]
+    ) -> FlextResult[dict[str, object]]:
         """Proxy to ConfigValidation.validate_wms_connection_config."""
         return self.ConfigValidation.validate_wms_connection_config(config)
 
