@@ -136,12 +136,11 @@ class TestFlextTargetFactory:
 
         assert not result.success
         assert result.error is not None
-        assert (
-            result.error is not None
-            and "Failed to create Oracle WMS target" in result.error
-        )
         assert result.error is not None
-        assert result.error is not None and "Target creation failed" in result.error
+        assert "Failed to create Oracle WMS target" in result.error
+        assert result.error is not None
+        assert result.error is not None
+        assert "Target creation failed" in result.error
 
     @patch("flext_target_oracle_wms.factory.SingerTargetOracleWMS")
     def test_factory_development_target_convenience_method(
@@ -246,14 +245,14 @@ class TestFlextTargetFactory:
 
         assert not result.success
         assert result.error is not None
-        assert (
-            result.error is not None
-            and "Missing required configuration fields" in result.error
-        )
         assert result.error is not None
-        assert result.error is not None and "username" in result.error
+        assert "Missing required configuration fields" in result.error
         assert result.error is not None
-        assert result.error is not None and "password" in result.error
+        assert result.error is not None
+        assert "username" in result.error
+        assert result.error is not None
+        assert result.error is not None
+        assert "password" in result.error
 
     def test_create_from_config_dict_exception(self) -> None:
         """Test config dict[str, object] creation with exception handling."""
@@ -272,10 +271,8 @@ class TestFlextTargetFactory:
 
             assert not result.success
             assert result.error is not None
-            assert (
-                result.error is not None
-                and "Failed to create target from config" in result.error
-            )
+            assert result.error is not None
+            assert "Failed to create target from config" in result.error
 
 
 class TestFlextTargetMonitoringFactory:
@@ -365,7 +362,8 @@ class TestFlextTargetMonitoringFactory:
 
             assert not result.success
             assert result.error is not None
-            assert result.error is not None and "Base creation failed" in result.error
+            assert result.error is not None
+            assert "Base creation failed" in result.error
 
     @patch("flext_target_oracle_wms.factory.FlextObservabilityMonitor")
     @patch("flext_target_oracle_wms.factory.SingerTargetOracleWMS")
@@ -394,10 +392,8 @@ class TestFlextTargetMonitoringFactory:
 
             assert not result.success
             assert result.error is not None
-            assert (
-                result.error is not None
-                and "Failed to create monitored target" in result.error
-            )
+            assert result.error is not None
+            assert "Failed to create monitored target" in result.error
 
 
 class TestFactoryConvenienceFunctions:

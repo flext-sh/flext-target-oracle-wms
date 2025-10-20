@@ -244,9 +244,8 @@ class TestWMSDataTransformer:
 
         assert not result.success
         assert result.error is not None
-        assert (
-            result.error is not None and "Record transformation failed" in result.error
-        )
+        assert result.error is not None
+        assert "Record transformation failed" in result.error
 
     def test_prepare_batch_parameters_exception_handling(self) -> None:
         """Test batch parameter preparation exception handling."""
@@ -262,9 +261,8 @@ class TestWMSDataTransformer:
 
         assert not result.success
         assert result.error is not None
-        assert (
-            result.error is not None and "Parameter preparation failed" in result.error
-        )
+        assert result.error is not None
+        assert "Parameter preparation failed" in result.error
 
     def test_prepare_batch_parameters_with_none_values(self) -> None:
         """Test batch parameter preparation with None values."""
@@ -376,7 +374,8 @@ class TestWMSSchemaMapper:
         result = mapper.map_singer_schema_to_oracle(bad_schema)
         assert not result.success
         assert result.error is not None
-        assert result.error is not None and "Schema mapping failed" in result.error
+        assert result.error is not None
+        assert "Schema mapping failed" in result.error
 
     def test_map_singer_type_to_oracle_exception_handling(self) -> None:
         """Test type mapping exception handling."""
@@ -502,7 +501,8 @@ class TestWMSTableManager:
 
         assert not result.success
         assert result.error is not None
-        assert result.error is not None and "Schema mapping failed" in result.error
+        assert result.error is not None
+        assert "Schema mapping failed" in result.error
 
     def test_generate_create_table_sql_exception_handling(self) -> None:
         """Test CREATE TABLE SQL generation exception handling."""
@@ -525,7 +525,8 @@ class TestWMSTableManager:
 
         assert not result.success
         assert result.error is not None
-        assert result.error is not None and "SQL generation failed" in result.error
+        assert result.error is not None
+        assert "SQL generation failed" in result.error
 
     def test_generate_insert_sql_exception_handling(self) -> None:
         """Test INSERT SQL generation with edge cases."""
@@ -565,6 +566,5 @@ class TestWMSTableManager:
 
         assert not result.success
         assert result.error is not None
-        assert (
-            result.error is not None and "Column mapping returned None" in result.error
-        )
+        assert result.error is not None
+        assert "Column mapping returned None" in result.error

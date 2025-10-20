@@ -52,7 +52,8 @@ class TestSingerTargetOracleWMSComprehensive:
             result = target.setup()
             assert not result.success
             assert result.error is not None
-            assert result.error is not None and "Connection failed" in result.error
+            assert result.error is not None
+            assert "Connection failed" in result.error
 
     def test_setup_with_exception(
         self,
@@ -72,7 +73,8 @@ class TestSingerTargetOracleWMSComprehensive:
             result = target.setup()
             assert not result.success
             assert result.error is not None
-            assert result.error is not None and "Setup failed" in result.error
+            assert result.error is not None
+            assert "Setup failed" in result.error
 
     def test_process_schema_message_invalid_type(
         self,
@@ -90,7 +92,8 @@ class TestSingerTargetOracleWMSComprehensive:
         result = target.process_schema_message(invalid_message)
         assert not result.success
         assert result.error is not None
-        assert result.error is not None and "Not a SCHEMA message" in result.error
+        assert result.error is not None
+        assert "Not a SCHEMA message" in result.error
 
     def test_process_schema_message_missing_stream(
         self,
@@ -108,7 +111,8 @@ class TestSingerTargetOracleWMSComprehensive:
         result = target.process_schema_message(invalid_message)
         assert not result.success
         assert result.error is not None
-        assert result.error is not None and "missing stream or schema" in result.error
+        assert result.error is not None
+        assert "missing stream or schema" in result.error
 
     def test_process_schema_message_missing_schema(
         self,
@@ -126,7 +130,8 @@ class TestSingerTargetOracleWMSComprehensive:
         result = target.process_schema_message(invalid_message)
         assert not result.success
         assert result.error is not None
-        assert result.error is not None and "missing stream or schema" in result.error
+        assert result.error is not None
+        assert "missing stream or schema" in result.error
 
     def test_process_schema_message_catalog_failure(
         self,
@@ -148,7 +153,8 @@ class TestSingerTargetOracleWMSComprehensive:
             result = target.process_schema_message(schema_message)
             assert not result.success
             assert result.error is not None
-            assert result.error is not None and "Catalog add failed" in result.error
+            assert result.error is not None
+            assert "Catalog add failed" in result.error
 
     def test_process_schema_message_stream_init_failure(
         self,
@@ -170,7 +176,8 @@ class TestSingerTargetOracleWMSComprehensive:
             result = target.process_schema_message(schema_message)
             assert not result.success
             assert result.error is not None
-            assert result.error is not None and "Stream init failed" in result.error
+            assert result.error is not None
+            assert "Stream init failed" in result.error
 
     def test_process_schema_message_table_creation_failure(
         self,
@@ -195,7 +202,8 @@ class TestSingerTargetOracleWMSComprehensive:
             result = target.process_schema_message(schema_message)
             assert not result.success
             assert result.error is not None
-            assert result.error is not None and "SQL generation failed" in result.error
+            assert result.error is not None
+            assert "SQL generation failed" in result.error
 
     def test_process_schema_message_exception_handling(
         self,
@@ -217,9 +225,8 @@ class TestSingerTargetOracleWMSComprehensive:
             result = target.process_schema_message(schema_message)
             assert not result.success
             assert result.error is not None
-            assert (
-                result.error is not None and "SCHEMA processing failed" in result.error
-            )
+            assert result.error is not None
+            assert "SCHEMA processing failed" in result.error
 
     def test_process_record_message_invalid_type(
         self,
@@ -237,7 +244,8 @@ class TestSingerTargetOracleWMSComprehensive:
         result = target.process_record_message(invalid_message)
         assert not result.success
         assert result.error is not None
-        assert result.error is not None and "Not a RECORD message" in result.error
+        assert result.error is not None
+        assert "Not a RECORD message" in result.error
 
     def test_process_record_message_missing_fields(
         self,
@@ -255,7 +263,8 @@ class TestSingerTargetOracleWMSComprehensive:
         result = target.process_record_message(invalid_message1)
         assert not result.success
         assert result.error is not None
-        assert result.error is not None and "missing stream or record" in result.error
+        assert result.error is not None
+        assert "missing stream or record" in result.error
 
         # Missing record
         invalid_message2 = {
@@ -266,7 +275,8 @@ class TestSingerTargetOracleWMSComprehensive:
         result = target.process_record_message(invalid_message2)
         assert not result.success
         assert result.error is not None
-        assert result.error is not None and "missing stream or record" in result.error
+        assert result.error is not None
+        assert "missing stream or record" in result.error
 
     def test_process_record_message_stream_processing_failure(
         self,
@@ -290,9 +300,8 @@ class TestSingerTargetOracleWMSComprehensive:
             result = target.process_record_message(record_message)
             assert not result.success
             assert result.error is not None
-            assert (
-                result.error is not None and "Record processing failed" in result.error
-            )
+            assert result.error is not None
+            assert "Record processing failed" in result.error
 
     def test_process_record_message_insertion_failure(
         self,
@@ -338,7 +347,8 @@ class TestSingerTargetOracleWMSComprehensive:
         result = target.process_state_message(invalid_message)
         assert not result.success
         assert result.error is not None
-        assert result.error is not None and "Not a STATE message" in result.error
+        assert result.error is not None
+        assert "Not a STATE message" in result.error
 
     def test_process_state_message_json_serialization_error(
         self,
@@ -359,7 +369,8 @@ class TestSingerTargetOracleWMSComprehensive:
         result = target.process_state_message(invalid_message)
         assert not result.success
         assert result.error is not None
-        assert result.error is not None and "STATE processing failed" in result.error
+        assert result.error is not None
+        assert "STATE processing failed" in result.error
 
     def test_ensure_table_exists_no_client(
         self,
@@ -376,10 +387,8 @@ class TestSingerTargetOracleWMSComprehensive:
         )
         assert not result.success
         assert result.error is not None
-        assert (
-            result.error is not None
-            and "Oracle WMS client not initialized" in result.error
-        )
+        assert result.error is not None
+        assert "Oracle WMS client not initialized" in result.error
 
     def test_ensure_table_exists_exception(
         self,
@@ -398,10 +407,8 @@ class TestSingerTargetOracleWMSComprehensive:
             )
             assert not result.success
             assert result.error is not None
-            assert (
-                result.error is not None
-                and "Oracle WMS client not initialized" in result.error
-            )
+            assert result.error is not None
+            assert "Oracle WMS client not initialized" in result.error
 
     def test_insert_record_complex_data_types(
         self,
@@ -460,9 +467,8 @@ class TestSingerTargetOracleWMSComprehensive:
             result = target._insert_record("error_stream", {"id": 1})
             assert not result.success
             assert result.error is not None
-            assert (
-                result.error is not None and "Record insertion failed" in result.error
-            )
+            assert result.error is not None
+            assert "Record insertion failed" in result.error
 
     def test_finalize_with_stream_processor_failure(
         self,
@@ -478,7 +484,8 @@ class TestSingerTargetOracleWMSComprehensive:
             result = target.finalize()
             assert not result.success
             assert result.error is not None
-            assert result.error is not None and "Stats retrieval failed" in result.error
+            assert result.error is not None
+            assert "Stats retrieval failed" in result.error
 
     def test_finalize_with_empty_stats(
         self,
@@ -516,7 +523,8 @@ class TestSingerTargetOracleWMSComprehensive:
             result = target.finalize()
             assert not result.success
             assert result.error is not None
-            assert result.error is not None and "Finalization failed" in result.error
+            assert result.error is not None
+            assert "Finalization failed" in result.error
 
     def test_cleanup_with_client_stop_failure(
         self,
@@ -555,7 +563,8 @@ class TestSingerTargetOracleWMSComprehensive:
             result = target.cleanup()
             assert not result.success
             assert result.error is not None
-            assert result.error is not None and "Cleanup failed" in result.error
+            assert result.error is not None
+            assert "Cleanup failed" in result.error
 
     def test_target_configuration_edge_cases(
         self,
