@@ -123,7 +123,8 @@ class TestOracleWMSTargetCli:
             result = cli.execute()
             assert not result.success
             assert result.error is not None
-            assert result.error is not None and "Setup failed" in result.error
+            assert result.error is not None
+            assert "Setup failed" in result.error
 
     def test_execute_with_singer_messages(self) -> None:
         """Test CLI execution with Singer messages."""
@@ -178,7 +179,8 @@ class TestOracleWMSTargetCli:
             result = cli.execute()
             assert not result.success
             assert result.error is not None
-            assert result.error is not None and "Invalid JSON" in result.error
+            assert result.error is not None
+            assert "Invalid JSON" in result.error
 
     def test_execute_message_processing_failure(self) -> None:
         """Test CLI execution when message processing fails."""
@@ -200,7 +202,8 @@ class TestOracleWMSTargetCli:
             result = cli.execute()
             assert not result.success
             assert result.error is not None
-            assert result.error is not None and "Processing failed" in result.error
+            assert result.error is not None
+            assert "Processing failed" in result.error
 
     def test_execute_exception_handling(self) -> None:
         """Test CLI execution exception handling."""
@@ -213,9 +216,11 @@ class TestOracleWMSTargetCli:
             result = cli.execute()
             assert not result.success
             assert result.error is not None
-            assert result.error is not None and "CLI execution failed" in result.error
             assert result.error is not None
-            assert result.error is not None and "Test error" in result.error
+            assert "CLI execution failed" in result.error
+            assert result.error is not None
+            assert result.error is not None
+            assert "Test error" in result.error
 
 
 class TestMainFunction:
