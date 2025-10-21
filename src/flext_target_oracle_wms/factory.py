@@ -116,10 +116,10 @@ class FlextTargetFactory:
         SOLID REFACTORING: Reduced parameter count from 6 to 1 using Parameter Object Pattern.
 
         Args:
-            request: TargetCreationRequest containing all target creation parameters
+        request: TargetCreationRequest containing all target creation parameters
 
         Returns:
-            FlextResult containing configured target or error
+        FlextResult containing configured target or error
 
         """
         try:
@@ -253,10 +253,10 @@ class FlextTargetFactory:
         """Create target from configuration dictionary.
 
         Args:
-            config: Complete configuration dictionary
+        config: Complete configuration dictionary
 
         Returns:
-            FlextResult containing configured target or error
+        FlextResult containing configured target or error
 
         """
         try:
@@ -325,10 +325,10 @@ class FlextTargetMonitoringFactory:
         """Initialize monitoring factory.
 
         Args:
-            monitor_name: Name for the observability monitor
+        monitor_name: Name for the observability monitor
 
         Returns:
-            object: Description of return value.
+        object: Description of return value.
 
         """
         # Initialize monitor with proper FlextContainer
@@ -345,10 +345,10 @@ class FlextTargetMonitoringFactory:
         SOLID REFACTORING: Reduced parameter count from 6 to 1 using Parameter Object Pattern.
 
         Args:
-            request: MonitoredTargetCreationRequest containing all target creation parameters
+        request: MonitoredTargetCreationRequest containing all target creation parameters
 
         Returns:
-            FlextResult containing monitored target or error
+        FlextResult containing monitored target or error
 
         """
         try:
@@ -438,7 +438,7 @@ def create_monitored_oracle_wms_target(
     Uses Parameter Object Pattern internally for better performance.
 
     Args:
-      request: MonitoredTargetCreationRequest with all target creation parameters
+    request: MonitoredTargetCreationRequest with all target creation parameters
 
     """
     factory = FlextTargetMonitoringFactory(request.monitor_name)

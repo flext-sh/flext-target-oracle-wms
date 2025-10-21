@@ -31,13 +31,13 @@ CONFIGURATION = "CONFIGURATION"
 class FlextTargetOracleWmsModels(FlextModels):
     """Oracle WMS target models extending flext-core FlextModels.
 
-    Provides comprehensive models for Oracle Warehouse Management System data loading,
+    Provides complete models for Oracle Warehouse Management System data loading,
     Singer protocol compliance, WMS business rule validation, and target operations
     following standardized patterns.
     """
 
     class WmsAuthenticationConfig(FlextModels.BaseConfig):
-        """Oracle WMS authentication configuration with comprehensive auth support."""
+        """Oracle WMS authentication configuration with complete auth support."""
 
         base_url: str = Field(..., description="Oracle WMS base URL")
         auth_method: Literal[oauth2, basic, api_key] = Field(
@@ -490,7 +490,7 @@ class FlextTargetOracleWmsModels(FlextModels):
         )
 
     class WmsTargetResult(FlextModels.Entity):
-        """Oracle WMS target operation result with comprehensive metrics."""
+        """Oracle WMS target operation result with complete metrics."""
 
         # Processing summary
         total_records_processed: int = Field(

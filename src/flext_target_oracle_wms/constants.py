@@ -17,7 +17,7 @@ class FlextTargetOracleWmsConstants(FlextConstants):
     """Oracle WMS target loading-specific constants following flext-core patterns.
 
     Enhanced Oracle WMS Target constants extending FlextConstants with
-    comprehensive organization, validation limits, and security considerations.
+    complete organization, validation limits, and security considerations.
 
     Composes with FlextOracleWmsConstants to avoid duplication and ensure consistency.
     """
@@ -26,7 +26,7 @@ class FlextTargetOracleWmsConstants(FlextConstants):
     PROJECT_DESCRIPTION: Final[str] = "Oracle WMS target for FLEXT data pipeline"
 
     class OracleWms:
-        """Oracle WMS specific constants with comprehensive configuration."""
+        """Oracle WMS specific constants with complete configuration."""
 
         # Connection defaults from FlextOracleWmsConstants
         DEFAULT_TIMEOUT: Final[int] = FlextOracleWmsConstants.Connection.DEFAULT_TIMEOUT

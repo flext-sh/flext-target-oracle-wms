@@ -42,7 +42,7 @@ logger = FlextLogger(__name__)
 class FlextTargetOracleWmsConfig(FlextConfig):
     """Enhanced Oracle WMS Target Configuration extending FlextConfig.
 
-    Provides comprehensive configuration for Oracle WMS target operations
+    Provides complete configuration for Oracle WMS target operations
     with automatic validation, type safety, and enhanced Pydantic 2.11 features.
     """
 
@@ -521,7 +521,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
             )
 
     def get_config_summary(self) -> dict[str, object]:
-        """Get comprehensive configuration summary."""
+        """Get complete configuration summary."""
         return {
             "connection": {
                 "base_url": self.base_url,
@@ -635,10 +635,10 @@ def create_config_from_dict(
     """Create configuration from dictionary with validation.
 
     Args:
-      config_dict: Raw configuration dictionary
+    config_dict: Raw configuration dictionary
 
     Returns:
-      FlextResult containing validated configuration or error
+    FlextResult containing validated configuration or error
 
     """
     try:
@@ -663,11 +663,11 @@ def create_config_with_preset(
     """Create configuration with preset applied.
 
     Args:
-      base_config: Base configuration dictionary
-      preset_name: Name of preset to apply
+    base_config: Base configuration dictionary
+    preset_name: Name of preset to apply
 
     Returns:
-      FlextResult containing configured instance or error
+    FlextResult containing configured instance or error
 
     """
     try:
