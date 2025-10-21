@@ -18,7 +18,7 @@ from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants
 class FlextTargetOracleWmsUtilities(FlextUtilities):
     """Single unified utilities class for Singer target Oracle WMS operations.
 
-    This class provides comprehensive Oracle WMS target functionality for Singer protocol
+    This class provides complete Oracle WMS target functionality for Singer protocol
     integration, including warehouse operations, inventory management, business rule
     validation, and high-performance data loading for enterprise warehouse systems.
 
@@ -27,7 +27,7 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
     - Warehouse operations management (inventory, shipments, receipts, labor)
     - High-performance bulk WMS operations with transaction management
     - Singer protocol compliance with stream-to-WMS-entity mapping
-    - WMS-specific error handling with comprehensive business rule enforcement
+    - WMS-specific error handling with complete business rule enforcement
     - Enterprise security with WMS authentication and authorization patterns
     - WMS performance monitoring and optimization patterns
 
@@ -60,12 +60,12 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             """Create Singer SCHEMA message for WMS entity definition.
 
             Args:
-                stream_name: Name of the Singer stream
-                schema: JSON schema definition for the stream
-                key_properties: List of key property names
+            stream_name: Name of the Singer stream
+            schema: JSON schema definition for the stream
+            key_properties: List of key property names
 
             Returns:
-                Singer SCHEMA message dictionary
+            Singer SCHEMA message dictionary
 
             """
             return {
@@ -85,12 +85,12 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             """Create Singer RECORD message for WMS data loading.
 
             Args:
-                stream_name: Name of the Singer stream
-                record: WMS record data to load
-                time_extracted: Optional extraction timestamp
+            stream_name: Name of the Singer stream
+            record: WMS record data to load
+            time_extracted: Optional extraction timestamp
 
             Returns:
-                Singer RECORD message dictionary
+            Singer RECORD message dictionary
 
             """
             message = {
@@ -107,10 +107,10 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             """Create Singer STATE message for WMS target checkpointing.
 
             Args:
-                state: State data for checkpointing
+            state: State data for checkpointing
 
             Returns:
-                Singer STATE message dictionary
+            Singer STATE message dictionary
 
             """
             return {"type": "STATE", "value": state}
@@ -122,10 +122,10 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             """Validate Singer message format and required fields.
 
             Args:
-                message: Singer message to validate
+            message: Singer message to validate
 
             Returns:
-                FlextResult containing validated message or error
+            FlextResult containing validated message or error
 
             """
             if not isinstance(message, dict):
@@ -175,12 +175,12 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             """Map Singer stream to Oracle WMS entity configuration.
 
             Args:
-                stream_name: Name of the Singer stream
-                schema: Singer stream schema
-                wms_config: WMS-specific configuration
+            stream_name: Name of the Singer stream
+            schema: Singer stream schema
+            wms_config: WMS-specific configuration
 
             Returns:
-                FlextResult containing WMS entity mapping or error
+            FlextResult containing WMS entity mapping or error
 
             """
             try:
@@ -235,12 +235,12 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             """Validate Oracle WMS business rules for entity record.
 
             Args:
-                entity_type: Type of WMS entity (inventory, shipment, etc.)
-                record: WMS entity record data
-                business_rules: List of business rules to validate
+            entity_type: Type of WMS entity (inventory, shipment, etc.)
+            record: WMS entity record data
+            business_rules: List of business rules to validate
 
             Returns:
-                FlextResult containing validated record or error
+            FlextResult containing validated record or error
 
             """
             try:
@@ -313,11 +313,11 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             """Transform Singer record for Oracle WMS entity loading.
 
             Args:
-                record: Singer record data
-                entity_mapping: WMS entity mapping configuration
+            record: Singer record data
+            entity_mapping: WMS entity mapping configuration
 
             Returns:
-                FlextResult containing transformed record or error
+            FlextResult containing transformed record or error
 
             """
             try:
@@ -383,11 +383,11 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             """Prepare Oracle WMS bulk operation configuration.
 
             Args:
-                records: List of WMS records for bulk operation
-                operation_config: WMS operation configuration
+            records: List of WMS records for bulk operation
+            operation_config: WMS operation configuration
 
             Returns:
-                FlextResult containing bulk operation setup or error
+            FlextResult containing bulk operation setup or error
 
             """
             try:
@@ -448,12 +448,12 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             """Calculate Oracle WMS performance hints for operations.
 
             Args:
-                entity_type: Type of WMS entity
-                record_count: Number of records in operation
-                operation_type: Type of operation (INSERT, UPDATE, DELETE)
+            entity_type: Type of WMS entity
+            record_count: Number of records in operation
+            operation_type: Type of operation (INSERT, UPDATE, DELETE)
 
             Returns:
-                FlextResult containing WMS performance hints or error
+            FlextResult containing WMS performance hints or error
 
             """
             try:
@@ -511,12 +511,12 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             """Process Singer schema stream for WMS entity configuration.
 
             Args:
-                stream_name: Name of the Singer stream
-                schema_message: Singer SCHEMA message
-                wms_config: WMS-specific configuration
+            stream_name: Name of the Singer stream
+            schema_message: Singer SCHEMA message
+            wms_config: WMS-specific configuration
 
             Returns:
-                FlextResult containing processed schema information or error
+            FlextResult containing processed schema information or error
 
             """
             try:
@@ -560,11 +560,11 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             """Batch Singer records for efficient WMS loading operations.
 
             Args:
-                records: List of Singer records
-                batch_size: Size of each batch (default: WMS_DEFAULT_BATCH_SIZE)
+            records: List of Singer records
+            batch_size: Size of each batch (default: WMS_DEFAULT_BATCH_SIZE)
 
             Returns:
-                FlextResult containing list of batches or error
+            FlextResult containing list of batches or error
 
             """
             actual_batch_size = (
@@ -599,10 +599,10 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             """Validate Oracle WMS connection configuration.
 
             Args:
-                config: WMS connection configuration
+            config: WMS connection configuration
 
             Returns:
-                FlextResult containing validated config or error
+            FlextResult containing validated config or error
 
             """
             required_fields = ["base_url", "company_code", "facility_code"]
@@ -642,10 +642,10 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             """Validate Oracle WMS target-specific configuration.
 
             Args:
-                config: WMS target configuration
+            config: WMS target configuration
 
             Returns:
-                FlextResult containing validated config or error
+            FlextResult containing validated config or error
 
             """
             # Validate batch size
@@ -701,11 +701,11 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             """Create Oracle WMS target state for Singer checkpointing.
 
             Args:
-                entity_states: Dictionary of WMS entity states
-                target_metadata: Optional target-specific metadata
+            entity_states: Dictionary of WMS entity states
+            target_metadata: Optional target-specific metadata
 
             Returns:
-                FlextResult containing WMS target state or error
+            FlextResult containing WMS target state or error
 
             """
             try:
@@ -734,12 +734,12 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             """Update state for a specific WMS entity.
 
             Args:
-                current_state: Current Singer state
-                entity_type: Type of WMS entity
-                loading_result: WMS loading result data
+            current_state: Current Singer state
+            entity_type: Type of WMS entity
+            loading_result: WMS loading result data
 
             Returns:
-                FlextResult containing updated state or error
+            FlextResult containing updated state or error
 
             """
             try:
@@ -774,12 +774,12 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             """Calculate optimal batch size for WMS operations.
 
             Args:
-                entity_type: Type of WMS entity
-                record_size_bytes: Average size of record in bytes
-                available_memory_mb: Available memory for batching in MB
+            entity_type: Type of WMS entity
+            record_size_bytes: Average size of record in bytes
+            available_memory_mb: Available memory for batching in MB
 
             Returns:
-                FlextResult containing optimal batch size or error
+            FlextResult containing optimal batch size or error
 
             """
             try:
@@ -826,13 +826,13 @@ class FlextTargetOracleWmsUtilities(FlextUtilities):
             """Estimate Oracle WMS operation completion time.
 
             Args:
-                entity_type: Type of WMS entity
-                record_count: Number of records to process
-                batch_size: Batch size for processing
-                parallel_degree: Degree of parallelism
+            entity_type: Type of WMS entity
+            record_count: Number of records to process
+            batch_size: Batch size for processing
+            parallel_degree: Degree of parallelism
 
             Returns:
-                FlextResult containing estimated time in seconds or error
+            FlextResult containing estimated time in seconds or error
 
             """
             try:

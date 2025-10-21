@@ -35,7 +35,7 @@ def _normalize_oracle_identifier(name: str) -> str:
     SOLID REFACTORING: Replaced local implementation with flext-oracle-wms library function.
 
     Returns:
-            str:: Description of return value.
+    str:: Description of return value.
 
     """
     # Oracle identifier maximum length constraint
@@ -69,7 +69,7 @@ def get_oracle_type_mapping(json_type: str | None) -> str:
     SOLID REFACTORING: Delegate to flext-oracle-wms library for type mappings.
 
     Returns:
-            str:: Description of return value.
+    str:: Description of return value.
 
     """
     # Use flext-oracle-wms defaults where available
@@ -96,7 +96,7 @@ def get_wms_metadata_columns() -> list[str]:
     SOLID REFACTORING: Use flext-oracle-wms library constants for metadata.
 
     Returns:
-            list[str]:: Description of return value.
+    list[str]:: Description of return value.
 
     """
     return [
@@ -127,7 +127,7 @@ class WMSTypeConverter:
         """Convert Singer type to Oracle-compatible type using flext-oracle-wms.
 
         Returns:
-            object: Description of return value.
+        object: Description of return value.
 
         """
         try:
