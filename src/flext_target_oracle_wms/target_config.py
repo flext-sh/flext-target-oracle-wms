@@ -19,13 +19,13 @@ from flext_core import (
     FlextConfig,
     FlextConstants,
     FlextLogger,
-    FlextModels,
     FlextResult,
     FlextTypes,
 )
 from flext_meltano import SingerConstants
 from flext_oracle_wms import FlextOracleWmsApiVersion, FlextOracleWmsClientConfig
 from pydantic import (
+    AnyUrl,
     Field,
     SettingsConfigDict,
     ValidationInfo,
@@ -78,7 +78,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
     )
 
     # Oracle WMS Connection with enhanced validation
-    base_url: str = Field(
+    base_url: AnyUrl = Field(
         description="Oracle WMS base URL",
         examples=["https://invalid.wms.ocs.oraclecloud.com"],
         min_length=1,
@@ -250,20 +250,6 @@ class FlextTargetOracleWmsConfig(FlextConfig):
             msg = f"Invalid load_method: {v}. Must be one of {valid_methods}"
             raise ValueError(msg)
         return v.upper()
-
-    @field_validator("base_url")
-    @classmethod
-    def validate_base_url(cls, v: str) -> str:
-        """Enhanced base URL validation using centralized FlextModels validation."""
-        stripped_url = v.rstrip("/")  # Remove trailing slash
-
-        # Use centralized FlextModels validation
-        validation_result = FlextModels.create_validated_http_url(stripped_url)
-        if validation_result.is_failure:
-            error_msg = f"Invalid base URL: {validation_result.error}"
-            raise ValueError(error_msg)
-
-        return stripped_url
 
     @field_validator("environment")
     @classmethod
