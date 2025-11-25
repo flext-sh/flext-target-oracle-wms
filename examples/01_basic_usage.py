@@ -90,8 +90,8 @@ def run_basic_example() -> None:
         try:
             target.handle_schema_message(schema_message)
             logger.info("Schema processed successfully")
-        except Exception as e:
-            logger.exception(f"Schema processing failed: {e}")
+        except Exception:
+            logger.exception("Schema processing failed")
             return
 
         # Process REAL inventory records
@@ -140,8 +140,8 @@ def run_basic_example() -> None:
             try:
                 target.handle_record_message(record_message)
                 logger.debug("Record processed successfully")
-            except Exception as e:
-                logger.exception(f"Record processing failed: {e}")
+            except Exception:
+                logger.exception("Record processing failed")
                 continue
 
             logger.info(f"Processed record for item {record_data['item_id']}")
@@ -161,8 +161,8 @@ def run_basic_example() -> None:
         try:
             target.handle_state_message(state_message)
             logger.info("State processed successfully")
-        except Exception as e:
-            logger.exception(f"State processing failed: {e}")
+        except Exception:
+            logger.exception("State processing failed")
 
         # Finalize target - REAL cleanup
         cleanup_result = target.cleanup()

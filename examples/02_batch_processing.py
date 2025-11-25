@@ -137,8 +137,8 @@ def _process_batch_size(target: SingerTargetOracleWMS, batch_size: int) -> None:
             try:
                 target.handle_record_message(record_message)
                 logger.debug("Record processed successfully")
-            except Exception as e:
-                logger.exception(f"Record processing failed: {e}")
+            except Exception:
+                logger.exception("Record processing failed")
                 continue
             success_count += 1
 
@@ -189,8 +189,8 @@ def run_performance_batch_example() -> None:
         try:
             target.handle_schema_message(batch_schema)
             logger.debug("Schema processed successfully")
-        except Exception as e:
-            logger.exception(f"Schema processing failed: {e}")
+        except Exception:
+            logger.exception("Schema processing failed")
             return
 
         schema_time = time.time() - schema_start
