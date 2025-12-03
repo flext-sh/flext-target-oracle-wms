@@ -20,7 +20,7 @@ from flext_core import (
     FlextConstants,
     FlextLogger,
     FlextResult,
-    FlextTypes,
+    t,
 )
 from flext_meltano import SingerConstants
 from flext_oracle_wms import FlextOracleWmsApiVersion, FlextOracleWmsClientConfig
@@ -350,7 +350,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
         return self.memory_limit_mb * 1024 * 1024
 
     # Enhanced preset configurations
-    PRESETS: ClassVar[FlextTypes.NestedDict] = {
+    PRESETS: ClassVar[t.NestedDict] = {
         "development": {
             "batch_size": 100,
             "table_prefix": "DEV_",

@@ -13,7 +13,7 @@ from __future__ import annotations
 import json
 from typing import override
 
-from flext_core import FlextLogger, FlextResult, FlextTypes
+from flext_core import FlextLogger, FlextResult, t
 from flext_observability import FlextObservabilityMonitor
 from flext_oracle_wms import (
     FlextOracleWmsDynamicSchemaProcessor,
@@ -145,7 +145,7 @@ class WMSTypeConverter:
     def _convert_by_type(self, singer_type: str, value: object) -> object:
         """Convert value by type using strategy pattern."""
         # Strategy pattern mapping to reduce return statements
-        type_converters: dict[str, FlextTypes.MiddlewareType] = {
+        type_converters: dict[str, t.MiddlewareType] = {
             "string": "str",
             "text": "str",
             "boolean": lambda v: 1 if v else 0,
