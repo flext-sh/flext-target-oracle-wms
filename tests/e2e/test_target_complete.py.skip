@@ -10,18 +10,18 @@ from flext_core import FlextContext
 from flext_core import FlextDecorators
 from flext_core import FlextDispatcher
 from flext_core import FlextExceptions
-from flext_core import FlextHandlers
+from flext_core import h
 from flext_core import FlextLogger
-from flext_core import FlextMixins
+from flext_core import x
 from flext_core import FlextModels
 from flext_core import FlextProcessors
-from flext_core import FlextProtocols
+from flext_core import p
 from flext_core import FlextRegistry
 from flext_core import FlextResult
 from flext_core import FlextRuntime
 from flext_core import FlextService
-from flext_core import FlextTypes
-from flext_core import FlextUtilities
+from flext_core import t
+from flext_core import u
 
 object
 from unittest.mock import Mock
@@ -37,18 +37,18 @@ from flext_core import FlextContext
 from flext_core import FlextDecorators
 from flext_core import FlextDispatcher
 from flext_core import FlextExceptions
-from flext_core import FlextHandlers
+from flext_core import h
 from flext_core import FlextLogger
-from flext_core import FlextMixins
+from flext_core import x
 from flext_core import FlextModels
 from flext_core import FlextProcessors
-from flext_core import FlextProtocols
+from flext_core import p
 from flext_core import FlextRegistry
 from flext_core import FlextResult
 from flext_core import FlextRuntime
 from flext_core import FlextService
-from flext_core import FlextTypes
-from flext_core import FlextUtilities
+from flext_core import t
+from flext_core import u
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
 
@@ -56,7 +56,7 @@ class TestTargetComplete:
     """End-to-end tests for complete target workflow - REAL implementation."""
 
     @pytest.fixture
-    def sample_config(self) -> FlextTypes.Dict:
+    def sample_config(self) -> t.Dict:
         """Sample configuration for testing."""
         return {
             "base_url": "https://test.wms.oracle.com",
@@ -68,7 +68,7 @@ class TestTargetComplete:
         }
 
     @pytest.mark.e2e
-    def test_complete_target_initialization(self, sample_config: FlextTypes.Dict) -> None:
+    def test_complete_target_initialization(self, sample_config: t.Dict) -> None:
         """Test complete target initialization workflow - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -84,7 +84,7 @@ class TestTargetComplete:
         assert target.stream_processor is not None
 
     @pytest.mark.e2e
-    def test_stream_processing_workflow(self, sample_config: FlextTypes.Dict) -> None:
+    def test_stream_processing_workflow(self, sample_config: t.Dict) -> None:
         """Test complete stream processing workflow - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -107,7 +107,7 @@ class TestTargetComplete:
             assert schema_result.success
 
     @pytest.mark.e2e
-    def test_record_processing_workflow(self, sample_config: FlextTypes.Dict) -> None:
+    def test_record_processing_workflow(self, sample_config: t.Dict) -> None:
         """Test complete record processing workflow - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -154,7 +154,7 @@ class TestTargetComplete:
         assert record_result.success
 
     @pytest.mark.e2e
-    def test_business_logic_integration(self, sample_config: FlextTypes.Dict) -> None:
+    def test_business_logic_integration(self, sample_config: t.Dict) -> None:
         """Test business logic integration - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -192,7 +192,7 @@ class TestTargetComplete:
             assert result.success
 
     @pytest.mark.e2e
-    def test_configuration_validation_complete(self, sample_config: FlextTypes.Dict) -> None:
+    def test_configuration_validation_complete(self, sample_config: t.Dict) -> None:
         """Test complete configuration validation - REAL implementation."""
         # Test with valid config
         target = SingerTargetOracleWMS(sample_config)
@@ -212,7 +212,7 @@ class TestTargetComplete:
         assert target.stream_processor is not None
 
     @pytest.mark.e2e
-    def test_error_handling_workflow(self, sample_config: FlextTypes.Dict) -> None:
+    def test_error_handling_workflow(self, sample_config: t.Dict) -> None:
         """Test error handling throughout the target workflow - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -239,7 +239,7 @@ class TestTargetComplete:
                 assert not result.success  # Should fail gracefully
 
     @pytest.mark.e2e
-    def test_multi_stream_handling(self, sample_config: FlextTypes.Dict) -> None:
+    def test_multi_stream_handling(self, sample_config: t.Dict) -> None:
         """Test handling multiple streams simultaneously - REAL implementation."""
         target = SingerTargetOracleWMS(sample_config)
         
@@ -277,7 +277,7 @@ class TestTargetComplete:
             assert record_result.success
 
     @pytest.mark.e2e
-    def test_memory_efficiency(self, sample_config: FlextTypes.Dict) -> None:
+    def test_memory_efficiency(self, sample_config: t.Dict) -> None:
         """Test that target operations are memory efficient - REAL implementation."""
         # Test that multiple target instances don't accumulate memory
         for i in range(5):

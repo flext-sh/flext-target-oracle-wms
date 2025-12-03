@@ -11,7 +11,7 @@ import json
 import sys
 from typing import override
 
-from flext_core import FlextConfig, FlextLogger, FlextResult, FlextTypes
+from flext_core import FlextConfig, FlextLogger, FlextResult, t
 from flext_oracle_wms import (
     FlextOracleWmsApiVersion,
     FlextOracleWmsClientConfig,
@@ -666,7 +666,7 @@ class SingerTargetOracleWMS:
         mapped_environment_str = environment_mapping.get(environment_str, "development")
 
         # Convert to proper Environment type using string literals
-        mapped_environment: FlextTypes.Environment
+        mapped_environment: t.Environment
         if mapped_environment_str == "development":
             mapped_environment = "development"
         elif mapped_environment_str == "test":

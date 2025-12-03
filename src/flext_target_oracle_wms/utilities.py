@@ -10,12 +10,12 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import ClassVar
 
-from flext_core import FlextResult, FlextUtilities
+from flext_core import FlextResult, u
 
 from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants
 
 
-class FlextTargetOracleWmsUtilities(FlextUtilities):
+class FlextTargetOracleWmsUtilities(u):
     """Single unified utilities class for Singer target Oracle WMS operations.
 
     This class provides complete Oracle WMS target functionality for Singer protocol
