@@ -28,7 +28,7 @@ class OracleWMSTargetCli:
         self.version = "0.9.0"
 
     @override
-    def execute(self, **_kwargs: object) -> FlextResult[None]:
+    def execute(self, **kwargs: object) -> FlextResult[None]:
         """Execute target using REAL implementation.
 
         SOLID REFACTORING: Reduced multiple returns (count=6) to single exit point

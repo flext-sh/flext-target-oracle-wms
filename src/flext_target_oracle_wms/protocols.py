@@ -32,7 +32,9 @@ class FlextTargetOracleWmsProtocols:
             def load_data(
                 self,
                 records: list[dict[str, object]],
-            ) -> FlextResult[None]: ...
+            ) -> FlextResult[None]:
+                """Load records into WMS."""
+                ...
 
         @runtime_checkable
         class WarehouseOperationsProtocol(p.Service, Protocol):
@@ -41,7 +43,9 @@ class FlextTargetOracleWmsProtocols:
             def execute_operation(
                 self,
                 operation: dict[str, object],
-            ) -> FlextResult[None]: ...
+            ) -> FlextResult[None]:
+                """Execute warehouse operation."""
+                ...
 
         @runtime_checkable
         class DataTransformationProtocol(p.Service, Protocol):
@@ -50,7 +54,9 @@ class FlextTargetOracleWmsProtocols:
             def transform_to_wms(
                 self,
                 record: dict[str, object],
-            ) -> FlextResult[dict[str, object]]: ...
+            ) -> FlextResult[dict[str, object]]:
+                """Transform record to WMS format."""
+                ...
 
         @runtime_checkable
         class WmsApiProtocol(p.Service, Protocol):
@@ -60,7 +66,9 @@ class FlextTargetOracleWmsProtocols:
                 self,
                 endpoint: str,
                 payload: dict[str, object],
-            ) -> FlextResult[dict[str, object]]: ...
+            ) -> FlextResult[dict[str, object]]:
+                """Invoke WMS API endpoint."""
+                ...
 
         @runtime_checkable
         class BatchProcessingProtocol(p.Service, Protocol):
@@ -69,7 +77,9 @@ class FlextTargetOracleWmsProtocols:
             def process_batch(
                 self,
                 records: list[dict[str, object]],
-            ) -> FlextResult[None]: ...
+            ) -> FlextResult[None]:
+                """Process batch of WMS records."""
+                ...
 
         @runtime_checkable
         class ValidationProtocol(p.Service, Protocol):
@@ -78,7 +88,9 @@ class FlextTargetOracleWmsProtocols:
             def validate_wms_data(
                 self,
                 data: dict[str, object],
-            ) -> FlextResult[bool]: ...
+            ) -> FlextResult[bool]:
+                """Validate WMS data."""
+                ...
 
         @runtime_checkable
         class PerformanceProtocol(p.Service, Protocol):
@@ -87,7 +99,9 @@ class FlextTargetOracleWmsProtocols:
             def optimize_loading(
                 self,
                 config: dict[str, object],
-            ) -> FlextResult[dict[str, object]]: ...
+            ) -> FlextResult[dict[str, object]]:
+                """Optimize WMS loading configuration."""
+                ...
 
         @runtime_checkable
         class MonitoringProtocol(p.Service, Protocol):
@@ -97,7 +111,9 @@ class FlextTargetOracleWmsProtocols:
                 self,
                 entity: str,
                 records: int,
-            ) -> FlextResult[None]: ...
+            ) -> FlextResult[None]:
+                """Track WMS loading progress."""
+                ...
 
     # ============================================================================
     # BACKWARD COMPATIBILITY ALIASES (100% COMPATIBILITY)
