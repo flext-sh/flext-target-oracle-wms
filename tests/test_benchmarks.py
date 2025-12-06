@@ -30,7 +30,8 @@ class TestFactoryPerformanceBenchmarks:
     """Benchmark factory pattern performance for production optimization."""
 
     def test_benchmark_factory_target_creation_performance(
-        self, benchmark: Callable
+        self,
+        benchmark: Callable,
     ) -> None:
         """Benchmark target creation performance with factory patterns."""
 
@@ -54,7 +55,8 @@ class TestFactoryPerformanceBenchmarks:
         assert result is not None
 
     def test_benchmark_preset_configuration_performance(
-        self, benchmark: Callable
+        self,
+        benchmark: Callable,
     ) -> None:
         """Benchmark preset configuration application performance."""
 
@@ -80,7 +82,8 @@ class TestFactoryPerformanceBenchmarks:
         assert all("batch_size" in config for config in configs)
 
     def test_benchmark_monitored_target_creation_performance(
-        self, benchmark: Callable
+        self,
+        benchmark: Callable,
     ) -> None:
         """Benchmark monitoring factory creation performance."""
 
@@ -117,7 +120,8 @@ class TestPatternsPerformanceBenchmarks:
     """Benchmark WMS patterns performance for optimization."""
 
     def test_benchmark_wms_data_transformation_performance(
-        self, benchmark: Callable
+        self,
+        benchmark: Callable,
     ) -> None:
         """Benchmark data transformation performance."""
         # Create test data
@@ -143,7 +147,8 @@ class TestPatternsPerformanceBenchmarks:
         assert len(transformed) > 0
 
     def test_benchmark_wms_schema_mapping_performance(
-        self, benchmark: Callable
+        self,
+        benchmark: Callable,
     ) -> None:
         """Benchmark schema mapping performance."""
         # Create complex schema
@@ -183,7 +188,8 @@ class TestPatternsPerformanceBenchmarks:
         assert len(mapped_schema) > 0
 
     def test_benchmark_wms_type_conversion_performance(
-        self, benchmark: Callable
+        self,
+        benchmark: Callable,
     ) -> None:
         """Benchmark type conversion performance."""
         converter = WMSTypeConverter()
@@ -211,7 +217,8 @@ class TestPatternsPerformanceBenchmarks:
         assert len(converted) == len(test_conversions)
 
     def test_benchmark_wms_sql_generation_performance(
-        self, benchmark: Callable
+        self,
+        benchmark: Callable,
     ) -> None:
         """Benchmark SQL generation performance."""
         manager = WMSTableManager()
@@ -253,7 +260,8 @@ class TestStreamPerformanceBenchmarks:
     """Benchmark stream processing performance."""
 
     def test_benchmark_wms_stream_processing_performance(
-        self, benchmark: Callable
+        self,
+        benchmark: Callable,
     ) -> None:
         """Benchmark stream processing performance."""
         table_manager = WMSTableManager()
@@ -301,7 +309,8 @@ class TestCatalogPerformanceBenchmarks:
     """Benchmark catalog management performance."""
 
     def test_benchmark_wms_catalog_operations_performance(
-        self, benchmark: Callable
+        self,
+        benchmark: Callable,
     ) -> None:
         """Benchmark catalog operations performance."""
         manager = SingerWMSCatalogManager()
@@ -354,7 +363,8 @@ class TestIntegrationPerformanceBenchmarks:
     """Benchmark complete integration workflows."""
 
     def test_benchmark_complete_wms_workflow_performance(
-        self, benchmark: Callable
+        self,
+        benchmark: Callable,
     ) -> None:
         """Benchmark complete end-to-end workflow performance."""
 
@@ -432,7 +442,8 @@ class TestMemoryEfficiencyBenchmarks:
     """Benchmark memory efficiency for large-scale operations."""
 
     def test_benchmark_memory_efficient_batch_processing(
-        self, benchmark: Callable
+        self,
+        benchmark: Callable,
     ) -> None:
         """Benchmark memory usage during large batch processing."""
         table_manager = WMSTableManager()

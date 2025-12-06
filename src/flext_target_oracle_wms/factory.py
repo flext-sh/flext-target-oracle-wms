@@ -362,7 +362,7 @@ class FlextTargetMonitoringFactory:
                 additional_config=request.additional_config,
             )
             target_result: FlextResult[object] = self.factory.create_target(
-                target_request
+                target_request,
             )
 
             if not target_result.success:

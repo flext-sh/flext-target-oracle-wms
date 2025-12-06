@@ -98,7 +98,8 @@ class TestExamplesCodeQuality:
                 )
 
     def test_examples_have_comprehensive_docstrings(
-        self, example_files: list[Path]
+        self,
+        example_files: list[Path],
     ) -> None:
         """Test that examples have comprehensive docstrings."""
         for example_file in example_files:
@@ -234,7 +235,8 @@ class TestExamplesCodeQuality:
             )
 
     def test_examples_have_main_execution_blocks(
-        self, example_files: list[Path]
+        self,
+        example_files: list[Path],
     ) -> None:
         """Test that examples have proper main execution blocks."""
         for example_file in example_files:

@@ -464,7 +464,10 @@ class WMSTableManager:
             stmt: Insert = insert(table)
 
             logger.info(
-                f"Generated SQLAlchemy 2.0 INSERT statement for {schema_name}.{table_name} with columns: {columns}",
+                "Generated SQLAlchemy 2.0 INSERT statement for %s.%s with columns: %s",
+                schema_name,
+                table_name,
+                columns,
             )
             return FlextResult[Insert].ok(stmt)
 

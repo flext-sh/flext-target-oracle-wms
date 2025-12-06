@@ -270,7 +270,8 @@ class SingerWMSCatalogManager:
                 metadata: dict[str, object] = stream_dict.get("metadata", [])
                 key_properties: list[object] = stream_dict.get("key_properties", [])
                 bookmark_properties: list[object] = stream_dict.get(
-                    "bookmark_properties", []
+                    "bookmark_properties",
+                    [],
                 )
                 replication_method = stream_dict.get("replication_method", "FULL_TABLE")
                 replication_key = stream_dict.get("replication_key")
@@ -387,7 +388,8 @@ class SingerWMSStreamProcessor:
         try:
             if stream_name not in self._stream_stats:
                 init_result: FlextResult[object] = self.initialize_stream(
-                    stream_name, {}
+                    stream_name,
+                    {},
                 )
                 if not init_result.success:
                     return FlextResult[dict[str, object]].fail(
@@ -432,7 +434,8 @@ class SingerWMSStreamProcessor:
         try:
             if stream_name not in self._stream_stats:
                 init_result: FlextResult[object] = self.initialize_stream(
-                    stream_name, {}
+                    stream_name,
+                    {},
                 )
                 if not init_result.success:
                     return FlextResult[list[dict[str, object]]].fail(
@@ -444,7 +447,8 @@ class SingerWMSStreamProcessor:
 
             for record in records:
                 process_result: FlextResult[object] = self.process_record(
-                    stream_name, record
+                    stream_name,
+                    record,
                 )
                 if process_result.success:
                     processed_records.append(process_result.value)
@@ -802,7 +806,8 @@ class SingerTargetOracleWMS:
 
             # Add stream to catalog
             add_result: FlextResult[object] = self.catalog_manager.add_stream(
-                stream_name, schema
+                stream_name,
+                schema,
             )
             if not add_result.success:
                 logger.error("Failed to add stream to catalog: %s", add_result.error)

@@ -51,7 +51,7 @@ class OracleWMSTargetCli:
                 config: dict[str, object] = config_result.data
                 if config is None:
                     result: FlextResult[object] = FlextResult[None].fail(
-                        "Configuration data is None"
+                        "Configuration data is None",
                     )
                 else:
                     # Continue with target setup and processing
@@ -59,7 +59,7 @@ class OracleWMSTargetCli:
 
         except Exception as e:
             result: FlextResult[object] = FlextResult[None].fail(
-                f"CLI execution failed: {e}"
+                f"CLI execution failed: {e}",
             )
 
         return result

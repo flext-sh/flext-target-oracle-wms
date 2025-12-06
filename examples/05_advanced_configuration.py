@@ -371,7 +371,7 @@ def demonstrate_custom_components() -> None:
 
     # Generate table with custom prefix
     table_name = table_manager.generate_table_name("inventory", "CUSTOM")
-    logger.info(f"Generated table name: {table_name}")
+    logger.info("Generated table name: %s", table_name)
 
     # Custom schema mapper
     schema_mapper = WMSSchemaMapper()
