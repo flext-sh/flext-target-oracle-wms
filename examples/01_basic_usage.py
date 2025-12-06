@@ -223,22 +223,22 @@ def run_from_singer_files() -> None:
                 try:
                     target.handle_schema_message(message)
                     result = None  # Success
-                except Exception as e:
-                    logger.exception("Schema processing failed: %s", e)
+                except Exception as e:  # noqa: F841
+                    logger.exception("Schema processing failed")
                     continue
             elif message["type"] == "RECORD":
                 try:
                     target.handle_record_message(message)
                     result = None  # Success
-                except Exception as e:
-                    logger.exception("Record processing failed: %s", e)
+                except Exception as e:  # noqa: F841
+                    logger.exception("Record processing failed")
                     continue
             elif message["type"] == "STATE":
                 try:
                     target.handle_state_message(message)
                     result = None  # Success
-                except Exception as e:
-                    logger.exception("State processing failed: %s", e)
+                except Exception as e:  # noqa: F841
+                    logger.exception("State processing failed")
                     continue
             else:
                 logger.warning(f"Unknown message type: {message['type']}")
