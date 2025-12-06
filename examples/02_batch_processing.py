@@ -32,7 +32,7 @@ monitor = FlextObservabilityMonitor()
 
 def generate_test_data(num_records: int) -> list[dict[str, object]]:
     """Generate test data for batch processing demonstration."""
-    logger.info(f"Generating {num_records} test records")
+    logger.info("Generating %s test records", num_records)
 
     records = []
     for i in range(num_records):
@@ -108,7 +108,7 @@ def _create_batch_schema() -> dict[str, object]:
 
 def _process_batch_size(target: SingerTargetOracleWMS, batch_size: int) -> None:
     """Process a specific batch size and log performance metrics."""
-    logger.info(f"Testing batch size: {batch_size}")
+    logger.info("Testing batch size: %s", batch_size)
 
     # Generate test data
     test_data = generate_test_data(batch_size)

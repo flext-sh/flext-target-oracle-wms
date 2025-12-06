@@ -213,7 +213,7 @@ def demonstrate_error_handling() -> None:
             username="test_user",
             password=DEMO_PASSWORD,
             environment="test",
-        )
+        ),
     )
 
     if unknown_preset_result.is_success:

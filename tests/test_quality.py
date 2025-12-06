@@ -189,7 +189,7 @@ def test_table_management() -> bool | None:
 
         insert_sql = insert_result.data
         return bool(
-            insert_sql and isinstance(insert_sql, str) and "INSERT" in insert_sql
+            insert_sql and isinstance(insert_sql, str) and "INSERT" in insert_sql,
         )
 
     except Exception:

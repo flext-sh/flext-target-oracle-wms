@@ -465,7 +465,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
             }
             if self.load_method.upper() not in valid_methods:
                 return FlextResult[None].fail(
-                    f"Invalid load_method: {self.load_method}"
+                    f"Invalid load_method: {self.load_method}",
                 )
 
             # Validate credentials are provided
@@ -477,7 +477,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
             # Validate plugin settings
             if self.enable_plugins and not Path(self.plugin_directory).exists():
                 return FlextResult[None].fail(
-                    f"Plugin directory does not exist: {self.plugin_directory}"
+                    f"Plugin directory does not exist: {self.plugin_directory}",
                 )
 
             return FlextResult[None].ok(None)
@@ -490,7 +490,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
             if preset_name not in self.PRESETS:
                 available = list(self.PRESETS.keys())
                 return FlextResult[FlextTargetOracleWmsConfig].fail(
-                    f"Unknown preset '{preset_name}'. Available: {available}"
+                    f"Unknown preset '{preset_name}'. Available: {available}",
                 )
 
             preset_values = self.PRESETS[preset_name]
@@ -498,12 +498,12 @@ class FlextTargetOracleWmsConfig(FlextConfig):
             updated_data.update(preset_values)
 
             updated_config = self.__class__(**updated_data)
-            logger.info(f"Applied configuration preset: {preset_name}")
+            logger.info("Applied configuration preset: %s", preset_name)
             return FlextResult[FlextTargetOracleWmsConfig].ok(updated_config)
 
         except Exception as e:
             return FlextResult[FlextTargetOracleWmsConfig].fail(
-                f"Failed to apply preset {preset_name}: {e}"
+                f"Failed to apply preset {preset_name}: {e}",
             )
 
     def get_config_summary(self) -> dict[str, object]:
@@ -571,7 +571,8 @@ class FlextTargetOracleWmsConfig(FlextConfig):
             **overrides,
         }
         return cls.get_or_create_shared_instance(
-            project_name="flext-target-oracle-wms", **dev_overrides
+            project_name="flext-target-oracle-wms",
+            **dev_overrides,
         )
 
     @classmethod
@@ -591,7 +592,8 @@ class FlextTargetOracleWmsConfig(FlextConfig):
             **overrides,
         }
         return cls.get_or_create_shared_instance(
-            project_name="flext-target-oracle-wms", **prod_overrides
+            project_name="flext-target-oracle-wms",
+            **prod_overrides,
         )
 
     @classmethod
@@ -611,7 +613,8 @@ class FlextTargetOracleWmsConfig(FlextConfig):
             **overrides,
         }
         return cls.get_or_create_shared_instance(
-            project_name="flext-target-oracle-wms", **test_overrides
+            project_name="flext-target-oracle-wms",
+            **test_overrides,
         )
 
 
@@ -630,7 +633,7 @@ def create_config_from_dict(
     try:
         # Use model_validate for proper type conversion from dict
         config: dict[str, object] = FlextTargetOracleWmsConfig.model_validate(
-            config_dict
+            config_dict,
         )
         logger.debug("Configuration created and validated successfully")
         return FlextResult["FlextTargetOracleWmsConfig"].ok(config)
@@ -638,7 +641,7 @@ def create_config_from_dict(
     except Exception as e:
         logger.exception("Configuration validation failed")
         return FlextResult["FlextTargetOracleWmsConfig"].fail(
-            f"Invalid configuration: {e}"
+            f"Invalid configuration: {e}",
         )
 
 

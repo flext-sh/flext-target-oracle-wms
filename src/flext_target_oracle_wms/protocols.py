@@ -30,7 +30,8 @@ class FlextTargetOracleWmsProtocols:
             """Protocol for WMS data loading."""
 
             def load_data(
-                self, records: list[dict[str, object]]
+                self,
+                records: list[dict[str, object]],
             ) -> FlextResult[None]: ...
 
         @runtime_checkable
@@ -38,7 +39,8 @@ class FlextTargetOracleWmsProtocols:
             """Protocol for WMS warehouse operations."""
 
             def execute_operation(
-                self, operation: dict[str, object]
+                self,
+                operation: dict[str, object],
             ) -> FlextResult[None]: ...
 
         @runtime_checkable
@@ -46,7 +48,8 @@ class FlextTargetOracleWmsProtocols:
             """Protocol for Singer to WMS transformation."""
 
             def transform_to_wms(
-                self, record: dict[str, object]
+                self,
+                record: dict[str, object],
             ) -> FlextResult[dict[str, object]]: ...
 
         @runtime_checkable
@@ -54,7 +57,9 @@ class FlextTargetOracleWmsProtocols:
             """Protocol for WMS API operations."""
 
             def invoke_api(
-                self, endpoint: str, payload: dict[str, object]
+                self,
+                endpoint: str,
+                payload: dict[str, object],
             ) -> FlextResult[dict[str, object]]: ...
 
         @runtime_checkable
@@ -62,7 +67,8 @@ class FlextTargetOracleWmsProtocols:
             """Protocol for WMS batch processing."""
 
             def process_batch(
-                self, records: list[dict[str, object]]
+                self,
+                records: list[dict[str, object]],
             ) -> FlextResult[None]: ...
 
         @runtime_checkable
@@ -70,7 +76,8 @@ class FlextTargetOracleWmsProtocols:
             """Protocol for WMS data validation."""
 
             def validate_wms_data(
-                self, data: dict[str, object]
+                self,
+                data: dict[str, object],
             ) -> FlextResult[bool]: ...
 
         @runtime_checkable
@@ -78,7 +85,8 @@ class FlextTargetOracleWmsProtocols:
             """Protocol for WMS performance optimization."""
 
             def optimize_loading(
-                self, config: dict[str, object]
+                self,
+                config: dict[str, object],
             ) -> FlextResult[dict[str, object]]: ...
 
         @runtime_checkable
@@ -86,34 +94,84 @@ class FlextTargetOracleWmsProtocols:
             """Protocol for WMS loading monitoring."""
 
             def track_load_progress(
-                self, entity: str, records: int
+                self,
+                entity: str,
+                records: int,
             ) -> FlextResult[None]: ...
 
     # ============================================================================
     # BACKWARD COMPATIBILITY ALIASES (100% COMPATIBILITY)
     # ============================================================================
 
-    WmsDataLoadingProtocol = TargetOracleWms.WmsDataLoadingProtocol
-    WarehouseOperationsProtocol = TargetOracleWms.WarehouseOperationsProtocol
-    DataTransformationProtocol = TargetOracleWms.DataTransformationProtocol
-    WmsApiProtocol = TargetOracleWms.WmsApiProtocol
-    BatchProcessingProtocol = TargetOracleWms.BatchProcessingProtocol
-    ValidationProtocol = TargetOracleWms.ValidationProtocol
-    PerformanceProtocol = TargetOracleWms.PerformanceProtocol
-    MonitoringProtocol = TargetOracleWms.MonitoringProtocol
+    @runtime_checkable
+    class WmsDataLoadingProtocol(TargetOracleWms.WmsDataLoadingProtocol):
+        """WmsDataLoadingProtocol - real inheritance."""
 
-    TargetOracleWmsDataLoadingProtocol = TargetOracleWms.WmsDataLoadingProtocol
-    TargetOracleWmsWarehouseOperationsProtocol = (
-        TargetOracleWms.WarehouseOperationsProtocol
-    )
-    TargetOracleWmsDataTransformationProtocol = (
-        TargetOracleWms.DataTransformationProtocol
-    )
-    TargetOracleWmsApiProtocol = TargetOracleWms.WmsApiProtocol
-    TargetOracleWmsBatchProcessingProtocol = TargetOracleWms.BatchProcessingProtocol
-    TargetOracleWmsValidationProtocol = TargetOracleWms.ValidationProtocol
-    TargetOracleWmsPerformanceProtocol = TargetOracleWms.PerformanceProtocol
-    TargetOracleWmsMonitoringProtocol = TargetOracleWms.MonitoringProtocol
+    @runtime_checkable
+    class WarehouseOperationsProtocol(TargetOracleWms.WarehouseOperationsProtocol):
+        """WarehouseOperationsProtocol - real inheritance."""
+
+    @runtime_checkable
+    class DataTransformationProtocol(TargetOracleWms.DataTransformationProtocol):
+        """DataTransformationProtocol - real inheritance."""
+
+    @runtime_checkable
+    class WmsApiProtocol(TargetOracleWms.WmsApiProtocol):
+        """WmsApiProtocol - real inheritance."""
+
+    @runtime_checkable
+    class BatchProcessingProtocol(TargetOracleWms.BatchProcessingProtocol):
+        """BatchProcessingProtocol - real inheritance."""
+
+    @runtime_checkable
+    class ValidationProtocol(TargetOracleWms.ValidationProtocol):
+        """ValidationProtocol - real inheritance."""
+
+    @runtime_checkable
+    class PerformanceProtocol(TargetOracleWms.PerformanceProtocol):
+        """PerformanceProtocol - real inheritance."""
+
+    @runtime_checkable
+    class MonitoringProtocol(TargetOracleWms.MonitoringProtocol):
+        """MonitoringProtocol - real inheritance."""
+
+    @runtime_checkable
+    class TargetOracleWmsDataLoadingProtocol(TargetOracleWms.WmsDataLoadingProtocol):
+        """TargetOracleWmsDataLoadingProtocol - real inheritance."""
+
+    @runtime_checkable
+    class TargetOracleWmsWarehouseOperationsProtocol(
+        TargetOracleWms.WarehouseOperationsProtocol,
+    ):
+        """TargetOracleWmsWarehouseOperationsProtocol - real inheritance."""
+
+    @runtime_checkable
+    class TargetOracleWmsDataTransformationProtocol(
+        TargetOracleWms.DataTransformationProtocol,
+    ):
+        """TargetOracleWmsDataTransformationProtocol - real inheritance."""
+
+    @runtime_checkable
+    class TargetOracleWmsApiProtocol(TargetOracleWms.WmsApiProtocol):
+        """TargetOracleWmsApiProtocol - real inheritance."""
+
+    @runtime_checkable
+    class TargetOracleWmsBatchProcessingProtocol(
+        TargetOracleWms.BatchProcessingProtocol,
+    ):
+        """TargetOracleWmsBatchProcessingProtocol - real inheritance."""
+
+    @runtime_checkable
+    class TargetOracleWmsValidationProtocol(TargetOracleWms.ValidationProtocol):
+        """TargetOracleWmsValidationProtocol - real inheritance."""
+
+    @runtime_checkable
+    class TargetOracleWmsPerformanceProtocol(TargetOracleWms.PerformanceProtocol):
+        """TargetOracleWmsPerformanceProtocol - real inheritance."""
+
+    @runtime_checkable
+    class TargetOracleWmsMonitoringProtocol(TargetOracleWms.MonitoringProtocol):
+        """TargetOracleWmsMonitoringProtocol - real inheritance."""
 
 
 __all__ = [

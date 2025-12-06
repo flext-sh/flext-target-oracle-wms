@@ -40,7 +40,8 @@ class TestFlextTargetFactory:
 
     @patch("flext_target_oracle_wms.factory.SingerTargetOracleWMS")
     def test_factory_create_with_development_preset(
-        self, mock_target_class: MagicMock
+        self,
+        mock_target_class: MagicMock,
     ) -> None:
         """Test creating target with development preset."""
         mock_target = MagicMock()
@@ -71,7 +72,8 @@ class TestFlextTargetFactory:
 
     @patch("flext_target_oracle_wms.factory.SingerTargetOracleWMS")
     def test_factory_create_with_config_overrides(
-        self, mock_target_class: MagicMock
+        self,
+        mock_target_class: MagicMock,
     ) -> None:
         """Test creating target with configuration overrides."""
         mock_target = MagicMock()
@@ -100,7 +102,8 @@ class TestFlextTargetFactory:
 
     @patch("flext_target_oracle_wms.factory.SingerTargetOracleWMS")
     def test_factory_create_with_unknown_preset_warning(
-        self, mock_target_class: MagicMock
+        self,
+        mock_target_class: MagicMock,
     ) -> None:
         """Test creating target with unknown preset logs warning but succeeds."""
         mock_target = MagicMock()
@@ -144,7 +147,8 @@ class TestFlextTargetFactory:
 
     @patch("flext_target_oracle_wms.factory.SingerTargetOracleWMS")
     def test_factory_development_target_convenience_method(
-        self, mock_target_class: MagicMock
+        self,
+        mock_target_class: MagicMock,
     ) -> None:
         """Test development target convenience method."""
         mock_target = MagicMock()
@@ -165,7 +169,8 @@ class TestFlextTargetFactory:
 
     @patch("flext_target_oracle_wms.factory.SingerTargetOracleWMS")
     def test_factory_production_target_convenience_method(
-        self, mock_target_class: MagicMock
+        self,
+        mock_target_class: MagicMock,
     ) -> None:
         """Test production target convenience method."""
         mock_target = MagicMock()
@@ -191,7 +196,8 @@ class TestFlextTargetFactory:
 
     @patch("flext_target_oracle_wms.factory.SingerTargetOracleWMS")
     def test_factory_testing_target_convenience_defaults(
-        self, mock_target_class: MagicMock
+        self,
+        mock_target_class: MagicMock,
     ) -> None:
         """Test testing target convenience method with defaults."""
         mock_target = MagicMock()
@@ -401,7 +407,8 @@ class TestFactoryConvenienceFunctions:
 
     @patch("flext_target_oracle_wms.factory.FlextTargetFactory.create_target")
     def test_convenience_create_oracle_wms_target(
-        self, mock_create_target: MagicMock
+        self,
+        mock_create_target: MagicMock,
     ) -> None:
         """Test convenience function for creating Oracle WMS target."""
         mock_target = MagicMock()
