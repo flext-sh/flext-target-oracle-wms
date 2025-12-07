@@ -2,194 +2,208 @@
 
 from typing import Protocol, runtime_checkable
 
-from flext_core import FlextResult, p
+from flext_db_oracle.protocols import FlextDbOracleProtocols as p_db_oracle
+from flext_meltano.protocols import FlextMeltanoProtocols as p_meltano
 
 
-class FlextTargetOracleWmsProtocols:
-    """Singer Target Oracle WMS protocols with explicit re-exports from p foundation.
+class FlextTargetOracleWmsProtocols(p_meltano, p_db_oracle):
+    """Singer Target Oracle WMS protocols extending Oracle and Meltano protocols.
 
-    Domain Extension Pattern (Phase 3):
-    - Explicit re-export of foundation protocols (not inheritance)
-    - Domain-specific protocols organized in TargetOracleWms namespace
-    - 100% backward compatibility through aliases
+    Extends both FlextDbOracleProtocols and FlextMeltanoProtocols via multiple inheritance
+    to inherit all Oracle protocols, Meltano protocols, and foundation protocols.
+
+    Architecture:
+    - EXTENDS: FlextDbOracleProtocols (inherits .Database.* protocols)
+    - EXTENDS: FlextMeltanoProtocols (inherits .Meltano.* protocols)
+    - ADDS: Target Oracle WMS-specific protocols in TargetOracleWms namespace
+    - PROVIDES: Root-level alias `p` for convenient access
     """
 
-    # ============================================================================
-    # RE-EXPORT FOUNDATION PROTOCOLS (EXPLICIT PATTERN)
-    # ============================================================================
-
-    # ============================================================================
-    # SINGER TARGET ORACLE WMS-SPECIFIC PROTOCOLS (DOMAIN NAMESPACE)
-    # ============================================================================
-
     class TargetOracleWms:
-        """Singer Target Oracle WMS domain protocols for Oracle WMS loading."""
+        """Singer Target Oracle WMS domain protocols for Oracle WMS loading.
+
+        Provides protocol definitions for Oracle WMS operations, including data loading,
+        warehouse operations, data transformation, API operations, batch processing,
+        data validation, performance optimization, and loading monitoring.
+        """
 
         @runtime_checkable
-        class WmsDataLoadingProtocol(p.Service, Protocol):
-            """Protocol for WMS data loading."""
+        class WmsDataLoadingProtocol(p_db_oracle.Service[object], Protocol):
+            """Protocol for WMS data loading.
+
+            Defines the interface for loading data into Oracle WMS.
+            """
 
             def load_data(
                 self,
                 records: list[dict[str, object]],
-            ) -> FlextResult[None]:
-                """Load records into WMS."""
-                ...
+            ) -> p_meltano.Result[bool]:
+                """Load records into WMS.
+
+                Args:
+                    records: List of records to load.
+
+                Returns:
+                    Result indicating success or failure of the loading operation.
+
+                """
 
         @runtime_checkable
-        class WarehouseOperationsProtocol(p.Service, Protocol):
-            """Protocol for WMS warehouse operations."""
+        class WarehouseOperationsProtocol(p_db_oracle.Service[object], Protocol):
+            """Protocol for WMS warehouse operations.
+
+            Defines the interface for executing warehouse operations in Oracle WMS.
+            """
 
             def execute_operation(
                 self,
                 operation: dict[str, object],
-            ) -> FlextResult[None]:
-                """Execute warehouse operation."""
-                ...
+            ) -> p_meltano.Result[bool]:
+                """Execute warehouse operation.
+
+                Args:
+                    operation: Operation definition to execute.
+
+                Returns:
+                    Result indicating success or failure of the operation.
+
+                """
 
         @runtime_checkable
-        class DataTransformationProtocol(p.Service, Protocol):
-            """Protocol for Singer to WMS transformation."""
+        class DataTransformationProtocol(p_db_oracle.Service[object], Protocol):
+            """Protocol for Singer to WMS transformation.
+
+            Defines the interface for transforming Singer records to WMS format.
+            """
 
             def transform_to_wms(
                 self,
                 record: dict[str, object],
-            ) -> FlextResult[dict[str, object]]:
-                """Transform record to WMS format."""
-                ...
+            ) -> p_meltano.Result[dict[str, object]]:
+                """Transform record to WMS format.
+
+                Args:
+                    record: Singer record to transform.
+
+                Returns:
+                    Result containing the transformed record in WMS format.
+
+                """
 
         @runtime_checkable
-        class WmsApiProtocol(p.Service, Protocol):
-            """Protocol for WMS API operations."""
+        class WmsApiProtocol(p_db_oracle.Service[object], Protocol):
+            """Protocol for WMS API operations.
+
+            Defines the interface for invoking Oracle WMS API endpoints.
+            """
 
             def invoke_api(
                 self,
                 endpoint: str,
                 payload: dict[str, object],
-            ) -> FlextResult[dict[str, object]]:
-                """Invoke WMS API endpoint."""
-                ...
+            ) -> p_meltano.Result[dict[str, object]]:
+                """Invoke WMS API endpoint.
+
+                Args:
+                    endpoint: API endpoint to invoke.
+                    payload: Request payload.
+
+                Returns:
+                    Result containing the API response.
+
+                """
 
         @runtime_checkable
-        class BatchProcessingProtocol(p.Service, Protocol):
-            """Protocol for WMS batch processing."""
+        class BatchProcessingProtocol(p_db_oracle.Service[object], Protocol):
+            """Protocol for WMS batch processing.
+
+            Defines the interface for processing batches of WMS records.
+            """
 
             def process_batch(
                 self,
                 records: list[dict[str, object]],
-            ) -> FlextResult[None]:
-                """Process batch of WMS records."""
-                ...
+            ) -> p_meltano.Result[bool]:
+                """Process batch of WMS records.
+
+                Args:
+                    records: List of records to process.
+
+                Returns:
+                    Result indicating success or failure of the batch processing.
+
+                """
 
         @runtime_checkable
-        class ValidationProtocol(p.Service, Protocol):
-            """Protocol for WMS data validation."""
+        class ValidationProtocol(p_db_oracle.Service[object], Protocol):
+            """Protocol for WMS data validation.
+
+            Defines the interface for validating WMS data.
+            """
 
             def validate_wms_data(
                 self,
                 data: dict[str, object],
-            ) -> FlextResult[bool]:
-                """Validate WMS data."""
-                ...
+            ) -> p_meltano.Result[bool]:
+                """Validate WMS data.
+
+                Args:
+                    data: Data to validate.
+
+                Returns:
+                    Result indicating whether the data is valid.
+
+                """
 
         @runtime_checkable
-        class PerformanceProtocol(p.Service, Protocol):
-            """Protocol for WMS performance optimization."""
+        class PerformanceProtocol(p_db_oracle.Service[object], Protocol):
+            """Protocol for WMS performance optimization.
+
+            Defines the interface for optimizing WMS loading performance.
+            """
 
             def optimize_loading(
                 self,
                 config: dict[str, object],
-            ) -> FlextResult[dict[str, object]]:
-                """Optimize WMS loading configuration."""
-                ...
+            ) -> p_meltano.Result[dict[str, object]]:
+                """Optimize WMS loading configuration.
+
+                Args:
+                    config: Configuration to optimize.
+
+                Returns:
+                    Result containing optimized configuration.
+
+                """
 
         @runtime_checkable
-        class MonitoringProtocol(p.Service, Protocol):
-            """Protocol for WMS loading monitoring."""
+        class MonitoringProtocol(p_db_oracle.Service[object], Protocol):
+            """Protocol for WMS loading monitoring.
+
+            Defines the interface for monitoring WMS loading progress.
+            """
 
             def track_load_progress(
                 self,
                 entity: str,
                 records: int,
-            ) -> FlextResult[None]:
-                """Track WMS loading progress."""
-                ...
+            ) -> p_meltano.Result[bool]:
+                """Track WMS loading progress.
 
-    # ============================================================================
-    # BACKWARD COMPATIBILITY ALIASES (100% COMPATIBILITY)
-    # ============================================================================
+                Args:
+                    entity: Entity being loaded.
+                    records: Number of records processed.
 
-    @runtime_checkable
-    class WmsDataLoadingProtocol(TargetOracleWms.WmsDataLoadingProtocol):
-        """WmsDataLoadingProtocol - real inheritance."""
+                Returns:
+                    Result indicating success or failure of tracking.
 
-    @runtime_checkable
-    class WarehouseOperationsProtocol(TargetOracleWms.WarehouseOperationsProtocol):
-        """WarehouseOperationsProtocol - real inheritance."""
+                """
 
-    @runtime_checkable
-    class DataTransformationProtocol(TargetOracleWms.DataTransformationProtocol):
-        """DataTransformationProtocol - real inheritance."""
 
-    @runtime_checkable
-    class WmsApiProtocol(TargetOracleWms.WmsApiProtocol):
-        """WmsApiProtocol - real inheritance."""
-
-    @runtime_checkable
-    class BatchProcessingProtocol(TargetOracleWms.BatchProcessingProtocol):
-        """BatchProcessingProtocol - real inheritance."""
-
-    @runtime_checkable
-    class ValidationProtocol(TargetOracleWms.ValidationProtocol):
-        """ValidationProtocol - real inheritance."""
-
-    @runtime_checkable
-    class PerformanceProtocol(TargetOracleWms.PerformanceProtocol):
-        """PerformanceProtocol - real inheritance."""
-
-    @runtime_checkable
-    class MonitoringProtocol(TargetOracleWms.MonitoringProtocol):
-        """MonitoringProtocol - real inheritance."""
-
-    @runtime_checkable
-    class TargetOracleWmsDataLoadingProtocol(TargetOracleWms.WmsDataLoadingProtocol):
-        """TargetOracleWmsDataLoadingProtocol - real inheritance."""
-
-    @runtime_checkable
-    class TargetOracleWmsWarehouseOperationsProtocol(
-        TargetOracleWms.WarehouseOperationsProtocol,
-    ):
-        """TargetOracleWmsWarehouseOperationsProtocol - real inheritance."""
-
-    @runtime_checkable
-    class TargetOracleWmsDataTransformationProtocol(
-        TargetOracleWms.DataTransformationProtocol,
-    ):
-        """TargetOracleWmsDataTransformationProtocol - real inheritance."""
-
-    @runtime_checkable
-    class TargetOracleWmsApiProtocol(TargetOracleWms.WmsApiProtocol):
-        """TargetOracleWmsApiProtocol - real inheritance."""
-
-    @runtime_checkable
-    class TargetOracleWmsBatchProcessingProtocol(
-        TargetOracleWms.BatchProcessingProtocol,
-    ):
-        """TargetOracleWmsBatchProcessingProtocol - real inheritance."""
-
-    @runtime_checkable
-    class TargetOracleWmsValidationProtocol(TargetOracleWms.ValidationProtocol):
-        """TargetOracleWmsValidationProtocol - real inheritance."""
-
-    @runtime_checkable
-    class TargetOracleWmsPerformanceProtocol(TargetOracleWms.PerformanceProtocol):
-        """TargetOracleWmsPerformanceProtocol - real inheritance."""
-
-    @runtime_checkable
-    class TargetOracleWmsMonitoringProtocol(TargetOracleWms.MonitoringProtocol):
-        """TargetOracleWmsMonitoringProtocol - real inheritance."""
-
+# Runtime alias for simplified usage
+p = FlextTargetOracleWmsProtocols
 
 __all__ = [
     "FlextTargetOracleWmsProtocols",
+    "p",
 ]
