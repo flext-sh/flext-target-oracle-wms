@@ -197,4 +197,6 @@ class FlextTargetOracleWmsConstants(FlextConstants):
         NETWORK_ERROR = "Network error occurred"
 
 
-__all__ = ["FlextTargetOracleWmsConstants"]
+c = FlextTargetOracleWmsConstants
+
+__all__ = ["FlextTargetOracleWmsConstants", "c"]

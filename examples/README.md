@@ -301,8 +301,8 @@ python -m pytest tests/examples/ --cov=examples --cov-report=term-missing
 - [Main README](../README.md) - Project overview and setup
 - [Architecture Documentation](../docs/architecture/) - System design
 - [API Reference](../docs/api/) - Detailed API documentation
-- [flext-core Documentation](../../flext-core/README.md) - Core patterns
-- [flext-observability Documentation](../../flext-observability/README.md) - Monitoring
+- [flext-core Documentation](https://github.com/organization/flext/tree/main/flext-core/README.md) - Core patterns
+- [flext-observability Documentation](https://github.com/organization/flext/tree/main/flext-observability/README.md) - Monitoring
 
 ## 🤝 Contributing
 
