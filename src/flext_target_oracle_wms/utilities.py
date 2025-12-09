@@ -10,12 +10,13 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import ClassVar
 
-from flext_core import FlextResult, u
+from flext_core import FlextResult
+from flext_core.utilities import FlextUtilities as u_core
 
-from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants
+from flext_target_oracle_wms.constants import c
 
 
-class FlextTargetOracleWmsUtilities(u):
+class FlextTargetOracleWmsUtilities(u_core):
     """Single unified utilities class for Singer target Oracle WMS operations.
 
     This class provides complete Oracle WMS target functionality for Singer protocol
@@ -473,14 +474,11 @@ class FlextTargetOracleWmsUtilities(u):
                 if (
                     operation_type.upper() == "INSERT"
                     and record_count
-                    > FlextTargetOracleWmsConstants.OracleWms.BULK_OPERATION_THRESHOLD
+                    > c.TargetOracleWms.OracleWms.PARALLEL_OPERATION_THRESHOLD
                 ):
                     hints["bulk_collect"] = "FORALL"
                     hints["append_hint"] = "APPEND"
-                    if (
-                        record_count
-                        > FlextTargetOracleWmsConstants.OracleWms.PARALLEL_OPERATION_THRESHOLD
-                    ):
+                    if record_count > c.TargetOracleWms.OracleWms.HIGH_VOLUME_THRESHOLD:
                         hints["parallel_hint"] = (
                             f"PARALLEL({FlextTargetOracleWmsUtilities.WMS_DEFAULT_PARALLEL_DEGREE})"
                         )
@@ -495,10 +493,7 @@ class FlextTargetOracleWmsUtilities(u):
                     hints["index_hint"] = "INDEX(ord, WMS_ORDER_STATUS_IDX)"
 
                 # Performance optimization hints
-                if (
-                    record_count
-                    > FlextTargetOracleWmsConstants.OracleWms.HIGH_VOLUME_THRESHOLD
-                ):
+                if record_count > c.TargetOracleWms.OracleWms.HIGH_VOLUME_THRESHOLD:
                     hints["memory_hint"] = "USE_HASH(a,b)"
                     hints["temp_tablespace"] = "TEMP"
 
@@ -682,11 +677,10 @@ class FlextTargetOracleWmsUtilities(u):
             )
             if (
                 parallel_degree <= 0
-                or parallel_degree
-                > FlextTargetOracleWmsConstants.OracleWms.MAX_PARALLEL_DEGREE
+                or parallel_degree > c.TargetOracleWms.OracleWms.MAX_PARALLEL_DEGREE
             ):
                 return FlextResult[dict[str, object]].fail(
-                    f"Parallel degree must be between 1 and {FlextTargetOracleWmsConstants.OracleWms.MAX_PARALLEL_DEGREE}",
+                    f"Parallel degree must be between 1 and {c.TargetOracleWms.OracleWms.MAX_PARALLEL_DEGREE}",
                 )
 
             # Validate timeout
@@ -696,11 +690,10 @@ class FlextTargetOracleWmsUtilities(u):
             )
             if (
                 timeout <= 0
-                or timeout
-                > FlextTargetOracleWmsConstants.OracleWms.MAX_CONNECTION_TIMEOUT
+                or timeout > c.TargetOracleWms.OracleWms.MAX_CONNECTION_TIMEOUT
             ):
                 return FlextResult[dict[str, object]].fail(
-                    f"Connection timeout must be between 1 and {FlextTargetOracleWmsConstants.OracleWms.MAX_CONNECTION_TIMEOUT} seconds",
+                    f"Connection timeout must be between 1 and {c.TargetOracleWms.OracleWms.MAX_CONNECTION_TIMEOUT} seconds",
                 )
 
             return FlextResult[dict[str, object]].ok(config)

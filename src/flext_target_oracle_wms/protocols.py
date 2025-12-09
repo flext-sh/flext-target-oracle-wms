@@ -15,189 +15,208 @@ class FlextTargetOracleWmsProtocols(p_meltano, p_db_oracle):
     Architecture:
     - EXTENDS: FlextDbOracleProtocols (inherits .Database.* protocols)
     - EXTENDS: FlextMeltanoProtocols (inherits .Meltano.* protocols)
-    - ADDS: Target Oracle WMS-specific protocols in TargetOracleWms namespace
+    - ADDS: Target Oracle WMS-specific protocols in Target.OracleWms namespace
     - PROVIDES: Root-level alias `p` for convenient access
+
+    Usage:
+    from flext_target_oracle_wms.protocols import p
+
+    # Foundation protocols (inherited)
+    result: p.Result[str]
+    service: p.Service[str]
+
+    # Oracle protocols (inherited)
+    connection: p.Database.ConnectionProtocol
+
+    # Meltano protocols (inherited)
+    target: p.Meltano.TargetProtocol
+
+    # Target Oracle WMS-specific protocols
+    wms_data_loading: p.Target.OracleWms.WmsDataLoadingProtocol
     """
 
-    class TargetOracleWms:
-        """Singer Target Oracle WMS domain protocols for Oracle WMS loading.
+    class Target:
+        """Singer Target domain protocols."""
 
-        Provides protocol definitions for Oracle WMS operations, including data loading,
-        warehouse operations, data transformation, API operations, batch processing,
-        data validation, performance optimization, and loading monitoring.
-        """
+        class OracleWms:
+            """Singer Target Oracle WMS domain protocols for Oracle WMS loading.
 
-        @runtime_checkable
-        class WmsDataLoadingProtocol(p_db_oracle.Service[object], Protocol):
-            """Protocol for WMS data loading.
-
-            Defines the interface for loading data into Oracle WMS.
+            Provides protocol definitions for Oracle WMS operations, including data loading,
+            warehouse operations, data transformation, API operations, batch processing,
+            data validation, performance optimization, and loading monitoring.
             """
 
-            def load_data(
-                self,
-                records: list[dict[str, object]],
-            ) -> p_meltano.Result[bool]:
-                """Load records into WMS.
+            @runtime_checkable
+            class WmsDataLoadingProtocol(p_db_oracle.Service[object], Protocol):
+                """Protocol for WMS data loading.
 
-                Args:
-                    records: List of records to load.
-
-                Returns:
-                    Result indicating success or failure of the loading operation.
-
+                Defines the interface for loading data into Oracle WMS.
                 """
 
-        @runtime_checkable
-        class WarehouseOperationsProtocol(p_db_oracle.Service[object], Protocol):
-            """Protocol for WMS warehouse operations.
+                def load_data(
+                    self,
+                    records: list[dict[str, object]],
+                ) -> p_meltano.Result[bool]:
+                    """Load records into WMS.
 
-            Defines the interface for executing warehouse operations in Oracle WMS.
-            """
+                    Args:
+                        records: List of records to load.
 
-            def execute_operation(
-                self,
-                operation: dict[str, object],
-            ) -> p_meltano.Result[bool]:
-                """Execute warehouse operation.
+                    Returns:
+                        Result indicating success or failure of the loading operation.
 
-                Args:
-                    operation: Operation definition to execute.
+                    """
 
-                Returns:
-                    Result indicating success or failure of the operation.
+            @runtime_checkable
+            class WarehouseOperationsProtocol(p_db_oracle.Service[object], Protocol):
+                """Protocol for WMS warehouse operations.
 
+                Defines the interface for executing warehouse operations in Oracle WMS.
                 """
 
-        @runtime_checkable
-        class DataTransformationProtocol(p_db_oracle.Service[object], Protocol):
-            """Protocol for Singer to WMS transformation.
+                def execute_operation(
+                    self,
+                    operation: dict[str, object],
+                ) -> p_meltano.Result[bool]:
+                    """Execute warehouse operation.
 
-            Defines the interface for transforming Singer records to WMS format.
-            """
+                    Args:
+                        operation: Operation definition to execute.
 
-            def transform_to_wms(
-                self,
-                record: dict[str, object],
-            ) -> p_meltano.Result[dict[str, object]]:
-                """Transform record to WMS format.
+                    Returns:
+                        Result indicating success or failure of the operation.
 
-                Args:
-                    record: Singer record to transform.
+                    """
 
-                Returns:
-                    Result containing the transformed record in WMS format.
+            @runtime_checkable
+            class DataTransformationProtocol(p_db_oracle.Service[object], Protocol):
+                """Protocol for Singer to WMS transformation.
 
+                Defines the interface for transforming Singer records to WMS format.
                 """
 
-        @runtime_checkable
-        class WmsApiProtocol(p_db_oracle.Service[object], Protocol):
-            """Protocol for WMS API operations.
+                def transform_to_wms(
+                    self,
+                    record: dict[str, object],
+                ) -> p_meltano.Result[dict[str, object]]:
+                    """Transform record to WMS format.
 
-            Defines the interface for invoking Oracle WMS API endpoints.
-            """
+                    Args:
+                        record: Singer record to transform.
 
-            def invoke_api(
-                self,
-                endpoint: str,
-                payload: dict[str, object],
-            ) -> p_meltano.Result[dict[str, object]]:
-                """Invoke WMS API endpoint.
+                    Returns:
+                        Result containing the transformed record in WMS format.
 
-                Args:
-                    endpoint: API endpoint to invoke.
-                    payload: Request payload.
+                    """
 
-                Returns:
-                    Result containing the API response.
+            @runtime_checkable
+            class WmsApiProtocol(p_db_oracle.Service[object], Protocol):
+                """Protocol for WMS API operations.
 
+                Defines the interface for invoking Oracle WMS API endpoints.
                 """
 
-        @runtime_checkable
-        class BatchProcessingProtocol(p_db_oracle.Service[object], Protocol):
-            """Protocol for WMS batch processing.
+                def invoke_api(
+                    self,
+                    endpoint: str,
+                    payload: dict[str, object],
+                ) -> p_meltano.Result[dict[str, object]]:
+                    """Invoke WMS API endpoint.
 
-            Defines the interface for processing batches of WMS records.
-            """
+                    Args:
+                        endpoint: API endpoint to invoke.
+                        payload: Request payload.
 
-            def process_batch(
-                self,
-                records: list[dict[str, object]],
-            ) -> p_meltano.Result[bool]:
-                """Process batch of WMS records.
+                    Returns:
+                        Result containing the API response.
 
-                Args:
-                    records: List of records to process.
+                    """
 
-                Returns:
-                    Result indicating success or failure of the batch processing.
+            @runtime_checkable
+            class BatchProcessingProtocol(p_db_oracle.Service[object], Protocol):
+                """Protocol for WMS batch processing.
 
+                Defines the interface for processing batches of WMS records.
                 """
 
-        @runtime_checkable
-        class ValidationProtocol(p_db_oracle.Service[object], Protocol):
-            """Protocol for WMS data validation.
+                def process_batch(
+                    self,
+                    records: list[dict[str, object]],
+                ) -> p_meltano.Result[bool]:
+                    """Process batch of WMS records.
 
-            Defines the interface for validating WMS data.
-            """
+                    Args:
+                        records: List of records to process.
 
-            def validate_wms_data(
-                self,
-                data: dict[str, object],
-            ) -> p_meltano.Result[bool]:
-                """Validate WMS data.
+                    Returns:
+                        Result indicating success or failure of the batch processing.
 
-                Args:
-                    data: Data to validate.
+                    """
 
-                Returns:
-                    Result indicating whether the data is valid.
+            @runtime_checkable
+            class ValidationProtocol(p_db_oracle.Service[object], Protocol):
+                """Protocol for WMS data validation.
 
+                Defines the interface for validating WMS data.
                 """
 
-        @runtime_checkable
-        class PerformanceProtocol(p_db_oracle.Service[object], Protocol):
-            """Protocol for WMS performance optimization.
+                def validate_wms_data(
+                    self,
+                    data: dict[str, object],
+                ) -> p_meltano.Result[bool]:
+                    """Validate WMS data.
 
-            Defines the interface for optimizing WMS loading performance.
-            """
+                    Args:
+                        data: Data to validate.
 
-            def optimize_loading(
-                self,
-                config: dict[str, object],
-            ) -> p_meltano.Result[dict[str, object]]:
-                """Optimize WMS loading configuration.
+                    Returns:
+                        Result indicating whether the data is valid.
 
-                Args:
-                    config: Configuration to optimize.
+                    """
 
-                Returns:
-                    Result containing optimized configuration.
+            @runtime_checkable
+            class PerformanceProtocol(p_db_oracle.Service[object], Protocol):
+                """Protocol for WMS performance optimization.
 
+                Defines the interface for optimizing WMS loading performance.
                 """
 
-        @runtime_checkable
-        class MonitoringProtocol(p_db_oracle.Service[object], Protocol):
-            """Protocol for WMS loading monitoring.
+                def optimize_loading(
+                    self,
+                    config: dict[str, object],
+                ) -> p_meltano.Result[dict[str, object]]:
+                    """Optimize WMS loading configuration.
 
-            Defines the interface for monitoring WMS loading progress.
-            """
+                    Args:
+                        config: Configuration to optimize.
 
-            def track_load_progress(
-                self,
-                entity: str,
-                records: int,
-            ) -> p_meltano.Result[bool]:
-                """Track WMS loading progress.
+                    Returns:
+                        Result containing optimized configuration.
 
-                Args:
-                    entity: Entity being loaded.
-                    records: Number of records processed.
+                    """
 
-                Returns:
-                    Result indicating success or failure of tracking.
+            @runtime_checkable
+            class MonitoringProtocol(p_db_oracle.Service[object], Protocol):
+                """Protocol for WMS loading monitoring.
 
+                Defines the interface for monitoring WMS loading progress.
                 """
+
+                def track_load_progress(
+                    self,
+                    entity: str,
+                    records: int,
+                ) -> p_meltano.Result[bool]:
+                    """Track WMS loading progress.
+
+                    Args:
+                        entity: Entity being loaded.
+                        records: Number of records processed.
+
+                    Returns:
+                        Result indicating success or failure of tracking.
+
+                    """
 
 
 # Runtime alias for simplified usage

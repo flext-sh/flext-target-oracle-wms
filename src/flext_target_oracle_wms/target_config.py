@@ -34,7 +34,7 @@ from pydantic import (
     model_validator,
 )
 
-from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants
+from flext_target_oracle_wms.constants import c
 
 logger = FlextLogger(__name__)
 
@@ -146,7 +146,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
         le=100000,
     )
     load_method: str = Field(
-        default=FlextTargetOracleWmsConstants.LoadMethods.APPEND_ONLY,
+        default=c.TargetOracleWms.LoadMethods.APPEND_ONLY,
         description="Data load method",
         min_length=1,
         max_length=50,
