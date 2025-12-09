@@ -11,9 +11,10 @@ from datetime import UTC, datetime
 from typing import Literal
 
 from flext_core import FlextModels, FlextResult
+from flext_core.utilities import u
 from pydantic import Field, SecretStr
 
-from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants
+from flext_target_oracle_wms.constants import c
 
 # Oracle WMS constants
 oauth2 = "oauth2"
@@ -35,6 +36,14 @@ class FlextTargetOracleWmsModels(FlextModels):
     Singer protocol compliance, WMS business rule validation, and target operations
     following standardized patterns.
     """
+
+    def __init_subclass__(cls, **kwargs: object) -> None:
+        """Warn when FlextTargetOracleWmsModels is subclassed directly."""
+        super().__init_subclass__(**kwargs)
+        u.Deprecation.warn_once(
+            f"subclass:{cls.__name__}",
+            "Subclassing FlextTargetOracleWmsModels is deprecated. Use FlextModels directly with composition instead.",
+        )
 
     class WmsAuthenticationConfig(FlextModels.BaseConfig):
         """Oracle WMS authentication configuration with complete auth support."""
@@ -229,10 +238,7 @@ class FlextTargetOracleWmsModels(FlextModels):
                 # Validate location ID format (typically hierarchical)
                 if "-" in self.location_id:
                     parts = self.location_id.split("-")
-                    if (
-                        len(parts)
-                        < FlextTargetOracleWmsConstants.OracleWms.MIN_LOCATION_PARTS
-                    ):
+                    if len(parts) < c.TargetOracleWms.OracleWms.MIN_LOCATION_PARTS:
                         errors.append(
                             "Location ID with hyphens must have at least 2 parts",
                         )
@@ -647,7 +653,7 @@ class FlextTargetOracleWmsModels(FlextModels):
                     )
                     if (
                         abs(self.average_processing_time_ms - expected_avg)
-                        > FlextTargetOracleWmsConstants.OracleWms.PROCESSING_TIME_TOLERANCE
+                        > c.TargetOracleWms.OracleWms.PROCESSING_TIME_TOLERANCE
                     ):
                         return FlextResult[None].fail(
                             "Average processing time inconsistent with total duration",
@@ -722,6 +728,12 @@ class FlextTargetOracleWmsModels(FlextModels):
         )
 
 
+# Short aliases
+m = FlextTargetOracleWmsModels
+m_target_oracle_wms = FlextTargetOracleWmsModels
+
 __all__ = [
     "FlextTargetOracleWmsModels",
+    "m",
+    "m_target_oracle_wms",
 ]
