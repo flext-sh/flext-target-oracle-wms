@@ -541,7 +541,7 @@ class FlextTargetOracleWmsUtilities(u_core):
 
                 processed_schema = {
                     "stream_name": stream_name,
-                    "wms_entity_config": entity_result.unwrap(),
+                    "wms_entity_config": entity_result.value,
                     "key_properties": key_properties,
                     "properties": schema.get("properties", {}),
                     "wms_metadata": {
