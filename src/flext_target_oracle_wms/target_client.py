@@ -11,10 +11,10 @@ import json
 import sys
 from typing import override
 
-from flext_core import FlextConfig, FlextLogger, FlextResult, t
+from flext_core import FlextLogger, FlextResult, FlextSettings, t
 from flext_oracle_wms import (
     FlextOracleWmsApiVersion,
-    FlextOracleWmsClientConfig,
+    FlextOracleWmsClientSettings,
     create_oracle_wms_client,
 )
 from pydantic import Field
@@ -27,7 +27,7 @@ from flext_target_oracle_wms.target_models import (
 logger = FlextLogger(__name__)
 
 
-class SingerWMSCatalogEntry(FlextConfig):
+class SingerWMSCatalogEntry(FlextSettings):
     """Singer WMS catalog entry using flext-core patterns."""
 
     tap_stream_id: str
@@ -684,7 +684,7 @@ class SingerTargetOracleWMS:
         else:
             mapped_environment = "development"
 
-        oracle_config = FlextOracleWmsClientConfig(
+        oracle_config = FlextOracleWmsClientSettings(
             oracle_wms_base_url=str(base_url),
             oracle_wms_username=str(username),
             oracle_wms_password=str(password),
