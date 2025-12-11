@@ -8,7 +8,7 @@ import json
 import sys
 import traceback
 
-from flext_oracle_wms import FlextOracleWmsConfig
+from flext_oracle_wms import FlextOracleWmsSettings
 
 from flext_target_oracle_wms import (
     SingerTargetOracleWMS,
@@ -23,7 +23,7 @@ def test_configuration_validation() -> bool | None:
     """Test configuration validation with production patterns."""
     try:
         # Test valid configuration
-        valid_config = FlextOracleWmsConfig(
+        valid_config = FlextOracleWmsSettings(
             oracle_wms_base_url="https://invalid.wms.ocs.oraclecloud.com/company_unknow",
             oracle_wms_username="test_user",
             oracle_wms_password="test_pass",
@@ -59,7 +59,7 @@ def test_configuration_validation() -> bool | None:
                 }
                 config_params.update(override_params)
 
-                invalid_config = FlextOracleWmsConfig(**config_params)
+                invalid_config = FlextOracleWmsSettings(**config_params)
                 invalid_config.validate_business_rules()
                 return False
             except ValueError:

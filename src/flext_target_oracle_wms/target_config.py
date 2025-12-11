@@ -16,14 +16,14 @@ from pathlib import Path
 from typing import ClassVar, Self
 
 from flext_core import (
-    FlextConfig,
     FlextConstants,
     FlextLogger,
     FlextResult,
+    FlextSettings,
     t,
 )
 from flext_meltano import SingerConstants
-from flext_oracle_wms import FlextOracleWmsApiVersion, FlextOracleWmsClientConfig
+from flext_oracle_wms import FlextOracleWmsApiVersion, FlextOracleWmsClientSettings
 from pydantic import (
     AnyUrl,
     Field,
@@ -39,8 +39,8 @@ from flext_target_oracle_wms.constants import c
 logger = FlextLogger(__name__)
 
 
-class FlextTargetOracleWmsConfig(FlextConfig):
-    """Enhanced Oracle WMS Target Configuration extending FlextConfig.
+class FlextTargetOracleWmsSettings(FlextSettings):
+    """Enhanced Oracle WMS Target Configuration extending FlextSettings.
 
     Provides complete configuration for Oracle WMS target operations
     with automatic validation, type safety, and enhanced Pydantic 2.11 features.
@@ -417,7 +417,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
         },
     }
 
-    def to_oracle_wms_config(self) -> FlextOracleWmsClientConfig:
+    def to_oracle_wms_config(self) -> FlextOracleWmsClientSettings:
         """Convert to flext-oracle-wms client configuration."""
         # Map string environment to proper literal type
         env_mapping: dict[str, str] = {
@@ -432,7 +432,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
         # Get mapped environment or default to development
         mapped_env = env_mapping.get(self.environment.lower(), "development")
 
-        return FlextOracleWmsClientConfig(
+        return FlextOracleWmsClientSettings(
             oracle_wms_base_url=self.base_url,
             oracle_wms_username=self.username,
             oracle_wms_password=self.password,
@@ -484,12 +484,14 @@ class FlextTargetOracleWmsConfig(FlextConfig):
         except Exception as e:
             return FlextResult[None].fail(f"Configuration validation failed: {e}")
 
-    def apply_preset(self, preset_name: str) -> FlextResult[FlextTargetOracleWmsConfig]:
+    def apply_preset(
+        self, preset_name: str
+    ) -> FlextResult[FlextTargetOracleWmsSettings]:
         """Enhanced configuration preset application."""
         try:
             if preset_name not in self.PRESETS:
                 available = list(self.PRESETS.keys())
-                return FlextResult[FlextTargetOracleWmsConfig].fail(
+                return FlextResult[FlextTargetOracleWmsSettings].fail(
                     f"Unknown preset '{preset_name}'. Available: {available}",
                 )
 
@@ -499,10 +501,10 @@ class FlextTargetOracleWmsConfig(FlextConfig):
 
             updated_config = self.__class__(**updated_data)
             logger.info("Applied configuration preset: %s", preset_name)
-            return FlextResult[FlextTargetOracleWmsConfig].ok(updated_config)
+            return FlextResult[FlextTargetOracleWmsSettings].ok(updated_config)
 
         except Exception as e:
-            return FlextResult[FlextTargetOracleWmsConfig].fail(
+            return FlextResult[FlextTargetOracleWmsSettings].fail(
                 f"Failed to apply preset {preset_name}: {e}",
             )
 
@@ -553,7 +555,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
 
     @classmethod
     def get_global_instance(cls) -> Self:
-        """Get the global singleton instance using enhanced FlextConfig pattern."""
+        """Get the global singleton instance using enhanced FlextSettings pattern."""
         return cls.get_or_create_shared_instance(project_name="flext-target-oracle-wms")
 
     @classmethod
@@ -620,7 +622,7 @@ class FlextTargetOracleWmsConfig(FlextConfig):
 
 def create_config_from_dict(
     config_dict: dict[str, object],
-) -> FlextResult[FlextTargetOracleWmsConfig]:
+) -> FlextResult[FlextTargetOracleWmsSettings]:
     """Create configuration from dictionary with validation.
 
     Args:
@@ -632,15 +634,15 @@ def create_config_from_dict(
     """
     try:
         # Use model_validate for proper type conversion from dict
-        config: dict[str, object] = FlextTargetOracleWmsConfig.model_validate(
+        config: dict[str, object] = FlextTargetOracleWmsSettings.model_validate(
             config_dict,
         )
         logger.debug("Configuration created and validated successfully")
-        return FlextResult["FlextTargetOracleWmsConfig"].ok(config)
+        return FlextResult["FlextTargetOracleWmsSettings"].ok(config)
 
     except Exception as e:
         logger.exception("Configuration validation failed")
-        return FlextResult["FlextTargetOracleWmsConfig"].fail(
+        return FlextResult["FlextTargetOracleWmsSettings"].fail(
             f"Invalid configuration: {e}",
         )
 
@@ -648,7 +650,7 @@ def create_config_from_dict(
 def create_config_with_preset(
     base_config: dict[str, object],
     preset_name: str,
-) -> FlextResult[FlextTargetOracleWmsConfig]:
+) -> FlextResult[FlextTargetOracleWmsSettings]:
     """Create configuration with preset applied.
 
     Args:
@@ -667,7 +669,7 @@ def create_config_with_preset(
 
         config: dict[str, object] = config_result.data
         if config is None:
-            return FlextResult["FlextTargetOracleWmsConfig"].fail(
+            return FlextResult["FlextTargetOracleWmsSettings"].fail(
                 "Configuration creation returned None",
             )
 
@@ -675,13 +677,13 @@ def create_config_with_preset(
         return config.apply_preset(preset_name)
 
     except Exception as e:
-        return FlextResult["FlextTargetOracleWmsConfig"].fail(
+        return FlextResult["FlextTargetOracleWmsSettings"].fail(
             f"Failed to create config with preset: {e}",
         )
 
 
 __all__ = [
-    "FlextTargetOracleWmsConfig",
+    "FlextTargetOracleWmsSettings",
     "create_config_from_dict",
     "create_config_with_preset",
 ]
