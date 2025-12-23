@@ -11,7 +11,7 @@ from datetime import UTC, datetime
 from typing import ClassVar
 
 from flext_core import FlextResult
-from flext_core.utilities import u_core
+from flext_core.utilities import FlextUtilities as u_core
 
 from flext_target_oracle_wms.constants import c
 

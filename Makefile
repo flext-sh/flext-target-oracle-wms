@@ -1,14 +1,213 @@
-# flext-target-oracle-wms - Oracle WMS Singer Target
+# FLEXT-TARGET-ORACLE-WMS Makefile
 PROJECT_NAME := flext-target-oracle-wms
-COV_DIR := flext_target_oracle_wms
-MIN_COVERAGE := 90
+PYTHON_VERSION := 3.13
+POETRY := poetry
+SRC_DIR := src
+TESTS_DIR := tests
 
-include ../base.mk
+# Quality standards
+MIN_COVERAGE := 100
 
-# === PROJECT-SPECIFIC TARGETS ===
-.PHONY: target-run test-unit test-integration build shell
+# Singer configuration
+TARGET_CONFIG := config.json
+TARGET_STATE := state.json
 
-target-run: ## Run target with config
-	$(Q)PYTHONPATH=$(SRC_DIR) $(POETRY) run target-oracle-wms --config config.json
+# Help
+help: ## Show available commands
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\\033[36m%-18s\\033[0m %s\\n", $$1, $$2}'
+
+# Installation
+install: ## Install dependencies
+	$(POETRY) install
+
+install-dev: ## Install dev dependencies
+	$(POETRY) install --with dev,test,docs
+
+setup: install-dev ## Complete project setup
+	$(POETRY) run pre-commit install
+
+# Quality gates
+validate: lint type-check security test ## Run all quality gates (MANDATORY ORDER)
+
+check: lint type-check ## Quick health check
+
+lint: ## Run linting (ZERO TOLERANCE)
+	$(POETRY) run ruff check .
+
+format: ## Format code
+	$(POETRY) run ruff format .
+
+type-check: ## Run type checking with Pyrefly (ZERO TOLERANCE)
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run pyrefly check .
+
+security: ## Run security scanning
+	$(POETRY) run bandit -r $(SRC_DIR)
+	$(POETRY) run pip-audit
+
+fix: ## Auto-fix issues
+	$(POETRY) run ruff check . --fix
+	$(POETRY) run ruff format .
+
+# Testing
+test: ## Run tests with 100% coverage (MANDATORY)
+	$(POETRY) run pytest $(TESTS_DIR) --cov=$(SRC_DIR) --cov-report=term-missing --cov-fail-under=$(MIN_COVERAGE)
+
+test-unit: ## Run unit tests
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run pytest -m "not integration" -v
+
+test-integration: ## Run integration tests with Docker
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run pytest -m integration -v
+
+test-singer: ## Run Singer protocol tests
+	$(POETRY) run pytest $(TESTS_DIR) -m singer -v
+
+test-fast: ## Run tests without coverage
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run pytest -v
+
+coverage-html: ## Generate HTML coverage report
+	$(POETRY) run pytest $(TESTS_DIR) --cov=$(SRC_DIR) --cov-report=html
+
+# Singer target operations
+load: ## Run target data loading
+	$(POETRY) run target-oracle-wms --config $(TARGET_CONFIG) --state $(TARGET_STATE)
+
+validate-target-config: ## Validate target configuration
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "import json; json.load(open('$(TARGET_CONFIG)'))"
+
+test-target: ## Test target functionality
+	$(POETRY) run target-oracle-wms --about
+	$(POETRY) run target-oracle-wms --version
+
+dry-run: ## Run target in dry-run mode
+	$(POETRY) run target-oracle-wms --config $(TARGET_CONFIG) --dry-run
+
+# Oracle WMS operations
+wms-connect: ## Test Oracle WMS connection
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "from flext_target_oracle_wms.client import test_connection; test_connection()"
+
+wms-schema: ## Validate Oracle WMS schema
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "from flext_target_oracle_wms.schema import validate_schema; validate_schema()"
+
+wms-write-test: ## Test Oracle WMS write operations
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "from flext_target_oracle_wms.operations import test_write; test_write()"
+
+wms-entity-check: ## Test Oracle WMS entity validation
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "from flext_target_oracle_wms.entities import test_entities; test_entities()"
+
+wms-sync-test: ## Test Oracle WMS synchronization
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "from flext_target_oracle_wms.sync import test_sync; test_sync()"
+
+# Build
+build: ## Build package
+	$(POETRY) build
+
+build-clean: clean build ## Clean and build
+
+# Documentation
+docs: ## Build documentation
+	$(POETRY) run mkdocs build
+
+docs-serve: ## Serve documentation
+	$(POETRY) run mkdocs serve
+
+# Dependencies
+deps-update: ## Update dependencies
+	$(POETRY) update
+
+deps-show: ## Show dependency tree
+	$(POETRY) show --tree
+
+deps-audit: ## Audit dependencies
+	$(POETRY) run pip-audit
+
+# Development
+shell: ## Open Python shell
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python
+
+pre-commit: ## Run pre-commit hooks
+	$(POETRY) run pre-commit run --all-files
+
+# Maintenance
+clean: ## Clean build artifacts
+	rm -rf build/ dist/ *.egg-info/ .pytest_cache/ htmlcov/ .coverage .mypy_cache/ .pyrefly_cache/ .ruff_cache/
+	rm -rf $(TARGET_STATE) logs/ *.log target_spec.json wms_schema_*.json
+	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+	find . -type f -name "*.pyc" -delete 2>/dev/null || true
+
+clean-all: clean ## Deep clean including venv
+	rm -rf .venv/
+
+reset: clean-all setup ## Reset project
+
+# Diagnostics
+diagnose: ## Project diagnostics
+	@echo "Python: $$(python --version)"
+	@echo "Poetry: $$($(POETRY) --version)"
+	@echo "Singer SDK: $$(PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c 'import singer_sdk; print(singer_sdk.__version__)' 2>/dev/null || echo 'Not available')"
+	@$(POETRY) env info
+
+doctor: diagnose check ## Health check
+
+# Aliases
+t: test
+l: lint
+f: format
+tc: type-check
+c: clean
+i: install
+v: validate
+ld: load
 
 .DEFAULT_GOAL := help
+.PHONY: help install install-dev setup validate check lint format type-check security fix test test-unit test-integration test-singer test-fast coverage-html load validate-target-config test-target dry-run wms-connect wms-schema wms-write-test wms-entity-check wms-sync-test build build-clean docs docs-serve deps-update deps-show deps-audit shell pre-commit clean clean-all reset diagnose doctor t l f tc c i v ld# =============================================================================
+# MAINTENANCE
+# =============================================================================
+
+.PHONY: clean
+clean: ## Clean build artifacts and cruft
+	@echo "🧹 Cleaning $(PROJECT_NAME) - removing build artifacts, cache files, and cruft..."
+
+	# Build artifacts
+	rm -rf build/ dist/ *.egg-info/
+
+	# Test artifacts
+	rm -rf .pytest_cache/ htmlcov/ .coverage .coverage.* coverage.xml
+
+	# Python cache directories
+	rm -rf .mypy_cache/ .pyrefly_cache/ .ruff_cache/
+
+	# Python bytecode
+	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+	find . -type f -name "*.pyc" -delete 2>/dev/null || true
+	find . -type f -name "*.pyo" -delete 2>/dev/null || true
+
+	# Temporary files
+	find . -type f -name "*.tmp" -delete 2>/dev/null || true
+	find . -type f -name "*.temp" -delete 2>/dev/null || true
+	find . -type f -name ".DS_Store" -delete 2>/dev/null || true
+
+	# Log files
+	find . -type f -name "*.log" -delete 2>/dev/null || true
+
+	# Editor files
+	find . -type f -name ".vscode/settings.json" -delete 2>/dev/null || true
+	find . -type f -name ".idea/" -type d -exec rm -rf {} + 2>/dev/null || true
+
+	
+	# Target-specific files
+	rm -rf state.json state-*.json
+	rm -rf data/ output/ temp/
+
+	@echo "✅ $(PROJECT_NAME) cleanup complete"
+
+.PHONY: clean-all
+clean-all: clean ## Deep clean including venv
+	rm -rf .venv/
+
+.PHONY: reset
+reset: clean-all setup ## Reset project
+
+# =============================================================================
+# DIAGNOSTICS
+# =============================================================================
+
