@@ -12,8 +12,7 @@ import sys
 from pathlib import Path
 from typing import override
 
-from flext_core import FlextResult
-
+from flext import FlextResult
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 

@@ -19,7 +19,7 @@ from unittest.mock import Mock, patch
 
 import psutil
 import pytest
-from flext_core import FlextResult
+from flext import FlextResult
 
 from flext_target_oracle_wms import SingerTargetOracleWMS
 

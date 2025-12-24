@@ -13,7 +13,6 @@ from __future__ import annotations
 import json
 from typing import override
 
-from flext_core import FlextLogger, FlextResult, t
 from flext_observability import FlextObservabilityMonitor
 from flext_oracle_wms import (
     FlextOracleWmsDynamicSchemaProcessor,
@@ -23,6 +22,8 @@ from flext_oracle_wms import (
     flext_oracle_wms_validate_entity_name,
 )
 from sqlalchemy import Column, Insert, MetaData, String, Table, insert
+
+from flext import FlextLogger, FlextResult, t
 
 logger = FlextLogger(__name__)
 
