@@ -16,7 +16,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from flext import FlextTypes
+from flext_core import FlextTypes
 
 # =============================================================================
 # TARGET ORACLE WMS-SPECIFIC TYPE VARIABLES - Domain-specific TypeVars for Singer Oracle WMS target operations
@@ -41,7 +41,8 @@ class FlextTargetOracleWmsTypes(FlextTypes):
 
         type TargetConfiguration = dict[str, str | int | bool | dict[str, object]]
         type StreamConfiguration = dict[
-            str, str | bool | dict[str, FlextTypes.JsonValue],
+            str,
+            str | bool | dict[str, FlextTypes.JsonValue],
         ]
         type MessageProcessing = dict[str, str | list[dict[str, FlextTypes.JsonValue]]]
         type RecordHandling = dict[str, str | dict[str, FlextTypes.JsonValue] | bool]
@@ -57,7 +58,8 @@ class FlextTargetOracleWmsTypes(FlextTypes):
 
         type WarehouseConfiguration = dict[str, str | int | bool | dict[str, object]]
         type FacilityDefinition = dict[
-            str, str | list[str] | dict[str, FlextTypes.JsonValue],
+            str,
+            str | list[str] | dict[str, FlextTypes.JsonValue],
         ]
         type LocationManagement = dict[str, str | dict[str, FlextTypes.JsonValue]]
         type ZoneConfiguration = dict[str, str | dict[str, object]]
@@ -101,12 +103,14 @@ class FlextTargetOracleWmsTypes(FlextTypes):
 
         type LaborConfiguration = dict[str, str | bool | dict[str, object]]
         type WorkforceManagement = dict[
-            str, int | float | dict[str, FlextTypes.JsonValue],
+            str,
+            int | float | dict[str, FlextTypes.JsonValue],
         ]
         type TaskAssignment = dict[str, str | dict[str, FlextTypes.JsonValue]]
         type ProductivityMetrics = dict[str, float | int | dict[str, object]]
         type PerformanceTracking = dict[
-            str, int | float | dict[str, FlextTypes.JsonValue],
+            str,
+            int | float | dict[str, FlextTypes.JsonValue],
         ]
         type WorkforceScheduling = dict[str, str | int | dict[str, object]]
 

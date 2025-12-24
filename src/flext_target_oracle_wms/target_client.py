@@ -11,6 +11,7 @@ import json
 import sys
 from typing import override
 
+from flext_core import FlextLogger, FlextResult, FlextSettings, t
 from flext_oracle_wms import (
     FlextOracleWmsApiVersion,
     FlextOracleWmsClientSettings,
@@ -18,7 +19,6 @@ from flext_oracle_wms import (
 )
 from pydantic import Field
 
-from flext import FlextLogger, FlextResult, FlextSettings, t
 from flext_target_oracle_wms.target_models import (
     WMSDataTransformer,
     WMSTableManager,
