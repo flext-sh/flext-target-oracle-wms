@@ -10,10 +10,10 @@ import re
 from datetime import UTC, datetime
 from typing import Literal
 
+from flext_core import FlextModels, FlextResult
 from flext_core.utilities import u
 from pydantic import Field, SecretStr
 
-from flext import FlextModels, FlextResult
 from flext_target_oracle_wms.constants import c
 
 # Oracle WMS constants

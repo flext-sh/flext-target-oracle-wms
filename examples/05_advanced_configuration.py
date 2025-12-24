@@ -15,9 +15,9 @@ import os
 from datetime import UTC, datetime
 from typing import cast
 
+from flext_core import FlextLogger, FlextResult
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
-from flext import FlextLogger, FlextResult
 from flext_target_oracle_wms import (
     SingerTargetOracleWMS,
     WMSDataTransformer,

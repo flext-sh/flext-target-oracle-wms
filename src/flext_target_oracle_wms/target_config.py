@@ -15,7 +15,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import ClassVar, Self
 
-from flext import FlextConstants,
+from flext_core import  FlextConstants,
     FlextLogger,
     FlextResult,
     FlextSettings,
