@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from unittest.mock import Mock, patch
 
-from flext_core import FlextResult
+from flext import FlextResult
 
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
