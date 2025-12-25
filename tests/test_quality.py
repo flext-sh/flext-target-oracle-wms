@@ -10,7 +10,8 @@ import traceback
 
 from flext_oracle_wms import FlextOracleWmsSettings
 
-from flext_target_oracle_wms import (
+
+
     SingerTargetOracleWMS,
     SingerWMSCatalogManager,
     WMSDataTransformer,

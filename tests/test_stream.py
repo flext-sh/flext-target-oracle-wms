@@ -12,7 +12,8 @@ from unittest.mock import MagicMock
 import pytest
 from flext import FlextResult
 
-from flext_target_oracle_wms import (
+
+
     SingerWMSStreamProcessor,
     WMSDataTransformer,
     WMSStreamProcessingStats,
