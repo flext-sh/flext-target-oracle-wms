@@ -15,11 +15,13 @@ from datetime import datetime
 from pathlib import Path
 from typing import ClassVar, Self
 
-from flext_core import  FlextConstants,
+from flext_core import (
+    FlextConstants,
     FlextLogger,
     FlextResult,
     FlextSettings,
-    t
+    t,
+)
 from flext_meltano import SingerConstants
 from flext_oracle_wms import FlextOracleWmsApiVersion, FlextOracleWmsClientSettings
 from pydantic import (

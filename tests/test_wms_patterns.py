@@ -12,7 +12,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 from flext import FlextResult
 
-from flext_target_oracle_wms import (
+
+
     WMSDataTransformer,
     WMSSchemaMapper,
     WMSTableManager,
