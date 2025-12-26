@@ -485,7 +485,8 @@ class FlextTargetOracleWmsSettings(FlextSettings):
             return FlextResult[None].fail(f"Configuration validation failed: {e}")
 
     def apply_preset(
-        self, preset_name: str,
+        self,
+        preset_name: str,
     ) -> FlextResult[FlextTargetOracleWmsSettings]:
         """Enhanced configuration preset application."""
         try:
