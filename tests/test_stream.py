@@ -10,7 +10,7 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 import pytest
-from flext import FlextResult
+from flext_core import FlextResult
 
 
 
