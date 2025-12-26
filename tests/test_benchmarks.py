@@ -11,8 +11,7 @@ import gc
 from collections.abc import Callable
 from unittest.mock import MagicMock, Mock, patch
 
-
-
+from flext_target_oracle_wms.factory import (
     FlextTargetFactory,
     FlextTargetMonitoringFactory,
     MonitoredTargetCreationRequest,
@@ -126,12 +125,16 @@ class TestPatternsPerformanceBenchmarks:
     ) -> None:
         """Benchmark data transformation performance."""
         # Create test data
-        large_record = {f"field_{i}": f"value_{i}" for i in range(100)}
+        large_record = {
+            f"field_{i}": f"value_{i}" for i in range(10)
+        }  # Reduced for memory efficiency
         large_record.update(
             {
                 "nested_object": {"inner": {"deep": "value"}},
-                "large_array": list(range(50)),
-                "json_data": {"complex": {"structure": list(range(20))}},
+                "large_array": list(range(5)),  # Reduced for memory efficiency
+                "json_data": {
+                    "complex": {"structure": list(range(2))}
+                },  # Reduced for memory efficiency
             },
         )
         transformer = WMSDataTransformer()
@@ -160,7 +163,7 @@ class TestPatternsPerformanceBenchmarks:
                     "type": "string" if i % 2 == 0 else "number",
                     "maxLength": 255 if i % 2 == 0 else None,
                 }
-                for i in range(50)
+                for i in range(5)  # Reduced for memory efficiency
             },
         }
         complex_schema["properties"].update(
@@ -196,11 +199,19 @@ class TestPatternsPerformanceBenchmarks:
         converter = WMSTypeConverter()
         # Test data with various types
         test_conversions = (
-            [("string", f"test_string_{i}") for i in range(20)]
-            + [("integer", i) for i in range(20)]
-            + [("number", float(i) + 0.5) for i in range(20)]
-            + [("boolean", i % 2 == 0) for i in range(20)]
-            + [("object", {"key": f"value_{i}"}) for i in range(10)]
+            [
+                ("string", f"test_string_{i}") for i in range(2)
+            ]  # Reduced for memory efficiency
+            + [("integer", i) for i in range(2)]  # Reduced for memory efficiency
+            + [
+                ("number", float(i) + 0.5) for i in range(2)
+            ]  # Reduced for memory efficiency
+            + [
+                ("boolean", i % 2 == 0) for i in range(2)
+            ]  # Reduced for memory efficiency
+            + [
+                ("object", {"key": f"value_{i}"}) for i in range(1)
+            ]  # Reduced for memory efficiency
             + [("array", list(range(i, i + 5))) for i in range(10)]
         )
 

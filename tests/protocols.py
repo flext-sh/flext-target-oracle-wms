@@ -1,43 +1,31 @@
-"""Test protocol definitions for flext-target-oracle-wms.
+"""Protocols for flext-target-oracle-wms tests - uses p.Wms.Tests.* namespace pattern.
 
-Provides TestsFlextTargetOracleWmsProtocols, combining FlextTestsProtocols with
-FlextTargetOracleWmsProtocols for test-specific protocol definitions.
+This module provides test-specific protocols that extend the main flext-target-oracle-wms protocols.
+Uses the unified namespace pattern p.Wms.Tests.* for test-only objects.
+Combines FlextTestsProtocols functionality with project-specific test protocols.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
 """
 
 from __future__ import annotations
 
-from flext_tests.protocols import FlextTestsProtocols
+from flext_tests import FlextTestsProtocols
 
-from flext_target_oracle_wms.protocols import FlextTargetOracleWmsProtocols
+from flext_target_oracle_wms import FlexttargetoraclewmsProtocols
 
 
-class TestsFlextTargetOracleWmsProtocols(
-    FlextTestsProtocols,
-    FlextTargetOracleWmsProtocols,
+class TestsFlexttargetoraclewmsProtocols(
+    """Test protocols combining FlextTestsProtocols and project-specific protocols."""
+    FlextTestsProtocols, FlexttargetoraclewmsProtocols
 ):
-    """Test protocols combining FlextTestsProtocols and FlextTargetOracleWmsProtocols.
-
-    Provides access to:
-    - tp.Tests.Docker.* (from FlextTestsProtocols)
-    - tp.Tests.Factory.* (from FlextTestsProtocols)
-    - tp.TargetOracleWms.* (from FlextTargetOracleWmsProtocols)
-    """
-
-    class Tests:
-        """Project-specific test protocols.
-
-        Extends FlextTestsProtocols.Tests with TargetOracleWms-specific protocols.
-        """
-
-        class TargetOracleWms:
-            """TargetOracleWms-specific test protocols."""
+    class Wms(FlextTargetWmsModels):
+        """Wms domain protocols extending project protocols."""FlexttargetoraclewmsProtocols):
+        class Tests:
+            """Internal tests declarations."""
 
 
-# Runtime aliases
-p = TestsFlextTargetOracleWmsProtocols
-tp = TestsFlextTargetOracleWmsProtocols
+tp = TestsFlexttargetoraclewmsProtocols
 
-__all__ = ["TestsFlextTargetOracleWmsProtocols", "p", "tp"]
+__all__ = ["TestsFlexttargetoraclewmsProtocols", "tp"]
