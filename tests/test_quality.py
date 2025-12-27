@@ -77,7 +77,7 @@ def test_singer_target_interfaces() -> bool | None:
     try:
         # Create target with test configuration
 
-        config: dict[str, object] = {
+        config: dict[str, t.GeneralValueType] = {
             "base_url": "https://test.example.com/wms",
             "username": "test_user",
             "password": "test_pass",

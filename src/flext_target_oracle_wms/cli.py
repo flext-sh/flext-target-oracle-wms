@@ -12,7 +12,7 @@ import sys
 from pathlib import Path
 from typing import override
 
-from flext_core import FlextResult
+from flext_core import FlextResult, FlextTypes as t
 
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
@@ -38,8 +38,8 @@ class OracleWMSTargetCli:
 
         try:
             # Load configuration
-            config_path: dict[str, object] = kwargs.get("config")
-            config_path_str: dict[str, object] = (
+            config_path: dict[str, t.GeneralValueType] = kwargs.get("config")
+            config_path_str: dict[str, t.GeneralValueType] = (
                 str(config_path) if config_path is not None else None
             )
             config_result: FlextResult[object] = self._prepare_config(config_path_str)
@@ -48,7 +48,7 @@ class OracleWMSTargetCli:
                     config_result.error or "Configuration failed",
                 )
             else:
-                config: dict[str, object] = config_result.data
+                config: dict[str, t.GeneralValueType] = config_result.data
                 if config is None:
                     result: FlextResult[object] = FlextResult[None].fail(
                         "Configuration data is None",
@@ -66,7 +66,7 @@ class OracleWMSTargetCli:
 
     def _execute_target_pipeline(
         self,
-        config: dict[str, object],
+        config: dict[str, t.GeneralValueType],
     ) -> FlextResult[None]:
         """Execute the target pipeline with railway-oriented programming.
 
@@ -90,16 +90,16 @@ class OracleWMSTargetCli:
     def _prepare_config(
         self,
         config_path: str | None,
-    ) -> FlextResult[dict[str, object]]:
+    ) -> FlextResult[dict[str, t.GeneralValueType]]:
         """Prepare configuration from path or defaults."""
         try:
             if config_path:
-                return FlextResult[dict[str, object]].ok(
+                return FlextResult[dict[str, t.GeneralValueType]].ok(
                     self._load_config(config_path),
                 )
 
             # Default configuration
-            config: dict[str, object] = {
+            config: dict[str, t.GeneralValueType] = {
                 "base_url": "https://invalid.wms.ocs.oraclecloud.com",
                 "username": "oracle",
                 "password": "oracle",
@@ -107,9 +107,9 @@ class OracleWMSTargetCli:
                 "timeout": 30.0,
                 "max_retries": 3,
             }
-            return FlextResult[dict[str, object]].ok(config)
+            return FlextResult[dict[str, t.GeneralValueType]].ok(config)
         except Exception as e:
-            return FlextResult[dict[str, object]].fail(
+            return FlextResult[dict[str, t.GeneralValueType]].fail(
                 f"Configuration preparation failed: {e}",
             )
 
@@ -169,15 +169,17 @@ class OracleWMSTargetCli:
         except Exception as e:
             return FlextResult[None].fail(f"Finalization failed: {e}")
 
-    def _load_config(self, config_path: str) -> dict[str, object]:
+    def _load_config(self, config_path: str) -> dict[str, t.GeneralValueType]:
         """Load configuration from file path."""
-        config_file: dict[str, object] = Path(config_path)
+        config_file: dict[str, t.GeneralValueType] = Path(config_path)
         if not config_file.exists():
             msg: str = f"Configuration file not found: {config_path}"
             raise FileNotFoundError(msg)
 
-        config_text: dict[str, object] = config_file.read_text(encoding="utf-8")
-        return dict[str, object](json.loads(config_text))
+        config_text: dict[str, t.GeneralValueType] = config_file.read_text(
+            encoding="utf-8"
+        )
+        return dict[str, t.GeneralValueType](json.loads(config_text))
 
 
 def main() -> None:

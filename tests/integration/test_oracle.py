@@ -10,7 +10,7 @@ from __future__ import annotations
 from unittest.mock import Mock, patch
 
 import pytest
-from flext_core import FlextResult
+from flext_core import FlextTypes as t, FlextResult
 
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
@@ -24,7 +24,7 @@ class TestOracleWMSIntegration:
     """Integration tests using REAL flext-oracle-wms client patterns."""
 
     @pytest.fixture
-    def oracle_wms_config(self) -> dict[str, object]:
+    def oracle_wms_config(self) -> dict[str, t.GeneralValueType]:
         """Oracle WMS configuration using REAL API parameters."""
         return {
             "base_url": "https://test.wms.ocs.oraclecloud.com",
@@ -41,7 +41,7 @@ class TestOracleWMSIntegration:
 
     def test_singer_target_setup(
         self,
-        oracle_wms_config: dict[str, object],
+        oracle_wms_config: dict[str, t.GeneralValueType],
     ) -> None:
         """Test SingerTarget can setup Oracle WMS client using REAL APIs."""
         # DRY: Use REAL implementation
@@ -62,7 +62,7 @@ class TestOracleWMSIntegration:
 
     def test_schema_message_processing(
         self,
-        oracle_wms_config: dict[str, object],
+        oracle_wms_config: dict[str, t.GeneralValueType],
     ) -> None:
         """Test Singer SCHEMA message processing using REAL flext-core patterns."""
         # DRY: Use REAL implementation
@@ -91,7 +91,7 @@ class TestOracleWMSIntegration:
 
     def test_record_message_processing(
         self,
-        oracle_wms_config: dict[str, object],
+        oracle_wms_config: dict[str, t.GeneralValueType],
     ) -> None:
         """Test Singer RECORD message processing using REAL flext-core patterns."""
         # DRY: Use REAL implementation
@@ -130,7 +130,7 @@ class TestOracleWMSIntegration:
 
     def test_state_message_processing(
         self,
-        oracle_wms_config: dict[str, object],
+        oracle_wms_config: dict[str, t.GeneralValueType],
     ) -> None:
         """Test Singer STATE message processing using REAL flext-core patterns."""
         # DRY: Use REAL implementation
@@ -156,7 +156,7 @@ class TestOracleWMSIntegration:
 
     def test_target_cleanup(
         self,
-        oracle_wms_config: dict[str, object],
+        oracle_wms_config: dict[str, t.GeneralValueType],
     ) -> None:
         """Test Oracle WMS Target cleanup using REAL flext-core patterns."""
         # DRY: Use REAL implementation

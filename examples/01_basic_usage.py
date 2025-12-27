@@ -13,9 +13,8 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import cast
 
-from flext_core import FlextLogger
+from flext_core import FlextLogger, FlextTypes as t
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 from flext_target_oracle_wms import (
@@ -35,7 +34,7 @@ def run_basic_example() -> None:
     logger.info("Starting basic Oracle WMS target example")
 
     # REAL configuration for Oracle WMS Cloud SaaS
-    config = {
+    config: dict[str, t.GeneralValueType] = {
         "base_url": "https://example.wms.oracle.com",
         "username": "demo_user",
         "password": "demo_password",
@@ -45,7 +44,7 @@ def run_basic_example() -> None:
     }
 
     # OPTION 1: Traditional direct instantiation
-    target = SingerTargetOracleWMS(cast("dict[str, object]", config))
+    target = SingerTargetOracleWMS(config)
 
     # OPTION 2: Factory pattern for easier usage (alternative approach)
     # factory_result = create_oracle_wms_target(
@@ -193,7 +192,7 @@ def run_from_singer_files() -> None:
         config = json.loads(config_file.read_text(encoding="utf-8"))
     else:
         # Use demo configuration
-        config: dict[str, object] = {
+        config: dict[str, t.GeneralValueType] = {
             "base_url": "https://example.wms.oracle.com",
             "username": "demo_user",
             "password": "demo_password",
@@ -202,8 +201,8 @@ def run_from_singer_files() -> None:
             "schema_name": "WMS_SINGER",
         }
 
-    # Create target
-    target = SingerTargetOracleWMS(cast("dict[str, object]", config))
+    # Create target - config already has correct type annotation
+    target = SingerTargetOracleWMS(config)
 
     # Example of processing Singer format input
     singer_messages = [

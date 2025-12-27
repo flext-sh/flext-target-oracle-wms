@@ -10,7 +10,7 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 import pytest
-from flext_core import FlextResult
+from flext_core import FlextTypes as t, FlextResult
 
 
 
@@ -304,7 +304,7 @@ class TestSingerWMSStreamProcessorComprehensive:
         schema = {"type": "object", "properties": {"id": {"type": "integer"}}}
         stream_processor.initialize_stream("edge_test", schema)
 
-        empty_record: dict[str, object] = {}
+        empty_record: dict[str, t.GeneralValueType] = {}
         result = stream_processor.process_record("edge_test", empty_record)
         # Should handle gracefully
         assert result.success
@@ -380,9 +380,9 @@ class TestSingerWMSStreamProcessorComprehensive:
         mixed_transformer = MagicMock()
 
         def mixed_transform(
-            record: dict[str, object],
-            _schema: dict[str, object] | None = None,
-        ) -> FlextResult[dict[str, object]]:
+            record: dict[str, t.GeneralValueType],
+            _schema: dict[str, t.GeneralValueType] | None = None,
+        ) -> FlextResult[dict[str, t.GeneralValueType]]:
             """Transform that fails for even IDs."""
             if record.get("id", 0) % 2 == 0:
                 return FlextResult[None].fail(f"Failed for ID {record['id']}")
@@ -541,9 +541,9 @@ class TestSingerWMSStreamProcessorComprehensive:
         mock_transformer = MagicMock()
 
         def selective_transform(
-            record: dict[str, object],
-            _schema: dict[str, object] | None = None,
-        ) -> FlextResult[dict[str, object]]:
+            record: dict[str, t.GeneralValueType],
+            _schema: dict[str, t.GeneralValueType] | None = None,
+        ) -> FlextResult[dict[str, t.GeneralValueType]]:
             if record.get("id", 0) % 2 == 0:
                 return FlextResult[None].fail("Even ID failed")
             return FlextResult[None].ok({"ID": record["id"]})

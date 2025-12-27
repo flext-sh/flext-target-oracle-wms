@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from typing import Protocol, runtime_checkable
 
+from flext_core import FlextTypes as t
 from flext_db_oracle.protocols import FlextDbOracleProtocols as p_db_oracle
 from flext_meltano.protocols import FlextMeltanoProtocols as p_meltano
 
@@ -61,7 +62,7 @@ class FlextTargetOracleWmsProtocols(p_meltano, p_db_oracle):
 
                 def load_data(
                     self,
-                    records: list[dict[str, object]],
+                    records: list[dict[str, t.GeneralValueType]],
                 ) -> p_meltano.Result[bool]:
                     """Load records into WMS.
 
@@ -82,7 +83,7 @@ class FlextTargetOracleWmsProtocols(p_meltano, p_db_oracle):
 
                 def execute_operation(
                     self,
-                    operation: dict[str, object],
+                    operation: dict[str, t.GeneralValueType],
                 ) -> p_meltano.Result[bool]:
                     """Execute warehouse operation.
 
@@ -103,8 +104,8 @@ class FlextTargetOracleWmsProtocols(p_meltano, p_db_oracle):
 
                 def transform_to_wms(
                     self,
-                    record: dict[str, object],
-                ) -> p_meltano.Result[dict[str, object]]:
+                    record: dict[str, t.GeneralValueType],
+                ) -> p_meltano.Result[dict[str, t.GeneralValueType]]:
                     """Transform record to WMS format.
 
                     Args:
@@ -125,8 +126,8 @@ class FlextTargetOracleWmsProtocols(p_meltano, p_db_oracle):
                 def invoke_api(
                     self,
                     endpoint: str,
-                    payload: dict[str, object],
-                ) -> p_meltano.Result[dict[str, object]]:
+                    payload: dict[str, t.GeneralValueType],
+                ) -> p_meltano.Result[dict[str, t.GeneralValueType]]:
                     """Invoke WMS API endpoint.
 
                     Args:
@@ -147,7 +148,7 @@ class FlextTargetOracleWmsProtocols(p_meltano, p_db_oracle):
 
                 def process_batch(
                     self,
-                    records: list[dict[str, object]],
+                    records: list[dict[str, t.GeneralValueType]],
                 ) -> p_meltano.Result[bool]:
                     """Process batch of WMS records.
 
@@ -168,7 +169,7 @@ class FlextTargetOracleWmsProtocols(p_meltano, p_db_oracle):
 
                 def validate_wms_data(
                     self,
-                    data: dict[str, object],
+                    data: dict[str, t.GeneralValueType],
                 ) -> p_meltano.Result[bool]:
                     """Validate WMS data.
 
@@ -189,8 +190,8 @@ class FlextTargetOracleWmsProtocols(p_meltano, p_db_oracle):
 
                 def optimize_loading(
                     self,
-                    config: dict[str, object],
-                ) -> p_meltano.Result[dict[str, object]]:
+                    config: dict[str, t.GeneralValueType],
+                ) -> p_meltano.Result[dict[str, t.GeneralValueType]]:
                     """Optimize WMS loading configuration.
 
                     Args:

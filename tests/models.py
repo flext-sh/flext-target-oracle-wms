@@ -16,10 +16,12 @@ from flext_tests import FlextTestsModels
 from flext_target_oracle_wms import FlexttargetoraclewmsModels
 
 
-class TestsFlexttargetoraclewmsModels(
-    """Test models combining FlextTestsModels and project-specific models."""FlextTestsModels, FlexttargetoraclewmsModels):
-    class Wms(FlextTargetWmsModels):
-        """Wms domain models extending project models."""FlexttargetoraclewmsModels):
+class TestsFlexttargetoraclewmsModels(FlextTestsModels, FlexttargetoraclewmsModels):
+    """Test models combining FlextTestsModels and project-specific models."""
+
+    class Wms(FlexttargetoraclewmsModels):
+        """Wms domain models extending project models."""
+
         class Tests:
             """Internal tests declarations."""
 
