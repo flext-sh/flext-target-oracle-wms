@@ -13,9 +13,8 @@ from __future__ import annotations
 
 import os
 from datetime import UTC, datetime
-from typing import cast
 
-from flext_core import FlextLogger, FlextResult
+from flext_core import FlextLogger, FlextResult, FlextTypes as t
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 from flext_target_oracle_wms import (
@@ -72,10 +71,12 @@ class CustomWMSTypeConverter(WMSTypeConverter):
             mapped_status = status_mapping.get(value.lower(), value)
             return FlextResult[None].ok(mapped_status)
 
-        # Delegate to parent for standard types - ensure proper typing
-        parent_result = super().convert_singer_to_oracle(singer_type, value)
+        # Delegate to parent for standard types
+        parent_result: FlextResult[object] = super().convert_singer_to_oracle(
+            singer_type, value
+        )
 
-        return cast("FlextResult[object]", parent_result)
+        return parent_result
 
 
 class CustomWMSDataTransformer(WMSDataTransformer):
@@ -87,9 +88,9 @@ class CustomWMSDataTransformer(WMSDataTransformer):
 
     def transform_record(
         self,
-        record: dict[str, object],
-        schema: dict[str, object] | None = None,
-    ) -> FlextResult[dict[str, object]]:
+        record: dict[str, t.GeneralValueType],
+        schema: dict[str, t.GeneralValueType] | None = None,
+    ) -> FlextResult[dict[str, t.GeneralValueType]]:
         """Transform record with business validations."""
         # Apply standard transformation first
         base_result = super().transform_record(record, schema)
@@ -376,7 +377,7 @@ def demonstrate_custom_components() -> None:
     # Custom schema mapper
     schema_mapper = WMSSchemaMapper()
 
-    test_schema: dict[str, object] = {
+    test_schema: dict[str, t.GeneralValueType] = {
         "properties": {
             "business_date": {"type": "business_date"},
             "amount": {"type": "business_currency"},

@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, Mock, patch
 
-from flext_core import FlextResult
+from flext_core import FlextTypes as t, FlextResult
 
 
 
@@ -242,7 +242,7 @@ class TestFlextTargetFactory:
             )
 
     def test_create_from_config_dict_missing_fields(self) -> None:
-        """Test creating target from config dict[str, object] with missing required fields."""
+        """Test creating target from config dict[str, t.GeneralValueType] with missing required fields."""
         config = {
             "base_url": "https://incomplete.wms.oracle.com",
             # Missing username and password
@@ -262,7 +262,7 @@ class TestFlextTargetFactory:
         assert "password" in result.error
 
     def test_create_from_config_dict_exception(self) -> None:
-        """Test config dict[str, object] creation with exception handling."""
+        """Test config dict[str, t.GeneralValueType] creation with exception handling."""
         config = {
             "base_url": "https://error.wms.oracle.com",
             "username": "error_user",

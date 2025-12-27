@@ -509,7 +509,7 @@ class FlextTargetOracleWmsSettings(FlextSettings):
                 f"Failed to apply preset {preset_name}: {e}",
             )
 
-    def get_config_summary(self) -> dict[str, object]:
+    def get_config_summary(self) -> dict[str, t.GeneralValueType]:
         """Get complete configuration summary."""
         return {
             "connection": {
@@ -562,7 +562,7 @@ class FlextTargetOracleWmsSettings(FlextSettings):
     @classmethod
     def create_for_development(cls, **overrides: object) -> Self:
         """Create configuration for development environment."""
-        dev_overrides: dict[str, object] = {
+        dev_overrides: dict[str, t.GeneralValueType] = {
             "batch_size": 100,
             "table_prefix": "DEV_",
             "default_target_schema": "WMS_DEV",
@@ -581,7 +581,7 @@ class FlextTargetOracleWmsSettings(FlextSettings):
     @classmethod
     def create_for_production(cls, **overrides: object) -> Self:
         """Create configuration for production environment."""
-        prod_overrides: dict[str, object] = {
+        prod_overrides: dict[str, t.GeneralValueType] = {
             "batch_size": 1000,
             "table_prefix": "PROD_",
             "default_target_schema": "WMS_PRODUCTION",
@@ -602,7 +602,7 @@ class FlextTargetOracleWmsSettings(FlextSettings):
     @classmethod
     def create_for_testing(cls, **overrides: object) -> Self:
         """Create configuration for testing environment."""
-        test_overrides: dict[str, object] = {
+        test_overrides: dict[str, t.GeneralValueType] = {
             "batch_size": 10,
             "table_prefix": "TEST_",
             "default_target_schema": "WMS_TEST",
@@ -622,7 +622,7 @@ class FlextTargetOracleWmsSettings(FlextSettings):
 
 
 def create_config_from_dict(
-    config_dict: dict[str, object],
+    config_dict: dict[str, t.GeneralValueType],
 ) -> FlextResult[FlextTargetOracleWmsSettings]:
     """Create configuration from dictionary with validation.
 
@@ -635,8 +635,10 @@ def create_config_from_dict(
     """
     try:
         # Use model_validate for proper type conversion from dict
-        config: dict[str, object] = FlextTargetOracleWmsSettings.model_validate(
-            config_dict,
+        config: dict[str, t.GeneralValueType] = (
+            FlextTargetOracleWmsSettings.model_validate(
+                config_dict,
+            )
         )
         logger.debug("Configuration created and validated successfully")
         return FlextResult["FlextTargetOracleWmsSettings"].ok(config)
@@ -649,7 +651,7 @@ def create_config_from_dict(
 
 
 def create_config_with_preset(
-    base_config: dict[str, object],
+    base_config: dict[str, t.GeneralValueType],
     preset_name: str,
 ) -> FlextResult[FlextTargetOracleWmsSettings]:
     """Create configuration with preset applied.
@@ -668,7 +670,7 @@ def create_config_with_preset(
         if not config_result.success:
             return config_result
 
-        config: dict[str, object] = config_result.data
+        config: dict[str, t.GeneralValueType] = config_result.data
         if config is None:
             return FlextResult["FlextTargetOracleWmsSettings"].fail(
                 "Configuration creation returned None",
