@@ -9,10 +9,7 @@ from __future__ import annotations
 
 import pytest
 
-
-
-    SingerWMSCatalogManager,
-)
+from flext_target_oracle_wms.models import SingerWMSCatalogManager
 
 
 class TestSingerWMSCatalogManagerComprehensive:

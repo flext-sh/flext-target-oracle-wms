@@ -86,7 +86,7 @@ class TestOracleWMSTargetCli:
             mock_target_class.return_value = mock_target
 
             result = cli.execute(config="config.json")
-            assert result.success
+            assert result.is_success
 
     def test_execute_with_default_config(self) -> None:
         """Test CLI execution with default configuration."""
@@ -105,7 +105,7 @@ class TestOracleWMSTargetCli:
             mock_target_class.return_value = mock_target
 
             result = cli.execute()
-            assert result.success
+            assert result.is_success
 
     def test_execute_setup_failure(self) -> None:
         """Test CLI execution when target setup fails."""
@@ -121,7 +121,7 @@ class TestOracleWMSTargetCli:
             mock_target_class.return_value = mock_target
 
             result = cli.execute()
-            assert not result.success
+            assert not result.is_success
             assert result.error is not None
             assert result.error is not None
             assert "Setup failed" in result.error
@@ -157,7 +157,7 @@ class TestOracleWMSTargetCli:
             mock_target_class.return_value = mock_target
 
             result = cli.execute()
-            assert result.success
+            assert result.is_success
             mock_target.process_schema_message.assert_called_once()
             mock_target.process_record_message.assert_called_once()
             mock_target.process_state_message.assert_called_once()
@@ -177,7 +177,7 @@ class TestOracleWMSTargetCli:
             mock_target_class.return_value = mock_target
 
             result = cli.execute()
-            assert not result.success
+            assert not result.is_success
             assert result.error is not None
             assert result.error is not None
             assert "Invalid JSON" in result.error
@@ -200,7 +200,7 @@ class TestOracleWMSTargetCli:
             mock_target_class.return_value = mock_target
 
             result = cli.execute()
-            assert not result.success
+            assert not result.is_success
             assert result.error is not None
             assert result.error is not None
             assert "Processing failed" in result.error
@@ -214,7 +214,7 @@ class TestOracleWMSTargetCli:
             side_effect=Exception("Test error"),
         ):
             result = cli.execute()
-            assert not result.success
+            assert not result.is_success
             assert result.error is not None
             assert result.error is not None
             assert "CLI execution failed" in result.error

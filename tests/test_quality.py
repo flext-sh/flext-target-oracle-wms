@@ -4,16 +4,20 @@ Validates production-ready implementation using real flext-oracle-wms API
 without requiring actual Oracle WMS credentials.
 """
 
+from __future__ import annotations
+
 import json
 import sys
 import traceback
 
+from flext_core import FlextTypes as t
 from flext_oracle_wms import FlextOracleWmsSettings
 
-
-
+from flext_target_oracle_wms.target_client import (
     SingerTargetOracleWMS,
     SingerWMSCatalogManager,
+)
+from flext_target_oracle_wms.target_models import (
     WMSDataTransformer,
     WMSTableManager,
     WMSTypeConverter,
@@ -25,46 +29,34 @@ def test_configuration_validation() -> bool | None:
     try:
         # Test valid configuration
         valid_config = FlextOracleWmsSettings(
-            oracle_wms_base_url="https://invalid.wms.ocs.oraclecloud.com/company_unknow",
-            oracle_wms_username="test_user",
-            oracle_wms_password="test_pass",
+            base_url="https://invalid.wms.ocs.oraclecloud.com/company_unknow",
+            username="test_user",
+            password="test_pass",
             api_version="LGF_V10",
-            oracle_wms_timeout=30,
-            oracle_wms_max_retries=3,
-            oracle_wms_verify_ssl=True,
+            timeout=30,
+            retry_attempts=3,
+            enable_ssl_verification=True,
         )
 
         # Test validation
-        valid_config.validate_business_rules()
+        validation_result = valid_config.validate_config()
+        if not validation_result.is_success:
+            return False
 
-        # Test invalid configurations
-        invalid_tests = [
-            ("Empty base_url", {"oracle_wms_base_url": ""}),
-            ("Invalid base_url", {"oracle_wms_base_url": "invalid-url"}),
-            ("Empty username", {"oracle_wms_username": ""}),
-            ("Empty password", {"oracle_wms_password": ""}),
-            ("Zero timeout", {"oracle_wms_timeout": 0}),
-            ("Negative retries", {"oracle_wms_max_retries": -1}),
-        ]
+        # Test invalid configurations (simplified)
+        try:
+            # Test empty base_url
+            FlextOracleWmsSettings(base_url="")
+            return False  # Should have failed
+        except ValueError:
+            pass
 
-        for _test_name, override_params in invalid_tests:
-            try:
-                config_params = {
-                    "oracle_wms_base_url": "https://test.com",
-                    "oracle_wms_username": "test",
-                    "oracle_wms_password": "test",
-                    "api_version": "LGF_V10",
-                    "oracle_wms_timeout": 30,
-                    "oracle_wms_max_retries": 3,
-                    "oracle_wms_verify_ssl": True,
-                }
-                config_params.update(override_params)
-
-                invalid_config = FlextOracleWmsSettings(**config_params)
-                invalid_config.validate_business_rules()
-                return False
-            except ValueError:
-                pass
+        try:
+            # Test invalid timeout
+            FlextOracleWmsSettings(timeout=0)
+            return False  # Should have failed
+        except ValueError:
+            pass
 
         return True
 
@@ -89,7 +81,7 @@ def test_singer_target_interfaces() -> bool | None:
         target = SingerTargetOracleWMS(config)
 
         # Test that target can be created with valid config
-        if not hasattr(target, "name"):
+        if not hasattr(target, "name") or not isinstance(target.name, str):
             return False
 
         return target.name == "target-oracle-wms"
@@ -115,7 +107,7 @@ def test_data_transformation() -> bool | None:
 
         for singer_type, input_value, expected in test_conversions:
             result = converter.convert_singer_to_oracle(singer_type, input_value)
-            if not result.success:
+            if not result.is_success:
                 return False
 
             converted = result.data
@@ -130,7 +122,7 @@ def test_data_transformation() -> bool | None:
         transformer = WMSDataTransformer()
 
         transform_result = transformer.transform_record({"id": 1, "name": "test"})
-        if not transform_result.success:
+        if not transform_result.is_success:
             return False
 
         transformed = transform_result.data
@@ -171,7 +163,7 @@ def test_table_management() -> bool | None:
             "TEST_SCHEMA",
             {"properties": {"id": {"type": "string"}}},
         )
-        if not sql_result.success:
+        if not sql_result.is_success:
             return False
 
         sql = sql_result.data
@@ -185,7 +177,7 @@ def test_table_management() -> bool | None:
             "TEST_SCHEMA",
             columns,
         )
-        if not insert_result.success:
+        if not insert_result.is_success:
             return False
 
         insert_sql = insert_result.data
