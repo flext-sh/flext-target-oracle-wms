@@ -669,7 +669,9 @@ class FlextTargetOracleWmsModels(FlextModels):
     class WmsErrorContext(FlextModels.BaseModel):
         """Error context for WMS target error handling."""
 
-        error_type: t.Project.ErrorTypeLiteral = Field(..., description="Error category")
+        error_type: t.Project.ErrorTypeLiteral = Field(
+            ..., description="Error category"
+        )
 
         # Context information
         wms_entity: str | None = Field(None, description="WMS entity causing error")
