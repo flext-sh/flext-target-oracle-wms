@@ -8,25 +8,12 @@ from __future__ import annotations
 
 import re
 from datetime import UTC, datetime
-from typing import Literal
 
-from flext_core import FlextModels, FlextResult
+from flext_core import FlextModels, FlextResult, FlextTypes as t
 from flext_core.utilities import u
 from pydantic import Field, SecretStr
 
 from flext_target_oracle_wms.constants import c
-
-# Oracle WMS constants
-oauth2 = "oauth2"
-basic = "basic"
-WMS_CONNECTION = "WMS_CONNECTION"
-WMS_AUTHENTICATION = "WMS_AUTHENTICATION"
-WMS_BUSINESS_RULE = "WMS_BUSINESS_RULE"
-WMS_VALIDATION = "WMS_VALIDATION"
-SINGER_PROTOCOL = "SINGER_PROTOCOL"
-DATA_TRANSFORMATION = "DATA_TRANSFORMATION"
-PERFORMANCE = "PERFORMANCE"
-CONFIGURATION = "CONFIGURATION"
 
 
 class FlextTargetOracleWmsModels(FlextModels):
@@ -682,16 +669,7 @@ class FlextTargetOracleWmsModels(FlextModels):
     class WmsErrorContext(FlextModels.BaseModel):
         """Error context for WMS target error handling."""
 
-        error_type: Literal[
-            WMS_CONNECTION,
-            WMS_AUTHENTICATION,
-            WMS_BUSINESS_RULE,
-            WMS_VALIDATION,
-            SINGER_PROTOCOL,
-            DATA_TRANSFORMATION,
-            PERFORMANCE,
-            CONFIGURATION,
-        ] = Field(..., description="Error category")
+        error_type: t.Project.ErrorTypeLiteral = Field(..., description="Error category")
 
         # Context information
         wms_entity: str | None = Field(None, description="WMS entity causing error")
