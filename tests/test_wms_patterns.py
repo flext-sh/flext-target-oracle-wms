@@ -10,10 +10,9 @@ from __future__ import annotations
 from unittest.mock import MagicMock, patch
 
 import pytest
-from flext_core import FlextTypes as t, FlextResult
+from flext_core import FlextResult, FlextTypes as t
 
-
-
+from flext_target_oracle_wms.services import (
     WMSDataTransformer,
     WMSSchemaMapper,
     WMSTableManager,
@@ -493,7 +492,9 @@ class TestWMSTableManager:
             mock_schema_mapper.map_singer_schema_to_oracle.return_value = FlextResult[
                 None
             ].fail("Schema mapping failed")
-            schema: dict[str, t.GeneralValueType] = {"properties": {"id": {"type": "integer"}}}
+            schema: dict[str, t.GeneralValueType] = {
+                "properties": {"id": {"type": "integer"}}
+            }
             result = manager.generate_create_table_sql(
                 "TEST_TABLE",
                 "WMS_SCHEMA",
@@ -517,7 +518,9 @@ class TestWMSTableManager:
             mock_schema_mapper.map_singer_schema_to_oracle.side_effect = RuntimeError(
                 "Schema mapping failed",
             )
-            schema: dict[str, t.GeneralValueType] = {"properties": {"id": {"type": "integer"}}}
+            schema: dict[str, t.GeneralValueType] = {
+                "properties": {"id": {"type": "integer"}}
+            }
             result = manager.generate_create_table_sql(
                 "TEST_TABLE",
                 "WMS_SCHEMA",
@@ -558,7 +561,9 @@ class TestWMSTableManager:
                 None
             ].ok(None)
 
-            schema: dict[str, t.GeneralValueType] = {"properties": {"id": {"type": "integer"}}}
+            schema: dict[str, t.GeneralValueType] = {
+                "properties": {"id": {"type": "integer"}}
+            }
             result = manager.generate_create_table_sql(
                 "TEST_TABLE",
                 "WMS_SCHEMA",

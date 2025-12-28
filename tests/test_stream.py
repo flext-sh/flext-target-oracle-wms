@@ -10,15 +10,11 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 import pytest
-from flext_core import FlextTypes as t, FlextResult
+from flext_core import FlextResult, FlextTypes as t
 
-
-
-    SingerWMSStreamProcessor,
-    WMSDataTransformer,
-    WMSStreamProcessingStats,
-    WMSTableManager,
-)
+from flext_target_oracle_wms.models import WMSStreamProcessingStats
+from flext_target_oracle_wms.services import WMSDataTransformer, WMSTableManager
+from flext_target_oracle_wms.stream import SingerWMSStreamProcessor
 
 
 class TestWMSStreamProcessingStats:
