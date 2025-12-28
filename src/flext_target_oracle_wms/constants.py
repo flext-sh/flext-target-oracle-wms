@@ -7,6 +7,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from enum import StrEnum
 from typing import Final
 
 from flext_oracle_wms.constants import FlextOracleWmsConstants
@@ -208,6 +209,18 @@ class FlextTargetOracleWmsConstants(FlextOracleWmsConstants):
             INTERNAL_ERROR: Final[str] = "Internal error in Oracle WMS target"
             EXTERNAL_SERVICE_ERROR: Final[str] = "External service error"
             NETWORK_ERROR: Final[str] = "Network error occurred"
+
+    class ErrorType(StrEnum):
+        """Oracle WMS target error types using StrEnum for type safety."""
+
+        WMS_CONNECTION = "WMS_CONNECTION"
+        WMS_AUTHENTICATION = "WMS_AUTHENTICATION"
+        WMS_BUSINESS_RULE = "WMS_BUSINESS_RULE"
+        WMS_VALIDATION = "WMS_VALIDATION"
+        SINGER_PROTOCOL = "SINGER_PROTOCOL"
+        DATA_TRANSFORMATION = "DATA_TRANSFORMATION"
+        PERFORMANCE = "PERFORMANCE"
+        CONFIGURATION = "CONFIGURATION"
 
 
 c = FlextTargetOracleWmsConstants

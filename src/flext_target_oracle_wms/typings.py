@@ -227,6 +227,18 @@ class FlextTargetOracleWmsTypes(t):
             "singer-integration",
         ]
 
+        # Error type literal - references ErrorType StrEnum from constants
+        type ErrorTypeLiteral = Literal[
+            "WMS_CONNECTION",
+            "WMS_AUTHENTICATION",
+            "WMS_BUSINESS_RULE",
+            "WMS_VALIDATION",
+            "SINGER_PROTOCOL",
+            "DATA_TRANSFORMATION",
+            "PERFORMANCE",
+            "CONFIGURATION",
+        ]
+
         # Singer target Oracle WMS-specific project configurations
         type SingerTargetOracleWmsProjectConfig = dict[str, t.GeneralValueType]
         type WmsLoaderConfig = dict[str, str | int | bool | list[str]]
