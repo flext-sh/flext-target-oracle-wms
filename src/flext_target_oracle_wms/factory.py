@@ -296,14 +296,7 @@ class FlextTargetFactory:
                 if not is_valid:
                     return FlextResult[SingerTargetOracleWMS].fail(error_msg)
 
-            # Types are guaranteed str by validation above - no cast needed
-            # mypy/pyrefly can infer from isinstance checks
-            assert isinstance(base_url, str)
-            assert isinstance(username, str)
-            assert isinstance(password, str)
-            assert isinstance(environment, str)
-            assert preset is None or isinstance(preset, str)
-
+            # Types are guaranteed str by validation above - safely proceed
             request = TargetCreationRequest(
                 base_url=base_url,
                 username=username,
