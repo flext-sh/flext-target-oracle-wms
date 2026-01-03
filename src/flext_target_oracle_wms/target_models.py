@@ -342,7 +342,10 @@ class WMSSchemaMapper:
                     self._map_singer_type_to_oracle(prop_def)
                 )
 
-                if oracle_type_result.is_success and oracle_type_result.data is not None:
+                if (
+                    oracle_type_result.is_success
+                    and oracle_type_result.data is not None
+                ):
                     oracle_columns[oracle_name] = oracle_type_result.data
                 else:
                     oracle_columns[oracle_name] = "VARCHAR2(4000)"  # Fallback
