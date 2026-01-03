@@ -60,7 +60,7 @@ class TestComprehensiveCLICoverage:
 
             # Execute should read from stdin and process message
             result = cli.execute()
-            assert result.success
+            assert result.is_success
 
     def test_cli_load_config_from_file(self) -> None:
         """Test CLI config loading from file."""
@@ -126,13 +126,13 @@ class TestComprehensiveCLICoverage:
             mock_target.cleanup.return_value = MagicMock(success=True)
 
             result = cli.execute()
-            assert result.success
+            assert result.is_success
 
     def test_main_function_comprehensive_scenarios(self) -> None:
         """Test main function with various command line scenarios."""
         # Mock run to avoid actual execution
         result = MagicMock()
-        result.success = True
+        result.is_success = True
 
         # Test 1: No arguments (default behavior) - now simplified without FlextCliSettings
         with (
@@ -225,7 +225,7 @@ class TestComprehensiveTargetCoverage:
 
             # Mock start failure
             mock_start_result = MagicMock()
-            mock_start_result.success = False
+            mock_start_result.is_success = False
             mock_start_result.error = "Connection timeout"
             mock_client.start.return_value = mock_start_result
 
@@ -239,7 +239,7 @@ class TestComprehensiveTargetCoverage:
                 target = SingerTargetOracleWMS(target_config)
                 result = target.setup()
 
-                assert not result.success
+                assert not result.is_success
                 assert result.error is not None
                 assert result.error is not None
                 assert "Oracle WMS connection failed" in result.error
@@ -255,7 +255,7 @@ class TestComprehensiveTargetCoverage:
             # Test SCHEMA message with missing fields
             incomplete_schema = {"type": "SCHEMA", "stream": "test"}
             result = target.process_schema_message(incomplete_schema)
-            assert not result.success
+            assert not result.is_success
             assert result.error is not None
             assert result.error is not None
             assert "missing stream or schema" in result.error
@@ -263,7 +263,7 @@ class TestComprehensiveTargetCoverage:
             # Test RECORD message with missing fields
             incomplete_record = {"type": "RECORD", "stream": "test"}
             result = target.process_record_message(incomplete_record)
-            assert not result.success
+            assert not result.is_success
             assert result.error is not None
             assert result.error is not None
             assert "missing stream or record" in result.error
@@ -271,7 +271,7 @@ class TestComprehensiveTargetCoverage:
             # Test STATE message with invalid type
             invalid_state = {"type": "INVALID", "value": {}}
             result = target.process_state_message(invalid_state)
-            assert not result.success
+            assert not result.is_success
             assert result.error is not None
             assert result.error is not None
             assert "Not a STATE message" in result.error
@@ -294,7 +294,7 @@ class TestComprehensiveTargetCoverage:
                 "test_schema",
                 "CREATE TABLE...",
             )
-            assert not result.success
+            assert not result.is_success
             assert result.error is not None
             assert result.error is not None
             assert "Oracle WMS client not initialized" in result.error
@@ -338,7 +338,7 @@ class TestComprehensiveTargetCoverage:
             }
 
             result = target._insert_record("test_stream", complex_record)
-            assert result.success  # Should succeed with any data type
+            assert result.is_success  # Should succeed with any data type
 
     def test_target_cleanup_scenarios(
         self,
@@ -353,12 +353,12 @@ class TestComprehensiveTargetCoverage:
 
             # Test cleanup with client stop failure (should not fail cleanup)
             mock_stop_result = MagicMock()
-            mock_stop_result.success = False
+            mock_stop_result.is_success = False
             mock_stop_result.error = "Stop failed"
             mock_client.stop.return_value = mock_stop_result
 
             result = target.cleanup()
-            assert result.success  # Cleanup should succeed despite stop failure
+            assert result.is_success  # Cleanup should succeed despite stop failure
 
     def test_target_finalize_comprehensive(
         self,
@@ -378,7 +378,7 @@ class TestComprehensiveTargetCoverage:
             stats_data = {"stream1": mock_stats, "stream2": mock_stats}
 
             mock_result = MagicMock()
-            mock_result.success = True
+            mock_result.is_success = True
             mock_result.data = stats_data
 
             with patch.object(
@@ -388,7 +388,7 @@ class TestComprehensiveTargetCoverage:
             ):
                 result = target.finalize()
 
-                assert result.success
+                assert result.is_success
                 assert result.data is not None
                 summary = result.data
                 assert summary["total_records_processed"] == 200  # 100 * 2 streams
@@ -423,7 +423,7 @@ class TestComprehensiveIntegrationCoverage:
 
             # 1. Setup
             setup_result = target.setup()
-            assert setup_result.success
+            assert setup_result.is_success
 
             # 2. Process SCHEMA
             schema_message = {
@@ -441,7 +441,7 @@ class TestComprehensiveIntegrationCoverage:
             }
 
             schema_result = target.process_schema_message(schema_message)
-            assert schema_result.success
+            assert schema_result.is_success
 
             # 3. Process multiple RECORDs
             records = [
@@ -459,7 +459,7 @@ class TestComprehensiveIntegrationCoverage:
                 }
 
                 record_result = target.process_record_message(record_message)
-                assert record_result.success
+                assert record_result.is_success
 
             # 4. Process STATE
             state_message = {
@@ -469,18 +469,18 @@ class TestComprehensiveIntegrationCoverage:
 
             with patch("sys.stdout", new_callable=io.StringIO) as mock_stdout:
                 state_result = target.process_state_message(state_message)
-                assert state_result.success
+                assert state_result.is_success
                 # Verify STATE was written to stdout
                 assert state_message == json.loads(mock_stdout.getvalue().strip())
 
             # 5. Finalize
             finalize_result = target.finalize()
-            assert finalize_result.success
+            assert finalize_result.is_success
             assert finalize_result.data is not None
 
             # 6. Cleanup
             cleanup_result = target.cleanup()
-            assert cleanup_result.success
+            assert cleanup_result.is_success
 
     def test_cli_full_integration_with_file_input(self) -> None:
         """Test CLI with file-based input integration."""

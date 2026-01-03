@@ -48,7 +48,7 @@ class TestFactoryPerformanceBenchmarks:
                     password="benchmark_password",
                     preset="production",
                 )
-                assert result.success
+                assert result.is_success
                 return result.data
 
         # Benchmark factory target creation
@@ -109,7 +109,7 @@ class TestFactoryPerformanceBenchmarks:
                     monitor_name="benchmark_monitor",
                 )
                 result = factory.create_monitored_target(request)
-                assert result.success
+                assert result.is_success
                 return result.data
 
         # Benchmark monitored target creation
@@ -143,7 +143,7 @@ class TestPatternsPerformanceBenchmarks:
         def transform_large_record() -> dict[str, t.GeneralValueType]:
             """Transform large record - measured operation."""
             result = transformer.transform_record(large_record, None)
-            assert result.success
+            assert result.is_success
             return result.data
 
         # Benchmark transformation
@@ -184,7 +184,7 @@ class TestPatternsPerformanceBenchmarks:
         def map_complex_schema() -> dict[str, t.GeneralValueType]:
             """Map complex schema - measured operation."""
             result = mapper.map_singer_schema_to_oracle(complex_schema)
-            assert result.success
+            assert result.is_success
             return result.data
 
         # Benchmark schema mapping
@@ -221,7 +221,7 @@ class TestPatternsPerformanceBenchmarks:
             results: list[t.GeneralValueType] = []
             for singer_type, value in test_conversions:
                 result = converter.convert_singer_to_oracle(singer_type, value)
-                assert result.success
+                assert result.is_success
                 results.append(result.data)
             return results
 
@@ -253,14 +253,14 @@ class TestPatternsPerformanceBenchmarks:
                 "benchmark_schema",
                 complex_schema,
             )
-            assert create_result.success
+            assert create_result.is_success
             columns = [f"column_{i}" for i in range(30)]
             insert_result = manager.generate_insert_sql(
                 "benchmark_table",
                 "benchmark_schema",
                 columns,
             )
-            assert insert_result.success
+            assert insert_result.is_success
             return (create_result.data, insert_result.data)
 
         # Benchmark SQL generation
@@ -291,7 +291,7 @@ class TestStreamPerformanceBenchmarks:
             },
         }
         init_result = processor.initialize_stream("benchmark_stream", test_schema)
-        assert init_result.success
+        assert init_result.is_success
         # Generate test records
         test_records = [
             {
@@ -306,10 +306,10 @@ class TestStreamPerformanceBenchmarks:
         def process_batch_records() -> dict[str, t.GeneralValueType]:
             """Process batch of records - measured operation."""
             result = processor.process_batch("benchmark_stream", test_records)
-            assert result.success
+            assert result.is_success
             # Get stats
             stats_result = processor.get_stream_stats("benchmark_stream")
-            assert stats_result.success
+            assert stats_result.is_success
             return stats_result.data
 
         # Benchmark batch processing
@@ -357,13 +357,13 @@ class TestCatalogPerformanceBenchmarks:
                     stream_data["schema"],
                     stream_data["metadata"],
                 )
-                assert result.success
+                assert result.is_success
             # List streams
             list_result = manager.list_streams()
-            assert list_result.success
+            assert list_result.is_success
             # Convert to Singer catalog
             catalog_result = manager.to_singer_catalog()
-            assert catalog_result.success
+            assert catalog_result.is_success
             return catalog_result.data
 
         # Benchmark catalog operations
@@ -402,7 +402,7 @@ class TestIntegrationPerformanceBenchmarks:
                 target = SingerTargetOracleWMS(config)
                 # 1. Setup
                 setup_result = target.setup()
-                assert setup_result.success
+                assert setup_result.is_success
                 # 2. Process schema
                 schema_message = {
                     "type": "SCHEMA",
@@ -418,7 +418,7 @@ class TestIntegrationPerformanceBenchmarks:
                     "key_properties": ["id"],
                 }
                 schema_result = target.process_schema_message(schema_message)
-                assert schema_result.success
+                assert schema_result.is_success
                 # 3. Process multiple records
                 for i in range(20):
                     record_message = {
@@ -432,13 +432,13 @@ class TestIntegrationPerformanceBenchmarks:
                         "time_extracted": "2024-01-15T12:00:00Z",
                     }
                     record_result = target.process_record_message(record_message)
-                    assert record_result.success
+                    assert record_result.is_success
                 # 4. Finalize
                 finalize_result = target.finalize()
-                assert finalize_result.success
+                assert finalize_result.is_success
                 # 5. Cleanup
                 cleanup_result = target.cleanup()
-                assert cleanup_result.success
+                assert cleanup_result.is_success
                 return finalize_result.data
 
         # Benchmark complete workflow
@@ -472,7 +472,7 @@ class TestMemoryEfficiencyBenchmarks:
             },
         }
         init_result = processor.initialize_stream("memory_test", schema)
-        assert init_result.success
+        assert init_result.is_success
 
         def process_large_batch() -> dict[str, t.GeneralValueType]:
             """Process large batch efficiently - measured operation."""
@@ -496,12 +496,12 @@ class TestMemoryEfficiencyBenchmarks:
             for start_idx in range(0, len(large_records), batch_size):
                 batch = large_records[start_idx : start_idx + batch_size]
                 result = processor.process_batch("memory_test", batch)
-                assert result.success
+                assert result.is_success
                 # Clear batch to help with memory
                 del batch
             # Get final stats
             stats_result = processor.get_stream_stats("memory_test")
-            assert stats_result.success
+            assert stats_result.is_success
             # Force garbage collection after processing
             gc.collect()
             return stats_result.data

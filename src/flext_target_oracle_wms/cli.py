@@ -21,7 +21,7 @@ class OracleWMSTargetCli:
     """Oracle WMS Target CLI using REAL flext-cli patterns."""
 
     @override
-    def __init__(self: object) -> None:
+    def __init__(self) -> None:
         """Initialize CLI with real flext-cli patterns."""
         self.name = "target-oracle-wms"
         self.description = "Oracle WMS Singer Target - Production Ready using REAL flext-oracle-wms API"
@@ -43,7 +43,7 @@ class OracleWMSTargetCli:
                 str(config_path) if config_path is not None else None
             )
             config_result: FlextResult[object] = self._prepare_config(config_path_str)
-            if not config_result.success:
+            if not config_result.is_success:
                 result = FlextResult[None].fail(
                     config_result.error or "Configuration failed",
                 )
@@ -76,12 +76,12 @@ class OracleWMSTargetCli:
 
         # Setup target
         setup_result: FlextResult[object] = target.setup()
-        if not setup_result.success:
+        if not setup_result.is_success:
             return FlextResult[None].fail(f"Setup failed: {setup_result.error}")
 
         # Process messages
         process_result: FlextResult[object] = self._process_stdin_messages(target)
-        if not process_result.success:
+        if not process_result.is_success:
             return process_result
 
         # Finalize and cleanup
@@ -125,7 +125,7 @@ class OracleWMSTargetCli:
                     continue
 
                 result: FlextResult[object] = self._process_single_message(target, line)
-                if not result.success:
+                if not result.is_success:
                     return result
 
             return FlextResult[None].ok(None)
@@ -198,7 +198,7 @@ def main() -> None:
         # Execute CLI with parsed arguments
         result: FlextResult[object] = cli_instance.execute(config=config_path)
 
-        if not result.success:
+        if not result.is_success:
             sys.stderr.write(f"Execution failed: {result.error}\n")
             sys.exit(1)
 

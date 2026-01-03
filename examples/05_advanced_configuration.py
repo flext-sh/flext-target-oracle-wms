@@ -94,7 +94,7 @@ class CustomWMSDataTransformer(WMSDataTransformer):
         """Transform record with business validations."""
         # Apply standard transformation first
         base_result = super().transform_record(record, schema)
-        if not base_result.success:
+        if not base_result.is_success:
             return base_result
 
         transformed = base_result.data
@@ -187,7 +187,7 @@ def run_advanced_configuration_example() -> None:
     try:
         # Setup with advanced configuration
         setup_result = target.setup()
-        if not setup_result.success:
+        if not setup_result.is_success:
             logger.error(f"Advanced setup failed: {setup_result.error}")
             return
 
@@ -237,7 +237,7 @@ def run_advanced_configuration_example() -> None:
         }
 
         schema_result = target.process_schema_message(advanced_schema)
-        if not schema_result.success:
+        if not schema_result.is_success:
             logger.error(f"Advanced schema failed: {schema_result.error}")
             return
 
@@ -301,7 +301,7 @@ def run_advanced_configuration_example() -> None:
             }
 
             record_result = target.process_record_message(record_message)
-            if not record_result.success:
+            if not record_result.is_success:
                 logger.error(f"Complex record failed: {record_result.error}")
                 continue
 
@@ -320,14 +320,14 @@ def run_advanced_configuration_example() -> None:
         }
 
         invalid_result = target.process_record_message(invalid_record)
-        if not invalid_result.success:
+        if not invalid_result.is_success:
             logger.info(f"Invalid record correctly rejected: {invalid_result.error}")
         else:
             logger.warning("Invalid record was unexpectedly accepted")
 
         # Finalize with statistics
         final_result = target.finalize()
-        if final_result.success and final_result.data:
+        if final_result.is_success and final_result.data:
             stats = final_result.data
             logger.info(
                 f"Processing completed - Records: {stats.get('total_records', 0)}, "
@@ -386,7 +386,7 @@ def demonstrate_custom_components() -> None:
     }
 
     mapping_result = schema_mapper.map_singer_schema_to_oracle(test_schema)
-    if mapping_result.success:
+    if mapping_result.is_success:
         logger.info(f"Schema mapping: {mapping_result.data}")
 
 

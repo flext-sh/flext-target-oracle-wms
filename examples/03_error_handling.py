@@ -74,7 +74,7 @@ def demonstrate_setup_error_handling(
     target = SingerTargetOracleWMS(config)
 
     setup_result = target.setup()
-    if not setup_result.success:
+    if not setup_result.is_success:
         logger.error(f"Setup failed as expected for demo: {setup_result.error}")
         logger.info("Implementing setup retry logic...")
 
@@ -86,7 +86,7 @@ def demonstrate_setup_error_handling(
         target = SingerTargetOracleWMS(fallback_config)
         setup_result = target.setup()
 
-        if setup_result.success:
+        if setup_result.is_success:
             logger.info("Setup successful with fallback configuration")
             return target
         logger.error("Setup failed even with fallback - switching to mock mode")
@@ -223,7 +223,7 @@ def demonstrate_recovery_scenarios(target: SingerTargetOracleWMS) -> None:
     try:
         # Test graceful shutdown and restart
         cleanup_result = target.cleanup()
-        if cleanup_result.success:
+        if cleanup_result.is_success:
             logger.info("Target cleanup successful")
         else:
             logger.warning(f"Target cleanup had issues: {cleanup_result.error}")

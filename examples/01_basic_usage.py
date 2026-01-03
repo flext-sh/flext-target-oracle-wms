@@ -58,7 +58,7 @@ def run_basic_example() -> None:
     try:
         # Setup target - REAL flext-core patterns
         setup_result = target.setup()
-        if not setup_result.success:
+        if not setup_result.is_success:
             logger.error(f"Target setup failed: {setup_result.error}")
             return
 
@@ -165,7 +165,7 @@ def run_basic_example() -> None:
 
         # Finalize target - REAL cleanup
         cleanup_result = target.cleanup()
-        if not cleanup_result.success:
+        if not cleanup_result.is_success:
             logger.error(f"Target cleanup failed: {cleanup_result.error}")
         else:
             logger.info("Target finalized successfully")
@@ -176,7 +176,7 @@ def run_basic_example() -> None:
     finally:
         # Cleanup using REAL implementation
         cleanup_result = target.cleanup()
-        if not cleanup_result.success:
+        if not cleanup_result.is_success:
             logger.error(f"Target cleanup failed: {cleanup_result.error}")
         else:
             logger.info("Target cleanup completed")
