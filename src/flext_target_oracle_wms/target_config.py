@@ -667,7 +667,7 @@ def create_config_with_preset(
     try:
         # Create base configuration
         config_result: FlextResult[object] = create_config_from_dict(base_config)
-        if not config_result.success:
+        if not config_result.is_success:
             return config_result
 
         config: dict[str, t.GeneralValueType] = config_result.data

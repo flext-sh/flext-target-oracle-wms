@@ -44,7 +44,7 @@ def _demonstrate_simple_target() -> None:
         environment="demo",
     )
 
-    if simple_target_result.success and simple_target_result.data:
+    if simple_target_result.is_success and simple_target_result.data:
         logger.info("✅ Simple target created successfully")
         simple_target = simple_target_result.data
         logger.info("Target config: %s", simple_target.config)
@@ -65,7 +65,7 @@ def _demonstrate_development_target() -> None:
         custom_debug_mode=True,
     )
 
-    if dev_target_result.success and dev_target_result.data:
+    if dev_target_result.is_success and dev_target_result.data:
         logger.info("✅ Development target created with optimized settings")
         dev_target = dev_target_result.data
         # Development preset automatically sets dev-friendly options
@@ -91,7 +91,7 @@ def _demonstrate_production_target() -> None:
         enable_audit_logging=True,
     )
 
-    if prod_target_result.success and prod_target_result.data:
+    if prod_target_result.is_success and prod_target_result.data:
         logger.info("✅ Production target created with strict settings")
         prod_target = prod_target_result.data
         # Production preset automatically sets production-grade options
@@ -114,7 +114,7 @@ def _demonstrate_testing_target() -> None:
         fast_execution=True,
     )
 
-    if test_target_result.success and test_target_result.data:
+    if test_target_result.is_success and test_target_result.data:
         logger.info("✅ Testing target created with minimal settings")
         test_target = test_target_result.data
         logger.info("Batch size: %s", test_target.config.get("batch_size"))
@@ -138,7 +138,7 @@ def _demonstrate_config_target() -> None:
     }
 
     config_target_result = FlextTargetFactory.create_from_config_dict(config_dict)
-    if config_target_result.success and config_target_result.data:
+    if config_target_result.is_success and config_target_result.data:
         logger.info("✅ Configuration-based target created successfully")
         config_target = config_target_result.data
         logger.info("Environment: %s", config_target.config.get("environment"))
@@ -202,7 +202,7 @@ def demonstrate_error_handling() -> None:
     }
 
     error_result = FlextTargetFactory.create_from_config_dict(incomplete_config)
-    if not error_result.success:
+    if not error_result.is_success:
         logger.info("✅ Handled missing config gracefully: %s", error_result.error)
 
     # Example 2: Unknown preset handling

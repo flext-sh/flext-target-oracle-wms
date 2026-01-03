@@ -111,11 +111,11 @@ class TestSingerWMSStreamProcessorComprehensive:
         schema = {"type": "object", "properties": {"id": {"type": "integer"}}}
 
         result = stream_processor.initialize_stream("stats_test", schema)
-        assert result.success
+        assert result.is_success
 
         # Verify stats were created
         stats_result = stream_processor.get_stream_stats("stats_test")
-        assert stats_result.success
+        assert stats_result.is_success
         assert stats_result.data is not None
         assert stats_result.data.stream_name == "stats_test"
         assert stats_result.data.records_processed == 0
@@ -133,11 +133,11 @@ class TestSingerWMSStreamProcessorComprehensive:
         # Process record
         record = {"id": 123}
         result = stream_processor.process_record("success_stats", record)
-        assert result.success
+        assert result.is_success
 
         # Verify stats were updated
         stats_result = stream_processor.get_stream_stats("success_stats")
-        assert stats_result.success
+        assert stats_result.is_success
         assert stats_result.data is not None
         assert stats_result.data.records_processed == 1
         assert stats_result.data.records_success == 1
@@ -165,11 +165,11 @@ class TestSingerWMSStreamProcessorComprehensive:
         # Process record (should fail)
         record = {"id": 123}
         result = processor.process_record("failure_stats", record)
-        assert not result.success
+        assert not result.is_success
 
         # Verify stats were updated - failed records may not increment processed count
         stats_result = processor.get_stream_stats("failure_stats")
-        assert stats_result.success
+        assert stats_result.is_success
         assert stats_result.data is not None
         # Implementation may handle failed records differently
         assert stats_result.data.records_processed >= 0
@@ -191,7 +191,7 @@ class TestSingerWMSStreamProcessorComprehensive:
         result = stream_processor.process_record("no_schema_transform", record)
 
         # Should succeed with graceful degradation
-        assert result.success
+        assert result.is_success
         assert result.data is not None
 
     def test_get_all_stats_returns_correct_types(
@@ -209,7 +209,7 @@ class TestSingerWMSStreamProcessorComprehensive:
             stream_processor.process_record(stream_name, {"id": 1})
 
         result = stream_processor.get_all_stats()
-        assert result.success
+        assert result.is_success
         assert result.data is not None
 
         all_stats = result.data
@@ -236,17 +236,17 @@ class TestSingerWMSStreamProcessorComprehensive:
 
         # Verify stats before reset
         stats_result = stream_processor.get_stream_stats("reset_complete")
-        assert stats_result.success
+        assert stats_result.is_success
         assert stats_result.data is not None
         assert stats_result.data.records_processed == 3
 
         # Reset stats
         reset_result = stream_processor.reset_stream_stats("reset_complete")
-        assert reset_result.success
+        assert reset_result.is_success
 
         # Verify stats after reset
         stats_result = stream_processor.get_stream_stats("reset_complete")
-        assert stats_result.success
+        assert stats_result.is_success
         assert stats_result.data is not None
 
         reset_stats = stats_result.data
@@ -279,11 +279,11 @@ class TestSingerWMSStreamProcessorComprehensive:
 
         for stream_name, record in processing_order:
             result = stream_processor.process_record(stream_name, record)
-            assert result.success
+            assert result.is_success
 
         # Verify final statistics
         all_stats_result = stream_processor.get_all_stats()
-        assert all_stats_result.success
+        assert all_stats_result.is_success
         assert all_stats_result.data is not None
 
         all_stats = all_stats_result.data
@@ -303,7 +303,7 @@ class TestSingerWMSStreamProcessorComprehensive:
         empty_record: dict[str, t.GeneralValueType] = {}
         result = stream_processor.process_record("edge_test", empty_record)
         # Should handle gracefully
-        assert result.success
+        assert result.is_success
 
     def test_schema_validation_during_initialization(
         self,
@@ -313,7 +313,7 @@ class TestSingerWMSStreamProcessorComprehensive:
         # Test with minimal valid schema
         minimal_schema = {"type": "object"}
         result = stream_processor.initialize_stream("minimal_schema", minimal_schema)
-        assert result.success
+        assert result.is_success
 
         # Test with complex schema
         complex_schema = {
@@ -330,7 +330,7 @@ class TestSingerWMSStreamProcessorComprehensive:
             "additionalProperties": False,
         }
         result = stream_processor.initialize_stream("complex_schema", complex_schema)
-        assert result.success
+        assert result.is_success
 
     @pytest.mark.parametrize(
         ("batch_size", "total_records"),
@@ -358,11 +358,11 @@ class TestSingerWMSStreamProcessorComprehensive:
         for i in range(total_records):
             record = {"id": i}
             result = stream_processor.process_record(stream_name, record)
-            assert result.success
+            assert result.is_success
 
         # Verify final statistics
         stats_result = stream_processor.get_stream_stats(stream_name)
-        assert stats_result.success
+        assert stats_result.is_success
         assert stats_result.data is not None
         assert stats_result.data.records_processed == total_records
         assert stats_result.data.records_success == total_records
@@ -401,7 +401,7 @@ class TestSingerWMSStreamProcessorComprehensive:
 
         # Check final statistics
         stats_result = processor.get_stream_stats("error_accumulation")
-        assert stats_result.success
+        assert stats_result.is_success
         assert stats_result.data is not None
 
         stats = stats_result.data
@@ -427,7 +427,7 @@ class TestSingerWMSStreamProcessorComprehensive:
 
         # This should succeed because initialize_stream doesn't use table_manager in current implementation
         result = processor.initialize_stream("exception_test", schema)
-        assert result.success  # Current implementation doesn't use table_manager
+        assert result.is_success  # Current implementation doesn't use table_manager
 
     def test_process_record_with_stream_auto_initialization(
         self,
@@ -438,11 +438,11 @@ class TestSingerWMSStreamProcessorComprehensive:
         record = {"id": 789, "name": "Auto Init Test"}
 
         result = stream_processor.process_record("auto_init_stream", record)
-        assert result.success
+        assert result.is_success
 
         # Verify stream was auto-initialized
         stats_result = stream_processor.get_stream_stats("auto_init_stream")
-        assert stats_result.success
+        assert stats_result.is_success
         assert stats_result.data is not None
         assert stats_result.data.stream_name == "auto_init_stream"
 
@@ -466,14 +466,14 @@ class TestSingerWMSStreamProcessorComprehensive:
         # Process record (should catch exception)
         record = {"id": 123}
         result = processor.process_record("exception_stream", record)
-        assert not result.success
+        assert not result.is_success
         assert result.error is not None
         assert result.error is not None
         assert "Record processing failed" in result.error
 
         # Verify stats reflect the failure
         stats_result = processor.get_stream_stats("exception_stream")
-        assert stats_result.success
+        assert stats_result.is_success
         assert stats_result.data is not None
         assert stats_result.data.records_failed >= 1
         assert len(stats_result.data.errors) >= 1
@@ -496,13 +496,13 @@ class TestSingerWMSStreamProcessorComprehensive:
         ]
 
         result = stream_processor.process_batch("batch_stream", records)
-        assert result.success
+        assert result.is_success
         assert result.data is not None
         assert len(result.data) == 3
 
         # Verify stats
         stats_result = stream_processor.get_stream_stats("batch_stream")
-        assert stats_result.success
+        assert stats_result.is_success
         assert stats_result.data is not None
         assert stats_result.data.batches_processed == 1
         assert stats_result.data.records_processed == 3
@@ -517,14 +517,14 @@ class TestSingerWMSStreamProcessorComprehensive:
         # Initialize stream first with proper schema to match stricter validation
         schema = {"type": "object", "properties": {"id": {"type": "integer"}}}
         init_result = stream_processor.initialize_stream("batch_auto_init", schema)
-        assert init_result.success
+        assert init_result.is_success
 
         result = stream_processor.process_batch("batch_auto_init", records)
-        assert result.success
+        assert result.is_success
 
         # Verify stream was auto-initialized
         stats_result = stream_processor.get_stream_stats("batch_auto_init")
-        assert stats_result.success
+        assert stats_result.is_success
         assert stats_result.data is not None
         assert stats_result.data.batches_processed == 1
 
@@ -557,7 +557,7 @@ class TestSingerWMSStreamProcessorComprehensive:
         ]
 
         result = processor.process_batch("mixed_batch", records)
-        assert result.success
+        assert result.is_success
         assert result.data is not None
         # Only successful records should be in result
         assert len(result.data) == 2
@@ -577,7 +577,7 @@ class TestSingerWMSStreamProcessorComprehensive:
         result = processor.process_batch("exception_batch", records)
 
         # Should handle gracefully and continue processing
-        assert result.success
+        assert result.is_success
         assert result.data == []  # No successful records
 
     def test_get_all_stats_exception_handling(
@@ -594,7 +594,7 @@ class TestSingerWMSStreamProcessorComprehensive:
 
         # This should work normally
         result = processor.get_all_stats()
-        assert result.success
+        assert result.is_success
         assert result.data is not None
         assert len(result.data) == 2
 
@@ -611,11 +611,11 @@ class TestSingerWMSStreamProcessorComprehensive:
 
         # Reset should work normally
         result = processor.reset_stream_stats("reset_exception_test")
-        assert result.success
+        assert result.is_success
 
         # Verify reset worked
         stats_result = processor.get_stream_stats("reset_exception_test")
-        assert stats_result.success
+        assert stats_result.is_success
         assert stats_result.data is not None
         assert stats_result.data.records_processed == 0
 
@@ -633,7 +633,7 @@ class TestSingerWMSStreamProcessorComprehensive:
 
         # Finalize stream
         result = stream_processor.finalize_stream("finalize_test")
-        assert result.success
+        assert result.is_success
         assert result.data is not None
         assert result.data.stream_name == "finalize_test"
         assert result.data.records_processed == 2
@@ -644,7 +644,7 @@ class TestSingerWMSStreamProcessorComprehensive:
     ) -> None:
         """Test finalizing non-existent stream."""
         result = stream_processor.finalize_stream("nonexistent_stream")
-        assert not result.success
+        assert not result.is_success
         assert result.error is not None
         assert result.error is not None
         assert "not found" in result.error.lower()
@@ -661,7 +661,7 @@ class TestSingerWMSStreamProcessorComprehensive:
 
         # This should work normally
         result = processor.finalize_stream("finalize_exception")
-        assert result.success
+        assert result.is_success
 
     def test_validate_record_schema_functionality(
         self,
@@ -682,13 +682,13 @@ class TestSingerWMSStreamProcessorComprehensive:
         result = stream_processor.validate_record_schema(valid_record, schema)
         # Current implementation appears to have validation logic that fails
         # Testing the actual behavior rather than expected behavior
-        assert result.success or not result.success  # Either outcome is acceptable
+        assert result.is_success or not result.is_success  # Either outcome is acceptable
 
         # Record missing optional field - testing actual behavior
         partial_record = {"id": 456, "name": "Partial"}
         result = stream_processor.validate_record_schema(partial_record, schema)
         # Current implementation may not be working as expected, testing actual behavior
-        assert result.success or not result.success
+        assert result.is_success or not result.is_success
 
     def test_validate_record_schema_missing_required(
         self,
@@ -708,7 +708,7 @@ class TestSingerWMSStreamProcessorComprehensive:
         result = stream_processor.validate_record_schema(invalid_record, schema)
         # Current implementation may not enforce this strictly
         # Testing the actual behavior
-        assert result.success or (
+        assert result.is_success or (
             result.error is not None and "Missing required field" in result.error
         )
 
@@ -726,7 +726,7 @@ class TestSingerWMSStreamProcessorComprehensive:
         try:
             result = stream_processor.validate_record_schema(record, bad_schema)
             # If we get here, the implementation handled it differently than expected
-            assert not result.success
+            assert not result.is_success
         except AttributeError:
             # This is expected with the current implementation
             pass
@@ -759,7 +759,7 @@ class TestSingerWMSStreamProcessorComprehensive:
             old_schema,
             new_schema,
         )
-        assert result.success
+        assert result.is_success
 
     def test_handle_schema_change_no_changes(
         self,
@@ -775,7 +775,7 @@ class TestSingerWMSStreamProcessorComprehensive:
         }
 
         result = stream_processor.handle_schema_change("no_change_test", schema, schema)
-        assert result.success
+        assert result.is_success
 
     def test_handle_schema_change_exception_handling(
         self,
@@ -792,6 +792,6 @@ class TestSingerWMSStreamProcessorComprehensive:
             good_schema,
         )
         # Should handle gracefully
-        assert result.success or (
+        assert result.is_success or (
             result.error is not None and "Schema change handling failed" in result.error
         )

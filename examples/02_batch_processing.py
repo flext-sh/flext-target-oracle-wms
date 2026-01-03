@@ -176,7 +176,7 @@ def run_performance_batch_example() -> None:
         # Setup for batch processing
         setup_start = time.time()
         setup_result = target.setup()
-        if not setup_result.success:
+        if not setup_result.is_success:
             logger.error(f"Batch setup failed: {setup_result.error}")
             return
 
@@ -206,7 +206,7 @@ def run_performance_batch_example() -> None:
         cleanup_result = target.cleanup()
         finalize_time = time.time() - finalize_start
 
-        if cleanup_result.success:
+        if cleanup_result.is_success:
             logger.info(f"Batch processing completed in {finalize_time:.2f}s")
 
     except Exception:
@@ -240,7 +240,7 @@ def demonstrate_stream_processor_batching() -> None:
     }
 
     init_result = stream_processor.initialize_stream("batch_test", schema)
-    if not init_result.success:
+    if not init_result.is_success:
         logger.error(f"Stream initialization failed: {init_result.error}")
         return
 
@@ -255,7 +255,7 @@ def demonstrate_stream_processor_batching() -> None:
     batch_result = stream_processor.process_batch("batch_test", batch_records)
     batch_time = time.time() - batch_start
 
-    if batch_result.success and batch_result.data:
+    if batch_result.is_success and batch_result.data:
         processed_count = len(batch_result.data)
         rate = processed_count / batch_time if batch_time > 0 else 0
         logger.info(
@@ -265,7 +265,7 @@ def demonstrate_stream_processor_batching() -> None:
 
     # Get final statistics
     stats_result = stream_processor.get_stream_stats("batch_test")
-    if stats_result.success and stats_result.data:
+    if stats_result.is_success and stats_result.data:
         stats = stats_result.data
         logger.info(
             f"Final stats: {stats.records_processed} processed, "
@@ -276,7 +276,7 @@ def demonstrate_stream_processor_batching() -> None:
 
     # Finalize stream
     final_result = stream_processor.finalize_stream("batch_test")
-    if final_result.success:
+    if final_result.is_success:
         logger.info("Stream processing finalized successfully")
 
 
@@ -331,7 +331,7 @@ def demonstrate_concurrent_batching() -> None:
         for i, result in enumerate(schema_results):
             if isinstance(result, Exception):
                 logger.error(f"Schema setup failed for {streams[i]}: {result}")
-            elif hasattr(result, "success") and result.success:
+            elif hasattr(result, "success") and result.is_success:
                 successful_streams.append(streams[i])
                 logger.info(f"Schema setup successful for {streams[i]}")
 

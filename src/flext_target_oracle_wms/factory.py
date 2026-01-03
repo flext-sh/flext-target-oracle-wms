@@ -34,7 +34,7 @@ class TargetCreationRequest:
     preset: str | None = None
     additional_config: dict[str, t.GeneralValueType] | None = None
 
-    def __post_init__(self: object) -> None:
+    def __post_init__(self) -> None:
         """Initialize additional_config if not provided."""
         if self.additional_config is None:
             self.additional_config = {}
@@ -365,7 +365,7 @@ class FlextTargetMonitoringFactory:
                 target_request,
             )
 
-            if not target_result.success:
+            if not target_result.is_success:
                 return target_result
 
             target = target_result.data
@@ -378,14 +378,14 @@ class FlextTargetMonitoringFactory:
             init_result: FlextResult[object] = (
                 self.monitor.flext_initialize_observability()
             )
-            if not init_result.success:
+            if not init_result.is_success:
                 logger.warning("Failed to initialize monitoring: %s", init_result.error)
                 # Continue without monitoring rather than fail
                 return FlextResult[SingerTargetOracleWMS].ok(target)
 
             # Start monitoring
             start_result: FlextResult[object] = self.monitor.flext_start_monitoring()
-            if not start_result.success:
+            if not start_result.is_success:
                 logger.warning("Failed to start monitoring: %s", start_result.error)
                 # Continue without monitoring rather than fail
                 return FlextResult[SingerTargetOracleWMS].ok(target)
