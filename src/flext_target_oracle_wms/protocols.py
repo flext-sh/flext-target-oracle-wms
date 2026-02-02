@@ -42,7 +42,7 @@ class FlextTargetOracleWmsProtocols(p_meltano, p_db_oracle):
     wms_data_loading: p.Target.OracleWms.WmsDataLoadingProtocol
     """
 
-    class Target:
+    class TargetOracleWms:
         """Singer Target domain protocols."""
 
         class OracleWms:

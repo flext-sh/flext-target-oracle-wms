@@ -36,7 +36,7 @@ class FlextTargetOracleWmsTypes(t):
     # SINGER TARGET TYPES - Complex Singer target protocol types
     # =========================================================================
 
-    class SingerTarget:
+    class TargetOracleWms:
         """Singer target protocol complex types."""
 
         type TargetConfiguration = dict[
@@ -246,23 +246,6 @@ class FlextTargetOracleWmsTypes(t):
             str, bool | str | dict[str, t.GeneralValueType]
         ]
         type TargetOracleWmsPipelineConfig = dict[str, t.GeneralValueType]
-
-    class TargetOracleWms:
-        """Target Oracle WMS types namespace for cross-project access.
-
-        Provides organized access to all Target Oracle WMS types for other FLEXT projects.
-        Usage: Other projects can reference `t.TargetOracleWms.OracleWmsWarehouse.*`, `t.TargetOracleWms.Project.*`, etc.
-        This enables consistent namespace patterns for cross-project type access.
-
-        Examples:
-            from flext_target_oracle_wms.typings import t
-            config: t.TargetOracleWms.Project.SingerTargetOracleWmsProjectConfig = ...
-            warehouse: t.TargetOracleWms.OracleWmsWarehouse.FacilityDefinition = ...
-
-        Note: Namespace composition via inheritance - no aliases needed.
-        Access parent namespaces directly through inheritance.
-
-        """
 
 
 # Module-level alias for simplified usage
