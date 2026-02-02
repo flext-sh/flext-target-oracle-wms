@@ -49,7 +49,7 @@ class FlextTargetOracleWmsUtilities(u_core):
     WMS_MAX_BULK_SIZE: ClassVar[int] = 10000
     DEFAULT_REQUEST_TIMEOUT: ClassVar[int] = 300
 
-    class SingerUtilities:
+    class TargetOracleWms:
         """Singer protocol utilities for Oracle WMS target operations."""
 
         @staticmethod
