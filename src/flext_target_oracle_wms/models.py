@@ -50,7 +50,9 @@ class FlextTargetOracleWmsModels(FlextModels):
                 None,
                 description="OAuth2 client secret",
             )
-            oauth_token_url: str | None = Field(None, description="OAuth2 token endpoint")
+            oauth_token_url: str | None = Field(
+                None, description="OAuth2 token endpoint"
+            )
             oauth_scope: str | None = Field(None, description="OAuth2 scope")
 
             # Basic auth configuration
@@ -111,7 +113,9 @@ class FlextTargetOracleWmsModels(FlextModels):
                 description="Item description",
                 max_length=255,
             )
-            unit_of_measure: str = Field(..., description="Unit of measure", max_length=10)
+            unit_of_measure: str = Field(
+                ..., description="Unit of measure", max_length=10
+            )
             item_type: str = Field(..., description="Item type", max_length=20)
             abc_class: str | None = Field(
                 None,
@@ -149,7 +153,18 @@ class FlextTargetOracleWmsModels(FlextModels):
                         )
 
                     # Validate unit of measure
-                    valid_uoms = ["EA", "LB", "KG", "OZ", "LT", "GL", "FT", "M", "IN", "CM"]
+                    valid_uoms = [
+                        "EA",
+                        "LB",
+                        "KG",
+                        "OZ",
+                        "LT",
+                        "GL",
+                        "FT",
+                        "M",
+                        "IN",
+                        "CM",
+                    ]
                     if self.unit_of_measure not in valid_uoms:
                         errors.append(
                             f"Unit of measure must be one of: {', '.join(valid_uoms)}",
@@ -186,10 +201,16 @@ class FlextTargetOracleWmsModels(FlextModels):
                 max_length=50,
             )
             location_type: str = Field(..., description="Location type", max_length=20)
-            zone_id: str | None = Field(None, description="Zone identifier", max_length=20)
-            aisle: str | None = Field(None, description="Aisle identifier", max_length=10)
+            zone_id: str | None = Field(
+                None, description="Zone identifier", max_length=20
+            )
+            aisle: str | None = Field(
+                None, description="Aisle identifier", max_length=10
+            )
             bay: str | None = Field(None, description="Bay identifier", max_length=10)
-            level: str | None = Field(None, description="Level identifier", max_length=10)
+            level: str | None = Field(
+                None, description="Level identifier", max_length=10
+            )
             position: str | None = Field(
                 None,
                 description="Position identifier",
@@ -207,10 +228,14 @@ class FlextTargetOracleWmsModels(FlextModels):
                 ge=0,
                 description="Maximum weight capacity",
             )
-            max_units: int | None = Field(None, ge=0, description="Maximum unit capacity")
+            max_units: int | None = Field(
+                None, ge=0, description="Maximum unit capacity"
+            )
 
             # Status and flags
-            active_flag: bool = Field(default=True, description="Location active status")
+            active_flag: bool = Field(
+                default=True, description="Location active status"
+            )
             pickable_flag: bool = Field(
                 default=True,
                 description="Location pickable status",
@@ -278,12 +303,18 @@ class FlextTargetOracleWmsModels(FlextModels):
                 max_length=20,
             )
             item_id: str = Field(..., description="Item identifier", max_length=50)
-            location_id: str = Field(..., description="Location identifier", max_length=50)
+            location_id: str = Field(
+                ..., description="Location identifier", max_length=50
+            )
 
             # Quantity and lot information
             quantity: float = Field(..., description="Transaction quantity")
-            unit_of_measure: str = Field(..., description="Unit of measure", max_length=10)
-            lot_number: str | None = Field(None, description="Lot number", max_length=50)
+            unit_of_measure: str = Field(
+                ..., description="Unit of measure", max_length=10
+            )
+            lot_number: str | None = Field(
+                None, description="Lot number", max_length=50
+            )
             serial_number: str | None = Field(
                 None,
                 description="Serial number",
@@ -360,7 +391,10 @@ class FlextTargetOracleWmsModels(FlextModels):
 
                     # Validate lot/serial requirements
                     lot_required_types = ["RECEIPT", "SHIPMENT", "PICK"]
-                    if self.transaction_type in lot_required_types and not self.lot_number:
+                    if (
+                        self.transaction_type in lot_required_types
+                        and not self.lot_number
+                    ):
                         errors.append(
                             f"Lot number required for transaction type {self.transaction_type}",
                         )
@@ -396,7 +430,9 @@ class FlextTargetOracleWmsModels(FlextModels):
                 description="Carrier tracking number",
                 max_length=50,
             )
-            pro_number: str | None = Field(None, description="PRO number", max_length=50)
+            pro_number: str | None = Field(
+                None, description="PRO number", max_length=50
+            )
 
             # Dates and timing
             ship_date: datetime | None = Field(None, description="Actual ship date")
@@ -485,7 +521,9 @@ class FlextTargetOracleWmsModels(FlextModels):
                         "CANCELLED",
                     ]
                     if self.status not in valid_statuses:
-                        errors.append(f"Status must be one of: {', '.join(valid_statuses)}")
+                        errors.append(
+                            f"Status must be one of: {', '.join(valid_statuses)}"
+                        )
 
                     # Validate date logic
                     if (
@@ -508,7 +546,9 @@ class FlextTargetOracleWmsModels(FlextModels):
                         return FlextResult[None].fail("; ".join(errors))
                     return FlextResult[None].ok(None)
                 except Exception as e:
-                    return FlextResult[None].fail(f"WMS shipment validation failed: {e}")
+                    return FlextResult[None].fail(
+                        f"WMS shipment validation failed: {e}"
+                    )
 
         class WmsTargetConfig(FlextModels.BaseConfig):
             """Oracle WMS target configuration for Singer protocol."""
@@ -637,7 +677,10 @@ class FlextTargetOracleWmsModels(FlextModels):
                         )
 
                     # Validate performance metrics
-                    if self.total_records_processed > 0 and self.processing_duration_ms > 0:
+                    if (
+                        self.total_records_processed > 0
+                        and self.processing_duration_ms > 0
+                    ):
                         expected_avg = (
                             self.processing_duration_ms / self.total_records_processed
                         )
@@ -686,7 +729,9 @@ class FlextTargetOracleWmsModels(FlextModels):
             operation_type: str | None = Field(None, description="WMS operation type")
 
             # WMS-specific context
-            wms_error_code: str | None = Field(None, description="WMS-specific error code")
+            wms_error_code: str | None = Field(
+                None, description="WMS-specific error code"
+            )
             business_rule_violated: str | None = Field(
                 None,
                 description="Business rule violated",
