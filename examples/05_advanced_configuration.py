@@ -46,9 +46,9 @@ class CustomWMSTypeConverter(WMSTypeConverter):
                 try:
                     dt = datetime.strptime(value, "%Y-%m-%d").replace(tzinfo=UTC)
                     oracle_date = dt.strftime("%d-%b-%Y").upper()
-                    return FlextResult[None].ok(oracle_date)
+                    return FlextResult[bool].ok(oracle_date)
                 except ValueError:
-                    return FlextResult[None].fail(
+                    return FlextResult[bool].fail(
                         f"Invalid business date format: {value}",
                     )
 
@@ -56,7 +56,7 @@ class CustomWMSTypeConverter(WMSTypeConverter):
         elif singer_type == "business_currency":
             if isinstance(value, (int, float)) and value is not None:
                 # Round to 2 decimal places for currency
-                return FlextResult[None].ok(round(float(value), 2))
+                return FlextResult[bool].ok(round(float(value), 2))
 
         # Handle custom status enums
         elif singer_type == "wms_status" and isinstance(value, str):
@@ -69,7 +69,7 @@ class CustomWMSTypeConverter(WMSTypeConverter):
                 "archived": "Z",
             }
             mapped_status = status_mapping.get(value.lower(), value)
-            return FlextResult[None].ok(mapped_status)
+            return FlextResult[bool].ok(mapped_status)
 
         # Delegate to parent for standard types
         parent_result: FlextResult[object] = super().convert_singer_to_oracle(
@@ -99,7 +99,7 @@ class CustomWMSDataTransformer(WMSDataTransformer):
 
         transformed = base_result.data
         if transformed is None:
-            return FlextResult[None].fail("Base transformation returned None")
+            return FlextResult[bool].fail("Base transformation returned None")
 
         # Apply business-specific transformations
         try:
@@ -127,14 +127,14 @@ class CustomWMSDataTransformer(WMSDataTransformer):
             required_fields = ["ITEM_ID", "LOCATION_ID"]
             for field in required_fields:
                 if field not in transformed or not transformed[field]:
-                    return FlextResult[None].fail(
+                    return FlextResult[bool].fail(
                         f"Missing required business field: {field}",
                     )
 
-            return FlextResult[None].ok(transformed)
+            return FlextResult[bool].ok(transformed)
 
         except Exception as e:
-            return FlextResult[None].fail(f"Business transformation failed: {e}")
+            return FlextResult[bool].fail(f"Business transformation failed: {e}")
 
 
 @flext_monitor_function(monitor)

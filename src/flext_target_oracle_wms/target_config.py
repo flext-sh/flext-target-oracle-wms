@@ -444,16 +444,16 @@ class FlextTargetOracleWmsSettings(FlextSettings):
             oracle_wms_enable_logging=self.enable_logging,
         )
 
-    def validate_business_rules(self) -> FlextResult[None]:
+    def validate_business_rules(self) -> FlextResult[bool]:
         """Enhanced Oracle WMS configuration business rules validation."""
         try:
             # Validate timeout values
             if self.timeout <= 0:
-                return FlextResult[None].fail("Timeout must be positive")
+                return FlextResult[bool].fail("Timeout must be positive")
 
             # Validate batch size
             if self.batch_size <= 0:
-                return FlextResult[None].fail("Batch size must be positive")
+                return FlextResult[bool].fail("Batch size must be positive")
 
             # Validate load method
             valid_methods = {
@@ -464,25 +464,25 @@ class FlextTargetOracleWmsSettings(FlextSettings):
                 "TRUNCATE_INSERT",
             }
             if self.load_method.upper() not in valid_methods:
-                return FlextResult[None].fail(
+                return FlextResult[bool].fail(
                     f"Invalid load_method: {self.load_method}",
                 )
 
             # Validate credentials are provided
             if not self.username.strip():
-                return FlextResult[None].fail("Username cannot be empty")
+                return FlextResult[bool].fail("Username cannot be empty")
             if not self.password.strip():
-                return FlextResult[None].fail("Password cannot be empty")
+                return FlextResult[bool].fail("Password cannot be empty")
 
             # Validate plugin settings
             if self.enable_plugins and not Path(self.plugin_directory).exists():
-                return FlextResult[None].fail(
+                return FlextResult[bool].fail(
                     f"Plugin directory does not exist: {self.plugin_directory}",
                 )
 
-            return FlextResult[None].ok(None)
+            return FlextResult[bool].ok(value=True)
         except Exception as e:
-            return FlextResult[None].fail(f"Configuration validation failed: {e}")
+            return FlextResult[bool].fail(f"Configuration validation failed: {e}")
 
     def apply_preset(
         self,
