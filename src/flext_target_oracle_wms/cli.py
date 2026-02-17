@@ -28,13 +28,13 @@ class OracleWMSTargetCli:
         self.version = "0.9.0"
 
     @override
-    def execute(self, **kwargs: object) -> FlextResult[None]:
+    def execute(self, **kwargs: object) -> FlextResult[bool]:
         """Execute target using REAL implementation.
 
         SOLID REFACTORING: Reduced multiple returns (count=6) to single exit point
         using Railway-Oriented Programming pattern.
         """
-        result: FlextResult[None] = FlextResult[None].ok(None)
+        result: FlextResult[bool] = FlextResult[bool].ok(value=True)
 
         try:
             # Load configuration
@@ -44,13 +44,13 @@ class OracleWMSTargetCli:
             )
             config_result: FlextResult[object] = self._prepare_config(config_path_str)
             if not config_result.is_success:
-                result = FlextResult[None].fail(
+                result = FlextResult[bool].fail(
                     config_result.error or "Configuration failed",
                 )
             else:
                 config: dict[str, t.GeneralValueType] = config_result.data
                 if config is None:
-                    result: FlextResult[object] = FlextResult[None].fail(
+                    result: FlextResult[object] = FlextResult[bool].fail(
                         "Configuration data is None",
                     )
                 else:
@@ -58,7 +58,7 @@ class OracleWMSTargetCli:
                     result: FlextResult[object] = self._execute_target_pipeline(config)
 
         except Exception as e:
-            result: FlextResult[object] = FlextResult[None].fail(
+            result: FlextResult[object] = FlextResult[bool].fail(
                 f"CLI execution failed: {e}",
             )
 
@@ -67,7 +67,7 @@ class OracleWMSTargetCli:
     def _execute_target_pipeline(
         self,
         config: dict[str, t.GeneralValueType],
-    ) -> FlextResult[None]:
+    ) -> FlextResult[bool]:
         """Execute the target pipeline with railway-oriented programming.
 
         SOLID REFACTORING: Extract target pipeline execution to reduce complexity.
@@ -77,7 +77,7 @@ class OracleWMSTargetCli:
         # Setup target
         setup_result: FlextResult[object] = target.setup()
         if not setup_result.is_success:
-            return FlextResult[None].fail(f"Setup failed: {setup_result.error}")
+            return FlextResult[bool].fail(f"Setup failed: {setup_result.error}")
 
         # Process messages
         process_result: FlextResult[object] = self._process_stdin_messages(target)
@@ -116,7 +116,7 @@ class OracleWMSTargetCli:
     def _process_stdin_messages(
         self,
         target: SingerTargetOracleWMS,
-    ) -> FlextResult[None]:
+    ) -> FlextResult[bool]:
         """Process stdin messages following Singer protocol."""
         try:
             for raw_line in sys.stdin:
@@ -128,15 +128,15 @@ class OracleWMSTargetCli:
                 if not result.is_success:
                     return result
 
-            return FlextResult[None].ok(None)
+            return FlextResult[bool].ok(value=True)
         except Exception as e:
-            return FlextResult[None].fail(f"Message processing failed: {e}")
+            return FlextResult[bool].fail(f"Message processing failed: {e}")
 
     def _process_single_message(
         self,
         target: SingerTargetOracleWMS,
         line: str,
-    ) -> FlextResult[None]:
+    ) -> FlextResult[bool]:
         """Process a single Singer message."""
         try:
             message = json.loads(line)
@@ -144,30 +144,30 @@ class OracleWMSTargetCli:
 
             if message_type == "SCHEMA":
                 target.handle_schema_message(message)
-                return FlextResult[None].ok(None)
+                return FlextResult[bool].ok(value=True)
             if message_type == "RECORD":
                 target.handle_record_message(message)
-                return FlextResult[None].ok(None)
+                return FlextResult[bool].ok(value=True)
             if message_type == "STATE":
                 target.handle_state_message(message)
-                return FlextResult[None].ok(None)
+                return FlextResult[bool].ok(value=True)
 
             # Skip unknown message types
-            return FlextResult[None].ok(None)
+            return FlextResult[bool].ok(value=True)
 
         except json.JSONDecodeError as e:
-            return FlextResult[None].fail(f"Invalid JSON: {e}")
+            return FlextResult[bool].fail(f"Invalid JSON: {e}")
 
     def _finalize_target(
         self,
         target: SingerTargetOracleWMS,
-    ) -> FlextResult[None]:
+    ) -> FlextResult[bool]:
         """Finalize target processing and cleanup."""
         try:
             target.cleanup()
-            return FlextResult[None].ok(None)
+            return FlextResult[bool].ok(value=True)
         except Exception as e:
-            return FlextResult[None].fail(f"Finalization failed: {e}")
+            return FlextResult[bool].fail(f"Finalization failed: {e}")
 
     def _load_config(self, config_path: str) -> dict[str, t.GeneralValueType]:
         """Load configuration from file path."""

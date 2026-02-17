@@ -141,7 +141,7 @@ class FlextTargetOracleWmsModels(FlextModels):
                 description="Serial control enabled",
             )
 
-            def validate_business_rules(self) -> FlextResult[None]:
+            def validate_business_rules(self) -> FlextResult[bool]:
                 """Validate WMS inventory item business rules."""
                 try:
                     errors = []
@@ -184,10 +184,10 @@ class FlextTargetOracleWmsModels(FlextModels):
                         )
 
                     if errors:
-                        return FlextResult[None].fail("; ".join(errors))
-                    return FlextResult[None].ok(None)
+                        return FlextResult[bool].fail("; ".join(errors))
+                    return FlextResult[bool].ok(value=True)
                 except Exception as e:
-                    return FlextResult[None].fail(
+                    return FlextResult[bool].fail(
                         f"WMS inventory item validation failed: {e}",
                     )
 
@@ -245,7 +245,7 @@ class FlextTargetOracleWmsModels(FlextModels):
                 description="Location receivable status",
             )
 
-            def validate_business_rules(self) -> FlextResult[None]:
+            def validate_business_rules(self) -> FlextResult[bool]:
                 """Validate WMS inventory location business rules."""
                 try:
                     errors = []
@@ -281,10 +281,10 @@ class FlextTargetOracleWmsModels(FlextModels):
                         errors.append("Maximum weight must be positive")
 
                     if errors:
-                        return FlextResult[None].fail("; ".join(errors))
-                    return FlextResult[None].ok(None)
+                        return FlextResult[bool].fail("; ".join(errors))
+                    return FlextResult[bool].ok(value=True)
                 except Exception as e:
-                    return FlextResult[None].fail(
+                    return FlextResult[bool].fail(
                         f"WMS inventory location validation failed: {e}",
                     )
 
@@ -349,7 +349,7 @@ class FlextTargetOracleWmsModels(FlextModels):
                 max_length=50,
             )
 
-            def validate_business_rules(self) -> FlextResult[None]:
+            def validate_business_rules(self) -> FlextResult[bool]:
                 """Validate WMS inventory transaction business rules."""
                 try:
                     errors = []
@@ -400,10 +400,10 @@ class FlextTargetOracleWmsModels(FlextModels):
                         )
 
                     if errors:
-                        return FlextResult[None].fail("; ".join(errors))
-                    return FlextResult[None].ok(None)
+                        return FlextResult[bool].fail("; ".join(errors))
+                    return FlextResult[bool].ok(value=True)
                 except Exception as e:
-                    return FlextResult[None].fail(
+                    return FlextResult[bool].fail(
                         f"WMS inventory transaction validation failed: {e}",
                     )
 
@@ -477,7 +477,7 @@ class FlextTargetOracleWmsModels(FlextModels):
                 max_length=20,
             )
 
-            def validate_business_rules(self) -> FlextResult[None]:
+            def validate_business_rules(self) -> FlextResult[bool]:
                 """Validate WMS shipment business rules."""
                 try:
                     errors = []
@@ -543,10 +543,10 @@ class FlextTargetOracleWmsModels(FlextModels):
                         )
 
                     if errors:
-                        return FlextResult[None].fail("; ".join(errors))
-                    return FlextResult[None].ok(None)
+                        return FlextResult[bool].fail("; ".join(errors))
+                    return FlextResult[bool].ok(value=True)
                 except Exception as e:
-                    return FlextResult[None].fail(
+                    return FlextResult[bool].fail(
                         f"WMS shipment validation failed: {e}"
                     )
 
@@ -664,7 +664,7 @@ class FlextTargetOracleWmsModels(FlextModels):
                 description="Business rule violations",
             )
 
-            def validate_business_rules(self) -> FlextResult[None]:
+            def validate_business_rules(self) -> FlextResult[bool]:
                 """Validate WMS target result business rules."""
                 try:
                     # Validate record counts
@@ -672,7 +672,7 @@ class FlextTargetOracleWmsModels(FlextModels):
                         self.successful_records + self.failed_records
                         != self.total_records_processed
                     ):
-                        return FlextResult[None].fail(
+                        return FlextResult[bool].fail(
                             "Sum of successful and failed records must equal total processed",
                         )
 
@@ -688,13 +688,13 @@ class FlextTargetOracleWmsModels(FlextModels):
                             abs(self.average_processing_time_ms - expected_avg)
                             > c.TargetOracleWms.OracleWms.PROCESSING_TIME_TOLERANCE
                         ):
-                            return FlextResult[None].fail(
+                            return FlextResult[bool].fail(
                                 "Average processing time inconsistent with total duration",
                             )
 
-                    return FlextResult[None].ok(None)
+                    return FlextResult[bool].ok(value=True)
                 except Exception as e:
-                    return FlextResult[None].fail(
+                    return FlextResult[bool].fail(
                         f"WMS target result validation failed: {e}",
                     )
 
