@@ -7,7 +7,7 @@
 [![Clean Architecture](https://img.shields.io/badge/Architecture-Clean%20Architecture%20%2B%20DDD-green.svg)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 [![Coverage](https://img.shields.io/badge/coverage-90%25+-brightgreen.svg)](https://pytest.org)
 
-Singer-compliant target for loading data into Oracle Warehouse Management Systems (WMS). Built with Python 3.13+, Clean Architecture, and Domain-Driven Design patterns as part of the FLEXT data integration platform.
+Singer-compliant target for loading data into Oracle Warehouse Management Systems (WMS). Built with Python 3.13+, Clean Architecture, and Domain-Driven Design patterns as part of the [FLEXT data integration platform](https://github.com/flext/flext).
 
 ## Overview
 
