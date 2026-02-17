@@ -350,7 +350,7 @@ class FlextTargetOracleWmsSettings(FlextSettings):
         return self.memory_limit_mb * 1024 * 1024
 
     # Enhanced preset configurations
-    PRESETS: ClassVar[t.NestedDict] = {
+    PRESETS: ClassVar[dict[str, t.GeneralValueType]] = {
         "development": {
             "batch_size": 100,
             "table_prefix": "DEV_",
