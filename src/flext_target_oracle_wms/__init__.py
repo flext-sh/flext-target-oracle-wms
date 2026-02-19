@@ -29,9 +29,6 @@ from flext_target_oracle_wms.target_models import (
 )
 from flext_target_oracle_wms.utilities import FlextTargetOracleWmsUtilities
 
-# Domain-specific aliases
-u = FlextTargetOracleWmsUtilities  # Utilities (FlextTargetOracleWmsUtilities extends FlextOracleWmsUtilities)
-
 __all__: list[str] = [
     "FlextTargetFactory",
     "FlextTargetMonitoringFactory",
@@ -50,9 +47,5 @@ __all__: list[str] = [
     "__version_info__",
     "create_monitored_oracle_wms_target",
     "create_oracle_wms_target",
-    "m",
-    "m_target_oracle_wms",
     "main",
-    # Domain-specific aliases
-    "u",
 ]
