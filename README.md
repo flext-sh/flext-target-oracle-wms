@@ -1,5 +1,67 @@
 # FLEXT Target Oracle WMS - Warehouse Management System Loading
 
+
+<!-- TOC START -->
+- [Overview](#overview)
+  - [Key Features](#key-features)
+- [Quick Start](#quick-start)
+  - [Installation](#installation)
+  - [Basic Usage](#basic-usage)
+  - [Configuration Example](#configuration-example)
+- [Architecture](#architecture)
+  - [Clean Architecture with flext-core Integration](#clean-architecture-with-flext-core-integration)
+  - [Core Components](#core-components)
+  - [Key Design Patterns](#key-design-patterns)
+- [Development Commands](#development-commands)
+  - [Quality Gates (Zero Tolerance)](#quality-gates-zero-tolerance)
+  - [Testing](#testing)
+  - [Singer Target Operations](#singer-target-operations)
+  - [Oracle WMS Operations](#oracle-wms-operations)
+- [Configuration](#configuration)
+  - [Connection Settings](#connection-settings)
+  - [Authentication Settings](#authentication-settings)
+  - [Processing Settings](#processing-settings)
+  - [Validation Settings](#validation-settings)
+  - [Advanced Configuration](#advanced-configuration)
+- [Supported WMS Entities](#supported-wms-entities)
+  - [Core Inventory Entities](#core-inventory-entities)
+  - [Order Management Entities](#order-management-entities)
+  - [Warehouse Operations Entities](#warehouse-operations-entities)
+  - [Labor and Task Management](#labor-and-task-management)
+- [Stream Processing](#stream-processing)
+  - [WMS Data Transformation](#wms-data-transformation)
+  - [Data Validation](#data-validation)
+  - [Performance Optimization](#performance-optimization)
+- [Error Handling](#error-handling)
+  - [Error Recovery](#error-recovery)
+  - [Error Categories](#error-categories)
+- [Testing](#testing)
+  - [Test Architecture](#test-architecture)
+  - [Test Categories](#test-categories)
+  - [Test Data](#test-data)
+- [Quality Standards](#quality-standards)
+  - [Zero Tolerance Quality Gates](#zero-tolerance-quality-gates)
+  - [Code Standards](#code-standards)
+- [Dependencies](#dependencies)
+  - [FLEXT Ecosystem Dependencies](#flext-ecosystem-dependencies)
+  - [External Dependencies](#external-dependencies)
+- [Performance Optimization](#performance-optimization)
+  - [WMS Performance](#wms-performance)
+  - [Memory Management](#memory-management)
+  - [Best Practices](#best-practices)
+- [Meltano Integration](#meltano-integration)
+- [Troubleshooting](#troubleshooting)
+  - [Common Issues](#common-issues)
+  - [Diagnostic Commands](#diagnostic-commands)
+  - [Debug Configuration](#debug-configuration)
+- [Contributing](#contributing)
+- [License](#license)
+- [Documentation](#documentation)
+  - [Architecture & Development](#architecture-development)
+  - [Related Projects](#related-projects)
+  - [Ecosystem Integration](#ecosystem-integration)
+<!-- TOC END -->
+
 **Type**: Singer Target | **Status**: 1.0.0 Release Preparation | **Dependencies**: Python 3.13+, flext-core, flext-oracle-wms, flext-meltano, singer-sdk
 
 [![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
@@ -335,10 +397,14 @@ The target validates:
 
 ```
 tests/
-   unit/                           # Unit tests for core logic
-   integration/                    # Oracle WMS integration tests
-   examples/                       # Example usage tests
-   e2e/                           # End-to-end workflow tests
+
+   unit/                           # Unit tests for core logic
+
+   integration/                    # Oracle WMS integration tests
+
+   examples/                       # Example usage tests
+
+   e2e/                           # End-to-end workflow tests
    conftest.py                     # Pytest configuration and fixtures
 ```
 

@@ -1,5 +1,30 @@
 # Oracle WMS Target - Examples
 
+
+<!-- TOC START -->
+- [🎯 Examples Overview](#-examples-overview)
+- [📚 Available Examples](#-available-examples)
+  - [1. [basic_usage.py](./basic_usage.py)](#1-basicusagepybasicusagepy)
+  - [2. [advanced_configuration.py](./advanced_configuration.py)](#2-advancedconfigurationpyadvancedconfigurationpy)
+  - [3. [batch_processing.py](./batch_processing.py)](#3-batchprocessingpybatchprocessingpy)
+  - [4. [error_handling.py](./error_handling.py)](#4-errorhandlingpyerrorhandlingpy)
+- [🚀 Running the Examples](#-running-the-examples)
+  - [Prerequisites](#prerequisites)
+  - [Running Individual Examples](#running-individual-examples)
+  - [Running All Examples](#running-all-examples)
+- [🔧 Configuration Options](#-configuration-options)
+  - [File-based Configuration](#file-based-configuration)
+  - [Environment Variables](#environment-variables)
+- [📊 Performance Benchmarks](#-performance-benchmarks)
+  - [Batch Processing Performance](#batch-processing-performance)
+  - [Memory Usage](#memory-usage)
+- [🛡️ Security Considerations](#-security-considerations)
+- [🧪 Testing the Examples](#-testing-the-examples)
+- [📖 Related Documentation](#-related-documentation)
+- [🤝 Contributing](#-contributing)
+- [📝 License](#-license)
+<!-- TOC END -->
+
 This directory contains comprehensive examples demonstrating production-grade usage of the flext-target-oracle-wms with REAL flext-\* APIs and mission-critical patterns.
 
 ## 🎯 Examples Overview
