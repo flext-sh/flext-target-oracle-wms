@@ -1,7 +1,7 @@
 # FLEXT Target Oracle WMS - Warehouse Management System Loading
 
-
 <!-- TOC START -->
+
 - [Overview](#overview)
   - [Key Features](#key-features)
 - [Quick Start](#quick-start)
@@ -60,6 +60,7 @@
   - [Architecture & Development](#architecture-development)
   - [Related Projects](#related-projects)
   - [Ecosystem Integration](#ecosystem-integration)
+
 <!-- TOC END -->
 
 **Type**: Singer Target | **Status**: 1.0.0 Release Preparation | **Dependencies**: Python 3.13+, flext-core, flext-oracle-wms, flext-meltano, singer-sdk
@@ -398,14 +399,14 @@ The target validates:
 ```
 tests/
 
-   unit/                           # Unit tests for core logic
+�� unit/                           # Unit tests for core logic
 
-   integration/                    # Oracle WMS integration tests
+�� integration/                    # Oracle WMS integration tests
 
-   examples/                       # Example usage tests
+�� examples/                       # Example usage tests
 
-   e2e/                           # End-to-end workflow tests
-   conftest.py                     # Pytest configuration and fixtures
+�� e2e/                           # End-to-end workflow tests
+�� conftest.py                     # Pytest configuration and fixtures
 ```
 
 ### Test Categories
@@ -567,11 +568,11 @@ make wms-performance                 # Run WMS performance benchmarks
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Run `make validate` before committing
-4. Commit your changes (`git commit -m 'Add amazing feature'`)
-5. Push to the branch (`git push origin feature/amazing-feature`)
-6. Open a Pull Request
+1. Create a feature branch (`git checkout -b feature/amazing-feature`)
+1. Run `make validate` before committing
+1. Commit your changes (`git commit -m 'Add amazing feature'`)
+1. Push to the branch (`git push origin feature/amazing-feature`)
+1. Open a Pull Request
 
 ## License
 
@@ -595,6 +596,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 - [../../flext-tap-oracle-wms/](../../flext-tap-oracle-wms/) - Corresponding Singer tap
 - [../../flext-dbt-oracle-wms/](../../flext-dbt-oracle-wms/) - DBT models for WMS data transformation
 
----
+______________________________________________________________________
 
 **Framework**: FLEXT Ecosystem | **Protocol**: Singer SDK | **Language**: Python 3.13+ | **Architecture**: Clean Architecture + DDD | **Updated**: 2025-08-13

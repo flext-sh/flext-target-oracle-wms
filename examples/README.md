@@ -1,13 +1,13 @@
 # Oracle WMS Target - Examples
 
-
 <!-- TOC START -->
+
 - [🎯 Examples Overview](#-examples-overview)
 - [📚 Available Examples](#-available-examples)
-  - [1. [basic_usage.py](./basic_usage.py)](#1-basicusagepybasicusagepy)
-  - [2. [advanced_configuration.py](./advanced_configuration.py)](#2-advancedconfigurationpyadvancedconfigurationpy)
-  - [3. [batch_processing.py](./batch_processing.py)](#3-batchprocessingpybatchprocessingpy)
-  - [4. [error_handling.py](./error_handling.py)](#4-errorhandlingpyerrorhandlingpy)
+  - \[1. [basic_usage.py](./basic_usage.py)\](#1-basicusagepybasicusagepy)
+  - \[2. [advanced_configuration.py](./advanced_configuration.py)\](#2-advancedconfigurationpyadvancedconfigurationpy)
+  - \[3. [batch_processing.py](./batch_processing.py)\](#3-batchprocessingpybatchprocessingpy)
+  - \[4. [error_handling.py](./error_handling.py)\](#4-errorhandlingpyerrorhandlingpy)
 - [🚀 Running the Examples](#-running-the-examples)
   - [Prerequisites](#prerequisites)
   - [Running Individual Examples](#running-individual-examples)
@@ -23,6 +23,7 @@
 - [📖 Related Documentation](#-related-documentation)
 - [🤝 Contributing](#-contributing)
 - [📝 License](#-license)
+
 <!-- TOC END -->
 
 This directory contains comprehensive examples demonstrating production-grade usage of the flext-target-oracle-wms with REAL flext-\* APIs and mission-critical patterns.
@@ -209,13 +210,13 @@ def retry_with_backoff(operation: object, max_retries: int = 3) -> FlextResult[o
    poetry install
    ```
 
-2. **Activate virtual environment:**
+1. **Activate virtual environment:**
 
    ```bash
    poetry shell
    ```
 
-3. **Set environment variables (optional):**
+1. **Set environment variables (optional):**
 
    ```bash
    export WMS_BASE_URL="https://your-wms.oracle.com"
@@ -303,11 +304,11 @@ _Performance varies based on record complexity, network latency, and Oracle WMS 
 All examples implement production security practices:
 
 1. **Credential Management**: No hardcoded credentials
-2. **TLS/SSL**: Encrypted connections to Oracle WMS Cloud
-3. **Input Validation**: Comprehensive data validation
-4. **Error Handling**: Secure error messages (no credential exposure)
-5. **Audit Logging**: Comprehensive activity tracking
-6. **Resource Cleanup**: Proper cleanup to prevent leaks
+1. **TLS/SSL**: Encrypted connections to Oracle WMS Cloud
+1. **Input Validation**: Comprehensive data validation
+1. **Error Handling**: Secure error messages (no credential exposure)
+1. **Audit Logging**: Comprehensive activity tracking
+1. **Resource Cleanup**: Proper cleanup to prevent leaks
 
 ## 🧪 Testing the Examples
 
@@ -334,16 +335,16 @@ python -m pytest tests/examples/ --cov=examples --cov-report=term-missing
 When adding new examples:
 
 1. **Follow DRY principles** - Use real implementations, no duplication
-2. **Use flext-\* patterns** - Leverage the full ecosystem
-3. **Include error handling** - Production-grade error handling
-4. **Add documentation** - Comprehensive docstrings and comments
-5. **Write tests** - Ensure examples work correctly
-6. **Performance focus** - Optimize for production use
+1. **Use flext-\* patterns** - Leverage the full ecosystem
+1. **Include error handling** - Production-grade error handling
+1. **Add documentation** - Comprehensive docstrings and comments
+1. **Write tests** - Ensure examples work correctly
+1. **Performance focus** - Optimize for production use
 
 ## 📝 License
 
 All examples are provided under the MIT License. See [LICENSE](../LICENSE) for details.
 
----
+______________________________________________________________________
 
 **Note**: These examples use real Oracle WMS Cloud SaaS API patterns and production-grade flext-\* implementations. They are designed for mission-critical applications and follow enterprise security and performance standards.

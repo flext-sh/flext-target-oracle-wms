@@ -1,212 +1,104 @@
-"""CLI entry point - REAL implementation using available flext-cli patterns.
-
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-
-"""
+"""CLI entry point for target Oracle WMS."""
 
 from __future__ import annotations
 
 import json
 import sys
 from pathlib import Path
-from typing import override
 
 from flext_core import FlextResult, FlextTypes as t
 
-from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
+from .target_client import SingerTargetOracleWMS
+
+MIN_CONFIG_ARG_COUNT = 3
 
 
 class OracleWMSTargetCli:
-    """Oracle WMS Target CLI using REAL flext-cli patterns."""
+    """Minimal CLI wrapper for Singer target execution."""
 
-    @override
     def __init__(self) -> None:
-        """Initialize CLI with real flext-cli patterns."""
+        """Initialize CLI metadata."""
         self.name = "target-oracle-wms"
-        self.description = "Oracle WMS Singer Target - Production Ready using REAL flext-oracle-wms API"
+        self.description = "Oracle WMS Singer Target"
         self.version = "0.9.0"
 
-    @override
     def execute(self, **kwargs: object) -> FlextResult[bool]:
-        """Execute target using REAL implementation.
-
-        SOLID REFACTORING: Reduced multiple returns (count=6) to single exit point
-        using Railway-Oriented Programming pattern.
-        """
-        result: FlextResult[bool] = FlextResult[bool].ok(value=True)
-
-        try:
-            # Load configuration
-            config_path: dict[str, t.GeneralValueType] = kwargs.get("config")
-            config_path_str: dict[str, t.GeneralValueType] = (
-                str(config_path) if config_path is not None else None
-            )
-            config_result: FlextResult[object] = self._prepare_config(config_path_str)
-            if not config_result.is_success:
-                result = FlextResult[bool].fail(
-                    config_result.error or "Configuration failed",
-                )
-            else:
-                config: dict[str, t.GeneralValueType] = config_result.data
-                if config is None:
-                    result: FlextResult[object] = FlextResult[bool].fail(
-                        "Configuration data is None",
-                    )
-                else:
-                    # Continue with target setup and processing
-                    result: FlextResult[object] = self._execute_target_pipeline(config)
-
-        except Exception as e:
-            result: FlextResult[object] = FlextResult[bool].fail(
-                f"CLI execution failed: {e}",
-            )
-
-        return result
+        """Execute target run using optional config path."""
+        config_arg = kwargs.get("config")
+        config_path = config_arg if isinstance(config_arg, str) else None
+        config_result = self._prepare_config(config_path)
+        if config_result.is_failure or config_result.value is None:
+            return FlextResult[bool].fail(config_result.error or "Configuration failed")
+        return self._execute_target_pipeline(config_result.value)
 
     def _execute_target_pipeline(
         self,
         config: dict[str, t.GeneralValueType],
     ) -> FlextResult[bool]:
-        """Execute the target pipeline with railway-oriented programming.
-
-        SOLID REFACTORING: Extract target pipeline execution to reduce complexity.
-        """
+        """Setup, process stdin, and cleanup target runtime."""
         target = SingerTargetOracleWMS(config)
-
-        # Setup target
-        setup_result: FlextResult[object] = target.setup()
-        if not setup_result.is_success:
-            return FlextResult[bool].fail(f"Setup failed: {setup_result.error}")
-
-        # Process messages
-        process_result: FlextResult[object] = self._process_stdin_messages(target)
-        if not process_result.is_success:
-            return process_result
-
-        # Finalize and cleanup
+        setup = target.setup()
+        if setup.is_failure:
+            return FlextResult[bool].fail(setup.error or "Setup failed")
+        process = self._process_stdin_messages(target)
+        if process.is_failure:
+            return process
         return self._finalize_target(target)
 
     def _prepare_config(
         self,
         config_path: str | None,
     ) -> FlextResult[dict[str, t.GeneralValueType]]:
-        """Prepare configuration from path or defaults."""
-        try:
-            if config_path:
-                return FlextResult[dict[str, t.GeneralValueType]].ok(
-                    self._load_config(config_path),
-                )
-
-            # Default configuration
-            config: dict[str, t.GeneralValueType] = {
+        """Load config from file or build defaults."""
+        if config_path is not None:
+            return FlextResult[dict[str, t.GeneralValueType]].ok(
+                self._load_config(config_path)
+            )
+        return FlextResult[dict[str, t.GeneralValueType]].ok(
+            {
                 "base_url": "https://invalid.wms.ocs.oraclecloud.com",
                 "username": "oracle",
                 "password": "oracle",
-                "environment": "default",
-                "timeout": 30.0,
+                "environment": "development",
+                "timeout": 30,
                 "max_retries": 3,
-            }
-            return FlextResult[dict[str, t.GeneralValueType]].ok(config)
-        except Exception as e:
-            return FlextResult[dict[str, t.GeneralValueType]].fail(
-                f"Configuration preparation failed: {e}",
-            )
+                "verify_ssl": True,
+                "enable_logging": True,
+            },
+        )
 
     def _process_stdin_messages(
-        self,
-        target: SingerTargetOracleWMS,
+        self, target: SingerTargetOracleWMS
     ) -> FlextResult[bool]:
-        """Process stdin messages following Singer protocol."""
-        try:
-            for raw_line in sys.stdin:
-                line = raw_line.strip()
-                if not line:
-                    continue
+        """Read and process stdin message lines."""
+        return target.process_lines(list(sys.stdin))
 
-                result: FlextResult[object] = self._process_single_message(target, line)
-                if not result.is_success:
-                    return result
-
-            return FlextResult[bool].ok(value=True)
-        except Exception as e:
-            return FlextResult[bool].fail(f"Message processing failed: {e}")
-
-    def _process_single_message(
-        self,
-        target: SingerTargetOracleWMS,
-        line: str,
-    ) -> FlextResult[bool]:
-        """Process a single Singer message."""
-        try:
-            message = json.loads(line)
-            message_type = message.get("type")
-
-            if message_type == "SCHEMA":
-                target.handle_schema_message(message)
-                return FlextResult[bool].ok(value=True)
-            if message_type == "RECORD":
-                target.handle_record_message(message)
-                return FlextResult[bool].ok(value=True)
-            if message_type == "STATE":
-                target.handle_state_message(message)
-                return FlextResult[bool].ok(value=True)
-
-            # Skip unknown message types
-            return FlextResult[bool].ok(value=True)
-
-        except json.JSONDecodeError as e:
-            return FlextResult[bool].fail(f"Invalid JSON: {e}")
-
-    def _finalize_target(
-        self,
-        target: SingerTargetOracleWMS,
-    ) -> FlextResult[bool]:
-        """Finalize target processing and cleanup."""
-        try:
-            target.cleanup()
-            return FlextResult[bool].ok(value=True)
-        except Exception as e:
-            return FlextResult[bool].fail(f"Finalization failed: {e}")
+    def _finalize_target(self, target: SingerTargetOracleWMS) -> FlextResult[bool]:
+        """Finalize target processing."""
+        return target.cleanup()
 
     def _load_config(self, config_path: str) -> dict[str, t.GeneralValueType]:
-        """Load configuration from file path."""
-        config_file: dict[str, t.GeneralValueType] = Path(config_path)
+        """Read JSON configuration file."""
+        config_file = Path(config_path)
         if not config_file.exists():
-            msg: str = f"Configuration file not found: {config_path}"
+            msg = f"Configuration file not found: {config_path}"
             raise FileNotFoundError(msg)
-
-        config_text: dict[str, t.GeneralValueType] = config_file.read_text(
-            encoding="utf-8"
-        )
-        return dict[str, t.GeneralValueType](json.loads(config_text))
+        loaded = json.loads(config_file.read_text(encoding="utf-8"))
+        if not isinstance(loaded, dict):
+            msg = "Configuration file must contain a JSON object"
+            raise TypeError(msg)
+        return loaded
 
 
 def main() -> None:
-    """Provide CLI entry point without complex CLI setup."""
-    try:
-        # DRY: Direct approach without FlextCliSettings that causes env var conflicts
-        # Create and run CLI instance directly
-        cli_instance = OracleWMSTargetCli()
-
-        # Parse command line arguments manually - simple and reliable
-        config_path = None
-        min_cli_args = 2  # Command itself + --config flag requires 2+ args
-        if len(sys.argv) > min_cli_args and sys.argv[1] == "--config":
-            config_path = sys.argv[2]
-
-        # Execute CLI with parsed arguments
-        result: FlextResult[object] = cli_instance.execute(config=config_path)
-
-        if not result.is_success:
-            sys.stderr.write(f"Execution failed: {result.error}\n")
-            sys.exit(1)
-
-    except KeyboardInterrupt:
-        sys.stderr.write("Interrupted by user\n")
-        sys.exit(1)
-    except Exception as e:
-        sys.stderr.write(f"Error: {e}\n")
+    """Run CLI command from process arguments."""
+    cli_instance = OracleWMSTargetCli()
+    config_path: str | None = None
+    if len(sys.argv) >= MIN_CONFIG_ARG_COUNT and sys.argv[1] == "--config":
+        config_path = sys.argv[2]
+    result = cli_instance.execute(config=config_path)
+    if result.is_failure:
+        sys.stderr.write(f"Execution failed: {result.error}\n")
         sys.exit(1)
 
 
