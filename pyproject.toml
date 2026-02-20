@@ -4,7 +4,7 @@ requires = [ "poetry-core>=2.0", "poetry-core>=2" ]
 
 [project]
 name = "flext-target-oracle-wms"
-version = "0.11.0"
+version = "0.12.0-dev"
 description = "FLEXT Target Oracle WMS - Singer Target for Oracle WMS Data"
 readme = "README.md"
 keywords = [
