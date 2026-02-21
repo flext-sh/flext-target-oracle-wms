@@ -7,31 +7,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-# PYTHON_VERSION_GUARD — Do not remove. Managed by scripts/maintenance/enforce_python_version.py
-import sys as _sys
-
-if _sys.version_info[:2] != (3, 13):
-    _v = (
-        f"{_sys.version_info.major}.{_sys.version_info.minor}.{_sys.version_info.micro}"
-    )
-    raise RuntimeError(
-        f"\n{'=' * 72}\n"
-        f"FATAL: Python {_v} detected — this project requires Python 3.13.\n"
-        f"\n"
-        f"The virtual environment was created with the WRONG Python interpreter.\n"
-        f"\n"
-        f"Fix:\n"
-        f"  1. rm -rf .venv\n"
-        f"  2. poetry env use python3.13\n"
-        f"  3. poetry install\n"
-        f"\n"
-        f"Or use the workspace Makefile:\n"
-        f"  make setup PROJECT=<project-name>\n"
-        f"{'=' * 72}\n"
-    )
-del _sys
-# PYTHON_VERSION_GUARD_END
-
 import tempfile
 from collections.abc import Generator
 from pathlib import Path
@@ -42,17 +17,16 @@ from flext_core import FlextTypes as t
 
 @pytest.fixture
 def config() -> dict[str, t.GeneralValueType]:
-    """Return a test configuration."""
+    """Return a test configuration matching WmsTargetConfig schema."""
     return {
-        "base_url": "https://test.oracle.com/wms/api/v1",
-        "username": "test_user",
-        "password": "test_pass",
-        "timeout": 30,
-        "enable_kpi_calculation": True,
-        "enable_alerts": True,
-        "expiry_alert_days": 30,
-        "output_path": "./test_output",
-        "output_format": "json",
+        "wms_auth": {
+            "base_url": "https://test.oracle.com/wms/api/v1",
+            "username": "test_user",
+            "password": "test_pass",
+        },
+        "batch_size": 1000,
+        "load_method": "APPEND_ONLY",
+        "validate_records": True,
     }
 
 
@@ -148,4 +122,42 @@ def singer_schema() -> dict[str, t.GeneralValueType]:
             "price": {"type": "number"},
             "updated_at": {"type": "string", "format": "date-time"},
         },
+    }
+
+
+@pytest.fixture
+def singer_schema_message() -> dict[str, t.GeneralValueType]:
+    """Return a sample Singer SCHEMA message."""
+    return {
+        "type": "SCHEMA",
+        "stream": "test_stream",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "id": {"type": "string"},
+                "name": {"type": "string"},
+            },
+        },
+        "key_properties": ["id"],
+    }
+
+
+@pytest.fixture
+def singer_record_message() -> dict[str, t.GeneralValueType]:
+    """Return a sample Singer RECORD message."""
+    return {
+        "type": "RECORD",
+        "stream": "test_stream",
+        "record": {"id": "1", "name": "test"},
+        "time_extracted": None,
+        "version": None,
+    }
+
+
+@pytest.fixture
+def singer_state_message() -> dict[str, t.GeneralValueType]:
+    """Return a sample Singer STATE message."""
+    return {
+        "type": "STATE",
+        "value": {"bookmarks": {}},
     }

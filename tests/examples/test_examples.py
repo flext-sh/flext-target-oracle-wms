@@ -137,27 +137,26 @@ class TestExamplesCodeQuality:
                 )
 
     def test_examples_use_await_patterns(self, example_files: list[Path]) -> None:
-        """Test that examples use proper /patterns."""
+        """Test that examples with async functions use proper await patterns."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
             tree = ast.parse(content, filename=str(example_file))
 
-            # Check for functions
-            has_function = False
+            # Check for async functions and await usage
+            has_async_function = False
             has_await = False
 
             for node in ast.walk(tree):
-                if isinstance(node, ast.FunctionDef):
-                    has_function = True
+                if isinstance(node, ast.AsyncFunctionDef):
+                    has_async_function = True
                 elif isinstance(node, ast.Await):
                     has_await = True
 
-            # Examples should use patterns for production readiness
-            if "" in content.lower():
-                assert has_function, (
-                    f"{example_file.name} mentions but has no functions"
+            # Only assert await if file actually contains async functions
+            if has_async_function:
+                assert has_await, (
+                    f"{example_file.name} has async functions but no await statements"
                 )
-                assert has_await, f"{example_file.name} has functions but no statements"
 
     def test_examples_implement_error_handling(self, example_files: list[Path]) -> None:
         """Test that examples implement proper error handling."""
@@ -376,12 +375,11 @@ class TestExamplesFlextIntegration:
             content = example_file.read_text(encoding="utf-8")
 
             if "FlextResult" in content:
-                # Must use proper FlextResult patterns
-                assert ".success" in content, (
-                    f"{example_file.name} uses FlextResult but not .success"
+                assert ".is_success" in content or ".is_failure" in content, (
+                    f"{example_file.name} uses FlextResult but not .is_success/.is_failure"
                 )
-                assert ".error" in content or "result.data" in content, (
-                    f"{example_file.name} must check result.error or result.data"
+                assert ".error" in content or ".value" in content, (
+                    f"{example_file.name} must check result.error or result.value"
                 )
 
     def test_examples_use_flext_logging(self) -> None:

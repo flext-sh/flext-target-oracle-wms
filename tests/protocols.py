@@ -15,7 +15,7 @@ from flext_target_oracle_wms.models import FlextTargetOracleWmsModels
 from flext_tests import FlextTestsProtocols
 
 
-class TestsFlexttargetoraclewmsProtocols(FlextTestsProtocols):
+class TestsFlextTargetOracleWmsProtocols(FlextTestsProtocols):
     """Test protocols combining FlextTestsProtocols and project-specific protocols."""
 
     class Wms(FlextTargetOracleWmsModels):
@@ -25,6 +25,6 @@ class TestsFlexttargetoraclewmsProtocols(FlextTestsProtocols):
             """Internal tests declarations."""
 
 
-tp = TestsFlexttargetoraclewmsProtocols
+tp = TestsFlextTargetOracleWmsProtocols
 
-__all__ = ["TestsFlexttargetoraclewmsProtocols", "tp"]
+__all__ = ["TestsFlextTargetOracleWmsProtocols", "tp"]
