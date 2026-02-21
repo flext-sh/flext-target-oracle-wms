@@ -2,18 +2,17 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import ClassVar
 
-from flext_core import FlextLogger, r, t
+from flext_core import FlextLogger, FlextModels, r, t
+from pydantic import Field
 
 from .target_client import SingerTargetOracleWMS
 
 logger = FlextLogger(__name__)
 
 
-@dataclass
-class TargetCreationRequest:
+class TargetCreationRequest(FlextModels.ArbitraryTypesModel):
     """Input object for target creation."""
 
     base_url: str
@@ -21,10 +20,9 @@ class TargetCreationRequest:
     password: str
     environment: str = "development"
     preset: str | None = None
-    additional_config: dict[str, t.GeneralValueType] | None = None
+    additional_config: dict[str, t.GeneralValueType] | None = Field(default=None)
 
 
-@dataclass
 class MonitoredTargetCreationRequest(TargetCreationRequest):
     """Input object for monitored target creation."""
 
@@ -84,39 +82,16 @@ class FlextTargetFactory:
         cls,
         config: dict[str, t.GeneralValueType],
     ) -> r[SingerTargetOracleWMS]:
-        """Create target from plain dictionary config."""
-        base_url = config.get("base_url")
-        username = config.get("username")
-        password = config.get("password")
-        if not isinstance(base_url, str):
-            return r[SingerTargetOracleWMS].fail("base_url must be a string")
-        if not isinstance(username, str):
-            return r[SingerTargetOracleWMS].fail("username must be a string")
-        if not isinstance(password, str):
-            return r[SingerTargetOracleWMS].fail("password must be a string")
-
-        environment_value = config.get("environment", "development")
-        if isinstance(environment_value, str):
-            environment = environment_value
-        else:
-            environment = "development"
-
-        preset_value = config.get("preset")
-        preset = preset_value if isinstance(preset_value, str) else None
-
-        additional = {
-            key: value
-            for key, value in config.items()
-            if key not in {"base_url", "username", "password", "environment", "preset"}
-        }
-        request = TargetCreationRequest(
-            base_url=base_url,
-            username=username,
-            password=password,
-            environment=environment,
-            preset=preset,
-            additional_config=additional,
-        )
+        """Create target from plain dictionary config via Pydantic validation."""
+        known_keys = {"base_url", "username", "password", "environment", "preset"}
+        additional = {k: v for k, v in config.items() if k not in known_keys}
+        try:
+            request = TargetCreationRequest.model_validate({
+                **config,
+                "additional_config": additional or None,
+            })
+        except Exception as exc:
+            return r[SingerTargetOracleWMS].fail(str(exc))
         return cls.create_target(request)
 
 
