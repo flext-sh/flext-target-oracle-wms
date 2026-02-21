@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from flext_core import FlextResult, FlextSettings, FlextTypes as t
+from flext_core import FlextResult, FlextSettings, t
 from pydantic import Field
 from pydantic_settings import SettingsConfigDict
 

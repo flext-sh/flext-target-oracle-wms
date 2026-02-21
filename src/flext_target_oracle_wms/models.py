@@ -8,10 +8,10 @@ from __future__ import annotations
 
 from typing import Literal
 
-from flext_core import FlextModels, FlextResult as r, FlextTypes as t
+from flext_core import FlextModels, r, t
 from flext_meltano.models import FlextMeltanoModels
 from flext_oracle_wms.wms_models import FlextOracleWmsModels
-from pydantic import Field, SecretStr
+from pydantic import ConfigDict, Field, SecretStr
 
 from .constants import c
 
@@ -80,10 +80,14 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
         class SingerFieldSchema(FlextModels.ArbitraryTypesModel):
             """Typed Singer field schema entry for target-side schema parsing."""
 
+            model_config = ConfigDict(extra="ignore")
+
             type: str = "string"
 
         class SingerSchemaProperties(FlextModels.ArbitraryTypesModel):
             """Typed Singer schema properties block for target-side schema parsing."""
+
+            model_config = ConfigDict(extra="ignore")
 
             properties: dict[
                 str,

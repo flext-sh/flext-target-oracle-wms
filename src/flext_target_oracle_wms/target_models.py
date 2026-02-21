@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 
-from flext_core import FlextResult as r, FlextTypes as t
+from flext_core import r, t
 
 from .models import m
 
@@ -19,7 +19,7 @@ class WMSTypeConverter:
     ) -> r[t.JsonValue]:
         """Convert a single source value according to Singer type."""
         if value is None:
-            return r[t.JsonValue].ok(None)
+            return r[t.JsonValue].ok("")
         if singer_type in {"object", "array"}:
             return r[t.JsonValue].ok(json.dumps(value))
         if singer_type in {"integer", "number"}:

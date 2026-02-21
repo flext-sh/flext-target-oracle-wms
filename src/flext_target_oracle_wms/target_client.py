@@ -6,7 +6,7 @@ import json
 import sys
 from typing import ClassVar
 
-from flext_core import FlextLogger, FlextResult as r
+from flext_core import FlextLogger, r
 from pydantic import ValidationError
 
 from .models import m

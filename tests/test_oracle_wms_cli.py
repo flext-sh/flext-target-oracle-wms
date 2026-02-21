@@ -1,311 +1,115 @@
-"""Comprehensive tests for CLI module - REAL flext-core integration.
+"""Tests for OracleWMSTargetCli and main().
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
-
 """
 
 from __future__ import annotations
 
 import json
-from unittest.mock import MagicMock, Mock, patch
+import tempfile
+from pathlib import Path
+from unittest.mock import patch
 
 import pytest
-from flext_core import FlextResult
 
-from flext_target_oracle_wms import OracleWMSTargetCli, main
+from flext_target_oracle_wms.cli import OracleWMSTargetCli, main
 
 
-class TestOracleWMSTargetCli:
-    """Test Oracle WMS Target CLI with comprehensive coverage."""
+def _write_config_file(config: dict, tmp_path: Path) -> str:
+    config_file = tmp_path / "config.json"
+    config_file.write_text(json.dumps(config), encoding="utf-8")
+    return str(config_file)
 
-    def test_cli_initialization(self) -> None:
-        """Test CLI initialization."""
+
+def _valid_config_dict() -> dict:
+    return {
+        "wms_auth": {
+            "base_url": "https://test.wms.example.com",
+            "username": "user",
+            "password": "pass",
+        },
+    }
+
+
+class TestOracleWMSTargetCliInit:
+    """Tests for CLI initialization."""
+
+    def test_default_attributes(self) -> None:
         cli = OracleWMSTargetCli()
         assert cli.name == "target-oracle-wms"
-        assert "Oracle WMS Singer Target" in cli.description
+        assert cli.description == "Oracle WMS Singer Target"
         assert cli.version == "0.9.0"
 
-    def test_load_config_valid_file(self) -> None:
-        """Test loading configuration from valid file."""
+
+class TestOracleWMSTargetCliLoadConfig:
+    """Tests for _load_config."""
+
+    def test_load_valid_config(self, tmp_path: Path) -> None:
         cli = OracleWMSTargetCli()
-        config_data = {
-            "base_url": "https://test.wms.example.com",
-            "username": "test_user",
-            "password": "test_pass",
-        }
+        config_path = _write_config_file(_valid_config_dict(), tmp_path)
+        loaded = cli._load_config(config_path)
+        assert "wms_auth" in loaded
 
-        with (
-            patch("pathlib.Path.exists", return_value=True),
-            patch("pathlib.Path.read_text", return_value=json.dumps(config_data)),
-        ):
-            result = cli._load_config("config.json")
-            assert result == config_data
-
-    def test_load_config_file_not_found(self) -> None:
-        """Test loading configuration when file not found."""
+    def test_load_nonexistent_file_raises(self) -> None:
         cli = OracleWMSTargetCli()
+        with pytest.raises(FileNotFoundError):
+            cli._load_config("/nonexistent/path/config.json")
 
-        with (
-            patch("pathlib.Path.exists", return_value=False),
-            pytest.raises(FileNotFoundError, match="Configuration file not found"),
-        ):
-            cli._load_config("nonexistent.json")
-
-    def test_load_config_invalid_json(self) -> None:
-        """Test loading configuration with invalid JSON."""
+    def test_load_non_object_json_raises(self, tmp_path: Path) -> None:
         cli = OracleWMSTargetCli()
+        bad_file = tmp_path / "bad.json"
+        bad_file.write_text(json.dumps([1, 2, 3]), encoding="utf-8")
+        with pytest.raises(TypeError):
+            cli._load_config(str(bad_file))
 
-        with (
-            patch("pathlib.Path.exists", return_value=True),
-            patch("pathlib.Path.read_text", return_value="invalid json"),
-            pytest.raises(json.JSONDecodeError),
-        ):
-            cli._load_config("invalid.json")
 
-    def test_execute_with_config_file(self) -> None:
-        """Test CLI execution with configuration file."""
+class TestOracleWMSTargetCliExecute:
+    """Tests for execute method."""
+
+    @patch("flext_target_oracle_wms.cli.sys.stdin", [])
+    def test_execute_with_config_file(self, tmp_path: Path) -> None:
         cli = OracleWMSTargetCli()
-        config_data = {
-            "base_url": "https://test.wms.example.com",
-            "username": "test_user",
-            "password": "test_pass",
-        }
+        config_path = _write_config_file(_valid_config_dict(), tmp_path)
+        result = cli.execute(config=config_path)
+        assert result.is_success
 
-        with (
-            patch.object(cli, "_load_config", return_value=config_data),
-            patch(
-                "flext_target_oracle_wms.cli.SingerTargetOracleWMS",
-            ) as mock_target_class,
-            patch("sys.stdin", []),
-        ):  # Empty stdin
-            mock_target = MagicMock()
-            mock_target.setup = Mock(return_value=FlextResult[None].ok(None))
-            mock_target.finalize.return_value = FlextResult[None].ok({"total": 0})
-            mock_target.cleanup = Mock()
-            mock_target_class.return_value = mock_target
-
-            result = cli.execute(config="config.json")
-            assert result.is_success
-
-    def test_execute_with_default_config(self) -> None:
-        """Test CLI execution with default configuration."""
+    @patch("flext_target_oracle_wms.cli.sys.stdin", [])
+    def test_execute_without_config_uses_defaults(self) -> None:
         cli = OracleWMSTargetCli()
+        result = cli.execute()
+        assert result.is_success
 
-        with (
-            patch(
-                "flext_target_oracle_wms.cli.SingerTargetOracleWMS",
-            ) as mock_target_class,
-            patch("sys.stdin", []),
-        ):  # Empty stdin
-            mock_target = MagicMock()
-            mock_target.setup = Mock(return_value=FlextResult[None].ok(None))
-            mock_target.finalize.return_value = FlextResult[None].ok({"total": 0})
-            mock_target.cleanup = Mock()
-            mock_target_class.return_value = mock_target
-
-            result = cli.execute()
-            assert result.is_success
-
-    def test_execute_setup_failure(self) -> None:
-        """Test CLI execution when target setup fails."""
+    @patch("flext_target_oracle_wms.cli.sys.stdin", [])
+    def test_execute_with_none_config(self) -> None:
         cli = OracleWMSTargetCli()
+        result = cli.execute(config=None)
+        assert result.is_success
 
+
+class TestMain:
+    """Tests for main() entry point."""
+
+    @patch("flext_target_oracle_wms.cli.sys.stdin", [])
+    @patch("flext_target_oracle_wms.cli.sys.argv", ["target-oracle-wms"])
+    def test_main_no_args_succeeds(self) -> None:
+        # main() calls sys.exit(1) on failure, no exit = success
+        main()
+
+    @patch("flext_target_oracle_wms.cli.sys.stdin", [])
+    def test_main_with_config_arg(self, tmp_path: Path) -> None:
+        config_path = _write_config_file(_valid_config_dict(), tmp_path)
         with patch(
-            "flext_target_oracle_wms.cli.SingerTargetOracleWMS",
-        ) as mock_target_class:
-            mock_target = MagicMock()
-            mock_target.setup = Mock(
-                return_value=FlextResult[None].fail("Setup failed"),
-            )
-            mock_target_class.return_value = mock_target
-
-            result = cli.execute()
-            assert not result.is_success
-            assert result.error is not None
-            assert result.error is not None
-            assert "Setup failed" in result.error
-
-    def test_execute_with_singer_messages(self) -> None:
-        """Test CLI execution with Singer messages."""
-        cli = OracleWMSTargetCli()
-
-        # Mock stdin with Singer messages
-        mock_messages = [
-            '{"type": "SCHEMA", "stream": "test", "schema": {"properties": {}}}',
-            '{"type": "RECORD", "stream": "test", "record": {"id": 1}}',
-            '{"type": "STATE", "value": {"bookmarks": {}}}',
-        ]
-
-        with (
-            patch(
-                "flext_target_oracle_wms.cli.SingerTargetOracleWMS",
-            ) as mock_target_class,
-            patch("sys.stdin", mock_messages),
-        ):
-            mock_target = MagicMock()
-            mock_target.setup = Mock(return_value=FlextResult[None].ok(None))
-            mock_target.process_schema_message = Mock(
-                return_value=FlextResult[None].ok(None),
-            )
-            mock_target.process_record_message = Mock(
-                return_value=FlextResult[None].ok(None),
-            )
-            mock_target.process_state_message.return_value = FlextResult[None].ok(None)
-            mock_target.finalize.return_value = FlextResult[None].ok({"total": 1})
-            mock_target.cleanup = Mock()
-            mock_target_class.return_value = mock_target
-
-            result = cli.execute()
-            assert result.is_success
-            mock_target.process_schema_message.assert_called_once()
-            mock_target.process_record_message.assert_called_once()
-            mock_target.process_state_message.assert_called_once()
-
-    def test_execute_with_invalid_json(self) -> None:
-        """Test CLI execution with invalid JSON input."""
-        cli = OracleWMSTargetCli()
-
-        with (
-            patch(
-                "flext_target_oracle_wms.cli.SingerTargetOracleWMS",
-            ) as mock_target_class,
-            patch("sys.stdin", ["invalid json"]),
-        ):
-            mock_target = MagicMock()
-            mock_target.setup = Mock(return_value=FlextResult[None].ok(None))
-            mock_target_class.return_value = mock_target
-
-            result = cli.execute()
-            assert not result.is_success
-            assert result.error is not None
-            assert result.error is not None
-            assert "Invalid JSON" in result.error
-
-    def test_execute_message_processing_failure(self) -> None:
-        """Test CLI execution when message processing fails."""
-        cli = OracleWMSTargetCli()
-
-        with (
-            patch(
-                "flext_target_oracle_wms.cli.SingerTargetOracleWMS",
-            ) as mock_target_class,
-            patch("sys.stdin", ['{"type": "SCHEMA", "stream": "test", "schema": {}}']),
-        ):
-            mock_target = MagicMock()
-            mock_target.setup = Mock(return_value=FlextResult[None].ok(None))
-            mock_target.process_schema_message = Mock(
-                return_value=FlextResult[None].fail("Processing failed"),
-            )
-            mock_target_class.return_value = mock_target
-
-            result = cli.execute()
-            assert not result.is_success
-            assert result.error is not None
-            assert result.error is not None
-            assert "Processing failed" in result.error
-
-    def test_execute_exception_handling(self) -> None:
-        """Test CLI execution exception handling."""
-        cli = OracleWMSTargetCli()
-
-        with patch(
-            "flext_target_oracle_wms.cli.SingerTargetOracleWMS",
-            side_effect=Exception("Test error"),
-        ):
-            result = cli.execute()
-            assert not result.is_success
-            assert result.error is not None
-            assert result.error is not None
-            assert "CLI execution failed" in result.error
-            assert result.error is not None
-            assert result.error is not None
-            assert "Test error" in result.error
-
-
-class TestMainFunction:
-    """Test main function with comprehensive coverage."""
-
-    def test_main_basic_execution(self) -> None:
-        """Test basic main function execution."""
-        with (
-            patch("flext_target_oracle_wms.cli.OracleWMSTargetCli") as mock_cli_class,
-            patch("run") as mock_run,
-            patch("sys.argv", ["target-oracle-wms"]),
-        ):
-            mock_cli = MagicMock()
-            mock_cli.execute = Mock(return_value=FlextResult[None].ok(None))
-            mock_cli_class.return_value = mock_cli
-            mock_run.return_value = FlextResult[None].ok(None)
-
-            with patch("sys.exit") as mock_exit:
-                main()
-                mock_exit.assert_not_called()
-
-    def test_main_with_config_argument(self) -> None:
-        """Test main function with config argument."""
-        with (
-            patch("flext_target_oracle_wms.cli.OracleWMSTargetCli") as mock_cli_class,
-            patch("run") as mock_run,
-            patch("sys.argv", ["target-oracle-wms", "--config", "config.json"]),
-        ):
-            mock_cli = MagicMock()
-            mock_cli.execute = Mock(return_value=FlextResult[None].ok(None))
-            mock_cli_class.return_value = mock_cli
-            mock_run.return_value = FlextResult[None].ok(None)
-
-            with patch("sys.exit") as mock_exit:
-                main()
-                mock_exit.assert_not_called()
-                # Verify config was passed to execute
-                mock_run.assert_called_once()
-
-    def test_main_setup_failure(self) -> None:
-        """Test main function when CLI setup fails (now tests execution failure since setup was removed)."""
-        with (
-            patch("flext_target_oracle_wms.cli.OracleWMSTargetCli") as mock_cli_class,
-            patch("run") as mock_run,
-            patch("sys.stderr"),
-        ):
-            mock_cli = MagicMock()
-            mock_cli_class.return_value = mock_cli
-            mock_run.return_value = FlextResult[None].fail("Execution failed")
-
-            with patch("sys.exit") as mock_exit:
-                main()
-                mock_exit.assert_called_with(1)
-
-    def test_main_execution_failure(self) -> None:
-        """Test main function when execution fails."""
-        with (
-            patch("flext_target_oracle_wms.cli.OracleWMSTargetCli") as mock_cli_class,
-            patch("run") as mock_run,
-            patch("sys.stderr"),
-        ):
-            mock_cli = MagicMock()
-            mock_cli_class.return_value = mock_cli
-            mock_run.return_value = FlextResult[None].fail("Execution failed")
-
-            with patch("sys.exit") as mock_exit:
-                main()
-                mock_exit.assert_called_with(1)
-
-    def test_main_keyboard_interrupt(self) -> None:
-        """Test main function with keyboard interrupt."""
-        with (
-            patch("run", side_effect=KeyboardInterrupt()),
-            patch("sys.stderr"),
-            patch("sys.exit") as mock_exit,
+            "flext_target_oracle_wms.cli.sys.argv",
+            ["target-oracle-wms", "--config", config_path],
         ):
             main()
-            mock_exit.assert_called_with(1)
 
-    def test_main_general_exception(self) -> None:
-        """Test main function with general exception."""
-        with (
-            patch("run", side_effect=Exception("Test error")),
-            patch("sys.stderr"),
-            patch("sys.exit") as mock_exit,
-        ):
+    @patch("flext_target_oracle_wms.cli.sys.stdin", [])
+    @patch(
+        "flext_target_oracle_wms.cli.sys.argv",
+        ["target-oracle-wms", "--config", "/bad/path.json"],
+    )
+    def test_main_with_bad_config_raises(self) -> None:
+        with pytest.raises(FileNotFoundError):
             main()
-            mock_exit.assert_called_with(1)

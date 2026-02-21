@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import time
 
-from flext_core import FlextLogger, FlextTypes as t
+from flext_core import FlextLogger, t
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 from flext_target_oracle_wms import (
     SingerTargetOracleWMS,

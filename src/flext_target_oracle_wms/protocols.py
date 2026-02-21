@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Protocol, runtime_checkable
 
-from flext_core import FlextResult as r, FlextTypes as t
+from flext_core import r, t
 
 
 class FlextTargetOracleWmsProtocols:

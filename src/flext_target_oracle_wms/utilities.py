@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from flext_core import FlextResult as r, FlextTypes as t
+from flext_core import r, t
 
 from .constants import c
 

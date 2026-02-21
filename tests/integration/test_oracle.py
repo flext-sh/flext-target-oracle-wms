@@ -1,196 +1,100 @@
-"""Integration tests for Oracle WMS target using REAL flext-core patterns.
+"""Integration tests for target Oracle WMS lifecycle.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
-
 """
 
 from __future__ import annotations
 
-from unittest.mock import Mock, patch
+import json
 
 import pytest
-from flext_core import FlextTypes as t, FlextResult
+from flext_core import t
 
-from flext_target_oracle_wms import SingerTargetOracleWMS
+from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
-# Constants from REAL Oracle WMS requirements
-EXPECTED_BULK_SIZE = 2
+
+def _valid_config() -> dict[str, t.GeneralValueType]:
+    return {
+        "wms_auth": {
+            "base_url": "https://test.wms.example.com",
+            "username": "user",
+            "password": "pass",
+        },
+    }
+
+
+def _schema_line(stream: str, props: dict[str, dict[str, str]], keys: list[str]) -> str:
+    return json.dumps({
+        "type": "SCHEMA",
+        "stream": stream,
+        "schema": {"type": "object", "properties": props},
+        "key_properties": keys,
+    })
+
+
+def _record_line(stream: str, record: dict[str, t.GeneralValueType]) -> str:
+    return json.dumps({"type": "RECORD", "stream": stream, "record": record})
+
+
+def _state_line(value: dict[str, t.GeneralValueType]) -> str:
+    return json.dumps({"type": "STATE", "value": value})
 
 
 @pytest.mark.integration
-@pytest.mark.oracle
-class TestOracleWMSIntegration:
-    """Integration tests using REAL flext-oracle-wms client patterns."""
+class TestTargetLifecycle:
+    """Integration tests for full target lifecycle."""
 
-    @pytest.fixture
-    def oracle_wms_config(self) -> dict[str, t.GeneralValueType]:
-        """Oracle WMS configuration using REAL API parameters."""
-        return {
-            "base_url": "https://test.wms.ocs.oraclecloud.com",
-            "username": "test_user",
-            "password": "test_password",
-            "environment": "test",
-            "timeout": 30.0,
-            "max_retries": 3,
-            "batch_size": EXPECTED_BULK_SIZE,
-            "load_method": "APPEND_ONLY",
-            "table_prefix": "TEST_",
-            "default_target_schema": "WMS_TEST",
-        }
+    def test_setup_process_cleanup(self) -> None:
+        target = SingerTargetOracleWMS(_valid_config())
+        assert target.setup().is_success
 
-    def test_singer_target_setup(
-        self,
-        oracle_wms_config: dict[str, t.GeneralValueType],
-    ) -> None:
-        """Test SingerTarget can setup Oracle WMS client using REAL APIs."""
-        # DRY: Use REAL implementation
-        target = SingerTargetOracleWMS(oracle_wms_config)
+        lines = [
+            _schema_line(
+                "items", {"id": {"type": "string"}, "name": {"type": "string"}}, ["id"]
+            ),
+            _record_line("items", {"id": "1", "name": "Widget"}),
+            _state_line({"bookmarks": {"items": "1"}}),
+        ]
+        assert target.process_lines(lines).is_success
+        assert target.cleanup().is_success
 
-        # Mock the oracle_client.start() to return success using patch
-        with patch.object(
-            target.oracle_client,
-            "start",
-            new_callable=Mock,
-        ) as mock_start:
-            mock_start.return_value = FlextResult[None].ok(None)
+    def test_multiple_batches(self) -> None:
+        target = SingerTargetOracleWMS(_valid_config())
+        target.setup()
 
-            # Test setup using REAL flext-core patterns
-            setup_result = target.setup()
-            assert setup_result.is_success
-            assert setup_result.error is None
+        batch1 = [
+            _schema_line("orders", {"order_id": {"type": "string"}}, ["order_id"]),
+            _record_line("orders", {"order_id": "ORD001"}),
+            _record_line("orders", {"order_id": "ORD002"}),
+        ]
+        assert target.process_lines(batch1).is_success
 
-    def test_schema_message_processing(
-        self,
-        oracle_wms_config: dict[str, t.GeneralValueType],
-    ) -> None:
-        """Test Singer SCHEMA message processing using REAL flext-core patterns."""
-        # DRY: Use REAL implementation
-        target = SingerTargetOracleWMS(oracle_wms_config)
+        batch2 = [
+            _record_line("orders", {"order_id": "ORD003"}),
+            _state_line({"bookmarks": {"orders": "3"}}),
+        ]
+        assert target.process_lines(batch2).is_success
+        assert target.cleanup().is_success
 
-        # REAL Singer SCHEMA message format
-        schema_message = {
-            "type": "SCHEMA",
-            "stream": "test_table",
-            "schema": {
-                "type": "object",
-                "properties": {
-                    "id": {"type": "integer"},
-                    "name": {"type": "string"},
-                    "created_at": {"type": "string", "format": "date-time"},
-                    "is_active": {"type": "boolean"},
-                },
-            },
-            "key_properties": ["id"],
-        }
 
-        # Test SCHEMA message processing using REAL flext-core patterns
-        if hasattr(target, 'process_schema_message'):
-            schema_result = target.process_schema_message(schema_message)
-            assert schema_result.is_success
-        else:
-            pytest.skip("process_schema_message method not available")
-        assert schema_result.error is None
+@pytest.mark.integration
+class TestMultiStreamIntegration:
+    """Integration tests for multi-stream scenarios."""
 
-    def test_record_message_processing(
-        self,
-        oracle_wms_config: dict[str, t.GeneralValueType],
-    ) -> None:
-        """Test Singer RECORD message processing using REAL flext-core patterns."""
-        # DRY: Use REAL implementation
-        target = SingerTargetOracleWMS(oracle_wms_config)
+    def test_three_streams_interleaved(self) -> None:
+        target = SingerTargetOracleWMS(_valid_config())
+        target.setup()
 
-        # Initialize stream first (required before processing records)
-        schema = {
-            "type": "object",
-            "properties": {
-                "id": {"type": "integer"},
-                "name": {"type": "string"},
-                "created_at": {"type": "string", "format": "date-time"},
-                "is_active": {"type": "boolean"},
-            },
-        }
-        target.catalog_manager.add_stream("test_table", schema)
-        target.stream_processor.initialize_stream("test_table", schema)
-
-        # REAL Singer RECORD message format
-        record_message = {
-            "type": "RECORD",
-            "stream": "test_table",
-            "record": {
-                "id": 1,
-                "name": "John Doe",
-                "created_at": "2023-01-01T12:00:00Z",
-                "is_active": True,
-            },
-            "time_extracted": "2023-01-01T12:00:00Z",
-        }
-
-        # Test RECORD message processing using REAL flext-core patterns
-        if hasattr(target, 'process_record_message'):
-            record_result = target.process_record_message(record_message)
-            assert record_result.is_success
-        else:
-            pytest.skip("process_record_message method not available")
-        assert record_result.error is None
-
-    def test_state_message_processing(
-        self,
-        oracle_wms_config: dict[str, t.GeneralValueType],
-    ) -> None:
-        """Test Singer STATE message processing using REAL flext-core patterns."""
-        # DRY: Use REAL implementation
-        target = SingerTargetOracleWMS(oracle_wms_config)
-
-        # REAL Singer STATE message format
-        state_message = {
-            "type": "STATE",
-            "value": {
-                "bookmarks": {
-                    "test_table": {
-                        "last_updated": "2023-01-01T12:00:00Z",
-                        "version": 1,
-                    },
-                },
-            },
-        }
-
-        # Test STATE message processing using REAL flext-core patterns
-        if hasattr(target, 'process_state_message'):
-            state_result = target.process_state_message(state_message)
-            assert state_result.is_success
-        else:
-            pytest.skip("process_state_message method not available")
-        assert state_result.error is None
-
-    def test_target_cleanup(
-        self,
-        oracle_wms_config: dict[str, t.GeneralValueType],
-    ) -> None:
-        """Test Oracle WMS Target cleanup using REAL flext-core patterns."""
-        # DRY: Use REAL implementation
-        target = SingerTargetOracleWMS(oracle_wms_config)
-
-        # Mock dependencies for testing using patch
-
-        with (
-            patch.object(
-                target.oracle_client,
-                "start",
-                new_callable=Mock,
-            ) as mock_start,
-            patch.object(
-                target.oracle_client,
-                "stop",
-                new_callable=Mock,
-            ) as mock_stop,
-        ):
-            mock_start.return_value = FlextResult[None].ok(None)
-            mock_stop.return_value = FlextResult[None].ok(None)
-
-            # Test setup and cleanup cycle
-            target.setup()
-            cleanup_result = target.cleanup()
-
-                assert cleanup_result.is_success
-            assert cleanup_result.error is None
+        lines = [
+            _schema_line("orders", {"id": {"type": "string"}}, ["id"]),
+            _schema_line("items", {"id": {"type": "string"}}, ["id"]),
+            _schema_line("tasks", {"id": {"type": "string"}}, ["id"]),
+            _record_line("orders", {"id": "O1"}),
+            _record_line("items", {"id": "I1"}),
+            _record_line("tasks", {"id": "T1"}),
+            _record_line("orders", {"id": "O2"}),
+            _state_line({"bookmarks": {}}),
+        ]
+        assert target.process_lines(lines).is_success
+        assert target.cleanup().is_success

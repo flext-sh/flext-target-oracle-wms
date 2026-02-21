@@ -6,7 +6,7 @@ import json
 import sys
 from pathlib import Path
 
-from flext_core import FlextResult as r, FlextTypes as t
+from flext_core import r, t
 
 from .models import m
 from .target_client import SingerTargetOracleWMS

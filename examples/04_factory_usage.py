@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import os
 
-from flext_core import FlextLogger, FlextTypes as t
+from flext_core import FlextLogger, t
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 # Import factory patterns for easier usage

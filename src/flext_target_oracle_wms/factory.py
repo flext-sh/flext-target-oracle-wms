@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import ClassVar
 
-from flext_core import FlextLogger, FlextResult as r, FlextTypes as t
+from flext_core import FlextLogger, r, t
 
 from .target_client import SingerTargetOracleWMS
 
