@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import ClassVar
 
-from flext_core import FlextLogger, FlextResult, FlextTypes as t
+from flext_core import FlextLogger, FlextResult as r, FlextTypes as t
 
 from .target_client import SingerTargetOracleWMS
 
@@ -62,7 +62,7 @@ class FlextTargetFactory:
     def create_target(
         cls,
         request: TargetCreationRequest,
-    ) -> FlextResult[SingerTargetOracleWMS]:
+    ) -> r[SingerTargetOracleWMS]:
         """Create target instance from request object."""
         config: dict[str, t.GeneralValueType] = {
             "base_url": request.base_url,
@@ -77,23 +77,23 @@ class FlextTargetFactory:
         logger.info(
             "Created Oracle WMS target", extra={"environment": request.environment}
         )
-        return FlextResult[SingerTargetOracleWMS].ok(SingerTargetOracleWMS(config))
+        return r[SingerTargetOracleWMS].ok(SingerTargetOracleWMS(config))
 
     @classmethod
     def create_from_config_dict(
         cls,
         config: dict[str, t.GeneralValueType],
-    ) -> FlextResult[SingerTargetOracleWMS]:
+    ) -> r[SingerTargetOracleWMS]:
         """Create target from plain dictionary config."""
         base_url = config.get("base_url")
         username = config.get("username")
         password = config.get("password")
         if not isinstance(base_url, str):
-            return FlextResult[SingerTargetOracleWMS].fail("base_url must be a string")
+            return r[SingerTargetOracleWMS].fail("base_url must be a string")
         if not isinstance(username, str):
-            return FlextResult[SingerTargetOracleWMS].fail("username must be a string")
+            return r[SingerTargetOracleWMS].fail("username must be a string")
         if not isinstance(password, str):
-            return FlextResult[SingerTargetOracleWMS].fail("password must be a string")
+            return r[SingerTargetOracleWMS].fail("password must be a string")
 
         environment_value = config.get("environment", "development")
         if isinstance(environment_value, str):
@@ -130,7 +130,7 @@ class FlextTargetMonitoringFactory:
     def create_monitored_target(
         self,
         request: MonitoredTargetCreationRequest,
-    ) -> FlextResult[SingerTargetOracleWMS]:
+    ) -> r[SingerTargetOracleWMS]:
         """Create monitored target using base factory."""
         base_request = TargetCreationRequest(
             base_url=request.base_url,
@@ -150,7 +150,7 @@ def create_oracle_wms_target(
     environment: str = "development",
     preset: str | None = None,
     **config: t.GeneralValueType,
-) -> FlextResult[SingerTargetOracleWMS]:
+) -> r[SingerTargetOracleWMS]:
     """Convenience function to create base target instance."""
     request = TargetCreationRequest(
         base_url=base_url,
@@ -165,7 +165,7 @@ def create_oracle_wms_target(
 
 def create_monitored_oracle_wms_target(
     request: MonitoredTargetCreationRequest,
-) -> FlextResult[SingerTargetOracleWMS]:
+) -> r[SingerTargetOracleWMS]:
     """Convenience function to create monitored target instance."""
     factory = FlextTargetMonitoringFactory(request.monitor_name)
     return factory.create_monitored_target(request)

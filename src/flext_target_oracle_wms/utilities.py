@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from flext_core import FlextResult, FlextTypes as t
+from flext_core import FlextResult as r, FlextTypes as t
 
 from .constants import c
 
@@ -48,12 +48,12 @@ class FlextTargetOracleWmsUtilities:
         @staticmethod
         def validate_wms_target_config(
             config: dict[str, t.GeneralValueType],
-        ) -> FlextResult[bool]:
+        ) -> r[bool]:
             """Validate minimal required target configuration fields."""
             required = {"base_url", "username", "password"}
             missing = sorted(key for key in required if key not in config)
             if missing:
-                return FlextResult[bool].fail(
+                return r[bool].fail(
                     f"Missing required configuration fields: {missing}",
                 )
             load_method = config.get(
@@ -63,8 +63,8 @@ class FlextTargetOracleWmsUtilities:
                 isinstance(load_method, str)
                 and load_method not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS
             ):
-                return FlextResult[bool].fail("Invalid load_method")
-            return FlextResult[bool].ok(value=True)
+                return r[bool].fail("Invalid load_method")
+            return r[bool].ok(value=True)
 
 
 __all__ = ["FlextTargetOracleWmsUtilities"]

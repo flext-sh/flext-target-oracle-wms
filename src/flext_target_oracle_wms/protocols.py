@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Protocol, runtime_checkable
 
-from flext_core import FlextResult, FlextTypes as t
+from flext_core import FlextResult as r, FlextTypes as t
 
 
 class FlextTargetOracleWmsProtocols:
@@ -20,7 +20,7 @@ class FlextTargetOracleWmsProtocols:
             def load_data(
                 self,
                 records: list[dict[str, t.GeneralValueType]],
-            ) -> FlextResult[bool]:
+            ) -> r[bool]:
                 """Load a batch of records."""
                 ...
 
@@ -31,7 +31,7 @@ class FlextTargetOracleWmsProtocols:
             def transform_to_wms(
                 self,
                 record: dict[str, t.GeneralValueType],
-            ) -> FlextResult[dict[str, t.GeneralValueType]]:
+            ) -> r[dict[str, t.GeneralValueType]]:
                 """Transform one record to WMS shape."""
                 ...
 

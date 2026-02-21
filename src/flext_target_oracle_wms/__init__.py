@@ -14,7 +14,7 @@ from flext_target_oracle_wms.factory import (
     create_monitored_oracle_wms_target,
     create_oracle_wms_target,
 )
-from flext_target_oracle_wms.models import FlextTargetOracleWmsModels
+from flext_target_oracle_wms.models import FlextTargetOracleWmsModels, m
 from flext_target_oracle_wms.protocols import FlextTargetOracleWmsProtocols
 from flext_target_oracle_wms.target_client import (
     SingerTargetOracleWMS,
@@ -47,5 +47,6 @@ __all__: list[str] = [
     "__version_info__",
     "create_monitored_oracle_wms_target",
     "create_oracle_wms_target",
+    "m",
     "main",
 ]

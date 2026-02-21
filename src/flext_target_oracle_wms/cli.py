@@ -6,8 +6,9 @@ import json
 import sys
 from pathlib import Path
 
-from flext_core import FlextResult, FlextTypes as t
+from flext_core import FlextResult as r, FlextTypes as t
 
+from .models import m
 from .target_client import SingerTargetOracleWMS
 
 MIN_CONFIG_ARG_COUNT = 3
@@ -22,24 +23,24 @@ class OracleWMSTargetCli:
         self.description = "Oracle WMS Singer Target"
         self.version = "0.9.0"
 
-    def execute(self, **kwargs: object) -> FlextResult[bool]:
+    def execute(self, **kwargs: object) -> r[bool]:
         """Execute target run using optional config path."""
         config_arg = kwargs.get("config")
         config_path = config_arg if isinstance(config_arg, str) else None
         config_result = self._prepare_config(config_path)
         if config_result.is_failure or config_result.value is None:
-            return FlextResult[bool].fail(config_result.error or "Configuration failed")
+            return r[bool].fail(config_result.error or "Configuration failed")
         return self._execute_target_pipeline(config_result.value)
 
     def _execute_target_pipeline(
         self,
-        config: dict[str, t.GeneralValueType],
-    ) -> FlextResult[bool]:
+        config: m.TargetOracleWms.WmsTargetConfig,
+    ) -> r[bool]:
         """Setup, process stdin, and cleanup target runtime."""
         target = SingerTargetOracleWMS(config)
         setup = target.setup()
         if setup.is_failure:
-            return FlextResult[bool].fail(setup.error or "Setup failed")
+            return r[bool].fail(setup.error or "Setup failed")
         process = self._process_stdin_messages(target)
         if process.is_failure:
             return process
@@ -48,32 +49,29 @@ class OracleWMSTargetCli:
     def _prepare_config(
         self,
         config_path: str | None,
-    ) -> FlextResult[dict[str, t.GeneralValueType]]:
+    ) -> r[m.TargetOracleWms.WmsTargetConfig]:
         """Load config from file or build defaults."""
         if config_path is not None:
-            return FlextResult[dict[str, t.GeneralValueType]].ok(
-                self._load_config(config_path)
+            return r[m.TargetOracleWms.WmsTargetConfig].ok(
+                m.TargetOracleWms.WmsTargetConfig.model_validate(
+                    self._load_config(config_path)
+                )
             )
-        return FlextResult[dict[str, t.GeneralValueType]].ok(
-            {
-                "base_url": "https://invalid.wms.ocs.oraclecloud.com",
-                "username": "oracle",
-                "password": "oracle",
-                "environment": "development",
-                "timeout": 30,
-                "max_retries": 3,
-                "verify_ssl": True,
-                "enable_logging": True,
-            },
+        return r[m.TargetOracleWms.WmsTargetConfig].ok(
+            m.TargetOracleWms.WmsTargetConfig.model_validate({
+                "wms_auth": {
+                    "base_url": "https://invalid.wms.ocs.oraclecloud.com",
+                    "username": "oracle",
+                    "password": "oracle",
+                }
+            })
         )
 
-    def _process_stdin_messages(
-        self, target: SingerTargetOracleWMS
-    ) -> FlextResult[bool]:
+    def _process_stdin_messages(self, target: SingerTargetOracleWMS) -> r[bool]:
         """Read and process stdin message lines."""
         return target.process_lines(list(sys.stdin))
 
-    def _finalize_target(self, target: SingerTargetOracleWMS) -> FlextResult[bool]:
+    def _finalize_target(self, target: SingerTargetOracleWMS) -> r[bool]:
         """Finalize target processing."""
         return target.cleanup()
 

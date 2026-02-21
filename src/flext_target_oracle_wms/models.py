@@ -1,20 +1,34 @@
-"""Domain models for target Oracle WMS."""
+"""Domain models for target Oracle WMS.
+
+Inherits from FlextMeltanoModels (m.Meltano.*) and FlextOracleWmsModels (m.OracleWms.*).
+Defines local TargetOracleWms namespace for target-specific models.
+"""
 
 from __future__ import annotations
 
 from typing import Literal
 
-from flext_core import FlextModels, FlextResult, FlextTypes as t
+from flext_core import FlextModels, FlextResult as r, FlextTypes as t
+from flext_meltano.models import FlextMeltanoModels
+from flext_oracle_wms.wms_models import FlextOracleWmsModels
 from pydantic import Field, SecretStr
 
 from .constants import c
 
 
-class FlextTargetOracleWmsModels(FlextModels):
-    """Pydantic model namespace for target Oracle WMS objects."""
+class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
+    """Pydantic model namespace for target Oracle WMS.
+
+    Inherited namespaces:
+        m.Meltano.*    — Singer message types (from FlextMeltanoModels)
+        m.OracleWms.*  — WMS entity/API types (from FlextOracleWmsModels)
+
+    Local namespace:
+        m.TargetOracleWms.* — target-specific config, result, schema helpers
+    """
 
     class TargetOracleWms:
-        """Target Oracle WMS model namespace."""
+        """Target Oracle WMS model namespace — m.TargetOracleWms.*."""
 
         class WmsAuthenticationConfig(FlextModels.ArbitraryTypesModel):
             """Authentication and endpoint settings."""
@@ -36,16 +50,16 @@ class FlextTargetOracleWmsModels(FlextModels):
             load_method: str = c.TargetOracleWms.LoadMethods.APPEND_ONLY
             validate_records: bool = True
 
-            def validate_business_rules(self) -> FlextResult[bool]:
+            def validate_business_rules(self) -> r[bool]:
                 """Validate basic config business rules."""
                 if (
                     self.load_method
                     not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS
                 ):
-                    return FlextResult[bool].fail("Invalid load method")
+                    return r[bool].fail("Invalid load method")
                 if self.batch_size <= 0:
-                    return FlextResult[bool].fail("Batch size must be positive")
-                return FlextResult[bool].ok(value=True)
+                    return r[bool].fail("Batch size must be positive")
+                return r[bool].ok(value=True)
 
         class WmsTargetResult(FlextModels.ArbitraryTypesModel):
             """Execution summary for the target pipeline."""
@@ -63,8 +77,20 @@ class FlextTargetOracleWmsModels(FlextModels):
                     return 0.0
                 return (self.successful_records / self.total_records_processed) * 100.0
 
+        class SingerFieldSchema(FlextModels.ArbitraryTypesModel):
+            """Typed Singer field schema entry for target-side schema parsing."""
+
+            type: str = "string"
+
+        class SingerSchemaProperties(FlextModels.ArbitraryTypesModel):
+            """Typed Singer schema properties block for target-side schema parsing."""
+
+            properties: dict[
+                str,
+                FlextTargetOracleWmsModels.TargetOracleWms.SingerFieldSchema,
+            ] = Field(default_factory=dict)
+
 
 m = FlextTargetOracleWmsModels
-m_target_oracle_wms = FlextTargetOracleWmsModels
 
-__all__ = ["FlextTargetOracleWmsModels", "m", "m_target_oracle_wms"]
+__all__ = ["FlextTargetOracleWmsModels", "m"]
