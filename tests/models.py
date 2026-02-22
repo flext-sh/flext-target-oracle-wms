@@ -11,8 +11,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_target_oracle_wms import FlextTargetOracleWmsModels
 from flext_tests import FlextTestsModels
+
+from flext_target_oracle_wms import FlextTargetOracleWmsModels
 
 
 class TestsFlextTargetOracleWmsModels(FlextTestsModels, FlextTargetOracleWmsModels):
