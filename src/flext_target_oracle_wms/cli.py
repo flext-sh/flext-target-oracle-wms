@@ -7,7 +7,7 @@ import sys
 from collections.abc import Mapping
 from pathlib import Path
 
-from flext_core import r, t
+from flext_core import r, t, u
 
 from .models import m
 from .target_client import SingerTargetOracleWMS
