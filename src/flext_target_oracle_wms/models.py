@@ -68,7 +68,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             successful_records: int = 0
             failed_records: int = 0
             error_messages: list[str] = Field(default_factory=list)
-            metrics: dict[str, t.GeneralValueType] = Field(default_factory=dict)
+            metrics: dict[str, t.JsonValue] = Field(default_factory=dict)
 
             @property
             def success_rate(self) -> float:
