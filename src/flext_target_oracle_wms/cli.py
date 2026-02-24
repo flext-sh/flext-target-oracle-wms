@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import sys
+from collections.abc import Mapping
 from pathlib import Path
 
 from flext_core import r, t
@@ -26,7 +27,7 @@ class OracleWMSTargetCli:
     def execute(self, **kwargs: object) -> r[bool]:
         """Execute target run using optional config path."""
         config_arg = kwargs.get("config")
-        config_path = config_arg if isinstance(config_arg, str) else None
+        config_path = str(config_arg) if config_arg is not None else None
         config_result = self._prepare_config(config_path)
         if config_result.is_failure or config_result.value is None:
             return r[bool].fail(config_result.error or "Configuration failed")
@@ -75,14 +76,14 @@ class OracleWMSTargetCli:
         """Finalize target processing."""
         return target.cleanup()
 
-    def _load_config(self, config_path: str) -> dict[str, t.GeneralValueType]:
+    def _load_config(self, config_path: str) -> Mapping[str, t.GeneralValueType]:
         """Read JSON configuration file."""
         config_file = Path(config_path)
         if not config_file.exists():
             msg = f"Configuration file not found: {config_path}"
             raise FileNotFoundError(msg)
         loaded = json.loads(config_file.read_text(encoding="utf-8"))
-        if not isinstance(loaded, dict):
+        if not u.is_dict_like(loaded):
             msg = "Configuration file must contain a JSON object"
             raise TypeError(msg)
         return loaded

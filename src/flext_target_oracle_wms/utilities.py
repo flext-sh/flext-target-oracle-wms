@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
+
 from flext_core import r, t
 
 from .constants import c
@@ -16,9 +18,9 @@ class FlextTargetOracleWmsUtilities:
         @staticmethod
         def create_schema_message(
             stream_name: str,
-            schema: dict[str, t.GeneralValueType],
+            schema: Mapping[str, t.GeneralValueType],
             key_properties: list[str] | None = None,
-        ) -> dict[str, t.GeneralValueType]:
+        ) -> Mapping[str, t.GeneralValueType]:
             """Create a Singer SCHEMA message payload."""
             return {
                 "type": "SCHEMA",
@@ -30,15 +32,15 @@ class FlextTargetOracleWmsUtilities:
         @staticmethod
         def create_record_message(
             stream_name: str,
-            record: dict[str, t.GeneralValueType],
-        ) -> dict[str, t.GeneralValueType]:
+            record: Mapping[str, t.GeneralValueType],
+        ) -> Mapping[str, t.GeneralValueType]:
             """Create a Singer RECORD message payload."""
             return {"type": "RECORD", "stream": stream_name, "record": record}
 
         @staticmethod
         def create_state_message(
-            state: dict[str, t.GeneralValueType],
-        ) -> dict[str, t.GeneralValueType]:
+            state: Mapping[str, t.GeneralValueType],
+        ) -> Mapping[str, t.GeneralValueType]:
             """Create a Singer STATE message payload."""
             return {"type": "STATE", "value": state}
 
@@ -47,7 +49,7 @@ class FlextTargetOracleWmsUtilities:
 
         @staticmethod
         def validate_wms_target_config(
-            config: dict[str, t.GeneralValueType],
+            config: Mapping[str, t.GeneralValueType],
         ) -> r[bool]:
             """Validate minimal required target configuration fields."""
             required = {"base_url", "username", "password"}
@@ -59,10 +61,7 @@ class FlextTargetOracleWmsUtilities:
             load_method = config.get(
                 "load_method", c.TargetOracleWms.LoadMethods.APPEND_ONLY
             )
-            if (
-                isinstance(load_method, str)
-                and load_method not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS
-            ):
+            if load_method not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS:
                 return r[bool].fail("Invalid load_method")
             return r[bool].ok(value=True)
 

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
+
 from flext_core import FlextResult, FlextSettings, t
 from pydantic import Field
 from pydantic_settings import SettingsConfigDict
@@ -37,7 +39,7 @@ class FlextTargetOracleWmsSettings(FlextSettings):
             return FlextResult[bool].fail("batch_size must be positive")
         return FlextResult[bool].ok(value=True)
 
-    def to_target_config(self) -> dict[str, t.GeneralValueType]:
+    def to_target_config(self) -> Mapping[str, t.GeneralValueType]:
         """Export settings as target configuration dictionary."""
         return {
             "base_url": self.base_url,
