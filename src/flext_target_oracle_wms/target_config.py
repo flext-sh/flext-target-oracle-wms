@@ -56,7 +56,7 @@ class FlextTargetOracleWmsSettings(FlextSettings):
 
 
 def create_settings(
-    overrides: dict[str, t.GeneralValueType] | None = None,
+    overrides: Mapping[str, t.GeneralValueType] | None = None,
 ) -> FlextResult[FlextTargetOracleWmsSettings]:
     """Create settings instance with optional override values."""
     try:

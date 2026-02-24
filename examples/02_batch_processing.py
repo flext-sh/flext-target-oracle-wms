@@ -12,6 +12,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import time
+from collections.abc import Mapping
 
 from flext_core import FlextLogger, t
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
@@ -29,7 +30,7 @@ logger = FlextLogger(__name__)
 monitor = FlextObservabilityMonitor()
 
 
-def generate_test_data(num_records: int) -> list[dict[str, t.GeneralValueType]]:
+def generate_test_data(num_records: int) -> list[Mapping[str, t.GeneralValueType]]:
     """Generate test data for batch processing demonstration."""
     logger.info("Generating %s test records", num_records)
 
@@ -54,7 +55,7 @@ def generate_test_data(num_records: int) -> list[dict[str, t.GeneralValueType]]:
     return records
 
 
-def _create_batch_config() -> dict[str, t.GeneralValueType]:
+def _create_batch_config() -> Mapping[str, t.GeneralValueType]:
     """Create optimized configuration for batch processing."""
     return {
         "base_url": "https://batch.wms.oracle.com",
@@ -79,7 +80,7 @@ def _create_batch_config() -> dict[str, t.GeneralValueType]:
     }
 
 
-def _create_batch_schema() -> dict[str, t.GeneralValueType]:
+def _create_batch_schema() -> Mapping[str, t.GeneralValueType]:
     """Create optimized schema for batch processing."""
     return {
         "type": "SCHEMA",

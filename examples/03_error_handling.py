@@ -11,6 +11,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
+
 from flext_core import FlextLogger, t
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 from flext_target_oracle_wms import SingerTargetOracleWMS
@@ -28,7 +30,7 @@ class SimulatedOracleWMSError(Exception):
         self.attempt = attempt
 
 
-def get_error_demo_config() -> dict[str, t.GeneralValueType]:
+def get_error_demo_config() -> Mapping[str, t.GeneralValueType]:
     """Single Responsibility: Get error demonstration configuration.
 
     SOLID REFACTORING: Extract configuration into separate function following
@@ -63,7 +65,7 @@ def get_error_demo_config() -> dict[str, t.GeneralValueType]:
 
 
 def demonstrate_setup_error_handling(
-    config: dict[str, t.GeneralValueType],
+    config: Mapping[str, t.GeneralValueType],
 ) -> SingerTargetOracleWMS | None:
     """Single Responsibility: Demonstrate setup and connection error handling.
 
@@ -78,7 +80,7 @@ def demonstrate_setup_error_handling(
         logger.info("Implementing setup retry logic...")
 
         # Retry with fallback configuration
-        fallback_config = config.copy()
+        fallback_config = dict(config)
         fallback_config["connection_timeout"] = 60  # Extended timeout
         fallback_config["max_retries"] = 5  # More retries
 

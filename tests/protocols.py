@@ -25,6 +25,6 @@ class TestsFlextTargetOracleWmsProtocols(FlextTestsProtocols):
             """Internal tests declarations."""
 
 
-tp = TestsFlextTargetOracleWmsProtocols
+p = TestsFlextTargetOracleWmsProtocols
 
-__all__ = ["TestsFlextTargetOracleWmsProtocols", "tp"]
+__all__ = ["TestsFlextTargetOracleWmsProtocols", "p"]

@@ -12,6 +12,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import os
+from collections.abc import Mapping
 from datetime import UTC, datetime
 
 from flext_core import FlextLogger, FlextResult, t
@@ -87,12 +88,12 @@ class CustomWMSDataTransformer(WMSDataTransformer):
 
     def transform_record(
         self,
-        record: dict[str, t.GeneralValueType],
-        schema: dict[str, t.GeneralValueType] | None = None,
-    ) -> FlextResult[dict[str, t.GeneralValueType]]:
+        record_message: Mapping[str, t.GeneralValueType],
+        schema_message: Mapping[str, t.GeneralValueType] | None = None,
+    ) -> FlextResult[object]:
         """Transform record with business validations."""
         # Apply standard transformation first
-        base_result = super().transform_record(record, schema)
+        base_result = super().transform_record(record_message, schema_message)
         if not base_result.is_success:
             return base_result
 

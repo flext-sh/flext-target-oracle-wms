@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import ClassVar
 
 from flext_core import FlextLogger, FlextModels, r, t
@@ -80,7 +81,7 @@ class FlextTargetFactory:
     @classmethod
     def create_from_config_dict(
         cls,
-        config: dict[str, t.GeneralValueType],
+        config: Mapping[str, t.GeneralValueType],
     ) -> r[SingerTargetOracleWMS]:
         """Create target from plain dictionary config via Pydantic validation."""
         known_keys = {"base_url", "username", "password", "environment", "preset"}
