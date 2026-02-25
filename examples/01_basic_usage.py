@@ -88,7 +88,15 @@ def run_basic_example() -> None:
         try:
             target.handle_schema_message(schema_message)
             logger.info("Schema processed successfully")
-        except Exception:
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+            OSError,
+            RuntimeError,
+            ImportError,
+        ):
             logger.exception("Schema processing failed")
             return
 
@@ -138,7 +146,15 @@ def run_basic_example() -> None:
             try:
                 target.handle_record_message(record_message)
                 logger.debug("Record processed successfully")
-            except Exception:
+            except (
+                ValueError,
+                TypeError,
+                KeyError,
+                AttributeError,
+                OSError,
+                RuntimeError,
+                ImportError,
+            ):
                 logger.exception("Record processing failed")
                 continue
 
@@ -159,7 +175,15 @@ def run_basic_example() -> None:
         try:
             target.handle_state_message(state_message)
             logger.info("State processed successfully")
-        except Exception:
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+            OSError,
+            RuntimeError,
+            ImportError,
+        ):
             logger.exception("State processing failed")
 
         # Finalize target - REAL cleanup
@@ -169,7 +193,15 @@ def run_basic_example() -> None:
         else:
             logger.info("Target finalized successfully")
 
-    except Exception:
+    except (
+        ValueError,
+        TypeError,
+        KeyError,
+        AttributeError,
+        OSError,
+        RuntimeError,
+        ImportError,
+    ):
         logger.exception("Example execution failed")
         raise
     finally:
@@ -221,21 +253,45 @@ def run_from_singer_files() -> None:
                 try:
                     target.handle_schema_message(message)
                     result = None  # Success
-                except Exception:
+                except (
+                    ValueError,
+                    TypeError,
+                    KeyError,
+                    AttributeError,
+                    OSError,
+                    RuntimeError,
+                    ImportError,
+                ):
                     logger.exception("Schema processing failed")
                     continue
             elif message["type"] == "RECORD":
                 try:
                     target.handle_record_message(message)
                     result = None  # Success
-                except Exception:
+                except (
+                    ValueError,
+                    TypeError,
+                    KeyError,
+                    AttributeError,
+                    OSError,
+                    RuntimeError,
+                    ImportError,
+                ):
                     logger.exception("Record processing failed")
                     continue
             elif message["type"] == "STATE":
                 try:
                     target.handle_state_message(message)
                     result = None  # Success
-                except Exception:
+                except (
+                    ValueError,
+                    TypeError,
+                    KeyError,
+                    AttributeError,
+                    OSError,
+                    RuntimeError,
+                    ImportError,
+                ):
                     logger.exception("State processing failed")
                     continue
             else:
@@ -247,7 +303,15 @@ def run_from_singer_files() -> None:
             else:
                 logger.debug(f"Processed {message['type']} message successfully")
 
-    except Exception:
+    except (
+        ValueError,
+        TypeError,
+        KeyError,
+        AttributeError,
+        OSError,
+        RuntimeError,
+        ImportError,
+    ):
         logger.exception("Singer file processing failed")
         raise
     finally:

@@ -91,7 +91,15 @@ class FlextTargetFactory:
                 **config,
                 "additional_config": additional or None,
             })
-        except Exception as exc:
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+            OSError,
+            RuntimeError,
+            ImportError,
+        ) as exc:
             return r[SingerTargetOracleWMS].fail(str(exc))
         return cls.create_target(request)
 

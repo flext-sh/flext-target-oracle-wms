@@ -248,7 +248,15 @@ def main() -> None:
         logger.info("  ⚡ Convenience functions reduce boilerplate code")
         logger.info("  🛡️  Built-in error handling improves reliability")
 
-    except Exception:
+    except (
+        ValueError,
+        TypeError,
+        KeyError,
+        AttributeError,
+        OSError,
+        RuntimeError,
+        ImportError,
+    ):
         logger.exception("Factory usage example failed")
         raise
 

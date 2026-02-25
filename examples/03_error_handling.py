@@ -152,7 +152,15 @@ def _test_invalid_schemas(target: SingerTargetOracleWMS) -> None:
         try:
             target.handle_schema_message(invalid_schema)
             logger.info("Invalid schema processed (expected to fail)")
-        except Exception as e:
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+            OSError,
+            RuntimeError,
+            ImportError,
+        ) as e:
             logger.info("Invalid schema caused exception as expected: %s", e)
 
 
@@ -207,7 +215,15 @@ def demonstrate_data_processing_errors(target: SingerTargetOracleWMS) -> None:
     try:
         target.handle_record_message(valid_record)
         logger.info("Valid record processed successfully")
-    except Exception as e:
+    except (
+        ValueError,
+        TypeError,
+        KeyError,
+        AttributeError,
+        OSError,
+        RuntimeError,
+        ImportError,
+    ) as e:
         logger.info("Valid record processing raised exception: %s", e)
 
 
@@ -229,7 +245,15 @@ def demonstrate_recovery_scenarios(target: SingerTargetOracleWMS) -> None:
         else:
             logger.warning(f"Target cleanup had issues: {cleanup_result.error}")
 
-    except Exception as e:
+    except (
+        ValueError,
+        TypeError,
+        KeyError,
+        AttributeError,
+        OSError,
+        RuntimeError,
+        ImportError,
+    ) as e:
         logger.warning("Recovery scenario raised exception: %s", e)
 
     logger.info("Recovery scenarios completed")

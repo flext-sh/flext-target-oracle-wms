@@ -61,7 +61,15 @@ def create_settings(
     """Create settings instance with optional override values."""
     try:
         settings = FlextTargetOracleWmsSettings(**(overrides or {}))
-    except Exception as exc:
+    except (
+        ValueError,
+        TypeError,
+        KeyError,
+        AttributeError,
+        OSError,
+        RuntimeError,
+        ImportError,
+    ) as exc:
         return FlextResult[FlextTargetOracleWmsSettings].fail(
             f"Invalid settings overrides: {exc}",
         )

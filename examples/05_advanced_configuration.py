@@ -133,7 +133,15 @@ class CustomWMSDataTransformer(WMSDataTransformer):
 
             return FlextResult[bool].ok(transformed)
 
-        except Exception as e:
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+            OSError,
+            RuntimeError,
+            ImportError,
+        ) as e:
             return FlextResult[bool].fail(f"Business transformation failed: {e}")
 
 
@@ -334,7 +342,15 @@ def run_advanced_configuration_example() -> None:
                 f"Errors: {stats.get('total_errors', 0)}",
             )
 
-    except Exception:
+    except (
+        ValueError,
+        TypeError,
+        KeyError,
+        AttributeError,
+        OSError,
+        RuntimeError,
+        ImportError,
+    ):
         logger.exception("Advanced configuration example failed")
         raise
     finally:

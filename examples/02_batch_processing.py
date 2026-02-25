@@ -137,7 +137,15 @@ def _process_batch_size(target: SingerTargetOracleWMS, batch_size: int) -> None:
             try:
                 target.handle_record_message(record_message)
                 logger.debug("Record processed successfully")
-            except Exception:
+            except (
+                ValueError,
+                TypeError,
+                KeyError,
+                AttributeError,
+                OSError,
+                RuntimeError,
+                ImportError,
+            ):
                 logger.exception("Record processing failed")
                 continue
             success_count += 1
@@ -189,7 +197,15 @@ def run_performance_batch_example() -> None:
         try:
             target.handle_schema_message(batch_schema)
             logger.debug("Schema processed successfully")
-        except Exception:
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+            OSError,
+            RuntimeError,
+            ImportError,
+        ):
             logger.exception("Schema processing failed")
             return
 
@@ -209,7 +225,15 @@ def run_performance_batch_example() -> None:
         if cleanup_result.is_success:
             logger.info(f"Batch processing completed in {finalize_time:.2f}s")
 
-    except Exception:
+    except (
+        ValueError,
+        TypeError,
+        KeyError,
+        AttributeError,
+        OSError,
+        RuntimeError,
+        ImportError,
+    ):
         logger.exception("Performance batch example failed")
         raise
     finally:
@@ -383,7 +407,15 @@ def demonstrate_concurrent_batching() -> None:
             f"in {concurrent_time:.2f}s ({total_rate:.1f} records/sec)",
         )
 
-    except Exception:
+    except (
+        ValueError,
+        TypeError,
+        KeyError,
+        AttributeError,
+        OSError,
+        RuntimeError,
+        ImportError,
+    ):
         logger.exception("Concurrent batch processing failed")
         raise
     finally:
