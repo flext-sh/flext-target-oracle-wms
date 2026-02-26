@@ -9,7 +9,6 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_core import t
-
 from flext_target_oracle_wms.target_client import (
     SingerTargetOracleWMS,
     SingerWMSCatalogManager,

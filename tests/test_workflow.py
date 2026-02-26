@@ -10,7 +10,6 @@ import json
 from unittest.mock import MagicMock, patch
 
 from flext_core import t
-
 from flext_target_oracle_wms.cli import OracleWMSTargetCli
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 

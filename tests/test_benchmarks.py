@@ -12,7 +12,6 @@ import time
 from unittest.mock import patch
 
 from flext_core import t
-
 from flext_target_oracle_wms.factory import (
     FlextTargetFactory,
     TargetCreationRequest,
@@ -34,7 +33,10 @@ def _schema_msg(stream: str = "bench") -> dict[str, t.GeneralValueType]:
     return {
         "type": "SCHEMA",
         "stream": stream,
-        "schema": {"type": "object", "properties": {"id": {"type": "string"}, "qty": {"type": "integer"}}},
+        "schema": {
+            "type": "object",
+            "properties": {"id": {"type": "string"}, "qty": {"type": "integer"}},
+        },
         "key_properties": ["id"],
     }
 

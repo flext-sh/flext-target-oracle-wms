@@ -289,7 +289,15 @@ class TestExamplesImportability:
             try:
                 spec = ast.parse(content, filename=str(example_file))
                 assert spec is not None, f"Failed to parse {example_file.name}"
-            except (ValueError, TypeError, KeyError, AttributeError, OSError, RuntimeError, ImportError) as e:
+            except (
+                ValueError,
+                TypeError,
+                KeyError,
+                AttributeError,
+                OSError,
+                RuntimeError,
+                ImportError,
+            ) as e:
                 pytest.fail(f"Parse error in {example_file.name}: {e}")
 
 

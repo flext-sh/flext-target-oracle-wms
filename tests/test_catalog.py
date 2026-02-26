@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import pytest
 from flext_core import t
-
 from flext_target_oracle_wms.target_client import SingerWMSCatalogManager
 
 
@@ -21,7 +20,8 @@ def _make_schema_message(
     return {
         "type": "SCHEMA",
         "stream": stream_name,
-        "schema": schema or {"type": "object", "properties": {"id": {"type": "string"}}},
+        "schema": schema
+        or {"type": "object", "properties": {"id": {"type": "string"}}},
         "key_properties": key_properties or ["id"],
     }
 

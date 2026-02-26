@@ -7,17 +7,15 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import json
+import math
 
-import pytest
 from flext_core import t
-
 from flext_target_oracle_wms.target_models import (
     WMSDataTransformer,
     WMSSchemaMapper,
     WMSTableManager,
     WMSTypeConverter,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -70,9 +68,9 @@ class TestWMSTypeConverter:
         assert result.value == 42
 
     def test_number_type_float(self) -> None:
-        result = WMSTypeConverter().convert_singer_to_oracle("number", 3.14)
+        result = WMSTypeConverter().convert_singer_to_oracle("number", math.pi)
         assert result.is_success
-        assert result.value == 3.14
+        assert result.value == math.pi
 
     def test_none_value(self) -> None:
         result = WMSTypeConverter().convert_singer_to_oracle("string", None)

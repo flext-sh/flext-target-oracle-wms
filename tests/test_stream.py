@@ -9,7 +9,6 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 from flext_core import r, t
-
 from flext_target_oracle_wms.target_client import SingerWMSStreamProcessor
 from flext_target_oracle_wms.target_models import WMSDataTransformer, WMSTableManager
 
@@ -22,7 +21,8 @@ def _schema_msg(
     return {
         "type": "SCHEMA",
         "stream": stream,
-        "schema": schema or {"type": "object", "properties": {"id": {"type": "string"}}},
+        "schema": schema
+        or {"type": "object", "properties": {"id": {"type": "string"}}},
         "key_properties": key_properties or ["id"],
     }
 
@@ -73,11 +73,16 @@ class TestStreamProcessorRecord:
             _schema_msg("orders"),
         )
         assert result.is_failure
-        assert "not registered" in (result.error or "").lower() or "lookup" in (result.error or "").lower()
+        assert (
+            "not registered" in (result.error or "").lower()
+            or "lookup" in (result.error or "").lower()
+        )
 
     def test_process_record_uppercases_keys(self) -> None:
         proc = SingerWMSStreamProcessor(WMSTableManager(), WMSDataTransformer())
-        schema = _schema_msg("s", schema={"type": "object", "properties": {"name": {"type": "string"}}})
+        schema = _schema_msg(
+            "s", schema={"type": "object", "properties": {"name": {"type": "string"}}}
+        )
         proc.initialize_stream(schema)
         result = proc.process_record(
             _record_msg("s", {"name": "hello"}),
