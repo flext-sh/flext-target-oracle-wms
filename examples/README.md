@@ -345,6 +345,6 @@ When adding new examples:
 
 All examples are provided under the MIT License. See [LICENSE](../LICENSE) for details.
 
----
+______________________________________________________________________
 
 **Note**: These examples use real Oracle WMS Cloud SaaS API patterns and production-grade flext-\* implementations. They are designed for mission-critical applications and follow enterprise security and performance standards.
