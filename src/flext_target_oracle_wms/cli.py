@@ -7,9 +7,6 @@ import sys
 from collections.abc import Mapping
 from pathlib import Path
 from typing import cast
-import sys
-from collections.abc import Mapping
-from pathlib import Path
 
 from flext_core import r, t, u
 
@@ -90,7 +87,7 @@ class OracleWMSTargetCli:
         if not u.is_dict_like(loaded):
             msg = "Configuration file must contain a JSON object"
             raise TypeError(msg)
-        return cast(Mapping[str, t.GeneralValueType], loaded)
+        return cast("Mapping[str, t.GeneralValueType]", loaded)
 
 
 def main() -> None:
