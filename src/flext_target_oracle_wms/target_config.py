@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
+from typing import cast
 
 from flext_core import FlextResult, FlextSettings, t
 from pydantic import Field
@@ -60,7 +61,11 @@ def create_settings(
 ) -> FlextResult[FlextTargetOracleWmsSettings]:
     """Create settings instance with optional override values."""
     try:
-        settings = FlextTargetOracleWmsSettings(**(overrides or {}))
+        init_kwargs = cast(
+            "dict[str, str | int | float | bool | None]",
+            dict(overrides) if overrides else {},
+        )
+        settings = FlextTargetOracleWmsSettings(**init_kwargs)
     except (
         ValueError,
         TypeError,
