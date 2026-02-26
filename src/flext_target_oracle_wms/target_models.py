@@ -45,7 +45,7 @@ class WMSDataTransformer:
         self,
         record_message: object,
         schema_message: object | None = None,
-    ) -> r[object]:
+    ) -> r[m.Meltano.SingerRecordMessage]:
         """Transform one typed Singer RECORD payload with optional typed schema."""
         typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
         transformed: dict[str, t.JsonValue] = {}
@@ -67,11 +67,11 @@ class WMSDataTransformer:
                 value,
             )
             if converted.is_failure:
-                return r[object].fail(
+                return r[m.Meltano.SingerRecordMessage].fail(
                     converted.error or "Conversion failed",
                 )
             transformed[str(key).upper()] = converted.value
-        return r[object].ok(
+        return r[m.Meltano.SingerRecordMessage].ok(
             m.Meltano.SingerRecordMessage(
                 stream=typed_record.stream,
                 record=transformed,
@@ -87,10 +87,10 @@ class WMSSchemaMapper:
     def map_stream_schema(
         self,
         schema_message: object,
-    ) -> r[object]:
+    ) -> r[m.Meltano.SingerCatalogEntry]:
         """Build normalized schema map for table creation."""
         typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
-        return r[object].ok(
+        return r[m.Meltano.SingerCatalogEntry].ok(
             m.Meltano.SingerCatalogEntry(
                 tap_stream_id=typed_schema.stream,
                 stream=typed_schema.stream,

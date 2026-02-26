@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import json
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from flext_core import t
 
@@ -102,14 +102,14 @@ class TestCliWorkflow:
         assert result.is_success
 
     @patch("flext_target_oracle_wms.cli.sys.stdin")
-    def test_cli_execute_with_messages(self, mock_stdin: object) -> None:
+    def test_cli_execute_with_messages(self, mock_stdin: MagicMock) -> None:
         lines = [
             _schema_line("test", {"id": {"type": "string"}}, ["id"]) + "\n",
             _record_line("test", {"id": "1"}) + "\n",
             _state_line({"bookmarks": {}}) + "\n",
         ]
-        mock_stdin.__iter__ = lambda self: iter(lines)
-        mock_stdin.__next__ = lambda self: next(iter(lines))
+        mock_stdin.__iter__ = MagicMock(return_value=iter(lines))
+        mock_stdin.__next__ = MagicMock(side_effect=lines)
 
         cli = OracleWMSTargetCli()
         result = cli.execute()

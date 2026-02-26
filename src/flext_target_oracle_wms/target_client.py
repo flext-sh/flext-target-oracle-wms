@@ -20,7 +20,7 @@ class SingerWMSCatalogManager:
 
     def __init__(self) -> None:
         """Initialize catalog storage for stream metadata."""
-        self._catalog_entries: dict[str, object] = {}
+        self._catalog_entries: dict[str, m.Meltano.SingerCatalogEntry] = {}
 
     def add_stream(self, schema_message: object) -> r[bool]:
         """Register one stream schema entry."""
@@ -34,12 +34,14 @@ class SingerWMSCatalogManager:
         )
         return r[bool].ok(value=True)
 
-    def get_stream(self, stream_name: str) -> r[object]:
+    def get_stream(self, stream_name: str) -> r[m.Meltano.SingerCatalogEntry]:
         """Return catalog entry for a stream or a failure."""
         entry = self._catalog_entries.get(stream_name)
         if entry is None:
-            return r[object].fail(f"WMS stream not found: {stream_name}")
-        return r[object].ok(entry)
+            return r[m.Meltano.SingerCatalogEntry].fail(
+                f"WMS stream not found: {stream_name}"
+            )
+        return r[m.Meltano.SingerCatalogEntry].ok(entry)
 
 
 class SingerWMSStreamProcessor:
@@ -66,12 +68,14 @@ class SingerWMSStreamProcessor:
         self,
         record_message: object,
         schema_message: object,
-    ) -> r[object]:
+    ) -> r[m.Meltano.SingerRecordMessage]:
         """Transform one typed Singer record."""
         typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
         table_lookup = self.table_manager.get_table_name(typed_record.stream)
         if table_lookup.is_failure:
-            return r[object].fail(table_lookup.error or "Table lookup failed")
+            return r[m.Meltano.SingerRecordMessage].fail(
+                table_lookup.error or "Table lookup failed"
+            )
         return self.data_transformer.transform_record(typed_record, schema_message)
 
 

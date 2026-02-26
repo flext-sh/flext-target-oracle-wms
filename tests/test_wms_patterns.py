@@ -83,13 +83,13 @@ class TestWMSTypeConverter:
         data = {"nested": "value"}
         result = WMSTypeConverter().convert_singer_to_oracle("object", data)
         assert result.is_success
-        assert json.loads(result.value) == data
+        assert json.loads(str(result.value)) == data
 
     def test_array_type_serializes_to_json(self) -> None:
         data = [1, 2, 3]
         result = WMSTypeConverter().convert_singer_to_oracle("array", data)
         assert result.is_success
-        assert json.loads(result.value) == data
+        assert json.loads(str(result.value)) == data
 
     def test_boolean_type_becomes_string(self) -> None:
         result = WMSTypeConverter().convert_singer_to_oracle("boolean", True)
