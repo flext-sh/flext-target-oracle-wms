@@ -6,7 +6,7 @@ import json
 import sys
 from typing import ClassVar
 
-from flext_core import FlextResult, FlextLogger, r
+from flext_core import FlextLogger, FlextResult
 from pydantic import ValidationError
 
 from .models import m
@@ -61,7 +61,9 @@ class SingerWMSStreamProcessor:
         typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
         registration = self.table_manager.register_stream(typed_schema.stream)
         if registration.is_failure:
-            return FlextResult[bool].fail(registration.error or "Table registration failed")
+            return FlextResult[bool].fail(
+                registration.error or "Table registration failed"
+            )
         return FlextResult[bool].ok(value=True)
 
     def process_record(
@@ -173,7 +175,9 @@ class SingerTargetOracleWMS:
             typed_record, schema_message
         )
         if process_result.is_failure:
-            return FlextResult[bool].fail(process_result.error or "Record processing failed")
+            return FlextResult[bool].fail(
+                process_result.error or "Record processing failed"
+            )
         return FlextResult[bool].ok(value=True)
 
     def handle_state_message(self, message: object) -> FlextResult[bool]:

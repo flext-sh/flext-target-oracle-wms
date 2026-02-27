@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from typing import cast
 
-from flext_core import FlextResult, r, t
+from flext_core import FlextResult, t
 
 from .models import m
 
@@ -55,7 +55,7 @@ class WMSDataTransformer:
                 schema_message
             ).schema_definition
             if schema_message is not None
-            else cast(dict[str, t.JsonValue], {})
+            else cast("dict[str, t.JsonValue]", {})
         )
         schema_props = m.TargetOracleWms.SingerSchemaProperties.model_validate(
             schema_definition,

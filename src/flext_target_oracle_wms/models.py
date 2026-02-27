@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from flext_core import FlextResult, FlextModels, r, t
+from flext_core import FlextModels, FlextResult, t
 from flext_meltano.models import FlextMeltanoModels
 from flext_oracle_wms.wms_models import FlextOracleWmsModels
 from pydantic import ConfigDict, Field, SecretStr

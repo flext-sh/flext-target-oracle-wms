@@ -8,7 +8,7 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import cast
 
-from flext_core import FlextResult, r, t, u
+from flext_core import FlextResult, t, u
 
 from .models import m
 from .target_client import SingerTargetOracleWMS
@@ -69,7 +69,9 @@ class OracleWMSTargetCli:
             })
         )
 
-    def _process_stdin_messages(self, target: SingerTargetOracleWMS) -> FlextResult[bool]:
+    def _process_stdin_messages(
+        self, target: SingerTargetOracleWMS
+    ) -> FlextResult[bool]:
         """Read and process stdin message lines."""
         return target.process_lines(list(sys.stdin))
 
