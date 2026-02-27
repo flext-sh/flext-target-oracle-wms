@@ -61,11 +61,8 @@ def create_settings(
 ) -> FlextResult[FlextTargetOracleWmsSettings]:
     """Create settings instance with optional override values."""
     try:
-        init_kwargs = cast(
-            "dict[str, str | int | float | bool | None]",
-            dict(overrides) if overrides else {},
-        )
-        settings = FlextTargetOracleWmsSettings(**init_kwargs)
+        data: dict[str, t.GeneralValueType] = dict(overrides) if overrides else {}
+        settings = FlextTargetOracleWmsSettings.model_validate(data)
     except (
         ValueError,
         TypeError,

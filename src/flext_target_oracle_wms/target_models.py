@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import json
+from typing import cast
 
-from flext_core import r, t
+from flext_core import FlextResult, r, t
 
 from .models import m
 
@@ -16,22 +17,22 @@ class WMSTypeConverter:
         self,
         singer_type: str,
         value: object,
-    ) -> r[t.JsonValue]:
+    ) -> FlextResult[t.JsonValue]:
         """Convert a single source value according to Singer type."""
         if value is None:
-            return r[t.JsonValue].ok("")
+            return FlextResult[t.JsonValue].ok("")
         if singer_type in {"object", "array"}:
-            return r[t.JsonValue].ok(json.dumps(value))
+            return FlextResult[t.JsonValue].ok(json.dumps(value))
         if singer_type in {"integer", "number"}:
             try:
                 as_text = str(value)
                 converted: t.JsonValue = (
                     float(as_text) if "." in as_text else int(as_text)
                 )
-                return r[t.JsonValue].ok(converted)
+                return FlextResult[t.JsonValue].ok(converted)
             except (TypeError, ValueError):
-                return r[t.JsonValue].ok(str(value))
-        return r[t.JsonValue].ok(str(value))
+                return FlextResult[t.JsonValue].ok(str(value))
+        return FlextResult[t.JsonValue].ok(str(value))
 
 
 class WMSDataTransformer:
@@ -45,7 +46,7 @@ class WMSDataTransformer:
         self,
         record_message: object,
         schema_message: object | None = None,
-    ) -> r[m.Meltano.SingerRecordMessage]:
+    ) -> FlextResult[m.Meltano.SingerRecordMessage]:
         """Transform one typed Singer RECORD payload with optional typed schema."""
         typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
         transformed: dict[str, t.JsonValue] = {}
@@ -54,7 +55,7 @@ class WMSDataTransformer:
                 schema_message
             ).schema_definition
             if schema_message is not None
-            else {}
+            else cast(dict[str, t.JsonValue], {})
         )
         schema_props = m.TargetOracleWms.SingerSchemaProperties.model_validate(
             schema_definition,
@@ -67,11 +68,11 @@ class WMSDataTransformer:
                 value,
             )
             if converted.is_failure:
-                return r[m.Meltano.SingerRecordMessage].fail(
+                return FlextResult[m.Meltano.SingerRecordMessage].fail(
                     converted.error or "Conversion failed",
                 )
             transformed[str(key).upper()] = converted.value
-        return r[m.Meltano.SingerRecordMessage].ok(
+        return FlextResult[m.Meltano.SingerRecordMessage].ok(
             m.Meltano.SingerRecordMessage(
                 stream=typed_record.stream,
                 record=transformed,
@@ -87,10 +88,10 @@ class WMSSchemaMapper:
     def map_stream_schema(
         self,
         schema_message: object,
-    ) -> r[m.Meltano.SingerCatalogEntry]:
+    ) -> FlextResult[m.Meltano.SingerCatalogEntry]:
         """Build normalized schema map for table creation."""
         typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
-        return r[m.Meltano.SingerCatalogEntry].ok(
+        return FlextResult[m.Meltano.SingerCatalogEntry].ok(
             m.Meltano.SingerCatalogEntry(
                 tap_stream_id=typed_schema.stream,
                 stream=typed_schema.stream,
@@ -111,18 +112,18 @@ class WMSTableManager:
     def register_stream(
         self,
         stream_name: str,
-    ) -> r[str]:
+    ) -> FlextResult[str]:
         """Register a stream and return table name."""
         table_name = stream_name.upper()
         self._stream_tables[stream_name] = table_name
-        return r[str].ok(table_name)
+        return FlextResult[str].ok(table_name)
 
-    def get_table_name(self, stream_name: str) -> r[str]:
+    def get_table_name(self, stream_name: str) -> FlextResult[str]:
         """Get registered table name for stream."""
         table_name = self._stream_tables.get(stream_name)
         if table_name is None:
-            return r[str].fail(f"Stream not registered: {stream_name}")
-        return r[str].ok(table_name)
+            return FlextResult[str].fail(f"Stream not registered: {stream_name}")
+        return FlextResult[str].ok(table_name)
 
 
 __all__ = [
