@@ -5,10 +5,11 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import Final
 
-from flext_core import FlextConstants
+from flext_meltano import FlextMeltanoConstants
+from flext_oracle_wms import FlextOracleWmsConstants
 
 
-class FlextTargetOracleWmsConstants(FlextConstants):
+class FlextTargetOracleWmsConstants(FlextMeltanoConstants, FlextOracleWmsConstants):
     """Typed constant namespace used by target Oracle WMS modules."""
 
     class TargetOracleWms:
