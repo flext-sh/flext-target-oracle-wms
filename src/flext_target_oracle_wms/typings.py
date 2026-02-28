@@ -286,7 +286,6 @@ class FlextTargetOracleWmsTypes(_FlextTypes):
 
 # Module-level aliases for simplified usage
 t = FlextTargetOracleWmsTypes
-TargetOracleWmsTypes = FlextTargetOracleWmsTypes
 
 # Namespace composition via class inheritance
 # TargetOracleWms namespace provides access to nested classes through inheritance
@@ -301,6 +300,5 @@ TargetOracleWmsTypes = FlextTargetOracleWmsTypes
 
 __all__ = [
     "FlextTargetOracleWmsTypes",
-    "TargetOracleWmsTypes",
     "t",
 ]
