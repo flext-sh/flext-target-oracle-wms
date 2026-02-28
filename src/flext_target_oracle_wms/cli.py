@@ -24,7 +24,7 @@ class OracleWMSTargetCli:
         self.description = "Oracle WMS Singer Target"
         self.version = "0.9.0"
 
-    def execute(self, **kwargs: object) -> FlextResult[bool]:
+    def execute(self, **kwargs: t.GeneralValueType) -> FlextResult[bool]:
         """Execute target run using optional config path."""
         config_arg = kwargs.get("config")
         config_path = str(config_arg) if config_arg is not None else None

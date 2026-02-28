@@ -15,7 +15,7 @@ class WMSTypeConverter:
     def convert_singer_to_oracle(
         self,
         singer_type: str,
-        value: object,
+        value: t.GeneralValueType,
     ) -> FlextResult[t.JsonValue]:
         """Convert a single source value according to Singer type."""
         if value is None:
@@ -43,8 +43,8 @@ class WMSDataTransformer:
 
     def transform_record(
         self,
-        record_message: object,
-        schema_message: object | None = None,
+        record_message: t.GeneralValueType,
+        schema_message: t.GeneralValueType | None = None,
     ) -> FlextResult[m.Meltano.SingerRecordMessage]:
         """Transform one typed Singer RECORD payload with optional typed schema."""
         typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
@@ -86,7 +86,7 @@ class WMSSchemaMapper:
 
     def map_stream_schema(
         self,
-        schema_message: object,
+        schema_message: t.GeneralValueType,
     ) -> FlextResult[m.Meltano.SingerCatalogEntry]:
         """Build normalized schema map for table creation."""
         typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
