@@ -26,5 +26,6 @@ class TestsFlextTargetOracleWmsModels(FlextTestsModels, FlextTargetOracleWmsMode
 
 
 tm = TestsFlextTargetOracleWmsModels
+m = TestsFlextTargetOracleWmsModels
 
-__all__ = ["TestsFlextTargetOracleWmsModels", "tm"]
+__all__ = ["TestsFlextTargetOracleWmsModels", "m", "tm"]
