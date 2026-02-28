@@ -6,7 +6,7 @@ from collections.abc import Mapping
 from typing import Protocol, runtime_checkable
 
 from flext_core import FlextResult, t
-from flext_meltano.protocols import FlextMeltanoProtocols
+from flext_meltano import FlextMeltanoProtocols
 from flext_oracle_wms.protocols import FlextOracleWmsProtocols
 
 

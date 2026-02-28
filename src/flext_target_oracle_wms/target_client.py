@@ -56,7 +56,9 @@ class SingerWMSStreamProcessor:
         self.table_manager = table_manager
         self.data_transformer = data_transformer
 
-    def initialize_stream(self, schema_message: t.GeneralValueType) -> FlextResult[bool]:
+    def initialize_stream(
+        self, schema_message: t.GeneralValueType
+    ) -> FlextResult[bool]:
         """Register stream metadata in table manager."""
         typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
         registration = self.table_manager.register_stream(typed_schema.stream)
