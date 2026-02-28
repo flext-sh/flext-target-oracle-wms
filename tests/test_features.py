@@ -102,7 +102,7 @@ class TestUtilitiesFeatures:
 
     def test_create_state_message(self) -> None:
         msg = FlextTargetOracleWmsUtilities.TargetOracleWms.create_state_message({
-            "pos": 42
+            "pos": 42,
         })
         assert msg["type"] == "STATE"
         assert msg["value"] == {"pos": 42}

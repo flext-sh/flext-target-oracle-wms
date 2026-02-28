@@ -50,7 +50,9 @@ class TestTargetLifecycle:
 
         lines = [
             _schema_line(
-                "items", {"id": {"type": "string"}, "name": {"type": "string"}}, ["id"]
+                "items",
+                {"id": {"type": "string"}, "name": {"type": "string"}},
+                ["id"],
             ),
             _record_line("items", {"id": "1", "name": "Widget"}),
             _state_line({"bookmarks": {"items": "1"}}),

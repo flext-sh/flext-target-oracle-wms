@@ -55,8 +55,8 @@ class OracleWMSTargetCli:
         if config_path is not None:
             return FlextResult[m.TargetOracleWms.WmsTargetConfig].ok(
                 m.TargetOracleWms.WmsTargetConfig.model_validate(
-                    self._load_config(config_path)
-                )
+                    self._load_config(config_path),
+                ),
             )
         return FlextResult[m.TargetOracleWms.WmsTargetConfig].ok(
             m.TargetOracleWms.WmsTargetConfig.model_validate({
@@ -64,12 +64,13 @@ class OracleWMSTargetCli:
                     "base_url": "https://invalid.wms.ocs.oraclecloud.com",
                     "username": "oracle",
                     "password": "oracle",
-                }
-            })
+                },
+            }),
         )
 
     def _process_stdin_messages(
-        self, target: SingerTargetOracleWMS
+        self,
+        target: SingerTargetOracleWMS,
     ) -> FlextResult[bool]:
         """Read and process stdin message lines."""
         return target.process_lines(list(sys.stdin))

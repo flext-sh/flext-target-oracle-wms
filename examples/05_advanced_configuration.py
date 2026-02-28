@@ -73,7 +73,8 @@ class CustomWMSTypeConverter(WMSTypeConverter):
 
         # Delegate to parent for standard types
         parent_result: FlextResult[object] = super().convert_singer_to_oracle(
-            singer_type, value
+            singer_type,
+            value,
         )
 
         return parent_result

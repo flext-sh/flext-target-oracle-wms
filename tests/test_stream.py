@@ -81,7 +81,8 @@ class TestStreamProcessorRecord:
     def test_process_record_uppercases_keys(self) -> None:
         proc = SingerWMSStreamProcessor(WMSTableManager(), WMSDataTransformer())
         schema = _schema_msg(
-            "s", schema={"type": "object", "properties": {"name": {"type": "string"}}}
+            "s",
+            schema={"type": "object", "properties": {"name": {"type": "string"}}},
         )
         proc.initialize_stream(schema)
         result = proc.process_record(

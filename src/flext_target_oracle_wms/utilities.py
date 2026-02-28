@@ -61,7 +61,8 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
                     f"Missing required configuration fields: {missing}",
                 )
             load_method = config.get(
-                "load_method", c.TargetOracleWms.LoadMethods.APPEND_ONLY
+                "load_method",
+                c.TargetOracleWms.LoadMethods.APPEND_ONLY,
             )
             if load_method not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS:
                 return FlextResult[bool].fail("Invalid load_method")

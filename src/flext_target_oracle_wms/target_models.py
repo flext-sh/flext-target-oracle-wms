@@ -51,7 +51,7 @@ class WMSDataTransformer:
         transformed: dict[str, t.JsonValue] = {}
         schema_definition = (
             m.Meltano.SingerSchemaMessage.model_validate(
-                schema_message
+                schema_message,
             ).schema_definition
             if schema_message is not None
             else {}
@@ -77,7 +77,7 @@ class WMSDataTransformer:
                 record=transformed,
                 time_extracted=typed_record.time_extracted,
                 version=typed_record.version,
-            )
+            ),
         )
 
 
@@ -97,7 +97,7 @@ class WMSSchemaMapper:
                 schema=typed_schema.schema_definition,
                 key_properties=typed_schema.key_properties,
                 table_name=typed_schema.stream.upper(),
-            )
+            ),
         )
 
 

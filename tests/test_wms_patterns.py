@@ -108,7 +108,8 @@ class TestWMSDataTransformer:
         result = transformer.transform_record(
             _record_msg("s", {"name": "alice", "age": "30"}),
             _schema_msg(
-                "s", properties={"name": {"type": "string"}, "age": {"type": "string"}}
+                "s",
+                properties={"name": {"type": "string"}, "age": {"type": "string"}},
             ),
         )
         assert result.is_success

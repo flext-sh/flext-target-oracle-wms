@@ -40,7 +40,8 @@ def _schema_line(
 
 
 def _record_line(
-    stream: str = "test_stream", record: dict[str, t.GeneralValueType] | None = None
+    stream: str = "test_stream",
+    record: dict[str, t.GeneralValueType] | None = None,
 ) -> str:
     return json.dumps({
         "type": "RECORD",
@@ -176,7 +177,8 @@ class TestTargetProcessLines:
         target = SingerTargetOracleWMS(_valid_config())
         lines = [
             _schema_line(
-                "orders", {"id": {"type": "string"}, "name": {"type": "string"}}
+                "orders",
+                {"id": {"type": "string"}, "name": {"type": "string"}},
             ),
             _record_line("orders", {"id": "1", "name": "test"}),
             _state_line({"bookmarks": {"orders": "1"}}),
