@@ -17,6 +17,7 @@ from __future__ import annotations
 from typing import Literal
 
 from flext_meltano import FlextMeltanoTypes
+from flext_oracle_wms import FlextOracleWmsTypes
 
 # =============================================================================
 # TARGET ORACLE WMS-SPECIFIC TYPE VARIABLES - Domain-specific TypeVars for Singer Oracle WMS target operations
@@ -24,7 +25,7 @@ from flext_meltano import FlextMeltanoTypes
 
 
 # Singer Oracle WMS target domain TypeVars
-class FlextTargetOracleWmsTypes(FlextMeltanoTypes):
+class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
     """Singer Oracle WMS target-specific type definitions extending FlextMeltanoTypes.
 
     Domain-specific type system for Singer Oracle WMS target operations.
@@ -47,10 +48,16 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes):
             str,
             str | bool | dict[str, FlextMeltanoTypes.JsonValue],
         ]
-        type MessageProcessing = dict[str, str | list[dict[str, FlextMeltanoTypes.JsonValue]]]
-        type RecordHandling = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue] | bool]
+        type MessageProcessing = dict[
+            str, str | list[dict[str, FlextMeltanoTypes.JsonValue]]
+        ]
+        type RecordHandling = dict[
+            str, str | dict[str, FlextMeltanoTypes.JsonValue] | bool
+        ]
         type StateManagement = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
-        type BatchProcessing = dict[str, str | int | dict[str, FlextMeltanoTypes.JsonValue]]
+        type BatchProcessing = dict[
+            str, str | int | dict[str, FlextMeltanoTypes.JsonValue]
+        ]
 
     # =========================================================================
     # ORACLE WMS WAREHOUSE TYPES - Complex warehouse management types
@@ -67,7 +74,9 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes):
             str,
             str | list[str] | dict[str, FlextMeltanoTypes.JsonValue],
         ]
-        type LocationManagement = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
+        type LocationManagement = dict[
+            str, str | dict[str, FlextMeltanoTypes.JsonValue]
+        ]
         type ZoneConfiguration = dict[
             str,
             str | dict[str, FlextMeltanoTypes.GeneralValueType],
@@ -98,7 +107,9 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes):
             str,
             int | str | dict[str, FlextMeltanoTypes.GeneralValueType],
         ]
-        type InventoryMetrics = dict[str, int | float | dict[str, FlextMeltanoTypes.JsonValue]]
+        type InventoryMetrics = dict[
+            str, int | float | dict[str, FlextMeltanoTypes.JsonValue]
+        ]
         type CycleCountData = dict[
             str,
             str | int | dict[str, FlextMeltanoTypes.GeneralValueType],
@@ -115,12 +126,16 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes):
             str,
             str | int | dict[str, FlextMeltanoTypes.GeneralValueType],
         ]
-        type OrderProcessing = dict[str, str | bool | dict[str, FlextMeltanoTypes.JsonValue]]
+        type OrderProcessing = dict[
+            str, str | bool | dict[str, FlextMeltanoTypes.JsonValue]
+        ]
         type FulfillmentWorkflow = dict[
             str,
             str | int | dict[str, FlextMeltanoTypes.GeneralValueType],
         ]
-        type PickingInstructions = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
+        type PickingInstructions = dict[
+            str, str | dict[str, FlextMeltanoTypes.JsonValue]
+        ]
         type ShippingConfiguration = dict[
             str,
             bool | str | dict[str, FlextMeltanoTypes.GeneralValueType],
@@ -176,7 +191,9 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes):
             str,
             str | bool | dict[str, FlextMeltanoTypes.GeneralValueType],
         ]
-        type TransportMetrics = dict[str, int | float | dict[str, FlextMeltanoTypes.JsonValue]]
+        type TransportMetrics = dict[
+            str, int | float | dict[str, FlextMeltanoTypes.JsonValue]
+        ]
         type RouteOptimization = dict[
             str,
             str | list[str] | dict[str, FlextMeltanoTypes.GeneralValueType],
@@ -226,7 +243,9 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes):
             str,
             str | int | dict[str, FlextMeltanoTypes.GeneralValueType],
         ]
-        type StreamSchema = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue] | bool]
+        type StreamSchema = dict[
+            str, str | dict[str, FlextMeltanoTypes.JsonValue] | bool
+        ]
 
     # =========================================================================
     # ERROR HANDLING TYPES - Complex error management types
@@ -243,13 +262,19 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes):
             str,
             str | bool | dict[str, FlextMeltanoTypes.GeneralValueType],
         ]
-        type ErrorReporting = dict[str, str | int | dict[str, FlextMeltanoTypes.JsonValue]]
+        type ErrorReporting = dict[
+            str, str | int | dict[str, FlextMeltanoTypes.JsonValue]
+        ]
         type ErrorClassification = dict[
             str,
             str | int | dict[str, FlextMeltanoTypes.GeneralValueType],
         ]
-        type ErrorMetrics = dict[str, int | float | dict[str, FlextMeltanoTypes.JsonValue]]
-        type ErrorTracking = list[dict[str, str | int | dict[str, FlextMeltanoTypes.JsonValue]]]
+        type ErrorMetrics = dict[
+            str, int | float | dict[str, FlextMeltanoTypes.JsonValue]
+        ]
+        type ErrorTracking = list[
+            dict[str, str | int | dict[str, FlextMeltanoTypes.JsonValue]]
+        ]
 
     # =========================================================================
     # SINGER TARGET ORACLE WMS PROJECT TYPES - Domain-specific project types extending t
@@ -310,7 +335,9 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes):
             str,
             bool | str | dict[str, FlextMeltanoTypes.GeneralValueType],
         ]
-        type TargetOracleWmsPipelineConfig = dict[str, FlextMeltanoTypes.GeneralValueType]
+        type TargetOracleWmsPipelineConfig = dict[
+            str, FlextMeltanoTypes.GeneralValueType
+        ]
 
 
 # Module-level aliases for simplified usage

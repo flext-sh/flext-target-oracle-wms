@@ -6,6 +6,14 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from flext_target_oracle_wms.typings import (
+        FlextTargetOracleWmsTypes,
+        FlextTargetOracleWmsTypes as t,
+    )
+
 from flext_target_oracle_wms.__version__ import __version__, __version_info__
 from flext_target_oracle_wms.cli import OracleWMSTargetCli, main
 from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants, c
@@ -28,6 +36,7 @@ from flext_target_oracle_wms.target_models import (
     WMSTableManager,
     WMSTypeConverter,
 )
+from flext_target_oracle_wms.typings import FlextTargetOracleWmsTypes, t
 from flext_target_oracle_wms.utilities import FlextTargetOracleWmsUtilities, u
 
 __all__: list[str] = [
@@ -37,6 +46,7 @@ __all__: list[str] = [
     "FlextTargetOracleWmsModels",
     "FlextTargetOracleWmsProtocols",
     "FlextTargetOracleWmsUtilities",
+    "FlextTargetOracleWmsTypes",
     "OracleWMSTargetCli",
     "SingerTargetOracleWMS",
     "SingerWMSCatalogManager",
