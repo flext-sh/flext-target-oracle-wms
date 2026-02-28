@@ -5,11 +5,13 @@ from __future__ import annotations
 from collections.abc import Mapping
 
 from flext_core import FlextResult, t
+from flext_meltano import FlextMeltanoUtilities
+from flext_oracle_wms import FlextOracleWmsUtilities
 
 from .constants import c
 
 
-class FlextTargetOracleWmsUtilities:
+class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtilities):
     """Namespace with Singer-target utility helpers."""
 
     class TargetOracleWms:
@@ -66,4 +68,6 @@ class FlextTargetOracleWmsUtilities:
             return FlextResult[bool].ok(value=True)
 
 
-__all__ = ["FlextTargetOracleWmsUtilities"]
+__all__ = ["FlextTargetOracleWmsUtilities", "u"]
+
+u = FlextTargetOracleWmsUtilities

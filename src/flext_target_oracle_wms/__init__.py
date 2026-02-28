@@ -28,7 +28,7 @@ from flext_target_oracle_wms.target_models import (
     WMSTableManager,
     WMSTypeConverter,
 )
-from flext_target_oracle_wms.utilities import FlextTargetOracleWmsUtilities
+from flext_target_oracle_wms.utilities import FlextTargetOracleWmsUtilities, u
 
 __all__: list[str] = [
     "FlextTargetFactory",
@@ -52,4 +52,5 @@ __all__: list[str] = [
     "create_oracle_wms_target",
     "m",
     "main",
+    "u",
 ]
