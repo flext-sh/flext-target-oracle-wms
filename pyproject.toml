@@ -31,12 +31,12 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "flext-cli @ file://../flext-cli",
-  "flext-core @ file://../flext-core",
-  "flext-db-oracle @ file://../flext-db-oracle",
-  "flext-meltano @ file://../flext-meltano",
-  "flext-observability @ file://../flext-observability",
-  "flext-oracle-wms @ file://../flext-oracle-wms",
+  "flext-cli @ file:../flext-cli",
+  "flext-core @ file:../flext-core",
+  "flext-db-oracle @ file:../flext-db-oracle",
+  "flext-meltano @ file:../flext-meltano",
+  "flext-observability @ file:../flext-observability",
+  "flext-oracle-wms @ file:../flext-oracle-wms",
   "pydantic>=2.12.3",
   "pydantic-core>=2.41.4",
   "pydantic-settings>=2.10.1",
