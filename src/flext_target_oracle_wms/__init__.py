@@ -54,25 +54,61 @@ if TYPE_CHECKING:
 # Lazy import mapping: export_name -> (module_path, attr_name)
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "FlextTargetFactory": ("flext_target_oracle_wms.factory", "FlextTargetFactory"),
-    "FlextTargetMonitoringFactory": ("flext_target_oracle_wms.factory", "FlextTargetMonitoringFactory"),
-    "FlextTargetOracleWmsConstants": ("flext_target_oracle_wms.constants", "FlextTargetOracleWmsConstants"),
-    "FlextTargetOracleWmsModels": ("flext_target_oracle_wms.models", "FlextTargetOracleWmsModels"),
-    "FlextTargetOracleWmsProtocols": ("flext_target_oracle_wms.protocols", "FlextTargetOracleWmsProtocols"),
-    "FlextTargetOracleWmsTypes": ("flext_target_oracle_wms.typings", "FlextTargetOracleWmsTypes"),
-    "FlextTargetOracleWmsUtilities": ("flext_target_oracle_wms.utilities", "FlextTargetOracleWmsUtilities"),
+    "FlextTargetMonitoringFactory": (
+        "flext_target_oracle_wms.factory",
+        "FlextTargetMonitoringFactory",
+    ),
+    "FlextTargetOracleWmsConstants": (
+        "flext_target_oracle_wms.constants",
+        "FlextTargetOracleWmsConstants",
+    ),
+    "FlextTargetOracleWmsModels": (
+        "flext_target_oracle_wms.models",
+        "FlextTargetOracleWmsModels",
+    ),
+    "FlextTargetOracleWmsProtocols": (
+        "flext_target_oracle_wms.protocols",
+        "FlextTargetOracleWmsProtocols",
+    ),
+    "FlextTargetOracleWmsTypes": (
+        "flext_target_oracle_wms.typings",
+        "FlextTargetOracleWmsTypes",
+    ),
+    "FlextTargetOracleWmsUtilities": (
+        "flext_target_oracle_wms.utilities",
+        "FlextTargetOracleWmsUtilities",
+    ),
     "OracleWMSTargetCli": ("flext_target_oracle_wms.cli", "OracleWMSTargetCli"),
-    "SingerTargetOracleWMS": ("flext_target_oracle_wms.target_client", "SingerTargetOracleWMS"),
-    "SingerWMSCatalogManager": ("flext_target_oracle_wms.target_client", "SingerWMSCatalogManager"),
-    "SingerWMSStreamProcessor": ("flext_target_oracle_wms.target_client", "SingerWMSStreamProcessor"),
-    "WMSDataTransformer": ("flext_target_oracle_wms.target_models", "WMSDataTransformer"),
+    "SingerTargetOracleWMS": (
+        "flext_target_oracle_wms.target_client",
+        "SingerTargetOracleWMS",
+    ),
+    "SingerWMSCatalogManager": (
+        "flext_target_oracle_wms.target_client",
+        "SingerWMSCatalogManager",
+    ),
+    "SingerWMSStreamProcessor": (
+        "flext_target_oracle_wms.target_client",
+        "SingerWMSStreamProcessor",
+    ),
+    "WMSDataTransformer": (
+        "flext_target_oracle_wms.target_models",
+        "WMSDataTransformer",
+    ),
     "WMSSchemaMapper": ("flext_target_oracle_wms.target_models", "WMSSchemaMapper"),
     "WMSTableManager": ("flext_target_oracle_wms.target_models", "WMSTableManager"),
     "WMSTypeConverter": ("flext_target_oracle_wms.target_models", "WMSTypeConverter"),
     "__version__": ("flext_target_oracle_wms.__version__", "__version__"),
     "__version_info__": ("flext_target_oracle_wms.__version__", "__version_info__"),
     "c": ("flext_target_oracle_wms.constants", "FlextTargetOracleWmsConstants"),
-    "create_monitored_oracle_wms_target": ("flext_target_oracle_wms.factory", "create_monitored_oracle_wms_target"),
-    "create_oracle_wms_target": ("flext_target_oracle_wms.factory", "create_oracle_wms_target"),
+    "create_monitored_oracle_wms_target": (
+        "flext_target_oracle_wms.factory",
+        "create_monitored_oracle_wms_target",
+    ),
+    "create_oracle_wms_target": (
+        "flext_target_oracle_wms.factory",
+        "create_oracle_wms_target",
+    ),
     "m": ("flext_target_oracle_wms.models", "FlextTargetOracleWmsModels"),
     "main": ("flext_target_oracle_wms.cli", "main"),
     "p": ("flext_target_oracle_wms.protocols", "FlextTargetOracleWmsProtocols"),
