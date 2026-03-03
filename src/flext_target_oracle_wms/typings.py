@@ -335,9 +335,7 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
             str,
             bool | str | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
-        type TargetOracleWmsPipelineConfig = dict[
-            str, FlextMeltanoTypes.ContainerValue
-        ]
+        type TargetOracleWmsPipelineConfig = dict[str, FlextMeltanoTypes.ContainerValue]
 
 
 # Module-level aliases for simplified usage
