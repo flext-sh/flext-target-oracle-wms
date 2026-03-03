@@ -12,6 +12,7 @@ import time
 from unittest.mock import patch
 
 from flext_core import t
+
 from flext_target_oracle_wms.factory import (
     FlextTargetFactory,
     TargetCreationRequest,

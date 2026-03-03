@@ -11,6 +11,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+
 from flext_target_oracle_wms.cli import OracleWMSTargetCli, main
 
 
