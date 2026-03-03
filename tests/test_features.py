@@ -18,7 +18,7 @@ from flext_target_oracle_wms.target_models import (
 from flext_target_oracle_wms.utilities import FlextTargetOracleWmsUtilities
 
 
-def _valid_config() -> dict[str, t.GeneralValueType]:
+def _valid_config() -> dict[str, t.ContainerValue]:
     return {
         "wms_auth": {
             "base_url": "https://test.wms.example.com",

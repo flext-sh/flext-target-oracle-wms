@@ -21,7 +21,7 @@ class TargetCreationRequest(FlextModels.ArbitraryTypesModel):
     password: str
     environment: str = "development"
     preset: str | None = None
-    additional_config: dict[str, t.GeneralValueType] | None = Field(default=None)
+    additional_config: dict[str, t.ContainerValue] | None = Field(default=None)
 
 
 class MonitoredTargetCreationRequest(TargetCreationRequest):
@@ -33,7 +33,7 @@ class MonitoredTargetCreationRequest(TargetCreationRequest):
 class FlextTargetFactory:
     """Factory for creating configured target instances."""
 
-    PRESETS: ClassVar[dict[str, dict[str, t.GeneralValueType]]] = {
+    PRESETS: ClassVar[dict[str, dict[str, t.ContainerValue]]] = {
         "development": {
             "batch_size": 100,
             "timeout": 30,
@@ -63,7 +63,7 @@ class FlextTargetFactory:
         request: TargetCreationRequest,
     ) -> FlextResult[SingerTargetOracleWMS]:
         """Create target instance from request object."""
-        config: dict[str, t.GeneralValueType] = {
+        config: dict[str, t.ContainerValue] = {
             "base_url": request.base_url,
             "username": request.username,
             "password": request.password,
@@ -82,7 +82,7 @@ class FlextTargetFactory:
     @classmethod
     def create_from_config_dict(
         cls,
-        config: Mapping[str, t.GeneralValueType],
+        config: Mapping[str, t.ContainerValue],
     ) -> FlextResult[SingerTargetOracleWMS]:
         """Create target from plain dictionary config via Pydantic validation."""
         known_keys = {"base_url", "username", "password", "environment", "preset"}
@@ -134,7 +134,7 @@ def create_oracle_wms_target(
     password: str,
     environment: str = "development",
     preset: str | None = None,
-    **config: t.GeneralValueType,
+    **config: t.ContainerValue,
 ) -> FlextResult[SingerTargetOracleWMS]:
     """Convenience function to create base target instance."""
     request = TargetCreationRequest(

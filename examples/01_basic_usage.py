@@ -34,7 +34,7 @@ def run_basic_example() -> None:
     logger.info("Starting basic Oracle WMS target example")
 
     # REAL configuration for Oracle WMS Cloud SaaS
-    config: dict[str, t.GeneralValueType] = {
+    config: dict[str, t.ContainerValue] = {
         "base_url": "https://example.wms.oracle.com",
         "username": "demo_user",
         "password": "demo_password",
@@ -224,7 +224,7 @@ def run_from_singer_files() -> None:
         config = json.loads(config_file.read_text(encoding="utf-8"))
     else:
         # Use demo configuration
-        config: dict[str, t.GeneralValueType] = {
+        config: dict[str, t.ContainerValue] = {
             "base_url": "https://example.wms.oracle.com",
             "username": "demo_user",
             "password": "demo_password",

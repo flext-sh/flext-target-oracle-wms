@@ -24,7 +24,7 @@ class OracleWMSTargetCli:
         self.description = "Oracle WMS Singer Target"
         self.version = "0.9.0"
 
-    def execute(self, **kwargs: t.GeneralValueType) -> FlextResult[bool]:
+    def execute(self, **kwargs: t.ContainerValue) -> FlextResult[bool]:
         """Execute target run using optional config path."""
         config_arg = kwargs.get("config")
         config_path = str(config_arg) if config_arg is not None else None
@@ -79,7 +79,7 @@ class OracleWMSTargetCli:
         """Finalize target processing."""
         return target.cleanup()
 
-    def _load_config(self, config_path: str) -> Mapping[str, t.GeneralValueType]:
+    def _load_config(self, config_path: str) -> Mapping[str, t.ContainerValue]:
         """Read JSON configuration file."""
         config_file = Path(config_path)
         if not config_file.exists():

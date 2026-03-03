@@ -126,7 +126,7 @@ def _demonstrate_testing_target() -> None:
 def _demonstrate_config_target() -> None:
     """Demonstrate configuration-based target creation."""
     logger.info("\n📋 Example 5: Configuration-based Target Creation")
-    config_dict: dict[str, t.GeneralValueType] = {
+    config_dict: dict[str, t.ContainerValue] = {
         "base_url": "https://config.wms.oracle.com",
         "username": "config_user",
         "password": DEMO_PASSWORD,

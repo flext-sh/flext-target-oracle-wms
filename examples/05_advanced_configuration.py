@@ -90,8 +90,8 @@ class CustomWMSDataTransformer(WMSDataTransformer):
 
     def transform_record(
         self,
-        record_message: Mapping[str, t.GeneralValueType],
-        schema_message: Mapping[str, t.GeneralValueType] | None = None,
+        record_message: Mapping[str, t.ContainerValue],
+        schema_message: Mapping[str, t.ContainerValue] | None = None,
     ) -> FlextResult[object]:
         """Transform record with business validations."""
         # Apply standard transformation first
@@ -395,7 +395,7 @@ def demonstrate_custom_components() -> None:
     # Custom schema mapper
     schema_mapper = WMSSchemaMapper()
 
-    test_schema: dict[str, t.GeneralValueType] = {
+    test_schema: dict[str, t.ContainerValue] = {
         "properties": {
             "business_date": {"type": "business_date"},
             "amount": {"type": "business_currency"},

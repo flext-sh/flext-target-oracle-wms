@@ -14,9 +14,9 @@ from flext_target_oracle_wms.target_client import SingerWMSCatalogManager
 
 def _make_schema_message(
     stream_name: str = "test_stream",
-    schema: dict[str, t.GeneralValueType] | None = None,
+    schema: dict[str, t.ContainerValue] | None = None,
     key_properties: list[str] | None = None,
-) -> dict[str, t.GeneralValueType]:
+) -> dict[str, t.ContainerValue]:
     """Build a valid SingerSchemaMessage dict."""
     return {
         "type": "SCHEMA",

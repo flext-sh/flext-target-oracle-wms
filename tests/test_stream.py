@@ -16,9 +16,9 @@ from flext_target_oracle_wms.target_models import WMSDataTransformer, WMSTableMa
 
 def _schema_msg(
     stream: str = "test_stream",
-    schema: dict[str, t.GeneralValueType] | None = None,
+    schema: dict[str, t.ContainerValue] | None = None,
     key_properties: list[str] | None = None,
-) -> dict[str, t.GeneralValueType]:
+) -> dict[str, t.ContainerValue]:
     return {
         "type": "SCHEMA",
         "stream": stream,
@@ -30,8 +30,8 @@ def _schema_msg(
 
 def _record_msg(
     stream: str = "test_stream",
-    record: dict[str, t.GeneralValueType] | None = None,
-) -> dict[str, t.GeneralValueType]:
+    record: dict[str, t.ContainerValue] | None = None,
+) -> dict[str, t.ContainerValue]:
     return {
         "type": "RECORD",
         "stream": stream,

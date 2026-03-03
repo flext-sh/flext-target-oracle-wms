@@ -30,7 +30,7 @@ PERF_ITERATIONS = 500
 PERF_THRESHOLD_SEC = 5.0
 
 
-def _schema_msg(stream: str = "bench") -> dict[str, t.GeneralValueType]:
+def _schema_msg(stream: str = "bench") -> dict[str, t.ContainerValue]:
     return {
         "type": "SCHEMA",
         "stream": stream,
@@ -42,7 +42,7 @@ def _schema_msg(stream: str = "bench") -> dict[str, t.GeneralValueType]:
     }
 
 
-def _record_msg(stream: str = "bench") -> dict[str, t.GeneralValueType]:
+def _record_msg(stream: str = "bench") -> dict[str, t.ContainerValue]:
     return {"type": "RECORD", "stream": stream, "record": {"id": "1", "qty": 100}}
 
 

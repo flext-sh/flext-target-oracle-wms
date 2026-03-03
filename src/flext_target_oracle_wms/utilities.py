@@ -20,9 +20,9 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
         @staticmethod
         def create_schema_message(
             stream_name: str,
-            schema: Mapping[str, t.GeneralValueType],
+            schema: Mapping[str, t.ContainerValue],
             key_properties: list[str] | None = None,
-        ) -> Mapping[str, t.GeneralValueType]:
+        ) -> Mapping[str, t.ContainerValue]:
             """Create a Singer SCHEMA message payload."""
             return {
                 "type": "SCHEMA",
@@ -34,15 +34,15 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
         @staticmethod
         def create_record_message(
             stream_name: str,
-            record: Mapping[str, t.GeneralValueType],
-        ) -> Mapping[str, t.GeneralValueType]:
+            record: Mapping[str, t.ContainerValue],
+        ) -> Mapping[str, t.ContainerValue]:
             """Create a Singer RECORD message payload."""
             return {"type": "RECORD", "stream": stream_name, "record": record}
 
         @staticmethod
         def create_state_message(
-            state: Mapping[str, t.GeneralValueType],
-        ) -> Mapping[str, t.GeneralValueType]:
+            state: Mapping[str, t.ContainerValue],
+        ) -> Mapping[str, t.ContainerValue]:
             """Create a Singer STATE message payload."""
             return {"type": "STATE", "value": state}
 
@@ -51,7 +51,7 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
 
         @staticmethod
         def validate_wms_target_config(
-            config: Mapping[str, t.GeneralValueType],
+            config: Mapping[str, t.ContainerValue],
         ) -> FlextResult[bool]:
             """Validate minimal required target configuration fields."""
             required = {"base_url", "username", "password"}

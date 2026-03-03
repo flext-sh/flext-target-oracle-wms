@@ -42,7 +42,7 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
 
         type TargetConfiguration = dict[
             str,
-            str | int | bool | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | int | bool | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type StreamConfiguration = dict[
             str,
@@ -68,7 +68,7 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
 
         type WarehouseConfiguration = dict[
             str,
-            str | int | bool | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | int | bool | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type FacilityDefinition = dict[
             str,
@@ -79,12 +79,12 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
         ]
         type ZoneConfiguration = dict[
             str,
-            str | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type WarehouseMetadata = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
         type LayoutDefinition = dict[
             str,
-            str | bool | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | bool | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
 
     # =========================================================================
@@ -96,23 +96,23 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
 
         type InventoryConfiguration = dict[
             str,
-            str | int | bool | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | int | bool | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type ItemMasterData = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
         type StockLevelTracking = dict[
             str,
-            int | float | dict[str, FlextMeltanoTypes.GeneralValueType],
+            int | float | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type AllocationManagement = dict[
             str,
-            int | str | dict[str, FlextMeltanoTypes.GeneralValueType],
+            int | str | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type InventoryMetrics = dict[
             str, int | float | dict[str, FlextMeltanoTypes.JsonValue]
         ]
         type CycleCountData = dict[
             str,
-            str | int | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | int | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
 
     # =========================================================================
@@ -124,25 +124,25 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
 
         type OrderConfiguration = dict[
             str,
-            str | int | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | int | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type OrderProcessing = dict[
             str, str | bool | dict[str, FlextMeltanoTypes.JsonValue]
         ]
         type FulfillmentWorkflow = dict[
             str,
-            str | int | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | int | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type PickingInstructions = dict[
             str, str | dict[str, FlextMeltanoTypes.JsonValue]
         ]
         type ShippingConfiguration = dict[
             str,
-            bool | str | dict[str, FlextMeltanoTypes.GeneralValueType],
+            bool | str | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type OrderTracking = dict[
             str,
-            str | int | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | int | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
 
     # =========================================================================
@@ -154,7 +154,7 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
 
         type LaborConfiguration = dict[
             str,
-            str | bool | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | bool | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type WorkforceManagement = dict[
             str,
@@ -163,7 +163,7 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
         type TaskAssignment = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
         type ProductivityMetrics = dict[
             str,
-            float | int | dict[str, FlextMeltanoTypes.GeneralValueType],
+            float | int | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type PerformanceTracking = dict[
             str,
@@ -171,7 +171,7 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
         ]
         type WorkforceScheduling = dict[
             str,
-            str | int | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | int | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
 
     # =========================================================================
@@ -183,20 +183,20 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
 
         type TransportConfiguration = dict[
             str,
-            str | int | bool | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | int | bool | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type CarrierManagement = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
         type ShipmentTracking = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
         type DeliveryScheduling = dict[
             str,
-            str | bool | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | bool | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type TransportMetrics = dict[
             str, int | float | dict[str, FlextMeltanoTypes.JsonValue]
         ]
         type RouteOptimization = dict[
             str,
-            str | list[str] | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | list[str] | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
 
     # =========================================================================
@@ -208,16 +208,16 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
 
         type TransformationConfiguration = dict[
             str,
-            str | bool | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | bool | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type FieldMapping = dict[
             str,
-            str | list[str] | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | list[str] | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type DataValidation = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
         type TypeConversion = dict[
             str,
-            bool | str | dict[str, FlextMeltanoTypes.GeneralValueType],
+            bool | str | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type FilteringRules = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
         type TransformationResult = dict[str, dict[str, FlextMeltanoTypes.JsonValue]]
@@ -231,17 +231,17 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
 
         type StreamConfiguration = dict[
             str,
-            str | bool | int | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | bool | int | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type StreamMetadata = dict[str, str | dict[str, FlextMeltanoTypes.JsonValue]]
         type StreamRecord = dict[
             str,
-            FlextMeltanoTypes.JsonValue | dict[str, FlextMeltanoTypes.GeneralValueType],
+            FlextMeltanoTypes.JsonValue | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type StreamState = dict[str, str | int | dict[str, FlextMeltanoTypes.JsonValue]]
         type StreamBookmark = dict[
             str,
-            str | int | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | int | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type StreamSchema = dict[
             str, str | dict[str, FlextMeltanoTypes.JsonValue] | bool
@@ -256,18 +256,18 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
 
         type ErrorConfiguration = dict[
             str,
-            bool | str | int | dict[str, FlextMeltanoTypes.GeneralValueType],
+            bool | str | int | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type ErrorRecovery = dict[
             str,
-            str | bool | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | bool | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type ErrorReporting = dict[
             str, str | int | dict[str, FlextMeltanoTypes.JsonValue]
         ]
         type ErrorClassification = dict[
             str,
-            str | int | dict[str, FlextMeltanoTypes.GeneralValueType],
+            str | int | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type ErrorMetrics = dict[
             str, int | float | dict[str, FlextMeltanoTypes.JsonValue]
@@ -328,15 +328,15 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
         # Singer target Oracle WMS-specific project configurations
         type SingerTargetOracleWmsProjectConfig = dict[
             str,
-            FlextMeltanoTypes.GeneralValueType,
+            FlextMeltanoTypes.ContainerValue,
         ]
         type WmsLoaderConfig = dict[str, str | int | bool | list[str]]
         type SingerProtocolConfig = dict[
             str,
-            bool | str | dict[str, FlextMeltanoTypes.GeneralValueType],
+            bool | str | dict[str, FlextMeltanoTypes.ContainerValue],
         ]
         type TargetOracleWmsPipelineConfig = dict[
-            str, FlextMeltanoTypes.GeneralValueType
+            str, FlextMeltanoTypes.ContainerValue
         ]
 
 

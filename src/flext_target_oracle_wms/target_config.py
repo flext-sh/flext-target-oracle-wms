@@ -39,7 +39,7 @@ class FlextTargetOracleWmsSettings(FlextSettings):
             return FlextResult[bool].fail("batch_size must be positive")
         return FlextResult[bool].ok(value=True)
 
-    def to_target_config(self) -> Mapping[str, t.GeneralValueType]:
+    def to_target_config(self) -> Mapping[str, t.ContainerValue]:
         """Export settings as target configuration dictionary."""
         return {
             "base_url": self.base_url,
@@ -56,11 +56,11 @@ class FlextTargetOracleWmsSettings(FlextSettings):
 
 
 def create_settings(
-    overrides: Mapping[str, t.GeneralValueType] | None = None,
+    overrides: Mapping[str, t.ContainerValue] | None = None,
 ) -> FlextResult[FlextTargetOracleWmsSettings]:
     """Create settings instance with optional override values."""
     try:
-        data: dict[str, t.GeneralValueType] = dict(overrides) if overrides else {}
+        data: dict[str, t.ContainerValue] = dict(overrides) if overrides else {}
         settings = FlextTargetOracleWmsSettings.model_validate(data)
     except (
         ValueError,

@@ -31,7 +31,7 @@ class SimulatedOracleWMSError(Exception):
         self.attempt = attempt
 
 
-def get_error_demo_config() -> Mapping[str, t.GeneralValueType]:
+def get_error_demo_config() -> Mapping[str, t.ContainerValue]:
     """Single Responsibility: Get error demonstration configuration.
 
     SOLID REFACTORING: Extract configuration into separate function following
@@ -66,7 +66,7 @@ def get_error_demo_config() -> Mapping[str, t.GeneralValueType]:
 
 
 def demonstrate_setup_error_handling(
-    config: Mapping[str, t.GeneralValueType],
+    config: Mapping[str, t.ContainerValue],
 ) -> SingerTargetOracleWMS | None:
     """Single Responsibility: Demonstrate setup and connection error handling.
 

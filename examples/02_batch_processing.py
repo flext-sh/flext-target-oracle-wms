@@ -31,7 +31,7 @@ logger = FlextLogger(__name__)
 monitor = FlextObservabilityMonitor()
 
 
-def generate_test_data(num_records: int) -> list[Mapping[str, t.GeneralValueType]]:
+def generate_test_data(num_records: int) -> list[Mapping[str, t.ContainerValue]]:
     """Generate test data for batch processing demonstration."""
     logger.info("Generating %s test records", num_records)
 
@@ -56,7 +56,7 @@ def generate_test_data(num_records: int) -> list[Mapping[str, t.GeneralValueType
     return records
 
 
-def _create_batch_config() -> Mapping[str, t.GeneralValueType]:
+def _create_batch_config() -> Mapping[str, t.ContainerValue]:
     """Create optimized configuration for batch processing."""
     return {
         "base_url": "https://batch.wms.oracle.com",
@@ -81,7 +81,7 @@ def _create_batch_config() -> Mapping[str, t.GeneralValueType]:
     }
 
 
-def _create_batch_schema() -> Mapping[str, t.GeneralValueType]:
+def _create_batch_schema() -> Mapping[str, t.ContainerValue]:
     """Create optimized schema for batch processing."""
     return {
         "type": "SCHEMA",

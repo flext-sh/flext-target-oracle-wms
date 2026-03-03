@@ -22,7 +22,7 @@ class FlextTargetOracleWmsProtocols(FlextMeltanoProtocols, FlextOracleWmsProtoco
 
             def load_data(
                 self,
-                records: list[Mapping[str, t.GeneralValueType]],
+                records: list[Mapping[str, t.ContainerValue]],
             ) -> FlextResult[bool]:
                 """Load a batch of records."""
                 ...
@@ -33,8 +33,8 @@ class FlextTargetOracleWmsProtocols(FlextMeltanoProtocols, FlextOracleWmsProtoco
 
             def transform_to_wms(
                 self,
-                record: Mapping[str, t.GeneralValueType],
-            ) -> FlextResult[Mapping[str, t.GeneralValueType]]:
+                record: Mapping[str, t.ContainerValue],
+            ) -> FlextResult[Mapping[str, t.ContainerValue]]:
                 """Transform one record to WMS shape."""
                 ...
 

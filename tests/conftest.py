@@ -16,7 +16,7 @@ from flext_core import t
 
 
 @pytest.fixture
-def config() -> dict[str, t.GeneralValueType]:
+def config() -> dict[str, t.ContainerValue]:
     """Return a test configuration matching WmsTargetConfig schema."""
     return {
         "wms_auth": {
@@ -38,7 +38,7 @@ def temp_output_dir() -> Generator[Path]:
 
 
 @pytest.fixture
-def sample_inventory_records() -> list[dict[str, t.GeneralValueType]]:
+def sample_inventory_records() -> list[dict[str, t.ContainerValue]]:
     """Return sample inventory records."""
     return [
         {
@@ -63,7 +63,7 @@ def sample_inventory_records() -> list[dict[str, t.GeneralValueType]]:
 
 
 @pytest.fixture
-def sample_order_records() -> list[dict[str, t.GeneralValueType]]:
+def sample_order_records() -> list[dict[str, t.ContainerValue]]:
     """Return sample order records."""
     return [
         {
@@ -86,7 +86,7 @@ def sample_order_records() -> list[dict[str, t.GeneralValueType]]:
 
 
 @pytest.fixture
-def sample_task_records() -> list[dict[str, t.GeneralValueType]]:
+def sample_task_records() -> list[dict[str, t.ContainerValue]]:
     """Return sample task records."""
     return [
         {
@@ -111,7 +111,7 @@ def sample_task_records() -> list[dict[str, t.GeneralValueType]]:
 
 
 @pytest.fixture
-def singer_schema() -> dict[str, t.GeneralValueType]:
+def singer_schema() -> dict[str, t.ContainerValue]:
     """Return a sample Singer schema."""
     return {
         "type": "object",
@@ -126,7 +126,7 @@ def singer_schema() -> dict[str, t.GeneralValueType]:
 
 
 @pytest.fixture
-def singer_schema_message() -> dict[str, t.GeneralValueType]:
+def singer_schema_message() -> dict[str, t.ContainerValue]:
     """Return a sample Singer SCHEMA message."""
     return {
         "type": "SCHEMA",
@@ -143,7 +143,7 @@ def singer_schema_message() -> dict[str, t.GeneralValueType]:
 
 
 @pytest.fixture
-def singer_record_message() -> dict[str, t.GeneralValueType]:
+def singer_record_message() -> dict[str, t.ContainerValue]:
     """Return a sample Singer RECORD message."""
     return {
         "type": "RECORD",
@@ -155,7 +155,7 @@ def singer_record_message() -> dict[str, t.GeneralValueType]:
 
 
 @pytest.fixture
-def singer_state_message() -> dict[str, t.GeneralValueType]:
+def singer_state_message() -> dict[str, t.ContainerValue]:
     """Return a sample Singer STATE message."""
     return {
         "type": "STATE",
