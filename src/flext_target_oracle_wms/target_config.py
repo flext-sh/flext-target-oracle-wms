@@ -32,14 +32,6 @@ class FlextTargetOracleWmsSettings(FlextSettings):
     batch_size: int = Field(default=c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE)
     load_method: str = Field(default=c.TargetOracleWms.LoadMethods.APPEND_ONLY)
 
-    def validate_runtime(self) -> FlextResult[bool]:
-        """Validate core runtime invariants."""
-        if self.load_method not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS:
-            return FlextResult[bool].fail("Invalid load_method")
-        if self.batch_size <= 0:
-            return FlextResult[bool].fail("batch_size must be positive")
-        return FlextResult[bool].ok(value=True)
-
     def to_target_config(self) -> Mapping[str, t.ContainerValue]:
         """Export settings as target configuration dictionary."""
         return {
@@ -54,6 +46,14 @@ class FlextTargetOracleWmsSettings(FlextSettings):
             "batch_size": self.batch_size,
             "load_method": self.load_method,
         }
+
+    def validate_runtime(self) -> FlextResult[bool]:
+        """Validate core runtime invariants."""
+        if self.load_method not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS:
+            return FlextResult[bool].fail("Invalid load_method")
+        if self.batch_size <= 0:
+            return FlextResult[bool].fail("batch_size must be positive")
+        return FlextResult[bool].ok(value=True)
 
 
 def create_settings(

@@ -105,12 +105,44 @@ class SingerTargetOracleWMS:
         )
         self._schemas: dict[str, object] = {}
 
-    def setup(self) -> FlextResult[bool]:
-        """Prepare target runtime state."""
-        return FlextResult[bool].ok(value=True)
-
     def cleanup(self) -> FlextResult[bool]:
         """Release target runtime resources."""
+        return FlextResult[bool].ok(value=True)
+
+    def handle_record_message(self, message: t.ContainerValue) -> FlextResult[bool]:
+        """Handle one RECORD message."""
+        typed_record = m.Meltano.SingerRecordMessage.model_validate(message)
+        schema_message = self._schemas.get(typed_record.stream)
+        if schema_message is None:
+            return FlextResult[bool].fail(
+                f"Schema not registered for stream: {typed_record.stream}",
+            )
+        process_result = self.stream_processor.process_record(
+            typed_record,
+            schema_message,
+        )
+        if process_result.is_failure:
+            return FlextResult[bool].fail(
+                process_result.error or "Record processing failed",
+            )
+        return FlextResult[bool].ok(value=True)
+
+    def handle_schema_message(self, message: t.ContainerValue) -> FlextResult[bool]:
+        """Handle one SCHEMA message."""
+        typed_schema = m.Meltano.SingerSchemaMessage.model_validate(message)
+        add_result = self.catalog_manager.add_stream(typed_schema)
+        if add_result.is_failure:
+            return add_result
+        init_result = self.stream_processor.initialize_stream(typed_schema)
+        if init_result.is_failure:
+            return init_result
+        self._schemas[typed_schema.stream] = typed_schema
+        return FlextResult[bool].ok(value=True)
+
+    def handle_state_message(self, message: t.ContainerValue) -> FlextResult[bool]:
+        """Handle one STATE message."""
+        typed_state = m.Meltano.SingerStateMessage.model_validate(message)
+        logger.debug("Received state", extra={"state": typed_state.value})
         return FlextResult[bool].ok(value=True)
 
     def process_lines(self, input_lines: list[str]) -> FlextResult[bool]:
@@ -154,40 +186,8 @@ class SingerTargetOracleWMS:
         """Run target processing loop using stdin."""
         return self.process_lines(list(sys.stdin))
 
-    def handle_schema_message(self, message: t.ContainerValue) -> FlextResult[bool]:
-        """Handle one SCHEMA message."""
-        typed_schema = m.Meltano.SingerSchemaMessage.model_validate(message)
-        add_result = self.catalog_manager.add_stream(typed_schema)
-        if add_result.is_failure:
-            return add_result
-        init_result = self.stream_processor.initialize_stream(typed_schema)
-        if init_result.is_failure:
-            return init_result
-        self._schemas[typed_schema.stream] = typed_schema
-        return FlextResult[bool].ok(value=True)
-
-    def handle_record_message(self, message: t.ContainerValue) -> FlextResult[bool]:
-        """Handle one RECORD message."""
-        typed_record = m.Meltano.SingerRecordMessage.model_validate(message)
-        schema_message = self._schemas.get(typed_record.stream)
-        if schema_message is None:
-            return FlextResult[bool].fail(
-                f"Schema not registered for stream: {typed_record.stream}",
-            )
-        process_result = self.stream_processor.process_record(
-            typed_record,
-            schema_message,
-        )
-        if process_result.is_failure:
-            return FlextResult[bool].fail(
-                process_result.error or "Record processing failed",
-            )
-        return FlextResult[bool].ok(value=True)
-
-    def handle_state_message(self, message: t.ContainerValue) -> FlextResult[bool]:
-        """Handle one STATE message."""
-        typed_state = m.Meltano.SingerStateMessage.model_validate(message)
-        logger.debug("Received state", extra={"state": typed_state.value})
+    def setup(self) -> FlextResult[bool]:
+        """Prepare target runtime state."""
         return FlextResult[bool].ok(value=True)
 
 

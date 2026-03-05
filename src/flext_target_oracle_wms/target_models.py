@@ -108,6 +108,13 @@ class WMSTableManager:
         """Initialize table manager map."""
         self._stream_tables: dict[str, str] = {}
 
+    def get_table_name(self, stream_name: str) -> FlextResult[str]:
+        """Get registered table name for stream."""
+        table_name = self._stream_tables.get(stream_name)
+        if table_name is None:
+            return FlextResult[str].fail(f"Stream not registered: {stream_name}")
+        return FlextResult[str].ok(table_name)
+
     def register_stream(
         self,
         stream_name: str,
@@ -115,13 +122,6 @@ class WMSTableManager:
         """Register a stream and return table name."""
         table_name = stream_name.upper()
         self._stream_tables[stream_name] = table_name
-        return FlextResult[str].ok(table_name)
-
-    def get_table_name(self, stream_name: str) -> FlextResult[str]:
-        """Get registered table name for stream."""
-        table_name = self._stream_tables.get(stream_name)
-        if table_name is None:
-            return FlextResult[str].fail(f"Stream not registered: {stream_name}")
         return FlextResult[str].ok(table_name)
 
 

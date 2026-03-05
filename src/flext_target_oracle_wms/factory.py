@@ -58,28 +58,6 @@ class FlextTargetFactory:
     }
 
     @classmethod
-    def create_target(
-        cls,
-        request: TargetCreationRequest,
-    ) -> FlextResult[SingerTargetOracleWMS]:
-        """Create target instance from request object."""
-        config: dict[str, t.ContainerValue] = {
-            "base_url": request.base_url,
-            "username": request.username,
-            "password": request.password,
-            "environment": request.environment,
-        }
-        if request.preset is not None and request.preset in cls.PRESETS:
-            config.update(cls.PRESETS[request.preset])
-        if request.additional_config is not None:
-            config.update(request.additional_config)
-        logger.info(
-            "Created Oracle WMS target",
-            extra={"environment": request.environment},
-        )
-        return FlextResult[SingerTargetOracleWMS].ok(SingerTargetOracleWMS(config))
-
-    @classmethod
     def create_from_config_dict(
         cls,
         config: Mapping[str, t.ContainerValue],
@@ -103,6 +81,28 @@ class FlextTargetFactory:
         ) as exc:
             return FlextResult[SingerTargetOracleWMS].fail(str(exc))
         return cls.create_target(request)
+
+    @classmethod
+    def create_target(
+        cls,
+        request: TargetCreationRequest,
+    ) -> FlextResult[SingerTargetOracleWMS]:
+        """Create target instance from request object."""
+        config: dict[str, t.ContainerValue] = {
+            "base_url": request.base_url,
+            "username": request.username,
+            "password": request.password,
+            "environment": request.environment,
+        }
+        if request.preset is not None and request.preset in cls.PRESETS:
+            config.update(cls.PRESETS[request.preset])
+        if request.additional_config is not None:
+            config.update(request.additional_config)
+        logger.info(
+            "Created Oracle WMS target",
+            extra={"environment": request.environment},
+        )
+        return FlextResult[SingerTargetOracleWMS].ok(SingerTargetOracleWMS(config))
 
 
 class FlextTargetMonitoringFactory:

@@ -18,6 +18,14 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
         """Helpers for Singer message shape handling."""
 
         @staticmethod
+        def create_record_message(
+            stream_name: str,
+            record: Mapping[str, t.ContainerValue],
+        ) -> Mapping[str, t.ContainerValue]:
+            """Create a Singer RECORD message payload."""
+            return {"type": "RECORD", "stream": stream_name, "record": record}
+
+        @staticmethod
         def create_schema_message(
             stream_name: str,
             schema: Mapping[str, t.ContainerValue],
@@ -30,14 +38,6 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
                 "schema": schema,
                 "key_properties": key_properties or [],
             }
-
-        @staticmethod
-        def create_record_message(
-            stream_name: str,
-            record: Mapping[str, t.ContainerValue],
-        ) -> Mapping[str, t.ContainerValue]:
-            """Create a Singer RECORD message payload."""
-            return {"type": "RECORD", "stream": stream_name, "record": record}
 
         @staticmethod
         def create_state_message(

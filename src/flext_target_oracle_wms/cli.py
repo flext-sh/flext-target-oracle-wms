@@ -47,6 +47,22 @@ class OracleWMSTargetCli:
             return process
         return self._finalize_target(target)
 
+    def _finalize_target(self, target: SingerTargetOracleWMS) -> FlextResult[bool]:
+        """Finalize target processing."""
+        return target.cleanup()
+
+    def _load_config(self, config_path: str) -> Mapping[str, t.ContainerValue]:
+        """Read JSON configuration file."""
+        config_file = Path(config_path)
+        if not config_file.exists():
+            msg = f"Configuration file not found: {config_path}"
+            raise FileNotFoundError(msg)
+        loaded = json.loads(config_file.read_text(encoding="utf-8"))
+        if not u.is_dict_like(loaded):
+            msg = "Configuration file must contain a JSON object"
+            raise TypeError(msg)
+        return loaded
+
     def _prepare_config(
         self,
         config_path: str | None,
@@ -74,22 +90,6 @@ class OracleWMSTargetCli:
     ) -> FlextResult[bool]:
         """Read and process stdin message lines."""
         return target.process_lines(list(sys.stdin))
-
-    def _finalize_target(self, target: SingerTargetOracleWMS) -> FlextResult[bool]:
-        """Finalize target processing."""
-        return target.cleanup()
-
-    def _load_config(self, config_path: str) -> Mapping[str, t.ContainerValue]:
-        """Read JSON configuration file."""
-        config_file = Path(config_path)
-        if not config_file.exists():
-            msg = f"Configuration file not found: {config_path}"
-            raise FileNotFoundError(msg)
-        loaded = json.loads(config_file.read_text(encoding="utf-8"))
-        if not u.is_dict_like(loaded):
-            msg = "Configuration file must contain a JSON object"
-            raise TypeError(msg)
-        return loaded
 
 
 def main() -> None:
