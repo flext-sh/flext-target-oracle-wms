@@ -11,6 +11,7 @@ from pydantic_settings import SettingsConfigDict
 from .constants import c
 
 
+@FlextSettings.auto_register("target_oracle_wms")
 class FlextTargetOracleWmsSettings(FlextSettings):
     """Runtime settings for Singer target Oracle WMS."""
 
