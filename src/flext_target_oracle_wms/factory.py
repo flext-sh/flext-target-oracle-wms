@@ -5,23 +5,11 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import ClassVar
 
-from flext_core import FlextLogger, FlextModels, FlextResult, t
-from pydantic import Field
+from flext_core import FlextLogger, FlextResult, t
 
 from .target_client import SingerTargetOracleWMS
 
 logger = FlextLogger(__name__)
-
-
-class TargetCreationRequest(FlextModels.ArbitraryTypesModel):
-    """Input object for target creation."""
-
-    base_url: str
-    username: str
-    password: str
-    environment: str = "development"
-    preset: str | None = None
-    additional_config: dict[str, t.ContainerValue] | None = Field(default=None)
 
 
 class MonitoredTargetCreationRequest(TargetCreationRequest):
