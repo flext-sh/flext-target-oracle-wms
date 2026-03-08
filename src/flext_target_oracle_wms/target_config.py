@@ -24,13 +24,12 @@ def create_settings(
         ImportError,
     ) as exc:
         return FlextResult[FlextTargetOracleWmsSettings].fail(
-            f"Invalid settings overrides: {exc}",
+            f"Invalid settings overrides: {exc}"
         )
-
     validation = settings.validate_runtime()
     if validation.is_failure:
         return FlextResult[FlextTargetOracleWmsSettings].fail(
-            validation.error or "Runtime validation failed",
+            validation.error or "Runtime validation failed"
         )
     return FlextResult[FlextTargetOracleWmsSettings].ok(settings)
 

@@ -47,8 +47,7 @@ class FlextTargetFactory:
 
     @classmethod
     def create_from_config_dict(
-        cls,
-        config: Mapping[str, t.ContainerValue],
+        cls, config: Mapping[str, t.ContainerValue]
     ) -> FlextResult[SingerTargetOracleWMS]:
         """Create target from plain dictionary config via Pydantic validation."""
         known_keys = {"base_url", "username", "password", "environment", "preset"}
@@ -72,8 +71,7 @@ class FlextTargetFactory:
 
     @classmethod
     def create_target(
-        cls,
-        request: TargetCreationRequest,
+        cls, request: TargetCreationRequest
     ) -> FlextResult[SingerTargetOracleWMS]:
         """Create target instance from request object."""
         config: dict[str, t.ContainerValue] = {
@@ -87,8 +85,7 @@ class FlextTargetFactory:
         if request.additional_config is not None:
             config.update(request.additional_config)
         logger.info(
-            "Created Oracle WMS target",
-            extra={"environment": request.environment},
+            "Created Oracle WMS target", extra={"environment": request.environment}
         )
         return FlextResult[SingerTargetOracleWMS].ok(SingerTargetOracleWMS(config))
 
@@ -101,8 +98,7 @@ class FlextTargetMonitoringFactory:
         self.monitor_name = monitor_name
 
     def create_monitored_target(
-        self,
-        request: MonitoredTargetCreationRequest,
+        self, request: MonitoredTargetCreationRequest
     ) -> FlextResult[SingerTargetOracleWMS]:
         """Create monitored target using base factory."""
         base_request = TargetCreationRequest(

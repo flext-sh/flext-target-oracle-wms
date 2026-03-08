@@ -18,10 +18,6 @@ from flext_target_oracle_wms.target_models import (
     WMSTypeConverter,
 )
 
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
 
 def _schema_msg(
     stream: str = "test_stream",
@@ -40,19 +36,9 @@ def _schema_msg(
 
 
 def _record_msg(
-    stream: str = "test_stream",
-    record: dict[str, t.ContainerValue] | None = None,
+    stream: str = "test_stream", record: dict[str, t.ContainerValue] | None = None
 ) -> dict[str, t.ContainerValue]:
-    return {
-        "type": "RECORD",
-        "stream": stream,
-        "record": record or {"id": "1"},
-    }
-
-
-# ---------------------------------------------------------------------------
-# WMSTypeConverter
-# ---------------------------------------------------------------------------
+    return {"type": "RECORD", "stream": stream, "record": record or {"id": "1"}}
 
 
 class TestWMSTypeConverter:
@@ -96,11 +82,6 @@ class TestWMSTypeConverter:
         assert result.value == "True"
 
 
-# ---------------------------------------------------------------------------
-# WMSDataTransformer
-# ---------------------------------------------------------------------------
-
-
 class TestWMSDataTransformer:
     """Tests for WMSDataTransformer.transform_record."""
 
@@ -109,8 +90,7 @@ class TestWMSDataTransformer:
         result = transformer.transform_record(
             _record_msg("s", {"name": "alice", "age": "30"}),
             _schema_msg(
-                "s",
-                properties={"name": {"type": "string"}, "age": {"type": "string"}},
+                "s", properties={"name": {"type": "string"}, "age": {"type": "string"}}
             ),
         )
         assert result.is_success
@@ -120,8 +100,7 @@ class TestWMSDataTransformer:
     def test_preserves_stream_name(self) -> None:
         transformer = WMSDataTransformer()
         result = transformer.transform_record(
-            _record_msg("orders", {"id": "1"}),
-            _schema_msg("orders"),
+            _record_msg("orders", {"id": "1"}), _schema_msg("orders")
         )
         assert result.is_success
         assert result.value.stream == "orders"
@@ -138,17 +117,9 @@ class TestWMSDataTransformer:
 
     def test_transform_without_schema(self) -> None:
         transformer = WMSDataTransformer()
-        result = transformer.transform_record(
-            _record_msg("s", {"name": "bob"}),
-            None,
-        )
+        result = transformer.transform_record(_record_msg("s", {"name": "bob"}), None)
         assert result.is_success
         assert "NAME" in result.value.record
-
-
-# ---------------------------------------------------------------------------
-# WMSSchemaMapper
-# ---------------------------------------------------------------------------
 
 
 class TestWMSSchemaMapper:
@@ -167,11 +138,6 @@ class TestWMSSchemaMapper:
         mapper = WMSSchemaMapper()
         result = mapper.map_stream_schema(_schema_msg("s", key_properties=["a", "b"]))
         assert result.value.key_properties == ["a", "b"]
-
-
-# ---------------------------------------------------------------------------
-# WMSTableManager
-# ---------------------------------------------------------------------------
 
 
 class TestWMSTableManager:

@@ -20,7 +20,7 @@ def _valid_config() -> dict[str, t.ContainerValue]:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        },
+        }
     }
 
 
@@ -41,8 +41,7 @@ def _schema_line(
 
 
 def _record_line(
-    stream: str = "test_stream",
-    record: dict[str, t.ContainerValue] | None = None,
+    stream: str = "test_stream", record: dict[str, t.ContainerValue] | None = None
 ) -> str:
     return json.dumps({
         "type": "RECORD",
@@ -52,10 +51,7 @@ def _record_line(
 
 
 def _state_line(state: dict[str, t.ContainerValue] | None = None) -> str:
-    return json.dumps({
-        "type": "STATE",
-        "value": state or {"bookmarks": {}},
-    })
+    return json.dumps({"type": "STATE", "value": state or {"bookmarks": {}}})
 
 
 class TestTargetInit:
@@ -178,8 +174,7 @@ class TestTargetProcessLines:
         target = SingerTargetOracleWMS(_valid_config())
         lines = [
             _schema_line(
-                "orders",
-                {"id": {"type": "string"}, "name": {"type": "string"}},
+                "orders", {"id": {"type": "string"}, "name": {"type": "string"}}
             ),
             _record_line("orders", {"id": "1", "name": "test"}),
             _state_line({"bookmarks": {"orders": "1"}}),

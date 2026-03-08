@@ -48,7 +48,7 @@ def sample_inventory_records() -> list[dict[str, t.ContainerValue]]:
             "location": "A-01-01",
             "lot_number": "LOT001",
             "expiry_date": "2024-12-31",
-            "unit_cost": 10.50,
+            "unit_cost": 10.5,
         },
         {
             "item_id": "ITEM002",
@@ -57,7 +57,7 @@ def sample_inventory_records() -> list[dict[str, t.ContainerValue]]:
             "location": "A-01-02",
             "lot_number": "LOT002",
             "expiry_date": "2024-06-30",
-            "unit_cost": 25.00,
+            "unit_cost": 25.0,
         },
     ]
 
@@ -71,7 +71,7 @@ def sample_order_records() -> list[dict[str, t.ContainerValue]]:
             "customer_id": "CUST001",
             "order_date": "2024-01-01T10:00:00Z",
             "status": "SHIPPED",
-            "total_amount": 1000.00,
+            "total_amount": 1000.0,
             "ship_date": "2024-01-02T15:00:00Z",
         },
         {
@@ -79,7 +79,7 @@ def sample_order_records() -> list[dict[str, t.ContainerValue]]:
             "customer_id": "CUST002",
             "order_date": "2024-01-02T11:00:00Z",
             "status": "PENDING",
-            "total_amount": 500.00,
+            "total_amount": 500.0,
             "ship_date": None,
         },
     ]
@@ -133,10 +133,7 @@ def singer_schema_message() -> dict[str, t.ContainerValue]:
         "stream": "test_stream",
         "schema": {
             "type": "object",
-            "properties": {
-                "id": {"type": "string"},
-                "name": {"type": "string"},
-            },
+            "properties": {"id": {"type": "string"}, "name": {"type": "string"}},
         },
         "key_properties": ["id"],
     }
@@ -157,7 +154,4 @@ def singer_record_message() -> dict[str, t.ContainerValue]:
 @pytest.fixture
 def singer_state_message() -> dict[str, t.ContainerValue]:
     """Return a sample Singer STATE message."""
-    return {
-        "type": "STATE",
-        "value": {"bookmarks": {}},
-    }
+    return {"type": "STATE", "value": {"bookmarks": {}}}

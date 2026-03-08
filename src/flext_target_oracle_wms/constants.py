@@ -56,5 +56,4 @@ class FlextTargetOracleWmsConstants(FlextMeltanoConstants, FlextOracleWmsConstan
 
 
 c = FlextTargetOracleWmsConstants
-
 __all__ = ["FlextTargetOracleWmsConstants", "c"]

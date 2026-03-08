@@ -19,8 +19,7 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
 
         @staticmethod
         def create_record_message(
-            stream_name: str,
-            record: Mapping[str, t.ContainerValue],
+            stream_name: str, record: Mapping[str, t.ContainerValue]
         ) -> Mapping[str, t.ContainerValue]:
             """Create a Singer RECORD message payload."""
             return {"type": "RECORD", "stream": stream_name, "record": record}
@@ -58,11 +57,10 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
             missing = sorted(key for key in required if key not in config)
             if missing:
                 return FlextResult[bool].fail(
-                    f"Missing required configuration fields: {missing}",
+                    f"Missing required configuration fields: {missing}"
                 )
             load_method = config.get(
-                "load_method",
-                c.TargetOracleWms.LoadMethods.APPEND_ONLY,
+                "load_method", c.TargetOracleWms.LoadMethods.APPEND_ONLY
             )
             if load_method not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS:
                 return FlextResult[bool].fail("Invalid load_method")
@@ -70,5 +68,4 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
 
 
 __all__ = ["FlextTargetOracleWmsUtilities", "u"]
-
 u = FlextTargetOracleWmsUtilities

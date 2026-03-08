@@ -31,17 +31,14 @@ class TestExamplesCodeQuality:
         """Test that examples directory exists and contains files."""
         assert examples_dir.exists(), "Examples directory must exist"
         assert examples_dir.is_dir(), "Examples path must be a directory"
-
         python_files = list(examples_dir.glob("*.py"))
         assert len(python_files) >= 4, "Must have at least 4 example files"
-
         expected_files = [
             "01_basic_usage.py",
             "05_advanced_configuration.py",
             "02_batch_processing.py",
             "03_error_handling.py",
         ]
-
         for expected_file in expected_files:
             file_path = examples_dir / expected_file
             assert file_path.exists(), (
@@ -52,14 +49,9 @@ class TestExamplesCodeQuality:
         """Test that examples use REAL flext-* imports, not fallbacks."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
-
-            # Parse Python code to check imports
             tree = ast.parse(content, filename=str(example_file))
-
-            # Check for real flext-* imports
             has_flext_core = False
             has_target_import = False
-
             for node in ast.walk(tree):
                 if isinstance(node, ast.ImportFrom):
                     if node.module == "flext_core":
@@ -71,16 +63,11 @@ class TestExamplesCodeQuality:
                 elif isinstance(node, ast.Import):
                     for alias in node.names:
                         if alias.name.startswith("flext_"):
-                            # Found flext import
                             pass
-
-            # Verify real imports are used
             assert has_flext_core, f"{example_file.name} must import from flext_core"
             assert has_target_import, (
                 f"{example_file.name} must import from flext_target_oracle_wms"
             )
-
-            # Check for forbidden patterns
             forbidden_patterns = [
                 "type: ignore[import-not-found]",
                 "import fallback",
@@ -91,22 +78,18 @@ class TestExamplesCodeQuality:
                 "FIXME:",
                 "HACK:",
             ]
-
             for pattern in forbidden_patterns:
                 assert pattern not in content, (
                     f"{example_file.name} contains forbidden pattern: {pattern}"
                 )
 
     def test_examples_have_comprehensive_docstrings(
-        self,
-        example_files: list[Path],
+        self, example_files: list[Path]
     ) -> None:
         """Test that examples have comprehensive docstrings."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
             tree = ast.parse(content, filename=str(example_file))
-
-            # Check module docstring
             module_docstring = ast.get_docstring(tree)
             assert module_docstring is not None, (
                 f"{example_file.name} must have module docstring"
@@ -118,18 +101,14 @@ class TestExamplesCodeQuality:
                 "PRODUCTION" in module_docstring.upper()
                 or "REAL" in module_docstring.upper()
             ), f"{example_file.name} must emphasize production/real implementation"
-
-            # Check function docstrings
             function_count = 0
             documented_functions = 0
-
             for node in ast.walk(tree):
                 if isinstance(node, ast.FunctionDef):
                     function_count += 1
                     func_docstring = ast.get_docstring(node)
                     if func_docstring and len(func_docstring) > 10:
                         documented_functions += 1
-
             if function_count > 0:
                 doc_ratio = documented_functions / function_count
                 assert doc_ratio >= 0.8, (
@@ -141,18 +120,13 @@ class TestExamplesCodeQuality:
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
             tree = ast.parse(content, filename=str(example_file))
-
-            # Check for async functions and await usage
             has_async_function = False
             has_await = False
-
             for node in ast.walk(tree):
                 if isinstance(node, ast.AsyncFunctionDef):
                     has_async_function = True
                 elif isinstance(node, ast.Await):
                     has_await = True
-
-            # Only assert await if file actually contains async functions
             if has_async_function:
                 assert has_await, (
                     f"{example_file.name} has async functions but no await statements"
@@ -163,11 +137,8 @@ class TestExamplesCodeQuality:
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
             tree = ast.parse(content, filename=str(example_file))
-
-            # Check for error handling patterns
             has_try_except = False
             has_flext_result_check = False
-
             for node in ast.walk(tree):
                 if isinstance(node, ast.Try):
                     has_try_except = True
@@ -177,15 +148,9 @@ class TestExamplesCodeQuality:
                 elif (
                     isinstance(node, ast.Call)
                     and isinstance(node.func, ast.Attribute)
-                    and node.func.attr
-                    in {
-                        "error",
-                        "warning",
-                    }
+                    and (node.func.attr in {"error", "warning"})
                 ):
                     pass
-
-            # Verify error handling patterns
             if "error" in content.lower():
                 assert has_try_except or has_flext_result_check, (
                     f"{example_file.name} mentions errors but has no error handling"
@@ -195,8 +160,6 @@ class TestExamplesCodeQuality:
         """Test that examples use realistic configuration patterns."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
-
-            # Check for realistic Oracle WMS configuration
             config_patterns = [
                 "base_url",
                 "username",
@@ -204,62 +167,40 @@ class TestExamplesCodeQuality:
                 "environment",
                 "batch_size",
             ]
-
             has_config = False
             for pattern in config_patterns:
                 if pattern in content:
                     has_config = True
                     break
-
             if "config" in content.lower():
                 assert has_config, (
                     f"{example_file.name} mentions config but has no realistic configuration"
                 )
-
-            # Check for Oracle WMS specific patterns
-            oracle_patterns = [
-                "oracle",
-                "wms",
-                "SingerTargetOracleWMS",
-            ]
-
+            oracle_patterns = ["oracle", "wms", "SingerTargetOracleWMS"]
             has_oracle_pattern = False
             for pattern in oracle_patterns:
                 if pattern in content:
                     has_oracle_pattern = True
                     break
-
             assert has_oracle_pattern, (
                 f"{example_file.name} must contain Oracle WMS specific patterns"
             )
 
     def test_examples_have_main_execution_blocks(
-        self,
-        example_files: list[Path],
+        self, example_files: list[Path]
     ) -> None:
         """Test that examples have proper main execution blocks."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
-
-            # Check for main block
             assert 'if __name__ == "__main__":' in content, (
                 f"{example_file.name} must have main execution block"
             )
-
-            # Check for example execution
-            main_patterns = [
-                "print(",
-                "run(",
-                "run_",
-                "demonstrate_",
-            ]
-
+            main_patterns = ["print(", "run(", "run_", "demonstrate_"]
             has_main_execution = False
             for pattern in main_patterns:
                 if pattern in content:
                     has_main_execution = True
                     break
-
             assert has_main_execution, (
                 f"{example_file.name} main block must execute examples"
             )
@@ -272,20 +213,14 @@ class TestExamplesImportability:
         """Test that examples can be imported (syntax validation)."""
         examples_dir = Path(__file__).parents[2] / "examples"
         example_files = list(examples_dir.glob("*.py"))
-
-        # Apenas valida sintaxe sem alterar sys.path
         for example_file in example_files:
             if example_file.name == "__init__.py":
                 continue
-
-            # Testa que arquivo parseia sem erros de sintaxe
             try:
                 content = example_file.read_text(encoding="utf-8")
                 ast.parse(content, filename=str(example_file))
             except SyntaxError as e:
                 pytest.fail(f"Syntax error in {example_file.name}: {e}")
-
-            # Validação básica de parsing concluída
             try:
                 spec = ast.parse(content, filename=str(example_file))
                 assert spec is not None, f"Failed to parse {example_file.name}"
@@ -308,13 +243,9 @@ class TestExamplesStructure:
         """Test that examples README exists and is comprehensive."""
         examples_dir = Path(__file__).parents[2] / "examples"
         readme_path = examples_dir / "README.md"
-
         assert readme_path.exists(), "Examples directory must have README.md"
-
         readme_content = readme_path.read_text(encoding="utf-8")
         assert len(readme_content) > 1000, "README must be comprehensive (>1000 chars)"
-
-        # Check for required sections
         required_sections = [
             "Examples Overview",
             "Running the Examples",
@@ -322,7 +253,6 @@ class TestExamplesStructure:
             "Performance",
             "Security",
         ]
-
         for section in required_sections:
             assert section in readme_content, f"README must contain '{section}' section"
 
@@ -330,39 +260,28 @@ class TestExamplesStructure:
         """Test that examples follow proper naming conventions."""
         examples_dir = Path(__file__).parents[2] / "examples"
         example_files = list(examples_dir.glob("*.py"))
-
         for example_file in example_files:
             if example_file.name == "__init__.py":
                 continue
-
-            # Check naming convention (snake_case)
             name = example_file.stem
             assert name.islower(), f"Example {example_file.name} must use lowercase"
             assert "_" in name or name.isalpha(), (
                 f"Example {example_file.name} must use snake_case"
             )
-
-            # Check for descriptive names
             assert len(name) >= 5, f"Example {example_file.name} name too short"
 
     def test_examples_have_proper_headers(self) -> None:
         """Test that examples have proper file headers."""
         examples_dir = Path(__file__).parents[2] / "examples"
         example_files = list(examples_dir.glob("*.py"))
-
         for example_file in example_files:
             if example_file.name == "__init__.py":
                 continue
-
             content = example_file.read_text(encoding="utf-8")
             lines = content.split("\n")
-
-            # Check shebang
             assert lines[0].startswith("#!/usr/bin/env python3"), (
                 f"{example_file.name} must have proper shebang"
             )
-
-            # Check copyright and license
             assert any("Copyright" in line for line in lines[:20]), (
                 f"{example_file.name} must have copyright notice"
             )
@@ -378,10 +297,8 @@ class TestExamplesFlextIntegration:
         """Test that examples use FlextResult pattern correctly."""
         examples_dir = Path(__file__).parents[2] / "examples"
         example_files = list(examples_dir.glob("*.py"))
-
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
-
             if "FlextResult" in content:
                 assert ".is_success" in content or ".is_failure" in content, (
                     f"{example_file.name} uses FlextResult but not .is_success/.is_failure"
@@ -394,12 +311,9 @@ class TestExamplesFlextIntegration:
         """Test that examples use flext-core logging correctly."""
         examples_dir = Path(__file__).parents[2] / "examples"
         example_files = list(examples_dir.glob("*.py"))
-
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
-
             if "FlextLogger" in content:
-                # Must use logger properly
                 assert "logger = FlextLogger(__name__)" in content, (
                     f"{example_file.name} must use FlextLogger(__name__) pattern"
                 )
@@ -411,12 +325,9 @@ class TestExamplesFlextIntegration:
         """Test that examples use flext-observability correctly."""
         examples_dir = Path(__file__).parents[2] / "examples"
         example_files = list(examples_dir.glob("*.py"))
-
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
-
             if "flext_monitor_function" in content:
-                # Must use monitoring decorator properly
                 assert "@flext_monitor_function(" in content, (
                     f"{example_file.name} must use @flext_monitor_function decorator"
                 )

@@ -32,10 +32,7 @@ class TestTargetCreationRequest:
 
     def test_custom_environment(self) -> None:
         req = TargetCreationRequest(
-            base_url="https://x",
-            username="u",
-            password="p",
-            environment="production",
+            base_url="https://x", username="u", password="p", environment="production"
         )
         assert req.environment == "production"
 
@@ -45,18 +42,13 @@ class TestMonitoredTargetCreationRequest:
 
     def test_default_monitor_name(self) -> None:
         req = MonitoredTargetCreationRequest(
-            base_url="https://x",
-            username="u",
-            password="p",
+            base_url="https://x", username="u", password="p"
         )
         assert req.monitor_name == "oracle_wms_target"
 
     def test_custom_monitor_name(self) -> None:
         req = MonitoredTargetCreationRequest(
-            base_url="https://x",
-            username="u",
-            password="p",
-            monitor_name="custom",
+            base_url="https://x", username="u", password="p", monitor_name="custom"
         )
         assert req.monitor_name == "custom"
 
@@ -80,10 +72,7 @@ class TestFlextTargetFactory:
     @patch(_PATCH_TARGET)
     def test_create_target_with_preset(self, mock_cls: object) -> None:
         req = TargetCreationRequest(
-            base_url="https://x",
-            username="u",
-            password="p",
-            preset="testing",
+            base_url="https://x", username="u", password="p", preset="testing"
         )
         result = FlextTargetFactory.create_target(req)
         assert result.is_success
@@ -148,9 +137,7 @@ class TestFlextTargetMonitoringFactory:
     def test_create_monitored_target_success(self, mock_cls: object) -> None:
         factory = FlextTargetMonitoringFactory()
         req = MonitoredTargetCreationRequest(
-            base_url="https://x",
-            username="u",
-            password="p",
+            base_url="https://x", username="u", password="p"
         )
         result = factory.create_monitored_target(req)
         assert result.is_success
@@ -162,28 +149,21 @@ class TestConvenienceFunctions:
     @patch(_PATCH_TARGET)
     def test_create_oracle_wms_target(self, mock_cls: object) -> None:
         result = create_oracle_wms_target(
-            base_url="https://x",
-            username="u",
-            password="p",
+            base_url="https://x", username="u", password="p"
         )
         assert result.is_success
 
     @patch(_PATCH_TARGET)
     def test_create_oracle_wms_target_with_preset(self, mock_cls: object) -> None:
         result = create_oracle_wms_target(
-            base_url="https://x",
-            username="u",
-            password="p",
-            preset="production",
+            base_url="https://x", username="u", password="p", preset="production"
         )
         assert result.is_success
 
     @patch(_PATCH_TARGET)
     def test_create_monitored_oracle_wms_target(self, mock_cls: object) -> None:
         req = MonitoredTargetCreationRequest(
-            base_url="https://x",
-            username="u",
-            password="p",
+            base_url="https://x", username="u", password="p"
         )
         result = create_monitored_oracle_wms_target(req)
         assert result.is_success

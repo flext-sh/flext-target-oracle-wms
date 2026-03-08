@@ -20,7 +20,7 @@ def _valid_config() -> dict[str, t.ContainerValue]:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        },
+        }
     }
 
 
@@ -48,12 +48,9 @@ class TestTargetLifecycle:
     def test_setup_process_cleanup(self) -> None:
         target = SingerTargetOracleWMS(_valid_config())
         assert target.setup().is_success
-
         lines = [
             _schema_line(
-                "items",
-                {"id": {"type": "string"}, "name": {"type": "string"}},
-                ["id"],
+                "items", {"id": {"type": "string"}, "name": {"type": "string"}}, ["id"]
             ),
             _record_line("items", {"id": "1", "name": "Widget"}),
             _state_line({"bookmarks": {"items": "1"}}),
@@ -64,14 +61,12 @@ class TestTargetLifecycle:
     def test_multiple_batches(self) -> None:
         target = SingerTargetOracleWMS(_valid_config())
         target.setup()
-
         batch1 = [
             _schema_line("orders", {"order_id": {"type": "string"}}, ["order_id"]),
             _record_line("orders", {"order_id": "ORD001"}),
             _record_line("orders", {"order_id": "ORD002"}),
         ]
         assert target.process_lines(batch1).is_success
-
         batch2 = [
             _record_line("orders", {"order_id": "ORD003"}),
             _state_line({"bookmarks": {"orders": "3"}}),
@@ -87,7 +82,6 @@ class TestMultiStreamIntegration:
     def test_three_streams_interleaved(self) -> None:
         target = SingerTargetOracleWMS(_valid_config())
         target.setup()
-
         lines = [
             _schema_line("orders", {"id": {"type": "string"}}, ["id"]),
             _schema_line("items", {"id": {"type": "string"}}, ["id"]),

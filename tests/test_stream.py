@@ -29,14 +29,9 @@ def _schema_msg(
 
 
 def _record_msg(
-    stream: str = "test_stream",
-    record: dict[str, t.ContainerValue] | None = None,
+    stream: str = "test_stream", record: dict[str, t.ContainerValue] | None = None
 ) -> dict[str, t.ContainerValue]:
-    return {
-        "type": "RECORD",
-        "stream": stream,
-        "record": record or {"id": "1"},
-    }
+    return {"type": "RECORD", "stream": stream, "record": record or {"id": "1"}}
 
 
 class TestStreamProcessorInitialize:
@@ -70,8 +65,7 @@ class TestStreamProcessorRecord:
     def test_process_record_without_init_fails(self) -> None:
         proc = SingerWMSStreamProcessor(WMSTableManager(), WMSDataTransformer())
         result = proc.process_record(
-            _record_msg("orders", {"id": "1"}),
-            _schema_msg("orders"),
+            _record_msg("orders", {"id": "1"}), _schema_msg("orders")
         )
         assert result.is_failure
         assert (
@@ -82,14 +76,10 @@ class TestStreamProcessorRecord:
     def test_process_record_uppercases_keys(self) -> None:
         proc = SingerWMSStreamProcessor(WMSTableManager(), WMSDataTransformer())
         schema = _schema_msg(
-            "s",
-            schema={"type": "object", "properties": {"name": {"type": "string"}}},
+            "s", schema={"type": "object", "properties": {"name": {"type": "string"}}}
         )
         proc.initialize_stream(schema)
-        result = proc.process_record(
-            _record_msg("s", {"name": "hello"}),
-            schema,
-        )
+        result = proc.process_record(_record_msg("s", {"name": "hello"}), schema)
         assert result.is_success
         transformed = result.value
         assert "NAME" in transformed.record

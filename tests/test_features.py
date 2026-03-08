@@ -11,10 +11,7 @@ import math
 from flext_core import t
 
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
-from flext_target_oracle_wms.target_models import (
-    WMSDataTransformer,
-    WMSTypeConverter,
-)
+from flext_target_oracle_wms.target_models import WMSDataTransformer, WMSTypeConverter
 from flext_target_oracle_wms.utilities import FlextTargetOracleWmsUtilities
 
 
@@ -24,7 +21,7 @@ def _valid_config() -> dict[str, t.ContainerValue]:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        },
+        }
     }
 
 
@@ -87,31 +84,31 @@ class TestUtilitiesFeatures:
 
     def test_create_schema_message(self) -> None:
         msg = FlextTargetOracleWmsUtilities.TargetOracleWms.create_schema_message(
-            "test",
-            {"type": "object", "properties": {}},
+            "test", {"type": "object", "properties": {}}
         )
         assert msg["type"] == "SCHEMA"
         assert msg["stream"] == "test"
 
     def test_create_record_message(self) -> None:
         msg = FlextTargetOracleWmsUtilities.TargetOracleWms.create_record_message(
-            "test",
-            {"id": "1"},
+            "test", {"id": "1"}
         )
         assert msg["type"] == "RECORD"
         assert msg["stream"] == "test"
 
     def test_create_state_message(self) -> None:
         msg = FlextTargetOracleWmsUtilities.TargetOracleWms.create_state_message({
-            "pos": 42,
+            "pos": 42
         })
         assert msg["type"] == "STATE"
         assert msg["value"] == {"pos": 42}
 
     def test_validate_config_success(self) -> None:
-        result = FlextTargetOracleWmsUtilities.Validation.validate_wms_target_config(
-            {"base_url": "https://x", "username": "u", "password": "p"},
-        )
+        result = FlextTargetOracleWmsUtilities.Validation.validate_wms_target_config({
+            "base_url": "https://x",
+            "username": "u",
+            "password": "p",
+        })
         assert result.is_success
 
     def test_validate_config_missing_fields(self) -> None:

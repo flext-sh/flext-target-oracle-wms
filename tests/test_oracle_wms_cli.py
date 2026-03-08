@@ -27,7 +27,7 @@ def _valid_config_dict() -> dict:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        },
+        }
     }
 
 
@@ -92,7 +92,6 @@ class TestMain:
     @patch("flext_target_oracle_wms.cli.sys.stdin", [])
     @patch("flext_target_oracle_wms.cli.sys.argv", ["target-oracle-wms"])
     def test_main_no_args_succeeds(self) -> None:
-        # main() calls sys.exit(1) on failure, no exit = success
         main()
 
     @patch("flext_target_oracle_wms.cli.sys.stdin", [])

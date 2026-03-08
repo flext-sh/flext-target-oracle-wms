@@ -27,5 +27,4 @@ class TestsFlextTargetOracleWmsProtocols(FlextTestsProtocols):
 
 
 p = TestsFlextTargetOracleWmsProtocols
-
 __all__ = ["TestsFlextTargetOracleWmsProtocols", "p"]

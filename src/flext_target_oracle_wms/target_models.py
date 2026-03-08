@@ -13,9 +13,7 @@ class WMSTypeConverter:
     """Convert source scalar values to Oracle-friendly payload values."""
 
     def convert_singer_to_oracle(
-        self,
-        singer_type: str,
-        value: t.ContainerValue,
+        self, singer_type: str, value: t.ContainerValue
     ) -> FlextResult[t.JsonValue]:
         """Convert a single source value according to Singer type."""
         if value is None:
@@ -51,24 +49,23 @@ class WMSDataTransformer:
         transformed: dict[str, t.JsonValue] = {}
         schema_definition = (
             m.Meltano.SingerSchemaMessage.model_validate(
-                schema_message,
+                schema_message
             ).schema_definition
             if schema_message is not None
             else {}
         )
         schema_props = m.TargetOracleWms.SingerSchemaProperties.model_validate(
-            schema_definition,
+            schema_definition
         )
         for key, value in typed_record.record.items():
             prop_schema = schema_props.properties.get(key)
             resolved_type = prop_schema.type if prop_schema is not None else "string"
             converted = self.type_converter.convert_singer_to_oracle(
-                resolved_type,
-                value,
+                resolved_type, value
             )
             if converted.is_failure:
                 return FlextResult[m.Meltano.SingerRecordMessage].fail(
-                    converted.error or "Conversion failed",
+                    converted.error or "Conversion failed"
                 )
             transformed[str(key).upper()] = converted.value
         return FlextResult[m.Meltano.SingerRecordMessage].ok(
@@ -77,7 +74,7 @@ class WMSDataTransformer:
                 record=transformed,
                 time_extracted=typed_record.time_extracted,
                 version=typed_record.version,
-            ),
+            )
         )
 
 
@@ -85,8 +82,7 @@ class WMSSchemaMapper:
     """Map Singer schema payloads to Oracle DDL-friendly structures."""
 
     def map_stream_schema(
-        self,
-        schema_message: t.ContainerValue,
+        self, schema_message: t.ContainerValue
     ) -> FlextResult[m.Meltano.SingerCatalogEntry]:
         """Build normalized schema map for table creation."""
         typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
@@ -97,7 +93,7 @@ class WMSSchemaMapper:
                 schema=typed_schema.schema_definition,
                 key_properties=typed_schema.key_properties,
                 table_name=typed_schema.stream.upper(),
-            ),
+            )
         )
 
 
@@ -115,10 +111,7 @@ class WMSTableManager:
             return FlextResult[str].fail(f"Stream not registered: {stream_name}")
         return FlextResult[str].ok(table_name)
 
-    def register_stream(
-        self,
-        stream_name: str,
-    ) -> FlextResult[str]:
+    def register_stream(self, stream_name: str) -> FlextResult[str]:
         """Register a stream and return table name."""
         table_name = stream_name.upper()
         self._stream_tables[stream_name] = table_name

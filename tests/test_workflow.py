@@ -21,7 +21,7 @@ def _valid_config() -> dict[str, t.ContainerValue]:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        },
+        }
     }
 
 
@@ -78,9 +78,7 @@ class TestFullSingerWorkflow:
             _schema_line("s", {"id": {"type": "string"}}, ["id"]),
             _record_line("s", {"id": "1"}),
             _schema_line(
-                "s",
-                {"id": {"type": "string"}, "name": {"type": "string"}},
-                ["id"],
+                "s", {"id": {"type": "string"}, "name": {"type": "string"}}, ["id"]
             ),
             _record_line("s", {"id": "2", "name": "updated"}),
         ]
@@ -112,7 +110,6 @@ class TestCliWorkflow:
         ]
         mock_stdin.__iter__ = MagicMock(return_value=iter(lines))
         mock_stdin.__next__ = MagicMock(side_effect=lines)
-
         cli = OracleWMSTargetCli()
         result = cli.execute()
         assert result.is_success
