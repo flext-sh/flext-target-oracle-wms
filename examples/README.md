@@ -114,10 +114,13 @@ Shows sophisticated configuration and custom business logic:
 ```python
 # Custom business type converter
 class CustomWMSTypeConverter(WMSTypeConverter):
-    def convert_singer_to_oracle(self, singer_type: str, value: object) -> FlextResult[object]:
+    def convert_singer_to_oracle(
+        self, singer_type: str, value: object
+    ) -> FlextResult[object]:
         if singer_type == "business_currency":
             return FlextResult[bool].ok(round(float(value), 2))
         return super().convert_singer_to_oracle(singer_type, value)
+
 
 # Advanced configuration
 config = {
@@ -127,8 +130,8 @@ config = {
     "audit_trail": True,
     "custom_type_mappings": {
         "business_date": "DATE",
-        "business_currency": "NUMBER(10,2)"
-    }
+        "business_currency": "NUMBER(10,2)",
+    },
 }
 ```
 
@@ -158,8 +161,7 @@ config = {
 
 # Concurrent stream processing
 concurrent_tasks = [
-    process_stream_batch(stream_name, 1000)
-    for stream_name in successful_streams
+    process_stream_batch(stream_name, 1000) for stream_name in successful_streams
 ]
 gather(*concurrent_tasks)
 ```
@@ -189,13 +191,14 @@ config = {
     "rollback_on_error": True,
 }
 
+
 # Retry with backoff
 def retry_with_backoff(operation: object, max_retries: int = 3) -> FlextResult[object]:
     for attempt in range(max_retries):
         try:
             return operation()
         except Exception as e:
-            backoff_time = 2 ** attempt
+            backoff_time = 2**attempt
             sleep(backoff_time)
 ```
 
