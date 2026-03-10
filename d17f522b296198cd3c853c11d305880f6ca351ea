@@ -1,0 +1,25 @@
+src/flext_target_oracle_wms/target_client.py
+  16e3f8326408a176 123-126,128
+src/flext_target_oracle_wms/cli.py
+  16e3f8326408a176 31,34-35,43,45-50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.10",
+  "base_commit_sha": "d17f522b296198cd3c853c11d305880f6ca351ea",
+  "prompts": {
+    "16e3f8326408a176": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_3269fa848ffetcSIXZd0FmluN5",
+        "model": "anthropic/claude-opus-4-6"
+      },
+      "human_author": "FLEXT Bot <team@flext.sh>",
+      "messages": [],
+      "total_additions": 21,
+      "total_deletions": 19,
+      "accepted_lines": 15,
+      "overriden_lines": 0
+    }
+  }
+}
