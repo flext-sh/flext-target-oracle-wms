@@ -94,7 +94,7 @@ class SingerTargetOracleWMS:
         self.stream_processor = SingerWMSStreamProcessor(
             self.table_manager, self.data_transformer
         )
-        self._schemas: dict[str, object] = {}
+        self._schemas: dict[str, t.ContainerValue] = {}
 
     def cleanup(self) -> FlextResult[bool]:
         """Release target runtime resources."""

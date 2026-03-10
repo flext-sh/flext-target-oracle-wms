@@ -29,7 +29,7 @@ class OracleWMSTargetCli:
         config_arg = kwargs.get("config")
         config_path = str(config_arg) if config_arg is not None else None
         config_result = self._prepare_config(config_path)
-        if config_result.is_failure or config_result.value is None:
+        if config_result.is_failure:
             return FlextResult[bool].fail(config_result.error or "Configuration failed")
         return self._execute_target_pipeline(config_result.value)
 
@@ -97,8 +97,8 @@ def main() -> None:
         config_path = sys.argv[2]
     result = cli_instance.execute(config=config_path)
     if result.is_failure:
-        sys.stderr.write(f"Execution failed: {result.error}\n")
-        sys.exit(1)
+        msg = result.error or "Execution failed"
+        raise RuntimeError(msg)
 
 
 if __name__ == "__main__":
