@@ -28,23 +28,27 @@ class OracleWMSTargetCli:
         """Execute target run using optional config path."""
         config_arg = kwargs.get("config")
         config_path = str(config_arg) if config_arg is not None else None
-        config_result = self._prepare_config(config_path)
-        if config_result.is_failure:
-            return FlextResult[bool].fail(config_result.error or "Configuration failed")
-        return self._execute_target_pipeline(config_result.value)
+        return (
+            self
+            ._prepare_config(config_path)
+            .map_error(lambda e: e or "Configuration failed")
+            .flat_map(self._execute_target_pipeline)
+        )
 
     def _execute_target_pipeline(
         self, config: m.TargetOracleWms.WmsTargetConfig
     ) -> FlextResult[bool]:
         """Setup, process stdin, and cleanup target runtime."""
         target = SingerTargetOracleWMS(config)
-        setup = target.setup()
-        if setup.is_failure:
-            return FlextResult[bool].fail(setup.error or "Setup failed")
-        process = self._process_stdin_messages(target)
-        if process.is_failure:
-            return process
-        return self._finalize_target(target)
+        return (
+            target
+            .setup()
+            .map_error(lambda e: e or "Setup failed")
+            .flow_through(
+                lambda _: self._process_stdin_messages(target),
+                lambda _: self._finalize_target(target),
+            )
+        )
 
     def _finalize_target(self, target: SingerTargetOracleWMS) -> FlextResult[bool]:
         """Finalize target processing."""

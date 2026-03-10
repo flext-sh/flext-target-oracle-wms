@@ -120,14 +120,12 @@ class SingerTargetOracleWMS:
     def handle_schema_message(self, message: t.ContainerValue) -> FlextResult[bool]:
         """Handle one SCHEMA message."""
         typed_schema = m.Meltano.SingerSchemaMessage.model_validate(message)
-        add_result = self.catalog_manager.add_stream(typed_schema)
-        if add_result.is_failure:
-            return add_result
-        init_result = self.stream_processor.initialize_stream(typed_schema)
-        if init_result.is_failure:
-            return init_result
-        self._schemas[typed_schema.stream] = typed_schema
-        return FlextResult[bool].ok(value=True)
+        result = self.catalog_manager.add_stream(typed_schema).flow_through(
+            lambda _: self.stream_processor.initialize_stream(typed_schema),
+        )
+        if result.is_success:
+            self._schemas[typed_schema.stream] = typed_schema
+        return result
 
     def handle_state_message(self, message: t.ContainerValue) -> FlextResult[bool]:
         """Handle one STATE message."""
