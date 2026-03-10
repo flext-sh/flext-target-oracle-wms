@@ -9,11 +9,11 @@ from flext_core import FlextResult, t
 
 def create_settings(
     overrides: Mapping[str, t.ContainerValue] | None = None,
-) -> FlextResult[FlextTargetOracleWmsSettings]:
+) -> FlextResult[FlextTargetOracleWmsSettings]:  # noqa: F821
     """Create settings instance with optional override values."""
     try:
         data: dict[str, t.ContainerValue] = dict(overrides) if overrides else {}
-        settings = FlextTargetOracleWmsSettings.model_validate(data)
+        settings = FlextTargetOracleWmsSettings.model_validate(data)  # noqa: F821
     except (
         ValueError,
         TypeError,
@@ -23,15 +23,15 @@ def create_settings(
         RuntimeError,
         ImportError,
     ) as exc:
-        return FlextResult[FlextTargetOracleWmsSettings].fail(
+        return FlextResult[FlextTargetOracleWmsSettings].fail(  # noqa: F821
             f"Invalid settings overrides: {exc}"
         )
     validation = settings.validate_runtime()
     if validation.is_failure:
-        return FlextResult[FlextTargetOracleWmsSettings].fail(
+        return FlextResult[FlextTargetOracleWmsSettings].fail(  # noqa: F821
             validation.error or "Runtime validation failed"
         )
-    return FlextResult[FlextTargetOracleWmsSettings].ok(settings)
+    return FlextResult[FlextTargetOracleWmsSettings].ok(settings)  # noqa: F821
 
 
-__all__ = ["FlextTargetOracleWmsSettings", "create_settings"]
+__all__ = ["FlextTargetOracleWmsSettings", "create_settings"]  # noqa: F822

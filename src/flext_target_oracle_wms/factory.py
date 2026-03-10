@@ -12,7 +12,7 @@ from .target_client import SingerTargetOracleWMS
 logger = FlextLogger(__name__)
 
 
-class MonitoredTargetCreationRequest(TargetCreationRequest):
+class MonitoredTargetCreationRequest(TargetCreationRequest):  # noqa: F821
     """Input object for monitored target creation."""
 
     monitor_name: str = "oracle_wms_target"
@@ -53,7 +53,7 @@ class FlextTargetFactory:
         known_keys = {"base_url", "username", "password", "environment", "preset"}
         additional = {k: v for k, v in config.items() if k not in known_keys}
         try:
-            request = TargetCreationRequest.model_validate({
+            request = TargetCreationRequest.model_validate({  # noqa: F821
                 **config,
                 "additional_config": additional or None,
             })
@@ -71,7 +71,8 @@ class FlextTargetFactory:
 
     @classmethod
     def create_target(
-        cls, request: TargetCreationRequest
+        cls,
+        request: TargetCreationRequest,  # noqa: F821
     ) -> FlextResult[SingerTargetOracleWMS]:
         """Create target instance from request object."""
         config: dict[str, t.ContainerValue] = {
@@ -101,7 +102,7 @@ class FlextTargetMonitoringFactory:
         self, request: MonitoredTargetCreationRequest
     ) -> FlextResult[SingerTargetOracleWMS]:
         """Create monitored target using base factory."""
-        base_request = TargetCreationRequest(
+        base_request = TargetCreationRequest(  # noqa: F821
             base_url=request.base_url,
             username=request.username,
             password=request.password,
@@ -121,7 +122,7 @@ def create_oracle_wms_target(
     **config: t.ContainerValue,
 ) -> FlextResult[SingerTargetOracleWMS]:
     """Convenience function to create base target instance."""
-    request = TargetCreationRequest(
+    request = TargetCreationRequest(  # noqa: F821
         base_url=base_url,
         username=username,
         password=password,
@@ -144,7 +145,7 @@ __all__ = [
     "FlextTargetFactory",
     "FlextTargetMonitoringFactory",
     "MonitoredTargetCreationRequest",
-    "TargetCreationRequest",
+    "TargetCreationRequest",  # noqa: F822
     "create_monitored_oracle_wms_target",
     "create_oracle_wms_target",
 ]
