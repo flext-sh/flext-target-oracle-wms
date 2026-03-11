@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Advanced configuration example - PRODUCTION REAL implementation with flext-* patterns.
 
 This example shows advanced configuration options, custom patterns, and
@@ -14,7 +15,7 @@ import os
 from collections.abc import Mapping
 from datetime import UTC, datetime
 
-from flext_core import FlextLogger, FlextResult, t
+from flext_core import FlextLogger, r, t
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 from flext_target_oracle_wms import (
@@ -32,23 +33,19 @@ monitor = FlextObservabilityMonitor()
 class CustomWMSTypeConverter(WMSTypeConverter):
     """Custom type converter with business-specific transformations."""
 
-    def convert_singer_to_oracle(
-        self, singer_type: str, value: object
-    ) -> FlextResult[object]:
+    def convert_singer_to_oracle(self, singer_type: str, value: object) -> r[object]:
         """Custom conversion with business rules."""
         if singer_type == "business_date":
             if isinstance(value, str) and value:
                 try:
                     dt = datetime.strptime(value, "%Y-%m-%d").replace(tzinfo=UTC)
                     oracle_date = dt.strftime("%d-%b-%Y").upper()
-                    return FlextResult[bool].ok(oracle_date)
+                    return r[bool].ok(oracle_date)
                 except ValueError:
-                    return FlextResult[bool].fail(
-                        f"Invalid business date format: {value}"
-                    )
+                    return r[bool].fail(f"Invalid business date format: {value}")
         elif singer_type == "business_currency":
             if isinstance(value, (int, float)) and value is not None:
-                return FlextResult[bool].ok(round(float(value), 2))
+                return r[bool].ok(round(float(value), 2))
         elif singer_type == "wms_status" and isinstance(value, str):
             status_mapping = {
                 "active": "A",
@@ -58,10 +55,8 @@ class CustomWMSTypeConverter(WMSTypeConverter):
                 "archived": "Z",
             }
             mapped_status = status_mapping.get(value.lower(), value)
-            return FlextResult[bool].ok(mapped_status)
-        parent_result: FlextResult[object] = super().convert_singer_to_oracle(
-            singer_type, value
-        )
+            return r[bool].ok(mapped_status)
+        parent_result: r[object] = super().convert_singer_to_oracle(singer_type, value)
         return parent_result
 
 
@@ -76,14 +71,14 @@ class CustomWMSDataTransformer(WMSDataTransformer):
         self,
         record_message: Mapping[str, t.ContainerValue],
         schema_message: Mapping[str, t.ContainerValue] | None = None,
-    ) -> FlextResult[object]:
+    ) -> r[object]:
         """Transform record with business validations."""
         base_result = super().transform_record(record_message, schema_message)
         if not base_result.is_success:
             return base_result
         transformed = base_result.data
         if transformed is None:
-            return FlextResult[bool].fail("Base transformation returned None")
+            return r[bool].fail("Base transformation returned None")
         try:
             transformed["_PROCESSED_AT"] = "SYSTIMESTAMP"
             transformed["_PROCESSED_BY"] = "FLEXT_TARGET"
@@ -101,10 +96,8 @@ class CustomWMSDataTransformer(WMSDataTransformer):
             required_fields = ["ITEM_ID", "LOCATION_ID"]
             for field in required_fields:
                 if field not in transformed or not transformed[field]:
-                    return FlextResult[bool].fail(
-                        f"Missing required business field: {field}"
-                    )
-            return FlextResult[bool].ok(transformed)
+                    return r[bool].fail(f"Missing required business field: {field}")
+            return r[bool].ok(transformed)
         except (
             ValueError,
             TypeError,
@@ -114,7 +107,7 @@ class CustomWMSDataTransformer(WMSDataTransformer):
             RuntimeError,
             ImportError,
         ) as e:
-            return FlextResult[bool].fail(f"Business transformation failed: {e}")
+            return r[bool].fail(f"Business transformation failed: {e}")
 
 
 @flext_monitor_function(monitor)

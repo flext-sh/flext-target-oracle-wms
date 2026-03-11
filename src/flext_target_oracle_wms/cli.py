@@ -6,7 +6,7 @@ import json
 import sys
 from pathlib import Path
 
-from flext_core import FlextResult, t, u
+from flext_core import r, t, u
 
 from .models import m
 from .target_client import SingerTargetOracleWMS
@@ -23,7 +23,7 @@ class OracleWMSTargetCli:
         self.description = "Oracle WMS Singer Target"
         self.version = "0.9.0"
 
-    def execute(self, **kwargs: t.ContainerValue) -> FlextResult[bool]:
+    def execute(self, **kwargs: t.ContainerValue) -> r[bool]:
         """Execute target run using optional config path."""
         config_arg = kwargs.get("config")
         config_path = str(config_arg) if config_arg is not None else None
@@ -36,7 +36,7 @@ class OracleWMSTargetCli:
 
     def _execute_target_pipeline(
         self, config: m.TargetOracleWms.WmsTargetConfig
-    ) -> FlextResult[bool]:
+    ) -> r[bool]:
         """Setup, process stdin, and cleanup target runtime."""
         target = SingerTargetOracleWMS(config)
         setup_result = target.setup().map_error(lambda e: e or "Setup failed")
@@ -46,7 +46,7 @@ class OracleWMSTargetCli:
             lambda _: self._finalize_target(target),
         )
 
-    def _finalize_target(self, target: SingerTargetOracleWMS) -> FlextResult[bool]:
+    def _finalize_target(self, target: SingerTargetOracleWMS) -> r[bool]:
         """Finalize target processing."""
         return target.cleanup()
 
@@ -64,15 +64,15 @@ class OracleWMSTargetCli:
 
     def _prepare_config(
         self, config_path: str | None
-    ) -> FlextResult[m.TargetOracleWms.WmsTargetConfig]:
+    ) -> r[m.TargetOracleWms.WmsTargetConfig]:
         """Load config from file or build defaults."""
         if config_path is not None:
-            return FlextResult[m.TargetOracleWms.WmsTargetConfig].ok(
+            return r[m.TargetOracleWms.WmsTargetConfig].ok(
                 m.TargetOracleWms.WmsTargetConfig.model_validate(
                     self._load_config(config_path)
                 )
             )
-        return FlextResult[m.TargetOracleWms.WmsTargetConfig].ok(
+        return r[m.TargetOracleWms.WmsTargetConfig].ok(
             m.TargetOracleWms.WmsTargetConfig.model_validate({
                 "wms_auth": {
                     "base_url": "https://invalid.wms.ocs.oraclecloud.com",
@@ -82,9 +82,7 @@ class OracleWMSTargetCli:
             })
         )
 
-    def _process_stdin_messages(
-        self, target: SingerTargetOracleWMS
-    ) -> FlextResult[bool]:
+    def _process_stdin_messages(self, target: SingerTargetOracleWMS) -> r[bool]:
         """Read and process stdin message lines."""
         return target.process_lines(list(sys.stdin))
 

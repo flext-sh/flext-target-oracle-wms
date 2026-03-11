@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Factory usage example - PRODUCTION-ready flext-* library usage.
 
 This example shows how the FlextTargetFactory makes Oracle WMS targets

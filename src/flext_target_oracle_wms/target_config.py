@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from flext_core import FlextResult, t
+from flext_core import r, t
 
 from .models import m
 
@@ -12,14 +12,14 @@ from .models import m
 class FlextTargetOracleWmsSettings(m.TargetOracleWms.WmsTargetConfig):
     """Validated settings model used by target runtime and factory helpers."""
 
-    def validate_runtime(self) -> FlextResult[bool]:
+    def validate_runtime(self) -> r[bool]:
         """Validate runtime constraints before processing starts."""
         return self.validate_business_rules()
 
 
 def create_settings(
     overrides: Mapping[str, t.ContainerValue] | None = None,
-) -> FlextResult[FlextTargetOracleWmsSettings]:
+) -> r[FlextTargetOracleWmsSettings]:
     """Create settings instance with optional override values."""
     try:
         data: dict[str, t.ContainerValue] = dict(overrides) if overrides else {}
@@ -33,15 +33,15 @@ def create_settings(
         RuntimeError,
         ImportError,
     ) as exc:
-        return FlextResult[FlextTargetOracleWmsSettings].fail(
+        return r[FlextTargetOracleWmsSettings].fail(
             f"Invalid settings overrides: {exc}"
         )
     validation = settings.validate_runtime()
     if validation.is_failure:
-        return FlextResult[FlextTargetOracleWmsSettings].fail(
+        return r[FlextTargetOracleWmsSettings].fail(
             validation.error or "Runtime validation failed"
         )
-    return FlextResult[FlextTargetOracleWmsSettings].ok(settings)
+    return r[FlextTargetOracleWmsSettings].ok(settings)
 
 
 __all__ = ["FlextTargetOracleWmsSettings", "create_settings"]

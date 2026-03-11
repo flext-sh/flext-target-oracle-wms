@@ -32,7 +32,7 @@ This directory contains comprehensive examples demonstrating production-grade us
 
 All examples follow DRY (Don't Repeat Yourself) principles and use REAL implementations from the flext-\* ecosystem:
 
-- **flext-core**: FlextResult, FlextLogger, dependency injection patterns
+- **flext-core**: r, FlextLogger, dependency injection patterns
 - **flext-observability**: FlextObservabilityMonitor, flext_monitor_function
 - **flext-oracle-wms**: Production Oracle WMS Cloud SaaS integration
 - **Singer SDK**: Real Singer protocol implementation
@@ -71,7 +71,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import FlextResult
+from flext_core import r
 from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
@@ -114,11 +114,9 @@ Shows sophisticated configuration and custom business logic:
 ```python
 # Custom business type converter
 class CustomWMSTypeConverter(WMSTypeConverter):
-    def convert_singer_to_oracle(
-        self, singer_type: str, value: object
-    ) -> FlextResult[object]:
+    def convert_singer_to_oracle(self, singer_type: str, value: object) -> r[object]:
         if singer_type == "business_currency":
-            return FlextResult[bool].ok(round(float(value), 2))
+            return r[bool].ok(round(float(value), 2))
         return super().convert_singer_to_oracle(singer_type, value)
 
 
@@ -193,7 +191,7 @@ config = {
 
 
 # Retry with backoff
-def retry_with_backoff(operation: object, max_retries: int = 3) -> FlextResult[object]:
+def retry_with_backoff(operation: object, max_retries: int = 3) -> r[object]:
     for attempt in range(max_retries):
         try:
             return operation()

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Basic usage example for flext-target-oracle-wms - PRODUCTION REAL IMPLEMENTATION.
 
 This example demonstrates the basic usage of the Oracle WMS target with REAL

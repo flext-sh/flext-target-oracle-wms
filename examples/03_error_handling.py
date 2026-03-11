@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Error handling and resilience example - PRODUCTION-GRADE implementation.
 
 This example demonstrates comprehensive error handling, recovery patterns,

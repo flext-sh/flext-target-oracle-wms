@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from flext_core import FlextModels, FlextResult, t
+from flext_core import FlextModels, r, t
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_wms.wms_models import FlextOracleWmsModels
 from pydantic import ConfigDict, Field, SecretStr
@@ -50,16 +50,16 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             load_method: str = c.TargetOracleWms.LoadMethods.APPEND_ONLY
             validate_records: bool = True
 
-            def validate_business_rules(self) -> FlextResult[bool]:
+            def validate_business_rules(self) -> r[bool]:
                 """Validate basic config business rules."""
                 if (
                     self.load_method
                     not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS
                 ):
-                    return FlextResult[bool].fail("Invalid load method")
+                    return r[bool].fail("Invalid load method")
                 if self.batch_size <= 0:
-                    return FlextResult[bool].fail("Batch size must be positive")
-                return FlextResult[bool].ok(value=True)
+                    return r[bool].fail("Batch size must be positive")
+                return r[bool].ok(value=True)
 
         class WmsTargetResult(FlextModels.ArbitraryTypesModel):
             """Execution summary for the target pipeline."""

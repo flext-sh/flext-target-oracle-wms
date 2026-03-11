@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Protocol, runtime_checkable
 
-from flext_core import FlextResult, t
+from flext_core import r, t
 from flext_meltano import FlextMeltanoProtocols
 from flext_oracle_wms.protocols import FlextOracleWmsProtocols
 
@@ -22,7 +22,7 @@ class FlextTargetOracleWmsProtocols(FlextMeltanoProtocols, FlextOracleWmsProtoco
 
             def load_data(
                 self, records: list[Mapping[str, t.ContainerValue]]
-            ) -> FlextResult[bool]:
+            ) -> r[bool]:
                 """Load a batch of records."""
                 ...
 
@@ -32,7 +32,7 @@ class FlextTargetOracleWmsProtocols(FlextMeltanoProtocols, FlextOracleWmsProtoco
 
             def transform_to_wms(
                 self, record: Mapping[str, t.ContainerValue]
-            ) -> FlextResult[Mapping[str, t.ContainerValue]]:
+            ) -> r[Mapping[str, t.ContainerValue]]:
                 """Transform one record to WMS shape."""
                 ...
 

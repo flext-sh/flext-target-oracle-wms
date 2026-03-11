@@ -6,7 +6,7 @@ import json
 import sys
 from typing import ClassVar
 
-from flext_core import FlextLogger, FlextResult, t
+from flext_core import FlextLogger, r, t
 from pydantic import ValidationError
 
 from .models import m
@@ -22,7 +22,7 @@ class SingerWMSCatalogManager:
         """Initialize catalog storage for stream metadata."""
         self._catalog_entries: dict[str, m.Meltano.SingerCatalogEntry] = {}
 
-    def add_stream(self, schema_message: t.ContainerValue) -> FlextResult[bool]:
+    def add_stream(self, schema_message: t.ContainerValue) -> r[bool]:
         """Register one stream schema entry."""
         typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
         stream_name = typed_schema.stream
@@ -32,16 +32,16 @@ class SingerWMSCatalogManager:
             schema=typed_schema.schema_definition,
             key_properties=typed_schema.key_properties,
         )
-        return FlextResult[bool].ok(value=True)
+        return r[bool].ok(value=True)
 
-    def get_stream(self, stream_name: str) -> FlextResult[m.Meltano.SingerCatalogEntry]:
+    def get_stream(self, stream_name: str) -> r[m.Meltano.SingerCatalogEntry]:
         """Return catalog entry for a stream or a failure."""
         entry = self._catalog_entries.get(stream_name)
         if entry is None:
-            return FlextResult[m.Meltano.SingerCatalogEntry].fail(
+            return r[m.Meltano.SingerCatalogEntry].fail(
                 f"WMS stream not found: {stream_name}"
             )
-        return FlextResult[m.Meltano.SingerCatalogEntry].ok(entry)
+        return r[m.Meltano.SingerCatalogEntry].ok(entry)
 
 
 class SingerWMSStreamProcessor:
@@ -54,24 +54,22 @@ class SingerWMSStreamProcessor:
         self.table_manager = table_manager
         self.data_transformer = data_transformer
 
-    def initialize_stream(self, schema_message: t.ContainerValue) -> FlextResult[bool]:
+    def initialize_stream(self, schema_message: t.ContainerValue) -> r[bool]:
         """Register stream metadata in table manager."""
         typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
         registration = self.table_manager.register_stream(typed_schema.stream)
         if registration.is_failure:
-            return FlextResult[bool].fail(
-                registration.error or "Table registration failed"
-            )
-        return FlextResult[bool].ok(value=True)
+            return r[bool].fail(registration.error or "Table registration failed")
+        return r[bool].ok(value=True)
 
     def process_record(
         self, record_message: t.ContainerValue, schema_message: t.ContainerValue
-    ) -> FlextResult[m.Meltano.SingerRecordMessage]:
+    ) -> r[m.Meltano.SingerRecordMessage]:
         """Transform one typed Singer record."""
         typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
         table_lookup = self.table_manager.get_table_name(typed_record.stream)
         if table_lookup.is_failure:
-            return FlextResult[m.Meltano.SingerRecordMessage].fail(
+            return r[m.Meltano.SingerRecordMessage].fail(
                 table_lookup.error or "Table lookup failed"
             )
         return self.data_transformer.transform_record(typed_record, schema_message)
@@ -96,28 +94,26 @@ class SingerTargetOracleWMS:
         )
         self._schemas: dict[str, t.ContainerValue] = {}
 
-    def cleanup(self) -> FlextResult[bool]:
+    def cleanup(self) -> r[bool]:
         """Release target runtime resources."""
-        return FlextResult[bool].ok(value=True)
+        return r[bool].ok(value=True)
 
-    def handle_record_message(self, message: t.ContainerValue) -> FlextResult[bool]:
+    def handle_record_message(self, message: t.ContainerValue) -> r[bool]:
         """Handle one RECORD message."""
         typed_record = m.Meltano.SingerRecordMessage.model_validate(message)
         schema_message = self._schemas.get(typed_record.stream)
         if schema_message is None:
-            return FlextResult[bool].fail(
+            return r[bool].fail(
                 f"Schema not registered for stream: {typed_record.stream}"
             )
         process_result = self.stream_processor.process_record(
             typed_record, schema_message
         )
         if process_result.is_failure:
-            return FlextResult[bool].fail(
-                process_result.error or "Record processing failed"
-            )
-        return FlextResult[bool].ok(value=True)
+            return r[bool].fail(process_result.error or "Record processing failed")
+        return r[bool].ok(value=True)
 
-    def handle_schema_message(self, message: t.ContainerValue) -> FlextResult[bool]:
+    def handle_schema_message(self, message: t.ContainerValue) -> r[bool]:
         """Handle one SCHEMA message."""
         typed_schema = m.Meltano.SingerSchemaMessage.model_validate(message)
         result = self.catalog_manager.add_stream(typed_schema).flow_through(
@@ -127,13 +123,13 @@ class SingerTargetOracleWMS:
             self._schemas[typed_schema.stream] = typed_schema
         return result
 
-    def handle_state_message(self, message: t.ContainerValue) -> FlextResult[bool]:
+    def handle_state_message(self, message: t.ContainerValue) -> r[bool]:
         """Handle one STATE message."""
         typed_state = m.Meltano.SingerStateMessage.model_validate(message)
         logger.debug("Received state", extra={"state": typed_state.value})
-        return FlextResult[bool].ok(value=True)
+        return r[bool].ok(value=True)
 
-    def process_lines(self, input_lines: list[str]) -> FlextResult[bool]:
+    def process_lines(self, input_lines: list[str]) -> r[bool]:
         """Parse and process Singer JSON lines."""
         for raw_line in input_lines:
             line = raw_line.strip()
@@ -142,7 +138,7 @@ class SingerTargetOracleWMS:
             try:
                 message = json.loads(line)
             except json.JSONDecodeError as exc:
-                return FlextResult[bool].fail(f"Invalid JSON message: {exc}")
+                return r[bool].fail(f"Invalid JSON message: {exc}")
             message_type = str(message.get("type", ""))
             try:
                 if message_type == self._schema_type:
@@ -165,16 +161,16 @@ class SingerTargetOracleWMS:
                     if state_result.is_failure:
                         return state_result
             except ValidationError as exc:
-                return FlextResult[bool].fail(f"Invalid Singer message: {exc}")
-        return FlextResult[bool].ok(value=True)
+                return r[bool].fail(f"Invalid Singer message: {exc}")
+        return r[bool].ok(value=True)
 
-    def run(self) -> FlextResult[bool]:
+    def run(self) -> r[bool]:
         """Run target processing loop using stdin."""
         return self.process_lines(list(sys.stdin))
 
-    def setup(self) -> FlextResult[bool]:
+    def setup(self) -> r[bool]:
         """Prepare target runtime state."""
-        return FlextResult[bool].ok(value=True)
+        return r[bool].ok(value=True)
 
 
 __all__ = [

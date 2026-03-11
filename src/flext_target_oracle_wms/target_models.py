@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 
-from flext_core import FlextResult, t
+from flext_core import r, t
 
 from .models import m
 
@@ -14,22 +14,22 @@ class WMSTypeConverter:
 
     def convert_singer_to_oracle(
         self, singer_type: str, value: t.ContainerValue
-    ) -> FlextResult[t.JsonValue]:
+    ) -> r[t.JsonValue]:
         """Convert a single source value according to Singer type."""
         if value is None:
-            return FlextResult[t.JsonValue].ok("")
+            return r[t.JsonValue].ok("")
         if singer_type in {"object", "array"}:
-            return FlextResult[t.JsonValue].ok(json.dumps(value))
+            return r[t.JsonValue].ok(json.dumps(value))
         if singer_type in {"integer", "number"}:
             try:
                 as_text = str(value)
                 converted: t.JsonValue = (
                     float(as_text) if "." in as_text else int(as_text)
                 )
-                return FlextResult[t.JsonValue].ok(converted)
+                return r[t.JsonValue].ok(converted)
             except (TypeError, ValueError):
-                return FlextResult[t.JsonValue].ok(str(value))
-        return FlextResult[t.JsonValue].ok(str(value))
+                return r[t.JsonValue].ok(str(value))
+        return r[t.JsonValue].ok(str(value))
 
 
 class WMSDataTransformer:
@@ -43,7 +43,7 @@ class WMSDataTransformer:
         self,
         record_message: t.ContainerValue,
         schema_message: t.ContainerValue | None = None,
-    ) -> FlextResult[m.Meltano.SingerRecordMessage]:
+    ) -> r[m.Meltano.SingerRecordMessage]:
         """Transform one typed Singer RECORD payload with optional typed schema."""
         typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
         transformed: dict[str, t.JsonValue] = {}
@@ -65,11 +65,11 @@ class WMSDataTransformer:
                 resolved_type, value
             )
             if converted.is_failure:
-                return FlextResult[m.Meltano.SingerRecordMessage].fail(
+                return r[m.Meltano.SingerRecordMessage].fail(
                     converted.error or "Conversion failed"
                 )
             transformed[str(key).upper()] = converted.value
-        return FlextResult[m.Meltano.SingerRecordMessage].ok(
+        return r[m.Meltano.SingerRecordMessage].ok(
             m.Meltano.SingerRecordMessage(
                 stream=typed_record.stream,
                 record=transformed,
@@ -84,10 +84,10 @@ class WMSSchemaMapper:
 
     def map_stream_schema(
         self, schema_message: t.ContainerValue
-    ) -> FlextResult[m.Meltano.SingerCatalogEntry]:
+    ) -> r[m.Meltano.SingerCatalogEntry]:
         """Build normalized schema map for table creation."""
         typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
-        return FlextResult[m.Meltano.SingerCatalogEntry].ok(
+        return r[m.Meltano.SingerCatalogEntry].ok(
             m.Meltano.SingerCatalogEntry(
                 tap_stream_id=typed_schema.stream,
                 stream=typed_schema.stream,
@@ -105,18 +105,18 @@ class WMSTableManager:
         """Initialize table manager map."""
         self._stream_tables: dict[str, str] = {}
 
-    def get_table_name(self, stream_name: str) -> FlextResult[str]:
+    def get_table_name(self, stream_name: str) -> r[str]:
         """Get registered table name for stream."""
         table_name = self._stream_tables.get(stream_name)
         if table_name is None:
-            return FlextResult[str].fail(f"Stream not registered: {stream_name}")
-        return FlextResult[str].ok(table_name)
+            return r[str].fail(f"Stream not registered: {stream_name}")
+        return r[str].ok(table_name)
 
-    def register_stream(self, stream_name: str) -> FlextResult[str]:
+    def register_stream(self, stream_name: str) -> r[str]:
         """Register a stream and return table name."""
         table_name = stream_name.upper()
         self._stream_tables[stream_name] = table_name
-        return FlextResult[str].ok(table_name)
+        return r[str].ok(table_name)
 
 
 __all__ = [

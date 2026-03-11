@@ -294,14 +294,14 @@ class TestExamplesFlextIntegration:
     """Test that examples properly integrate with flext-* ecosystem."""
 
     def test_examples_use_flext_result_pattern(self) -> None:
-        """Test that examples use FlextResult pattern correctly."""
+        """Test that examples use r pattern correctly."""
         examples_dir = Path(__file__).parents[2] / "examples"
         example_files = list(examples_dir.glob("*.py"))
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
-            if "FlextResult" in content:
+            if "r" in content:
                 assert ".is_success" in content or ".is_failure" in content, (
-                    f"{example_file.name} uses FlextResult but not .is_success/.is_failure"
+                    f"{example_file.name} uses r but not .is_success/.is_failure"
                 )
                 assert ".error" in content or ".value" in content, (
                     f"{example_file.name} must check result.error or result.value"

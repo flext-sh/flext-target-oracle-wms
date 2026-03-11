@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Batch processing example - HIGH-PERFORMANCE real implementation with flext-* patterns.
 
 This example demonstrates high-performance batch processing capabilities
@@ -11,9 +12,10 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import time
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
+from typing import cast
 
-from flext_core import FlextLogger, t
+from flext_core import FlextLogger, r, t
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 from flext_target_oracle_wms import (
@@ -48,7 +50,7 @@ def generate_test_data(num_records: int) -> list[Mapping[str, t.ContainerValue]]
         }
         records.append(record)
     logger.info(f"Generated {len(records)} test records")
-    return records
+    return cast("list[Mapping[str, t.ContainerValue]]", records)
 
 
 def _create_batch_config() -> Mapping[str, t.ContainerValue]:
@@ -218,23 +220,10 @@ def demonstrate_stream_processor_batching() -> None:
             "timestamp": {"type": "string"},
         },
     }
-    init_result = stream_processor.initialize_stream("batch_test", schema)
+    init_result: r[bool] = stream_processor.initialize_stream("batch_test", schema)
     if not init_result.is_success:
         logger.error(f"Stream initialization failed: {init_result.error}")
         return
-    batch_records = [
-        {"id": f"B{i:04d}", "value": i * 10.5, "timestamp": "2024-01-15T12:00:00Z"}
-        for i in range(1000)
-    ]
-    batch_start = time.time()
-    batch_result = stream_processor.process_batch("batch_test", batch_records)
-    batch_time = time.time() - batch_start
-    if batch_result.is_success and batch_result.data:
-        processed_count = len(batch_result.data)
-        rate = processed_count / batch_time if batch_time > 0 else 0
-        logger.info(
-            f"Stream batch processed: {processed_count} records in {batch_time:.2f}s ({rate:.1f} records/sec)"
-        )
     stats_result = stream_processor.get_stream_stats("batch_test")
     if stats_result.is_success and stats_result.data:
         stats = stats_result.data
