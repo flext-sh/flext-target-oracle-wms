@@ -39,14 +39,11 @@ class OracleWMSTargetCli:
     ) -> FlextResult[bool]:
         """Setup, process stdin, and cleanup target runtime."""
         target = SingerTargetOracleWMS(config)
-        return (
-            target
-            .setup()
-            .map_error(lambda e: e or "Setup failed")
-            .flow_through(
-                lambda _: self._process_stdin_messages(target),
-                lambda _: self._finalize_target(target),
-            )
+        setup_result = target.setup().map_error(lambda e: e or "Setup failed")
+        return u.flow_result(
+            setup_result,
+            lambda _: self._process_stdin_messages(target),
+            lambda _: self._finalize_target(target),
         )
 
     def _finalize_target(self, target: SingerTargetOracleWMS) -> FlextResult[bool]:
