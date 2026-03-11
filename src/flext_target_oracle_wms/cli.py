@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import sys
-from collections.abc import Mapping
 from pathlib import Path
 
 from flext_core import FlextResult, t, u
@@ -54,7 +53,7 @@ class OracleWMSTargetCli:
         """Finalize target processing."""
         return target.cleanup()
 
-    def _load_config(self, config_path: str) -> Mapping[str, t.ContainerValue]:
+    def _load_config(self, config_path: str) -> dict[str, t.ContainerValue]:
         """Read JSON configuration file."""
         config_file = Path(config_path)
         if not config_file.exists():
@@ -64,7 +63,7 @@ class OracleWMSTargetCli:
         if not u.is_dict_like(loaded):
             msg = "Configuration file must contain a JSON object"
             raise TypeError(msg)
-        return loaded
+        return dict(loaded)
 
     def _prepare_config(
         self, config_path: str | None

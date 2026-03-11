@@ -47,12 +47,13 @@ class WMSDataTransformer:
         """Transform one typed Singer RECORD payload with optional typed schema."""
         typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
         transformed: dict[str, t.JsonValue] = {}
+        empty_schema: dict[str, t.ContainerValue] = {}
         schema_definition = (
             m.Meltano.SingerSchemaMessage.model_validate(
                 schema_message
             ).schema_definition
             if schema_message is not None
-            else {}
+            else empty_schema
         )
         schema_props = m.TargetOracleWms.SingerSchemaProperties.model_validate(
             schema_definition
