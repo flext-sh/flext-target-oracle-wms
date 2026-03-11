@@ -31,7 +31,7 @@ monitor = FlextObservabilityMonitor()
 def generate_test_data(num_records: int) -> list[Mapping[str, t.ContainerValue]]:
     """Generate test data for batch processing demonstration."""
     logger.info("Generating %s test records", num_records)
-    records = []
+    records: list[dict[str, float | int | str]] = []
     for i in range(num_records):
         record = {
             "item_id": f"BATCH_{i:06d}",
@@ -263,7 +263,7 @@ def demonstrate_concurrent_batching() -> None:
     try:
         target.setup()
         streams = ["stream_a", "stream_b", "stream_c", "stream_d", "stream_e"]
-        schema_tasks = []
+        schema_tasks: list[Callable[[], None]] = []
         for stream_name in streams:
             schema_message = {
                 "type": "SCHEMA",
@@ -282,7 +282,7 @@ def demonstrate_concurrent_batching() -> None:
             target.handle_schema_message(schema_message)
             schema_tasks.append(lambda: None)
         schema_results = [task() for task in schema_tasks]
-        successful_streams = []
+        successful_streams: list[str] = []
         for i, result in enumerate(schema_results):
             if isinstance(result, Exception):
                 logger.error(f"Schema setup failed for {streams[i]}: {result}")
