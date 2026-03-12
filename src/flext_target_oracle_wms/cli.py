@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import sys
 from pathlib import Path
 
@@ -50,17 +49,13 @@ class OracleWMSTargetCli:
         """Finalize target processing."""
         return target.cleanup()
 
-    def _load_config(self, config_path: str) -> dict[str, object]:
+    def _load_config(self, config_path: str) -> str:
         """Read JSON configuration file."""
         config_file = Path(config_path)
         if not config_file.exists():
             msg = f"Configuration file not found: {config_path}"
             raise FileNotFoundError(msg)
-        loaded = json.loads(config_file.read_text(encoding="utf-8"))
-        if not u.is_dict_like(loaded):
-            msg = "Configuration file must contain a JSON object"
-            raise TypeError(msg)
-        return dict(loaded)
+        return config_file.read_text(encoding="utf-8")
 
     def _prepare_config(
         self, config_path: str | None
@@ -68,7 +63,7 @@ class OracleWMSTargetCli:
         """Load config from file or build defaults."""
         if config_path is not None:
             return r[m.TargetOracleWms.WmsTargetConfig].ok(
-                m.TargetOracleWms.WmsTargetConfig.model_validate(
+                m.TargetOracleWms.WmsTargetConfig.model_validate_json(
                     self._load_config(config_path)
                 )
             )
