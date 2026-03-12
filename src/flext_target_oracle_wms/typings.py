@@ -14,6 +14,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import Literal
 
 from flext_meltano import FlextMeltanoTypes
@@ -32,157 +33,187 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
         """Singer target protocol complex types."""
 
         type TargetConfiguration = dict[
-            str, str | int | bool | Mapping[str, FlextMeltanoTypes.object]
+            str, str | int | bool | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type StreamConfiguration = dict[
-            str, str | bool | Mapping[str, FlextMeltanoTypes.object]
+            str, str | bool | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type MessageProcessing = dict[
-            str, str | list[Mapping[str, FlextMeltanoTypes.object]]
+            str, str | list[Mapping[str, FlextMeltanoTypes.Container]]
         ]
         type RecordHandling = dict[
-            str, str | Mapping[str, FlextMeltanoTypes.object] | bool
+            str, str | Mapping[str, FlextMeltanoTypes.Container] | bool
         ]
-        type StateManagement = dict[str, str | Mapping[str, FlextMeltanoTypes.object]]
+        type StateManagement = dict[
+            str, str | Mapping[str, FlextMeltanoTypes.Container]
+        ]
         type BatchProcessing = dict[
-            str, str | int | Mapping[str, FlextMeltanoTypes.object]
+            str, str | int | Mapping[str, FlextMeltanoTypes.Container]
         ]
 
     class WmsWarehouse:
         """Oracle WMS warehouse management complex types."""
 
         type WarehouseConfiguration = dict[
-            str, str | int | bool | Mapping[str, FlextMeltanoTypes.object]
+            str, str | int | bool | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type FacilityDefinition = dict[
-            str, str | list[str] | Mapping[str, FlextMeltanoTypes.object]
+            str, str | list[str] | Mapping[str, FlextMeltanoTypes.Container]
         ]
-        type LocationManagement = dict[str, str | Mapping[str, FlextMeltanoTypes.object]]
-        type ZoneConfiguration = dict[str, str | Mapping[str, FlextMeltanoTypes.object]]
-        type WarehouseMetadata = dict[str, str | Mapping[str, FlextMeltanoTypes.object]]
+        type LocationManagement = dict[
+            str, str | Mapping[str, FlextMeltanoTypes.Container]
+        ]
+        type ZoneConfiguration = dict[
+            str, str | Mapping[str, FlextMeltanoTypes.Container]
+        ]
+        type WarehouseMetadata = dict[
+            str, str | Mapping[str, FlextMeltanoTypes.Container]
+        ]
         type LayoutDefinition = dict[
-            str, str | bool | Mapping[str, FlextMeltanoTypes.object]
+            str, str | bool | Mapping[str, FlextMeltanoTypes.Container]
         ]
 
     class WmsInventory:
         """Oracle WMS inventory management complex types."""
 
         type InventoryConfiguration = dict[
-            str, str | int | bool | Mapping[str, FlextMeltanoTypes.object]
+            str, str | int | bool | Mapping[str, FlextMeltanoTypes.Container]
         ]
-        type ItemMasterData = dict[str, str | Mapping[str, FlextMeltanoTypes.object]]
+        type ItemMasterData = dict[str, str | Mapping[str, FlextMeltanoTypes.Container]]
         type StockLevelTracking = dict[
-            str, int | float | Mapping[str, FlextMeltanoTypes.object]
+            str, int | float | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type AllocationManagement = dict[
-            str, int | str | Mapping[str, FlextMeltanoTypes.object]
+            str, int | str | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type InventoryMetrics = dict[
-            str, int | float | Mapping[str, FlextMeltanoTypes.object]
+            str, int | float | Mapping[str, FlextMeltanoTypes.Container]
         ]
-        type CycleCountData = dict[str, str | int | Mapping[str, FlextMeltanoTypes.object]]
+        type CycleCountData = dict[
+            str, str | int | Mapping[str, FlextMeltanoTypes.Container]
+        ]
 
     class WmsOrderManagement:
         """Oracle WMS order management complex types."""
 
         type OrderConfiguration = dict[
-            str, str | int | Mapping[str, FlextMeltanoTypes.object]
+            str, str | int | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type OrderProcessing = dict[
-            str, str | bool | Mapping[str, FlextMeltanoTypes.object]
+            str, str | bool | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type FulfillmentWorkflow = dict[
-            str, str | int | Mapping[str, FlextMeltanoTypes.object]
+            str, str | int | Mapping[str, FlextMeltanoTypes.Container]
         ]
-        type PickingInstructions = dict[str, str | Mapping[str, FlextMeltanoTypes.object]]
+        type PickingInstructions = dict[
+            str, str | Mapping[str, FlextMeltanoTypes.Container]
+        ]
         type ShippingConfiguration = dict[
-            str, bool | str | Mapping[str, FlextMeltanoTypes.object]
+            str, bool | str | Mapping[str, FlextMeltanoTypes.Container]
         ]
-        type OrderTracking = dict[str, str | int | Mapping[str, FlextMeltanoTypes.object]]
+        type OrderTracking = dict[
+            str, str | int | Mapping[str, FlextMeltanoTypes.Container]
+        ]
 
     class WmsLaborManagement:
         """Oracle WMS labor management complex types."""
 
         type LaborConfiguration = dict[
-            str, str | bool | Mapping[str, FlextMeltanoTypes.object]
+            str, str | bool | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type WorkforceManagement = dict[
-            str, int | float | Mapping[str, FlextMeltanoTypes.object]
+            str, int | float | Mapping[str, FlextMeltanoTypes.Container]
         ]
-        type TaskAssignment = dict[str, str | Mapping[str, FlextMeltanoTypes.object]]
+        type TaskAssignment = dict[str, str | Mapping[str, FlextMeltanoTypes.Container]]
         type ProductivityMetrics = dict[
-            str, float | int | Mapping[str, FlextMeltanoTypes.object]
+            str, float | int | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type PerformanceTracking = dict[
-            str, int | float | Mapping[str, FlextMeltanoTypes.object]
+            str, int | float | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type WorkforceScheduling = dict[
-            str, str | int | Mapping[str, FlextMeltanoTypes.object]
+            str, str | int | Mapping[str, FlextMeltanoTypes.Container]
         ]
 
     class WmsTransportation:
         """Oracle WMS transportation management complex types."""
 
         type TransportConfiguration = dict[
-            str, str | int | bool | Mapping[str, FlextMeltanoTypes.object]
+            str, str | int | bool | Mapping[str, FlextMeltanoTypes.Container]
         ]
-        type CarrierManagement = dict[str, str | Mapping[str, FlextMeltanoTypes.object]]
-        type ShipmentTracking = dict[str, str | Mapping[str, FlextMeltanoTypes.object]]
+        type CarrierManagement = dict[
+            str, str | Mapping[str, FlextMeltanoTypes.Container]
+        ]
+        type ShipmentTracking = dict[
+            str, str | Mapping[str, FlextMeltanoTypes.Container]
+        ]
         type DeliveryScheduling = dict[
-            str, str | bool | Mapping[str, FlextMeltanoTypes.object]
+            str, str | bool | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type TransportMetrics = dict[
-            str, int | float | Mapping[str, FlextMeltanoTypes.object]
+            str, int | float | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type RouteOptimization = dict[
-            str, str | list[str] | Mapping[str, FlextMeltanoTypes.object]
+            str, str | list[str] | Mapping[str, FlextMeltanoTypes.Container]
         ]
 
     class DataTransformation:
         """Data transformation complex types."""
 
         type TransformationConfiguration = dict[
-            str, str | bool | Mapping[str, FlextMeltanoTypes.object]
+            str, str | bool | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type FieldMapping = dict[
-            str, str | list[str] | Mapping[str, FlextMeltanoTypes.object]
+            str, str | list[str] | Mapping[str, FlextMeltanoTypes.Container]
         ]
-        type DataValidation = dict[str, str | Mapping[str, FlextMeltanoTypes.object]]
+        type DataValidation = dict[str, str | Mapping[str, FlextMeltanoTypes.Container]]
         type TypeConversion = dict[
-            str, bool | str | Mapping[str, FlextMeltanoTypes.object]
+            str, bool | str | Mapping[str, FlextMeltanoTypes.Container]
         ]
-        type FilteringRules = dict[str, str | Mapping[str, FlextMeltanoTypes.object]]
-        type TransformationResult = dict[str, dict[str, FlextMeltanoTypes.object]]
+        type FilteringRules = dict[str, str | Mapping[str, FlextMeltanoTypes.Container]]
+        type TransformationResult = dict[str, dict[str, FlextMeltanoTypes.Container]]
 
     class StreamProcessing:
         """Stream processing complex types."""
 
         type StreamConfiguration = dict[
-            str, str | bool | int | Mapping[str, FlextMeltanoTypes.object]
+            str, str | bool | int | Mapping[str, FlextMeltanoTypes.Container]
         ]
-        type StreamMetadata = dict[str, str | Mapping[str, FlextMeltanoTypes.object]]
+        type StreamMetadata = dict[str, str | Mapping[str, FlextMeltanoTypes.Container]]
         type StreamRecord = dict[
             str,
-            FlextMeltanoTypes.object | Mapping[str, FlextMeltanoTypes.object],
+            FlextMeltanoTypes.Container | Mapping[str, FlextMeltanoTypes.Container],
         ]
-        type StreamState = dict[str, str | int | Mapping[str, FlextMeltanoTypes.object]]
-        type StreamBookmark = dict[str, str | int | Mapping[str, FlextMeltanoTypes.object]]
-        type StreamSchema = dict[str, str | Mapping[str, FlextMeltanoTypes.object] | bool]
+        type StreamState = dict[
+            str, str | int | Mapping[str, FlextMeltanoTypes.Container]
+        ]
+        type StreamBookmark = dict[
+            str, str | int | Mapping[str, FlextMeltanoTypes.Container]
+        ]
+        type StreamSchema = dict[
+            str, str | Mapping[str, FlextMeltanoTypes.Container] | bool
+        ]
 
     class ErrorHandling:
         """Error handling complex types."""
 
         type ErrorConfiguration = dict[
-            str, bool | str | int | Mapping[str, FlextMeltanoTypes.object]
+            str, bool | str | int | Mapping[str, FlextMeltanoTypes.Container]
         ]
-        type ErrorRecovery = dict[str, str | bool | Mapping[str, FlextMeltanoTypes.object]]
-        type ErrorReporting = dict[str, str | int | Mapping[str, FlextMeltanoTypes.object]]
+        type ErrorRecovery = dict[
+            str, str | bool | Mapping[str, FlextMeltanoTypes.Container]
+        ]
+        type ErrorReporting = dict[
+            str, str | int | Mapping[str, FlextMeltanoTypes.Container]
+        ]
         type ErrorClassification = dict[
-            str, str | int | Mapping[str, FlextMeltanoTypes.object]
+            str, str | int | Mapping[str, FlextMeltanoTypes.Container]
         ]
-        type ErrorMetrics = dict[str, int | float | Mapping[str, FlextMeltanoTypes.object]]
+        type ErrorMetrics = dict[
+            str, int | float | Mapping[str, FlextMeltanoTypes.Container]
+        ]
         type ErrorTracking = list[
-            dict[str, str | int | Mapping[str, FlextMeltanoTypes.object]]
+            dict[str, str | int | Mapping[str, FlextMeltanoTypes.Container]]
         ]
 
     class Project:
@@ -224,12 +255,12 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
             "PERFORMANCE",
             "CONFIGURATION",
         ]
-        type SingerTargetOracleWmsProjectConfig = dict[str, FlextMeltanoTypes.object]
+        type SingerTargetOracleWmsProjectConfig = dict[str, FlextMeltanoTypes.Container]
         type WmsLoaderConfig = dict[str, str | int | bool | list[str]]
         type SingerProtocolConfig = dict[
-            str, bool | str | Mapping[str, FlextMeltanoTypes.object]
+            str, bool | str | Mapping[str, FlextMeltanoTypes.Container]
         ]
-        type TargetOracleWmsPipelineConfig = dict[str, FlextMeltanoTypes.object]
+        type TargetOracleWmsPipelineConfig = dict[str, FlextMeltanoTypes.Container]
 
 
 t = FlextTargetOracleWmsTypes
