@@ -14,7 +14,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from flext_core import FlextLogger, t
+from flext_core import FlextLogger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 from flext_target_oracle_wms import SingerTargetOracleWMS
@@ -27,7 +27,7 @@ monitor = FlextObservabilityMonitor()
 def run_basic_example() -> None:
     """Run basic Oracle WMS target example with REAL configuration."""
     logger.info("Starting basic Oracle WMS target example")
-    config: dict[str, t.ContainerValue] = {
+    config: dict[str, object] = {
         "base_url": "https://example.wms.oracle.com",
         "username": "demo_user",
         "password": "demo_password",
@@ -179,7 +179,7 @@ def run_from_singer_files() -> None:
     if config_file.exists():
         config = json.loads(config_file.read_text(encoding="utf-8"))
     else:
-        config: dict[str, t.ContainerValue] = {
+        config: dict[str, object] = {
             "base_url": "https://example.wms.oracle.com",
             "username": "demo_user",
             "password": "demo_password",

@@ -13,7 +13,7 @@ class WMSTypeConverter:
     """Convert source scalar values to Oracle-friendly payload values."""
 
     def convert_singer_to_oracle(
-        self, singer_type: str, value: t.ContainerValue
+        self, singer_type: str, value: object
     ) -> r[t.JsonValue]:
         """Convert a single source value according to Singer type."""
         if value is None:
@@ -41,13 +41,13 @@ class WMSDataTransformer:
 
     def transform_record(
         self,
-        record_message: t.ContainerValue,
-        schema_message: t.ContainerValue | None = None,
+        record_message: object,
+        schema_message: object | None = None,
     ) -> r[m.Meltano.SingerRecordMessage]:
         """Transform one typed Singer RECORD payload with optional typed schema."""
         typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
         transformed: dict[str, t.JsonValue] = {}
-        empty_schema: dict[str, t.ContainerValue] = {}
+        empty_schema: dict[str, object] = {}
         schema_definition = (
             m.Meltano.SingerSchemaMessage.model_validate(
                 schema_message
@@ -83,7 +83,7 @@ class WMSSchemaMapper:
     """Map Singer schema payloads to Oracle DDL-friendly structures."""
 
     def map_stream_schema(
-        self, schema_message: t.ContainerValue
+        self, schema_message: object
     ) -> r[m.Meltano.SingerCatalogEntry]:
         """Build normalized schema map for table creation."""
         typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)

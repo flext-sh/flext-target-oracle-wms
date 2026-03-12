@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import ClassVar
 
-from flext_core import FlextLogger, FlextModels, r, t
+from flext_core import FlextLogger, FlextModels, r
 from pydantic import Field
 
 from .target_client import SingerTargetOracleWMS
@@ -21,7 +21,7 @@ class TargetCreationRequest(FlextModels.ArbitraryTypesModel):
     password: str
     environment: str = "development"
     preset: str | None = None
-    additional_config: dict[str, t.ContainerValue] | None = Field(default=None)
+    additional_config: dict[str, object] | None = Field(default=None)
 
 
 class MonitoredTargetCreationRequest(TargetCreationRequest):
@@ -33,7 +33,7 @@ class MonitoredTargetCreationRequest(TargetCreationRequest):
 class FlextTargetFactory:
     """Factory for creating configured target instances."""
 
-    PRESETS: ClassVar[dict[str, dict[str, t.ContainerValue]]] = {
+    PRESETS: ClassVar[dict[str, dict[str, object]]] = {
         "development": {
             "batch_size": 100,
             "timeout": 30,
@@ -59,7 +59,7 @@ class FlextTargetFactory:
 
     @classmethod
     def create_from_config_dict(
-        cls, config: Mapping[str, t.ContainerValue]
+        cls, config: Mapping[str, object]
     ) -> r[SingerTargetOracleWMS]:
         """Create target from plain dictionary config via Pydantic validation."""
         known_keys = {"base_url", "username", "password", "environment", "preset"}
@@ -87,7 +87,7 @@ class FlextTargetFactory:
         request: TargetCreationRequest,
     ) -> r[SingerTargetOracleWMS]:
         """Create target instance from request object."""
-        config: dict[str, t.ContainerValue] = {
+        config: dict[str, object] = {
             "base_url": request.base_url,
             "username": request.username,
             "password": request.password,
@@ -131,7 +131,7 @@ def create_oracle_wms_target(
     password: str,
     environment: str = "development",
     preset: str | None = None,
-    **config: t.ContainerValue,
+    **config: object,
 ) -> r[SingerTargetOracleWMS]:
     """Convenience function to create base target instance."""
     request = TargetCreationRequest(

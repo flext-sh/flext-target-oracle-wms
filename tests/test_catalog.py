@@ -7,16 +7,15 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import pytest
-from flext_core import t
 
 from flext_target_oracle_wms.target_client import SingerWMSCatalogManager
 
 
 def _make_schema_message(
     stream_name: str = "test_stream",
-    schema: dict[str, t.ContainerValue] | None = None,
+    schema: dict[str, object] | None = None,
     key_properties: list[str] | None = None,
-) -> dict[str, t.ContainerValue]:
+) -> dict[str, object]:
     """Build a valid SingerSchemaMessage dict."""
     return {
         "type": "SCHEMA",

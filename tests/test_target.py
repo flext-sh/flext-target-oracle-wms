@@ -9,12 +9,11 @@ from __future__ import annotations
 import json
 
 import pytest
-from flext_core import t
 
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 
-def _valid_config() -> dict[str, t.ContainerValue]:
+def _valid_config() -> dict[str, object]:
     return {
         "wms_auth": {
             "base_url": "https://test.wms.example.com",
@@ -41,7 +40,7 @@ def _schema_line(
 
 
 def _record_line(
-    stream: str = "test_stream", record: dict[str, t.ContainerValue] | None = None
+    stream: str = "test_stream", record: dict[str, object] | None = None
 ) -> str:
     return json.dumps({
         "type": "RECORD",
@@ -50,7 +49,7 @@ def _record_line(
     })
 
 
-def _state_line(state: dict[str, t.ContainerValue] | None = None) -> str:
+def _state_line(state: dict[str, object] | None = None) -> str:
     return json.dumps({"type": "STATE", "value": state or {"bookmarks": {}}})
 
 

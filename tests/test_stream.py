@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock
 
-from flext_core import r, t
+from flext_core import r
 
 from flext_target_oracle_wms.target_client import SingerWMSStreamProcessor
 from flext_target_oracle_wms.target_models import WMSDataTransformer, WMSTableManager
@@ -16,9 +16,9 @@ from flext_target_oracle_wms.target_models import WMSDataTransformer, WMSTableMa
 
 def _schema_msg(
     stream: str = "test_stream",
-    schema: dict[str, t.ContainerValue] | None = None,
+    schema: dict[str, object] | None = None,
     key_properties: list[str] | None = None,
-) -> dict[str, t.ContainerValue]:
+) -> dict[str, object]:
     return {
         "type": "SCHEMA",
         "stream": stream,
@@ -29,8 +29,8 @@ def _schema_msg(
 
 
 def _record_msg(
-    stream: str = "test_stream", record: dict[str, t.ContainerValue] | None = None
-) -> dict[str, t.ContainerValue]:
+    stream: str = "test_stream", record: dict[str, object] | None = None
+) -> dict[str, object]:
     return {"type": "RECORD", "stream": stream, "record": record or {"id": "1"}}
 
 

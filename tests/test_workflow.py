@@ -9,13 +9,11 @@ from __future__ import annotations
 import json
 from unittest.mock import MagicMock, patch
 
-from flext_core import t
-
 from flext_target_oracle_wms.cli import OracleWMSTargetCli
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 
-def _valid_config() -> dict[str, t.ContainerValue]:
+def _valid_config() -> dict[str, object]:
     return {
         "wms_auth": {
             "base_url": "https://test.wms.example.com",
@@ -34,11 +32,11 @@ def _schema_line(stream: str, props: dict[str, dict[str, str]], keys: list[str])
     })
 
 
-def _record_line(stream: str, record: dict[str, t.ContainerValue]) -> str:
+def _record_line(stream: str, record: dict[str, object]) -> str:
     return json.dumps({"type": "RECORD", "stream": stream, "record": record})
 
 
-def _state_line(value: dict[str, t.ContainerValue]) -> str:
+def _state_line(value: dict[str, object]) -> str:
     return json.dumps({"type": "STATE", "value": value})
 
 

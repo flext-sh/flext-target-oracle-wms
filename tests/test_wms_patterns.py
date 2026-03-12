@@ -9,8 +9,6 @@ from __future__ import annotations
 import json
 import math
 
-from flext_core import t
-
 from flext_target_oracle_wms.target_models import (
     WMSDataTransformer,
     WMSSchemaMapper,
@@ -23,7 +21,7 @@ def _schema_msg(
     stream: str = "test_stream",
     properties: dict[str, dict[str, str]] | None = None,
     key_properties: list[str] | None = None,
-) -> dict[str, t.ContainerValue]:
+) -> dict[str, object]:
     return {
         "type": "SCHEMA",
         "stream": stream,
@@ -36,8 +34,8 @@ def _schema_msg(
 
 
 def _record_msg(
-    stream: str = "test_stream", record: dict[str, t.ContainerValue] | None = None
-) -> dict[str, t.ContainerValue]:
+    stream: str = "test_stream", record: dict[str, object] | None = None
+) -> dict[str, object]:
     return {"type": "RECORD", "stream": stream, "record": record or {"id": "1"}}
 
 

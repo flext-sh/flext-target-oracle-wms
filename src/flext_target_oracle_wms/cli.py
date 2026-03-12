@@ -6,7 +6,7 @@ import json
 import sys
 from pathlib import Path
 
-from flext_core import r, t, u
+from flext_core import r, u
 
 from .models import m
 from .target_client import SingerTargetOracleWMS
@@ -23,7 +23,7 @@ class OracleWMSTargetCli:
         self.description = "Oracle WMS Singer Target"
         self.version = "0.9.0"
 
-    def execute(self, **kwargs: t.ContainerValue) -> r[bool]:
+    def execute(self, **kwargs: object) -> r[bool]:
         """Execute target run using optional config path."""
         config_arg = kwargs.get("config")
         config_path = str(config_arg) if config_arg is not None else None
@@ -50,7 +50,7 @@ class OracleWMSTargetCli:
         """Finalize target processing."""
         return target.cleanup()
 
-    def _load_config(self, config_path: str) -> dict[str, t.ContainerValue]:
+    def _load_config(self, config_path: str) -> dict[str, object]:
         """Read JSON configuration file."""
         config_file = Path(config_path)
         if not config_file.exists():

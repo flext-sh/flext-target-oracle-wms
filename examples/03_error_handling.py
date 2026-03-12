@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from flext_core import FlextLogger, t
+from flext_core import FlextLogger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 from flext_target_oracle_wms import SingerTargetOracleWMS
@@ -31,7 +31,7 @@ class SimulatedOracleWMSError(Exception):
         self.attempt = attempt
 
 
-def get_error_demo_config() -> Mapping[str, t.ContainerValue]:
+def get_error_demo_config() -> Mapping[str, object]:
     """Single Responsibility: Get error demonstration configuration.
 
     SOLID REFACTORING: Extract configuration into separate function following
@@ -62,7 +62,7 @@ def get_error_demo_config() -> Mapping[str, t.ContainerValue]:
 
 
 def demonstrate_setup_error_handling(
-    config: Mapping[str, t.ContainerValue],
+    config: Mapping[str, object],
 ) -> SingerTargetOracleWMS | None:
     """Single Responsibility: Demonstrate setup and connection error handling.
 

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from flext_core import r, t
+from flext_core import r
 
 from .models import m
 
@@ -18,11 +18,11 @@ class FlextTargetOracleWmsSettings(m.TargetOracleWms.WmsTargetConfig):
 
 
 def create_settings(
-    overrides: Mapping[str, t.ContainerValue] | None = None,
+    overrides: Mapping[str, object] | None = None,
 ) -> r[FlextTargetOracleWmsSettings]:
     """Create settings instance with optional override values."""
     try:
-        data: dict[str, t.ContainerValue] = dict(overrides) if overrides else {}
+        data: dict[str, object] = dict(overrides) if overrides else {}
         settings = FlextTargetOracleWmsSettings.model_validate(data)
     except (
         ValueError,

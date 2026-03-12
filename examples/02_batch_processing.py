@@ -15,7 +15,7 @@ import time
 from collections.abc import Callable, Mapping
 from typing import cast
 
-from flext_core import FlextLogger, r, t
+from flext_core import FlextLogger, r
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 from flext_target_oracle_wms import (
@@ -30,7 +30,7 @@ logger = FlextLogger(__name__)
 monitor = FlextObservabilityMonitor()
 
 
-def generate_test_data(num_records: int) -> list[Mapping[str, t.ContainerValue]]:
+def generate_test_data(num_records: int) -> list[Mapping[str, object]]:
     """Generate test data for batch processing demonstration."""
     logger.info("Generating %s test records", num_records)
     records: list[dict[str, float | int | str]] = []
@@ -50,10 +50,10 @@ def generate_test_data(num_records: int) -> list[Mapping[str, t.ContainerValue]]
         }
         records.append(record)
     logger.info(f"Generated {len(records)} test records")
-    return cast("list[Mapping[str, t.ContainerValue]]", records)
+    return cast("list[Mapping[str, object]]", records)
 
 
-def _create_batch_config() -> Mapping[str, t.ContainerValue]:
+def _create_batch_config() -> Mapping[str, object]:
     """Create optimized configuration for batch processing."""
     return {
         "base_url": "https://batch.wms.oracle.com",
@@ -75,7 +75,7 @@ def _create_batch_config() -> Mapping[str, t.ContainerValue]:
     }
 
 
-def _create_batch_schema() -> Mapping[str, t.ContainerValue]:
+def _create_batch_schema() -> Mapping[str, object]:
     """Create optimized schema for batch processing."""
     return {
         "type": "SCHEMA",

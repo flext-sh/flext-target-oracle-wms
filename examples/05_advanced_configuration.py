@@ -15,7 +15,7 @@ import os
 from collections.abc import Mapping
 from datetime import UTC, datetime
 
-from flext_core import FlextLogger, r, t
+from flext_core import FlextLogger, r
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
 from flext_target_oracle_wms import (
@@ -69,8 +69,8 @@ class CustomWMSDataTransformer(WMSDataTransformer):
 
     def transform_record(
         self,
-        record_message: Mapping[str, t.ContainerValue],
-        schema_message: Mapping[str, t.ContainerValue] | None = None,
+        record_message: Mapping[str, object],
+        schema_message: Mapping[str, object] | None = None,
     ) -> r[object]:
         """Transform record with business validations."""
         base_result = super().transform_record(record_message, schema_message)
@@ -297,7 +297,7 @@ def demonstrate_custom_components() -> None:
     table_name = table_manager.generate_table_name("inventory", "CUSTOM")
     logger.info("Generated table name: %s", table_name)
     schema_mapper = WMSSchemaMapper()
-    test_schema: dict[str, t.ContainerValue] = {
+    test_schema: dict[str, object] = {
         "properties": {
             "business_date": {"type": "business_date"},
             "amount": {"type": "business_currency"},

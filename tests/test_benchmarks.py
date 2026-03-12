@@ -11,8 +11,6 @@ from __future__ import annotations
 import time
 from unittest.mock import patch
 
-from flext_core import t
-
 from flext_target_oracle_wms.factory import (
     FlextTargetFactory,
     TargetCreationRequest,
@@ -30,7 +28,7 @@ PERF_ITERATIONS = 500
 PERF_THRESHOLD_SEC = 5.0
 
 
-def _schema_msg(stream: str = "bench") -> dict[str, t.ContainerValue]:
+def _schema_msg(stream: str = "bench") -> dict[str, object]:
     return {
         "type": "SCHEMA",
         "stream": stream,
@@ -42,7 +40,7 @@ def _schema_msg(stream: str = "bench") -> dict[str, t.ContainerValue]:
     }
 
 
-def _record_msg(stream: str = "bench") -> dict[str, t.ContainerValue]:
+def _record_msg(stream: str = "bench") -> dict[str, object]:
     return {"type": "RECORD", "stream": stream, "record": {"id": "1", "qty": 100}}
 
 

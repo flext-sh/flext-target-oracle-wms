@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from flext_core import r, t
+from flext_core import r
 from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_wms import FlextOracleWmsUtilities
 
@@ -19,17 +19,17 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
 
         @staticmethod
         def create_record_message(
-            stream_name: str, record: Mapping[str, t.ContainerValue]
-        ) -> Mapping[str, t.ContainerValue]:
+            stream_name: str, record: Mapping[str, object]
+        ) -> Mapping[str, object]:
             """Create a Singer RECORD message payload."""
             return {"type": "RECORD", "stream": stream_name, "record": record}
 
         @staticmethod
         def create_schema_message(
             stream_name: str,
-            schema: Mapping[str, t.ContainerValue],
+            schema: Mapping[str, object],
             key_properties: list[str] | None = None,
-        ) -> Mapping[str, t.ContainerValue]:
+        ) -> Mapping[str, object]:
             """Create a Singer SCHEMA message payload."""
             return {
                 "type": "SCHEMA",
@@ -40,8 +40,8 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
 
         @staticmethod
         def create_state_message(
-            state: Mapping[str, t.ContainerValue],
-        ) -> Mapping[str, t.ContainerValue]:
+            state: Mapping[str, object],
+        ) -> Mapping[str, object]:
             """Create a Singer STATE message payload."""
             return {"type": "STATE", "value": state}
 
@@ -50,7 +50,7 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
 
         @staticmethod
         def validate_wms_target_config(
-            config: Mapping[str, t.ContainerValue],
+            config: Mapping[str, object],
         ) -> r[bool]:
             """Validate minimal required target configuration fields."""
             required = {"base_url", "username", "password"}
