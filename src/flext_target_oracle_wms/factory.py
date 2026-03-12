@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import ClassVar
 
-from flext_core import FlextLogger, FlextModels, r
+from flext_core import FlextLogger, FlextModels, r, t
 from pydantic import Field
 
 from .target_client import SingerTargetOracleWMS
@@ -131,7 +131,7 @@ def create_oracle_wms_target(
     password: str,
     environment: str = "development",
     preset: str | None = None,
-    **config: object,
+    **config: t.Scalar,
 ) -> r[SingerTargetOracleWMS]:
     """Convenience function to create base target instance."""
     request = TargetCreationRequest(
