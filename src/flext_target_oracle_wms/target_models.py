@@ -14,22 +14,22 @@ class WMSTypeConverter:
 
     def convert_singer_to_oracle(
         self, singer_type: str, value: object
-    ) -> r[t.JsonValue]:
+    ) -> r[object
         """Convert a single source value according to Singer type."""
         if value is None:
-            return r[t.JsonValue].ok("")
+            return r[object"")
         if singer_type in {"object", "array"}:
-            return r[t.JsonValue].ok(json.dumps(value))
+            return r[objectjson.dumps(value))
         if singer_type in {"integer", "number"}:
             try:
                 as_text = str(value)
-                converted: t.JsonValue = (
+                converted: object
                     float(as_text) if "." in as_text else int(as_text)
                 )
-                return r[t.JsonValue].ok(converted)
+                return r[objectconverted)
             except (TypeError, ValueError):
-                return r[t.JsonValue].ok(str(value))
-        return r[t.JsonValue].ok(str(value))
+                return r[objectstr(value))
+        return r[objectstr(value))
 
 
 class WMSDataTransformer:
@@ -46,7 +46,7 @@ class WMSDataTransformer:
     ) -> r[m.Meltano.SingerRecordMessage]:
         """Transform one typed Singer RECORD payload with optional typed schema."""
         typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
-        transformed: dict[str, t.JsonValue] = {}
+        transformed: dict[str, object}
         empty_schema: dict[str, object] = {}
         schema_definition = (
             m.Meltano.SingerSchemaMessage.model_validate(
