@@ -125,7 +125,7 @@ class SingerTargetOracleWMS:
     def handle_state_message(self, message: object) -> r[bool]:
         """Handle one STATE message."""
         typed_state = m.Meltano.SingerStateMessage.model_validate(message)
-        logger.debug("Received state", extra={"state": typed_state.value})
+        logger.debug("Received state", state=str(typed_state.value))
         return r[bool].ok(value=True)
 
     def process_lines(self, input_lines: list[str]) -> r[bool]:

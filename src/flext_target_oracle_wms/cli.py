@@ -88,7 +88,11 @@ def main() -> None:
     config_path: str | None = None
     if len(sys.argv) >= MIN_CONFIG_ARG_COUNT and sys.argv[1] == "--config":
         config_path = sys.argv[2]
-    result = cli_instance.execute(config=config_path)
+    result = (
+        cli_instance.execute(config=config_path)
+        if config_path is not None
+        else cli_instance.execute()
+    )
     if result.is_failure:
         msg = result.error or "Execution failed"
         raise RuntimeError(msg)

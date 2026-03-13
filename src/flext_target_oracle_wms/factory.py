@@ -97,9 +97,7 @@ class FlextTargetFactory:
             config.update(cls.PRESETS[request.preset])
         if request.additional_config is not None:
             config.update(request.additional_config)
-        logger.info(
-            "Created Oracle WMS target", extra={"environment": request.environment}
-        )
+        logger.info("Created Oracle WMS target", environment=request.environment)
         return r[SingerTargetOracleWMS].ok(SingerTargetOracleWMS(config))
 
 
