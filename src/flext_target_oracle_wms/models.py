@@ -6,7 +6,7 @@ Defines local TargetOracleWms namespace for target-specific models.
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Annotated, Literal
 
 from flext_core import FlextModels, r, t
 from flext_meltano import FlextMeltanoModels
@@ -45,7 +45,9 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             """Top-level target configuration model."""
 
             wms_auth: FlextTargetOracleWmsModels.TargetOracleWms.WmsAuthenticationConfig
-            stream_maps: dict[str, dict[str, str]] = Field(default_factory=dict)
+            stream_maps: Annotated[
+                dict[str, dict[str, str]], Field(default_factory=dict)
+            ]
             batch_size: int = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
             load_method: str = c.TargetOracleWms.LoadMethods.APPEND_ONLY
             validate_records: bool = True
@@ -67,8 +69,8 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             total_records_processed: int = 0
             successful_records: int = 0
             failed_records: int = 0
-            error_messages: list[str] = Field(default_factory=list)
-            metrics: dict[str, t.Scalar] = Field(default_factory=dict)
+            error_messages: Annotated[list[str], Field(default_factory=list)]
+            metrics: Annotated[dict[str, t.Scalar], Field(default_factory=dict)]
 
             @property
             def success_rate(self) -> float:
@@ -89,10 +91,13 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
 
             model_config = ConfigDict(extra="ignore")
 
-            properties: dict[
-                str,
-                FlextTargetOracleWmsModels.TargetOracleWms.SingerFieldSchema,
-            ] = Field(default_factory=dict)
+            properties: Annotated[
+                dict[
+                    str,
+                    FlextTargetOracleWmsModels.TargetOracleWms.SingerFieldSchema,
+                ],
+                Field(default_factory=dict),
+            ]
 
 
 m = FlextTargetOracleWmsModels

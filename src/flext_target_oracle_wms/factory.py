@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import ClassVar
+from typing import Annotated, ClassVar
 
 from flext_core import FlextLogger, FlextModels, r, t
 from pydantic import Field
@@ -21,7 +21,7 @@ class TargetCreationRequest(FlextModels.ArbitraryTypesModel):
     password: str
     environment: str = "development"
     preset: str | None = None
-    additional_config: dict[str, object] | None = Field(default=None)
+    additional_config: Annotated[dict[str, object] | None, Field(default=None)]
 
 
 class MonitoredTargetCreationRequest(TargetCreationRequest):
