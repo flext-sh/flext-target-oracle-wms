@@ -21,7 +21,7 @@ class TargetCreationRequest(FlextModels.ArbitraryTypesModel):
     password: str
     environment: str = "development"
     preset: str | None = None
-    additional_config: Annotated[dict[str, object] | None, Field(default=None)]
+    additional_config: Annotated[Mapping[str, t.Scalar] | None, Field(default=None)]
 
 
 class MonitoredTargetCreationRequest(TargetCreationRequest):
@@ -33,7 +33,7 @@ class MonitoredTargetCreationRequest(TargetCreationRequest):
 class FlextTargetFactory:
     """Factory for creating configured target instances."""
 
-    PRESETS: ClassVar[dict[str, dict[str, object]]] = {
+    PRESETS: ClassVar[dict[str, dict[str, t.Scalar]]] = {
         "development": {
             "batch_size": 100,
             "timeout": 30,
@@ -59,13 +59,13 @@ class FlextTargetFactory:
 
     @classmethod
     def create_from_config_dict(
-        cls, config: Mapping[str, object]
+        cls, config: Mapping[str, t.Scalar]
     ) -> r[SingerTargetOracleWMS]:
         """Create target from plain dictionary config via Pydantic validation."""
         known_keys = {"base_url", "username", "password", "environment", "preset"}
         additional = {k: v for k, v in config.items() if k not in known_keys}
         try:
-            request = TargetCreationRequest({
+            request = TargetCreationRequest.model_validate({
                 **config,
                 "additional_config": additional or None,
             })
@@ -112,14 +112,14 @@ class FlextTargetMonitoringFactory:
         self, request: MonitoredTargetCreationRequest
     ) -> r[SingerTargetOracleWMS]:
         """Create monitored target using base factory."""
-        base_request = TargetCreationRequest(
-            base_url=request.base_url,
-            username=request.username,
-            password=request.password,
-            environment=request.environment,
-            preset=request.preset,
-            additional_config=request.additional_config,
-        )
+        base_request = TargetCreationRequest.model_validate({
+            "base_url": request.base_url,
+            "username": request.username,
+            "password": request.password,
+            "environment": request.environment,
+            "preset": request.preset,
+            "additional_config": request.additional_config,
+        })
         return FlextTargetFactory.create_target(base_request)
 
 
@@ -132,14 +132,14 @@ def create_oracle_wms_target(
     **config: t.Scalar,
 ) -> r[SingerTargetOracleWMS]:
     """Convenience function to create base target instance."""
-    request = TargetCreationRequest(
-        base_url=base_url,
-        username=username,
-        password=password,
-        environment=environment,
-        preset=preset,
-        additional_config=config,
-    )
+    request = TargetCreationRequest.model_validate({
+        "base_url": base_url,
+        "username": username,
+        "password": password,
+        "environment": environment,
+        "preset": preset,
+        "additional_config": config,
+    })
     return FlextTargetFactory.create_target(request)
 
 

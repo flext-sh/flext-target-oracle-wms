@@ -46,15 +46,19 @@ class WMSDataTransformer:
         schema_message: object | None = None,
     ) -> r[m.Meltano.SingerRecordMessage]:
         """Transform one typed Singer RECORD payload with optional typed schema."""
-        typed_record = m.Meltano.SingerRecordMessage(record_message)
+        typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
         transformed: dict[str, t.Container] = {}
         empty_schema: dict[str, t.Container] = {}
         schema_definition = (
-            m.Meltano.SingerSchemaMessage(schema_message).schema_definition
+            m.Meltano.SingerSchemaMessage.model_validate(
+                schema_message
+            ).schema_definition
             if schema_message is not None
             else empty_schema
         )
-        schema_props = m.TargetOracleWms.SingerSchemaProperties(schema_definition)
+        schema_props = m.TargetOracleWms.SingerSchemaProperties.model_validate(
+            schema_definition
+        )
         for key, value in typed_record.record.items():
             prop_schema = schema_props.properties.get(key)
             resolved_type = prop_schema.type if prop_schema is not None else "string"
@@ -67,12 +71,13 @@ class WMSDataTransformer:
                 )
             transformed[str(key).upper()] = converted.value
         return r[m.Meltano.SingerRecordMessage].ok(
-            m.Meltano.SingerRecordMessage(
-                stream=typed_record.stream,
-                record=transformed,
-                time_extracted=typed_record.time_extracted,
-                version=typed_record.version,
-            )
+            m.Meltano.SingerRecordMessage.model_validate({
+                "type": typed_record.type,
+                "stream": typed_record.stream,
+                "record": transformed,
+                "time_extracted": typed_record.time_extracted,
+                "version": typed_record.version,
+            })
         )
 
 
@@ -83,15 +88,15 @@ class WMSSchemaMapper:
         self, schema_message: object
     ) -> r[m.Meltano.SingerCatalogEntry]:
         """Build normalized schema map for table creation."""
-        typed_schema = m.Meltano.SingerSchemaMessage(schema_message)
+        typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
         return r[m.Meltano.SingerCatalogEntry].ok(
-            m.Meltano.SingerCatalogEntry(
-                tap_stream_id=typed_schema.stream,
-                stream=typed_schema.stream,
-                schema=typed_schema.schema_definition,
-                key_properties=typed_schema.key_properties,
-                table_name=typed_schema.stream.upper(),
-            )
+            m.Meltano.SingerCatalogEntry.model_validate({
+                "tap_stream_id": typed_schema.stream,
+                "stream": typed_schema.stream,
+                "schema": typed_schema.schema_definition,
+                "key_properties": typed_schema.key_properties,
+                "table_name": typed_schema.stream.upper(),
+            })
         )
 
 
