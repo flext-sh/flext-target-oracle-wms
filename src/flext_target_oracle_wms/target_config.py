@@ -23,7 +23,7 @@ def create_settings(
     """Create settings instance with optional override values."""
     try:
         data: dict[str, object] = dict(overrides) if overrides else {}
-        settings = FlextTargetOracleWmsSettings.model_validate(data)
+        settings = FlextTargetOracleWmsSettings(data)
     except (
         ValueError,
         TypeError,

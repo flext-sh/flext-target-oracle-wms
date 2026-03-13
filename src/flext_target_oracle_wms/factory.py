@@ -65,7 +65,7 @@ class FlextTargetFactory:
         known_keys = {"base_url", "username", "password", "environment", "preset"}
         additional = {k: v for k, v in config.items() if k not in known_keys}
         try:
-            request = TargetCreationRequest.model_validate({
+            request = TargetCreationRequest({
                 **config,
                 "additional_config": additional or None,
             })

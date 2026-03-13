@@ -68,7 +68,7 @@ class OracleWMSTargetCli:
                 )
             )
         return r[m.TargetOracleWms.WmsTargetConfig].ok(
-            m.TargetOracleWms.WmsTargetConfig.model_validate({
+            m.TargetOracleWms.WmsTargetConfig({
                 "wms_auth": {
                     "base_url": "https://invalid.wms.ocs.oraclecloud.com",
                     "username": "oracle",

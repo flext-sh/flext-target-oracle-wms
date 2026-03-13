@@ -23,7 +23,7 @@ class SingerWMSCatalogManager:
 
     def add_stream(self, schema_message: object) -> r[bool]:
         """Register one stream schema entry."""
-        typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
+        typed_schema = m.Meltano.SingerSchemaMessage(schema_message)
         stream_name = typed_schema.stream
         self._catalog_entries[stream_name] = m.Meltano.SingerCatalogEntry(
             tap_stream_id=stream_name,
@@ -55,7 +55,7 @@ class SingerWMSStreamProcessor:
 
     def initialize_stream(self, schema_message: object) -> r[bool]:
         """Register stream metadata in table manager."""
-        typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
+        typed_schema = m.Meltano.SingerSchemaMessage(schema_message)
         registration = self.table_manager.register_stream(typed_schema.stream)
         if registration.is_failure:
             return r[bool].fail(registration.error or "Table registration failed")
@@ -65,7 +65,7 @@ class SingerWMSStreamProcessor:
         self, record_message: object, schema_message: object
     ) -> r[m.Meltano.SingerRecordMessage]:
         """Transform one typed Singer record."""
-        typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
+        typed_record = m.Meltano.SingerRecordMessage(record_message)
         table_lookup = self.table_manager.get_table_name(typed_record.stream)
         if table_lookup.is_failure:
             return r[m.Meltano.SingerRecordMessage].fail(
@@ -84,7 +84,7 @@ class SingerTargetOracleWMS:
 
     def __init__(self, config: object) -> None:
         """Initialize target runtime with validated config."""
-        self.config = m.TargetOracleWms.WmsTargetConfig.model_validate(config)
+        self.config = m.TargetOracleWms.WmsTargetConfig(config)
         self.catalog_manager = SingerWMSCatalogManager()
         self.table_manager = WMSTableManager()
         self.data_transformer = WMSDataTransformer()
@@ -99,7 +99,7 @@ class SingerTargetOracleWMS:
 
     def handle_record_message(self, message: object) -> r[bool]:
         """Handle one RECORD message."""
-        typed_record = m.Meltano.SingerRecordMessage.model_validate(message)
+        typed_record = m.Meltano.SingerRecordMessage(message)
         schema_message = self._schemas.get(typed_record.stream)
         if schema_message is None:
             return r[bool].fail(
@@ -114,7 +114,7 @@ class SingerTargetOracleWMS:
 
     def handle_schema_message(self, message: object) -> r[bool]:
         """Handle one SCHEMA message."""
-        typed_schema = m.Meltano.SingerSchemaMessage.model_validate(message)
+        typed_schema = m.Meltano.SingerSchemaMessage(message)
         result = self.catalog_manager.add_stream(typed_schema).flow_through(
             lambda _: self.stream_processor.initialize_stream(typed_schema),
         )
@@ -124,7 +124,7 @@ class SingerTargetOracleWMS:
 
     def handle_state_message(self, message: object) -> r[bool]:
         """Handle one STATE message."""
-        typed_state = m.Meltano.SingerStateMessage.model_validate(message)
+        typed_state = m.Meltano.SingerStateMessage(message)
         logger.debug("Received state", state=str(typed_state.value))
         return r[bool].ok(value=True)
 
@@ -144,21 +144,17 @@ class SingerTargetOracleWMS:
             message_type = str(message.get("type", ""))
             try:
                 if message_type == self._schema_type:
-                    parsed_schema = m.Meltano.SingerSchemaMessage.model_validate(
-                        message
-                    )
+                    parsed_schema = m.Meltano.SingerSchemaMessage(message)
                     schema_result = self.handle_schema_message(parsed_schema)
                     if schema_result.is_failure:
                         return schema_result
                 elif message_type == self._record_type:
-                    parsed_record = m.Meltano.SingerRecordMessage.model_validate(
-                        message
-                    )
+                    parsed_record = m.Meltano.SingerRecordMessage(message)
                     record_result = self.handle_record_message(parsed_record)
                     if record_result.is_failure:
                         return record_result
                 elif message_type == self._state_type:
-                    parsed_state = m.Meltano.SingerStateMessage.model_validate(message)
+                    parsed_state = m.Meltano.SingerStateMessage(message)
                     state_result = self.handle_state_message(parsed_state)
                     if state_result.is_failure:
                         return state_result

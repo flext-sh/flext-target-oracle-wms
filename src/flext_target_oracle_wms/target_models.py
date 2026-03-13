@@ -46,19 +46,15 @@ class WMSDataTransformer:
         schema_message: object | None = None,
     ) -> r[m.Meltano.SingerRecordMessage]:
         """Transform one typed Singer RECORD payload with optional typed schema."""
-        typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
+        typed_record = m.Meltano.SingerRecordMessage(record_message)
         transformed: dict[str, t.Container] = {}
         empty_schema: dict[str, t.Container] = {}
         schema_definition = (
-            m.Meltano.SingerSchemaMessage.model_validate(
-                schema_message
-            ).schema_definition
+            m.Meltano.SingerSchemaMessage(schema_message).schema_definition
             if schema_message is not None
             else empty_schema
         )
-        schema_props = m.TargetOracleWms.SingerSchemaProperties.model_validate(
-            schema_definition
-        )
+        schema_props = m.TargetOracleWms.SingerSchemaProperties(schema_definition)
         for key, value in typed_record.record.items():
             prop_schema = schema_props.properties.get(key)
             resolved_type = prop_schema.type if prop_schema is not None else "string"
@@ -87,7 +83,7 @@ class WMSSchemaMapper:
         self, schema_message: object
     ) -> r[m.Meltano.SingerCatalogEntry]:
         """Build normalized schema map for table creation."""
-        typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
+        typed_schema = m.Meltano.SingerSchemaMessage(schema_message)
         return r[m.Meltano.SingerCatalogEntry].ok(
             m.Meltano.SingerCatalogEntry(
                 tap_stream_id=typed_schema.stream,
