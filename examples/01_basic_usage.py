@@ -11,8 +11,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
+
+from pydantic import TypeAdapter
 
 from flext_core import FlextLogger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
@@ -177,7 +178,9 @@ def run_from_singer_files() -> None:
     logger.info("Running target from Singer JSON files")
     config_file = Path("config.json")
     if config_file.exists():
-        config = json.loads(config_file.read_text(encoding="utf-8"))
+        config = TypeAdapter(dict[str, object]).validate_json(
+            config_file.read_text(encoding="utf-8")
+        )
     else:
         config: dict[str, object] = {
             "base_url": "https://example.wms.oracle.com",
@@ -196,7 +199,7 @@ def run_from_singer_files() -> None:
     ]
     try:
         for message_line in singer_messages:
-            message = json.loads(message_line)
+            message = TypeAdapter(dict[str, object]).validate_json(message_line)
             if message["type"] == "SCHEMA":
                 try:
                     target.handle_schema_message(message)

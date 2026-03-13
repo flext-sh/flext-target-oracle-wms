@@ -6,18 +6,20 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+from pydantic import TypeAdapter
 
 from flext_target_oracle_wms.cli import OracleWMSTargetCli, main
 
 
 def _write_config_file(config: dict, tmp_path: Path) -> str:
     config_file = tmp_path / "config.json"
-    config_file.write_text(json.dumps(config), encoding="utf-8")
+    config_file.write_text(
+        TypeAdapter(object).dump_json(config).decode("utf-8"), encoding="utf-8"
+    )
     return str(config_file)
 
 
@@ -58,7 +60,9 @@ class TestOracleWMSTargetCliLoadConfig:
     def test_load_non_object_json_raises(self, tmp_path: Path) -> None:
         cli = OracleWMSTargetCli()
         bad_file = tmp_path / "bad.json"
-        bad_file.write_text(json.dumps([1, 2, 3]), encoding="utf-8")
+        bad_file.write_text(
+            TypeAdapter(object).dump_json([1, 2, 3]).decode("utf-8"), encoding="utf-8"
+        )
         with pytest.raises(TypeError):
             cli._load_config(str(bad_file))
 

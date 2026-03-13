@@ -6,9 +6,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import json
-
 import pytest
+from pydantic import TypeAdapter
 
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
@@ -24,20 +23,30 @@ def _valid_config() -> dict[str, object]:
 
 
 def _schema_line(stream: str, props: dict[str, dict[str, str]], keys: list[str]) -> str:
-    return json.dumps({
-        "type": "SCHEMA",
-        "stream": stream,
-        "schema": {"type": "object", "properties": props},
-        "key_properties": keys,
-    })
+    return (
+        TypeAdapter(object)
+        .dump_json({
+            "type": "SCHEMA",
+            "stream": stream,
+            "schema": {"type": "object", "properties": props},
+            "key_properties": keys,
+        })
+        .decode("utf-8")
+    )
 
 
 def _record_line(stream: str, record: dict[str, object]) -> str:
-    return json.dumps({"type": "RECORD", "stream": stream, "record": record})
+    return (
+        TypeAdapter(object)
+        .dump_json({"type": "RECORD", "stream": stream, "record": record})
+        .decode("utf-8")
+    )
 
 
 def _state_line(value: dict[str, object]) -> str:
-    return json.dumps({"type": "STATE", "value": value})
+    return (
+        TypeAdapter(object).dump_json({"type": "STATE", "value": value}).decode("utf-8")
+    )
 
 
 @pytest.mark.integration

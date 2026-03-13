@@ -6,9 +6,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import json
-
 import pytest
+from pydantic import TypeAdapter
 
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
@@ -28,29 +27,41 @@ def _schema_line(
     properties: dict[str, dict[str, str]] | None = None,
     key_properties: list[str] | None = None,
 ) -> str:
-    return json.dumps({
-        "type": "SCHEMA",
-        "stream": stream,
-        "schema": {
-            "type": "object",
-            "properties": properties or {"id": {"type": "string"}},
-        },
-        "key_properties": key_properties or ["id"],
-    })
+    return (
+        TypeAdapter(object)
+        .dump_json({
+            "type": "SCHEMA",
+            "stream": stream,
+            "schema": {
+                "type": "object",
+                "properties": properties or {"id": {"type": "string"}},
+            },
+            "key_properties": key_properties or ["id"],
+        })
+        .decode("utf-8")
+    )
 
 
 def _record_line(
     stream: str = "test_stream", record: dict[str, object] | None = None
 ) -> str:
-    return json.dumps({
-        "type": "RECORD",
-        "stream": stream,
-        "record": record or {"id": "1"},
-    })
+    return (
+        TypeAdapter(object)
+        .dump_json({
+            "type": "RECORD",
+            "stream": stream,
+            "record": record or {"id": "1"},
+        })
+        .decode("utf-8")
+    )
 
 
 def _state_line(state: dict[str, object] | None = None) -> str:
-    return json.dumps({"type": "STATE", "value": state or {"bookmarks": {}}})
+    return (
+        TypeAdapter(object)
+        .dump_json({"type": "STATE", "value": state or {"bookmarks": {}}})
+        .decode("utf-8")
+    )
 
 
 class TestTargetInit:

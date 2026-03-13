@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-import json
-
 from flext_core import r, t
+from pydantic import TypeAdapter
 
 from .models import m
 
@@ -19,7 +18,9 @@ class WMSTypeConverter:
         if value is None:
             return r[t.Container].ok("")
         if singer_type in {"object", "array"}:
-            return r[t.Container].ok(json.dumps(value))
+            return r[t.Container].ok(
+                TypeAdapter(object).dump_json(value).decode("utf-8")
+            )
         if singer_type in {"integer", "number"}:
             try:
                 as_text = str(value)

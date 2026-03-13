@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-import json
 import sys
 from typing import ClassVar
 
 from flext_core import FlextLogger, r
-from pydantic import ValidationError
+from pydantic import TypeAdapter, ValidationError
 
 from .models import m
 from .target_models import WMSDataTransformer, WMSTableManager
@@ -135,9 +134,12 @@ class SingerTargetOracleWMS:
             line = raw_line.strip()
             if not line:
                 continue
+            message_adapter: TypeAdapter[dict[str, object]] = TypeAdapter(
+                dict[str, object]
+            )
             try:
-                message = json.loads(line)
-            except json.JSONDecodeError as exc:
+                message = message_adapter.validate_json(line)
+            except ValidationError as exc:
                 return r[bool].fail(f"Invalid JSON message: {exc}")
             message_type = str(message.get("type", ""))
             try:
