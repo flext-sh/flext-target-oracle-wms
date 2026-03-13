@@ -83,10 +83,10 @@ class TestProtocolsNamespace:
         assert p is FlextTargetOracleWmsProtocols
 
     def test_data_loading_protocol_exists(self) -> None:
-        assert hasattr(p.TargetOracleWms, "WmsDataLoadingProtocol")
+        assert hasattr(p.TargetOracleWms, "WmsDataLoading")
 
     def test_data_transformation_protocol_exists(self) -> None:
-        assert hasattr(p.TargetOracleWms, "DataTransformationProtocol")
+        assert hasattr(p.TargetOracleWms, "DataTransformation")
 
 
 class TestClassAttributes:

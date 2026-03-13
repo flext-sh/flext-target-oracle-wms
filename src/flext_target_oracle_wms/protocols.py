@@ -17,7 +17,7 @@ class FlextTargetOracleWmsProtocols(FlextMeltanoProtocols, FlextOracleWmsProtoco
         """Target Oracle WMS protocol namespace."""
 
         @runtime_checkable
-        class WmsDataLoadingProtocol(Protocol):
+        class WmsDataLoading(Protocol):
             """Protocol for loading records into a WMS sink."""
 
             def load_data(self, records: list[Mapping[str, object]]) -> r[bool]:
@@ -25,7 +25,7 @@ class FlextTargetOracleWmsProtocols(FlextMeltanoProtocols, FlextOracleWmsProtoco
                 ...
 
         @runtime_checkable
-        class DataTransformationProtocol(Protocol):
+        class DataTransformation(Protocol):
             """Protocol for transforming source record payloads."""
 
             def transform_to_wms(
