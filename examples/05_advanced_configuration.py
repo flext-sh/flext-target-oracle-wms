@@ -33,7 +33,7 @@ monitor = FlextObservabilityMonitor()
 class CustomWMSTypeConverter(WMSTypeConverter):
     """Custom type converter with business-specific transformations."""
 
-    def convert_singer_to_oracle(self, singer_type: str, value) -> r:
+    def convert_singer_to_oracle(self, singer_type: str, value: float | str) -> r:
         """Custom conversion with business rules."""
         if singer_type == "business_date":
             if isinstance(value, str) and value:

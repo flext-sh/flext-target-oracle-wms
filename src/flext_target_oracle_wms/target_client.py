@@ -6,7 +6,10 @@ import sys
 from typing import ClassVar
 
 from flext_core import FlextLogger, r, t
+from flext_meltano import FlextMeltanoModels
+from flext_meltano.models import FlextMeltanoModels
 from pydantic import TypeAdapter, ValidationError
+from src.flext_meltano.models import FlextMeltanoModels
 
 from .models import m
 from .target_models import WMSDataTransformer, WMSTableManager
@@ -21,7 +24,9 @@ class SingerWMSCatalogManager:
         """Initialize catalog storage for stream metadata."""
         self._catalog_entries: dict[str, m.Meltano.SingerCatalogEntry] = {}
 
-    def add_stream(self, schema_message) -> r[bool]:
+    def add_stream(
+        self, schema_message: FlextMeltanoModels.Meltano.SingerSchemaMessage
+    ) -> r[bool]:
         """Register one stream schema entry."""
         typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
         stream_name = typed_schema.stream
@@ -55,7 +60,9 @@ class SingerWMSStreamProcessor:
         self.table_manager = table_manager
         self.data_transformer = data_transformer
 
-    def initialize_stream(self, schema_message) -> r[bool]:
+    def initialize_stream(
+        self, schema_message: FlextMeltanoModels.Meltano.SingerSchemaMessage
+    ) -> r[bool]:
         """Register stream metadata in table manager."""
         typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
         registration = self.table_manager.register_stream(typed_schema.stream)
@@ -64,7 +71,9 @@ class SingerWMSStreamProcessor:
         return r[bool].ok(value=True)
 
     def process_record(
-        self, record_message, schema_message
+        self,
+        record_message: FlextMeltanoModels.Meltano.SingerRecordMessage,
+        schema_message: object,
     ) -> r[m.Meltano.SingerRecordMessage]:
         """Transform one typed Singer record."""
         typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
@@ -99,7 +108,9 @@ class SingerTargetOracleWMS:
         """Release target runtime resources."""
         return r[bool].ok(value=True)
 
-    def handle_record_message(self, message) -> r[bool]:
+    def handle_record_message(
+        self, message: FlextMeltanoModels.Meltano.SingerRecordMessage
+    ) -> r[bool]:
         """Handle one RECORD message."""
         typed_record = m.Meltano.SingerRecordMessage.model_validate(message)
         schema_message = self._schemas.get(typed_record.stream)
@@ -114,7 +125,9 @@ class SingerTargetOracleWMS:
             return r[bool].fail(process_result.error or "Record processing failed")
         return r[bool].ok(value=True)
 
-    def handle_schema_message(self, message) -> r[bool]:
+    def handle_schema_message(
+        self, message: FlextMeltanoModels.Meltano.SingerSchemaMessage
+    ) -> r[bool]:
         """Handle one SCHEMA message."""
         typed_schema = m.Meltano.SingerSchemaMessage.model_validate(message)
         result = self.catalog_manager.add_stream(typed_schema).flow_through(
@@ -124,7 +137,9 @@ class SingerTargetOracleWMS:
             self._schemas[typed_schema.stream] = typed_schema
         return result
 
-    def handle_state_message(self, message) -> r[bool]:
+    def handle_state_message(
+        self, message: FlextMeltanoModels.Meltano.SingerStateMessage
+    ) -> r[bool]:
         """Handle one STATE message."""
         typed_state = m.Meltano.SingerStateMessage.model_validate(message)
         logger.debug("Received state", state=str(typed_state.value))
