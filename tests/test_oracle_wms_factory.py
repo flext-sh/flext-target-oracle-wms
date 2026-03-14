@@ -64,13 +64,13 @@ class TestFlextTargetFactory:
         }
 
     @patch(_PATCH_TARGET)
-    def test_create_target_success(self, mock_cls: object) -> None:
+    def test_create_target_success(self, mock_cls) -> None:
         req = TargetCreationRequest(base_url="https://x", username="u", password="p")
         result = FlextTargetFactory.create_target(req)
         assert result.is_success
 
     @patch(_PATCH_TARGET)
-    def test_create_target_with_preset(self, mock_cls: object) -> None:
+    def test_create_target_with_preset(self, mock_cls) -> None:
         req = TargetCreationRequest(
             base_url="https://x", username="u", password="p", preset="testing"
         )
@@ -78,7 +78,7 @@ class TestFlextTargetFactory:
         assert result.is_success
 
     @patch(_PATCH_TARGET)
-    def test_create_target_with_additional_config(self, mock_cls: object) -> None:
+    def test_create_target_with_additional_config(self, mock_cls) -> None:
         req = TargetCreationRequest(
             base_url="https://x",
             username="u",
@@ -89,7 +89,7 @@ class TestFlextTargetFactory:
         assert result.is_success
 
     @patch(_PATCH_TARGET)
-    def test_create_from_config_dict_success(self, mock_cls: object) -> None:
+    def test_create_from_config_dict_success(self, mock_cls) -> None:
         result = FlextTargetFactory.create_from_config_dict({
             "base_url": "https://x",
             "username": "u",
@@ -134,7 +134,7 @@ class TestFlextTargetMonitoringFactory:
         assert factory.monitor_name == "custom"
 
     @patch(_PATCH_TARGET)
-    def test_create_monitored_target_success(self, mock_cls: object) -> None:
+    def test_create_monitored_target_success(self, mock_cls) -> None:
         factory = FlextTargetMonitoringFactory()
         req = MonitoredTargetCreationRequest(
             base_url="https://x", username="u", password="p"
@@ -147,21 +147,21 @@ class TestConvenienceFunctions:
     """Tests for module-level convenience functions."""
 
     @patch(_PATCH_TARGET)
-    def test_create_oracle_wms_target(self, mock_cls: object) -> None:
+    def test_create_oracle_wms_target(self, mock_cls) -> None:
         result = create_oracle_wms_target(
             base_url="https://x", username="u", password="p"
         )
         assert result.is_success
 
     @patch(_PATCH_TARGET)
-    def test_create_oracle_wms_target_with_preset(self, mock_cls: object) -> None:
+    def test_create_oracle_wms_target_with_preset(self, mock_cls) -> None:
         result = create_oracle_wms_target(
             base_url="https://x", username="u", password="p", preset="production"
         )
         assert result.is_success
 
     @patch(_PATCH_TARGET)
-    def test_create_monitored_oracle_wms_target(self, mock_cls: object) -> None:
+    def test_create_monitored_oracle_wms_target(self, mock_cls) -> None:
         req = MonitoredTargetCreationRequest(
             base_url="https://x", username="u", password="p"
         )

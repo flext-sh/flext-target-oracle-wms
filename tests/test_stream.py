@@ -87,7 +87,7 @@ class TestStreamProcessorRecord:
     def test_process_record_with_transformer_failure(self) -> None:
         tm = WMSTableManager()
         dt = MagicMock(spec=WMSDataTransformer)
-        dt.transform_record.return_value = r[object].fail("transformer error")
+        dt.transform_record.return_value = r.fail("transformer error")
         proc = SingerWMSStreamProcessor(tm, dt)
         tm.register_stream("s")
         result = proc.process_record(_record_msg("s"), _schema_msg("s"))

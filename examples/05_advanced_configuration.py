@@ -33,7 +33,7 @@ monitor = FlextObservabilityMonitor()
 class CustomWMSTypeConverter(WMSTypeConverter):
     """Custom type converter with business-specific transformations."""
 
-    def convert_singer_to_oracle(self, singer_type: str, value: object) -> r[object]:
+    def convert_singer_to_oracle(self, singer_type: str, value) -> r:
         """Custom conversion with business rules."""
         if singer_type == "business_date":
             if isinstance(value, str) and value:
@@ -56,7 +56,7 @@ class CustomWMSTypeConverter(WMSTypeConverter):
             }
             mapped_status = status_mapping.get(value.lower(), value)
             return r[bool].ok(mapped_status)
-        parent_result: r[object] = super().convert_singer_to_oracle(singer_type, value)
+        parent_result: r = super().convert_singer_to_oracle(singer_type, value)
         return parent_result
 
 
@@ -71,7 +71,7 @@ class CustomWMSDataTransformer(WMSDataTransformer):
         self,
         record_message: Mapping[str, object],
         schema_message: Mapping[str, object] | None = None,
-    ) -> r[object]:
+    ) -> r:
         """Transform record with business validations."""
         base_result = super().transform_record(record_message, schema_message)
         if not base_result.is_success:

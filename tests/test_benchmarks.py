@@ -109,7 +109,7 @@ class TestFactoryBenchmarks:
     """Performance tests for FlextTargetFactory."""
 
     @patch("flext_target_oracle_wms.factory.SingerTargetOracleWMS")
-    def test_create_target_performance(self, mock_target: object) -> None:
+    def test_create_target_performance(self, mock_target) -> None:
         start = time.time()
         for _ in range(PERF_ITERATIONS):
             req = TargetCreationRequest(
@@ -120,7 +120,7 @@ class TestFactoryBenchmarks:
         assert elapsed < PERF_THRESHOLD_SEC
 
     @patch("flext_target_oracle_wms.factory.SingerTargetOracleWMS")
-    def test_convenience_function_performance(self, mock_target: object) -> None:
+    def test_convenience_function_performance(self, mock_target) -> None:
         start = time.time()
         for _ in range(PERF_ITERATIONS):
             create_oracle_wms_target(
