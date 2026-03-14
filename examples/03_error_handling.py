@@ -11,8 +11,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import FlextLogger, FlextTypes as t
+from collections.abc import Mapping
+
+from flext_core import FlextLogger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
+
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
 logger = FlextLogger(__name__)
@@ -28,7 +31,7 @@ class SimulatedOracleWMSError(Exception):
         self.attempt = attempt
 
 
-def get_error_demo_config() -> dict[str, t.GeneralValueType]:
+def get_error_demo_config() -> Mapping[str, object]:
     """Single Responsibility: Get error demonstration configuration.
 
     SOLID REFACTORING: Extract configuration into separate function following
@@ -39,23 +42,19 @@ def get_error_demo_config() -> dict[str, t.GeneralValueType]:
         "username": "error_demo_user",
         "password": "error_demo_password",
         "environment": "error_demo",
-        # Error handling configuration
         "max_retries": 3,
         "retry_delay": 2,
         "exponential_backoff": True,
         "circuit_breaker_enabled": True,
         "circuit_breaker_threshold": 5,
         "circuit_breaker_timeout": 30,
-        # Resilience features
         "connection_timeout": 30,
         "request_timeout": 60,
         "health_check_interval": 10,
         "auto_recovery": True,
-        # Error reporting
         "detailed_error_logging": True,
         "error_aggregation": True,
         "alert_on_errors": True,
-        # Data integrity
         "validate_on_insert": True,
         "rollback_on_error": True,
         "checkpoint_frequency": 100,
@@ -63,7 +62,7 @@ def get_error_demo_config() -> dict[str, t.GeneralValueType]:
 
 
 def demonstrate_setup_error_handling(
-    config: dict[str, t.GeneralValueType],
+    config: Mapping[str, object],
 ) -> SingerTargetOracleWMS | None:
     """Single Responsibility: Demonstrate setup and connection error handling.
 
@@ -71,20 +70,15 @@ def demonstrate_setup_error_handling(
     """
     logger.info("Test 1: Setup error scenarios")
     target = SingerTargetOracleWMS(config)
-
     setup_result = target.setup()
     if not setup_result.is_success:
         logger.error(f"Setup failed as expected for demo: {setup_result.error}")
         logger.info("Implementing setup retry logic...")
-
-        # Retry with fallback configuration
-        fallback_config = config.copy()
-        fallback_config["connection_timeout"] = 60  # Extended timeout
-        fallback_config["max_retries"] = 5  # More retries
-
+        fallback_config = dict(config)
+        fallback_config["connection_timeout"] = 60
+        fallback_config["max_retries"] = 5
         target = SingerTargetOracleWMS(fallback_config)
         setup_result = target.setup()
-
         if setup_result.is_success:
             logger.info("Setup successful with fallback configuration")
             return target
@@ -100,8 +94,6 @@ def demonstrate_schema_validation_errors(target: SingerTargetOracleWMS) -> None:
     SOLID REFACTORING: Extract schema validation into focused function.
     """
     logger.info("Test 2: Schema validation error scenarios")
-
-    # Valid schema first
     valid_schema = {
         "type": "SCHEMA",
         "stream": "error_test",
@@ -115,11 +107,8 @@ def demonstrate_schema_validation_errors(target: SingerTargetOracleWMS) -> None:
         },
         "key_properties": ["id"],
     }
-
     target.handle_schema_message(valid_schema)
     logger.info("Valid schema processed successfully")
-
-    # Test invalid schemas
     _test_invalid_schemas(target)
 
 
@@ -128,29 +117,32 @@ def _test_invalid_schemas(target: SingerTargetOracleWMS) -> None:
 
     SOLID REFACTORING: Extract invalid schema testing into helper function.
     """
-    # Invalid schemas to test
     invalid_schemas = [
-        # Missing required fields
         {
             "type": "SCHEMA",
             "stream": "invalid_missing_schema",
-            # Missing 'schema' field
             "key_properties": ["id"],
         },
-        # Invalid schema structure
         {
             "type": "SCHEMA",
             "stream": "invalid_structure",
-            "schema": "invalid_schema_format",  # Should be object
+            "schema": "invalid_schema_format",
             "key_properties": ["id"],
         },
     ]
-
     for invalid_schema in invalid_schemas:
         try:
             target.handle_schema_message(invalid_schema)
             logger.info("Invalid schema processed (expected to fail)")
-        except Exception as e:
+        except (
+            ValueError,
+            TypeError,
+            KeyError,
+            AttributeError,
+            OSError,
+            RuntimeError,
+            ImportError,
+        ) as e:
             logger.info("Invalid schema caused exception as expected: %s", e)
 
 
@@ -162,25 +154,14 @@ def demonstrate_error_handling() -> None:
     function into focused, single-responsibility functions.
     """
     logger.info("Starting error handling demonstration")
-
-    # Get configuration
     config = get_error_demo_config()
-
-    # Test setup error handling
     target = demonstrate_setup_error_handling(config)
     if target is None:
         logger.error("Unable to establish target connection - ending demonstration")
         return
-
-    # Test schema validation errors
     demonstrate_schema_validation_errors(target)
-
-    # Test data processing errors
     demonstrate_data_processing_errors(target)
-
-    # Test recovery scenarios
     demonstrate_recovery_scenarios(target)
-
     logger.info("Error handling demonstration completed")
 
 
@@ -190,22 +171,27 @@ def demonstrate_data_processing_errors(target: SingerTargetOracleWMS) -> None:
     SOLID REFACTORING: Extract data processing errors into focused function.
     """
     logger.info("Test 3: Data processing error scenarios")
-
-    # Valid record first
     valid_record = {
         "type": "RECORD",
         "stream": "error_test",
         "record": {
             "id": "test_001",
-            "value": 100.50,
+            "value": 100.5,
             "timestamp": "2025-01-01T10:00:00Z",
         },
     }
-
     try:
         target.handle_record_message(valid_record)
         logger.info("Valid record processed successfully")
-    except Exception as e:
+    except (
+        ValueError,
+        TypeError,
+        KeyError,
+        AttributeError,
+        OSError,
+        RuntimeError,
+        ImportError,
+    ) as e:
         logger.info("Valid record processing raised exception: %s", e)
 
 
@@ -215,28 +201,26 @@ def demonstrate_recovery_scenarios(target: SingerTargetOracleWMS) -> None:
     SOLID REFACTORING: Extract recovery scenarios into focused function.
     """
     logger.info("Test 4: Recovery and resilience scenarios")
-
-    # Simulate connection recovery
     logger.info("Simulating connection recovery scenario...")
-
     try:
-        # Test graceful shutdown and restart
         cleanup_result = target.cleanup()
         if cleanup_result.is_success:
             logger.info("Target cleanup successful")
         else:
             logger.warning(f"Target cleanup had issues: {cleanup_result.error}")
-
-    except Exception as e:
+    except (
+        ValueError,
+        TypeError,
+        KeyError,
+        AttributeError,
+        OSError,
+        RuntimeError,
+        ImportError,
+    ) as e:
         logger.warning("Recovery scenario raised exception: %s", e)
-
     logger.info("Recovery scenarios completed")
 
 
 if __name__ == "__main__":
-    """Run error handling demonstration.
-
-    SOLID REFACTORING: Simplified main execution using the orchestrated functions.
-    """
-    # Example code - MyPy type checking relaxed for demonstration
+    "Run error handling demonstration.\n\n    SOLID REFACTORING: Simplified main execution using the orchestrated functions.\n    "
     demonstrate_error_handling()

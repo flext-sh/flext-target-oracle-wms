@@ -2,40 +2,38 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import Protocol, runtime_checkable
 
-from flext_core import FlextResult, FlextTypes as t
+from flext_core import r
+from flext_meltano import FlextMeltanoProtocols
+from flext_oracle_wms.protocols import FlextOracleWmsProtocols
 
 
-class FlextTargetOracleWmsProtocols:
+class FlextTargetOracleWmsProtocols(FlextMeltanoProtocols, FlextOracleWmsProtocols):
     """Namespace for target Oracle WMS protocol contracts."""
 
     class TargetOracleWms:
         """Target Oracle WMS protocol namespace."""
 
         @runtime_checkable
-        class WmsDataLoadingProtocol(Protocol):
+        class WmsDataLoading(Protocol):
             """Protocol for loading records into a WMS sink."""
 
-            def load_data(
-                self,
-                records: list[dict[str, t.GeneralValueType]],
-            ) -> FlextResult[bool]:
+            def load_data(self, records: list[Mapping[str, object]]) -> r[bool]:
                 """Load a batch of records."""
                 ...
 
         @runtime_checkable
-        class DataTransformationProtocol(Protocol):
+        class DataTransformation(Protocol):
             """Protocol for transforming source record payloads."""
 
             def transform_to_wms(
-                self,
-                record: dict[str, t.GeneralValueType],
-            ) -> FlextResult[dict[str, t.GeneralValueType]]:
+                self, record: Mapping[str, object]
+            ) -> r[Mapping[str, object]]:
                 """Transform one record to WMS shape."""
                 ...
 
 
 p = FlextTargetOracleWmsProtocols
-
 __all__ = ["FlextTargetOracleWmsProtocols", "p"]

@@ -1,508 +1,143 @@
-"""Comprehensive coverage tests - Focus on CLI and target modules for 100% coverage.
-
-These tests target the parts with low coverage to achieve production-quality standards.
-REAL API usage with flext-* libraries, NO FALLBACKS, NO MOCKUPS.
-
-
+"""End-to-end workflow tests for target Oracle WMS.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
-
 """
 
 from __future__ import annotations
 
-import io
-import json
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
-import pytest
+from pydantic import TypeAdapter
 
-# Import the modules to be tested - REAL imports
-from flext_target_oracle_wms import OracleWMSTargetCli, SingerTargetOracleWMS, main
+from flext_target_oracle_wms.cli import OracleWMSTargetCli
+from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 
-class TestComprehensiveCLICoverage:
-    """Comprehensive CLI tests to achieve 100% coverage."""
+def _valid_config() -> dict[str, object]:
+    return {
+        "wms_auth": {
+            "base_url": "https://test.wms.example.com",
+            "username": "user",
+            "password": "pass",
+        }
+    }
 
-    def test_cli_execute_with_stdin_input(self) -> None:
-        """Test CLI execution with stdin input - covers stdin handling."""
-        cli = OracleWMSTargetCli()
 
-        # Test SCHEMA message processing
-        schema_message = {
+def _schema_line(stream: str, props: dict[str, dict[str, str]], keys: list[str]) -> str:
+    return (
+        TypeAdapter(object)
+        .dump_json({
             "type": "SCHEMA",
-            "stream": "test_stream",
-            "schema": {
-                "type": "object",
-                "properties": {"id": {"type": "string"}, "name": {"type": "string"}},
-            },
-            "key_properties": ["id"],
-        }
+            "stream": stream,
+            "schema": {"type": "object", "properties": props},
+            "key_properties": keys,
+        })
+        .decode("utf-8")
+    )
 
-        # Mock stdin with JSON input
-        stdin_data = json.dumps(schema_message) + "\n"
 
-        with (
-            patch("sys.stdin", io.StringIO(stdin_data)),
-            patch(
-                "flext_target_oracle_wms.singer.target.SingerTargetOracleWMS",
-            ) as mock_target_class,
-        ):
-            mock_target = Mock()
-            mock_target_class.return_value = mock_target
-            mock_target.setup.return_value = MagicMock(success=True)
-            mock_target.process_schema_message.return_value = MagicMock(
-                success=True,
-            )
-            mock_target.cleanup.return_value = MagicMock(success=True)
-            mock_target.finalize.return_value = MagicMock(success=True, data={})
+def _record_line(stream: str, record: dict[str, object]) -> str:
+    return (
+        TypeAdapter(object)
+        .dump_json({"type": "RECORD", "stream": stream, "record": record})
+        .decode("utf-8")
+    )
 
-            # Execute should read from stdin and process message
-            result = cli.execute()
-            assert result.is_success
 
-    def test_cli_load_config_from_file(self) -> None:
-        """Test CLI config loading from file."""
-        cli = OracleWMSTargetCli()
+def _state_line(value: dict[str, object]) -> str:
+    return (
+        TypeAdapter(object).dump_json({"type": "STATE", "value": value}).decode("utf-8")
+    )
 
-        config_data = {
-            "base_url": "https://test.wms.oracle.com",
-            "username": "test_user",
-            "password": "test_password",
-            "environment": "test",
-        }
 
-        config_json = json.dumps(config_data)
+class TestFullSingerWorkflow:
+    """End-to-end Singer SCHEMA → RECORD → STATE workflow."""
 
-        with (
-            patch("pathlib.Path.exists", return_value=True),
-            patch("pathlib.Path.read_text", return_value=config_json),
-        ):
-            config = cli._load_config("test-config.json")
-            assert config == config_data
-
-    def test_cli_execute_with_multiple_message_types(self) -> None:
-        """Test CLI with mixed message types - comprehensive stdin processing."""
-        cli = OracleWMSTargetCli()
-
-        # Multiple message types in stdin
-        messages = [
-            {"type": "SCHEMA", "stream": "users", "schema": {"type": "object"}},
-            {
-                "type": "RECORD",
-                "stream": "users",
-                "record": {"id": "1", "name": "Test"},
-            },
-            {"type": "STATE", "value": {"bookmarks": {"users": {"id": "1"}}}},
-            {
-                "type": "RECORD",
-                "stream": "users",
-                "record": {"id": "2", "name": "Test2"},
-            },
+    def test_single_stream_workflow(self) -> None:
+        target = SingerTargetOracleWMS(_valid_config())
+        lines = [
+            _schema_line(
+                "inventory",
+                {"id": {"type": "string"}, "qty": {"type": "integer"}},
+                ["id"],
+            ),
+            _record_line("inventory", {"id": "ITEM001", "qty": 100}),
+            _record_line("inventory", {"id": "ITEM002", "qty": 50}),
+            _state_line({"bookmarks": {"inventory": "2"}}),
         ]
+        result = target.process_lines(lines)
+        assert result.is_success
 
-        stdin_data = "\n".join(json.dumps(msg) for msg in messages) + "\n"
+    def test_multiple_stream_workflow(self) -> None:
+        target = SingerTargetOracleWMS(_valid_config())
+        lines = [
+            _schema_line("orders", {"order_id": {"type": "string"}}, ["order_id"]),
+            _schema_line("items", {"item_id": {"type": "string"}}, ["item_id"]),
+            _record_line("orders", {"order_id": "ORD001"}),
+            _record_line("items", {"item_id": "ITEM001"}),
+            _state_line({"bookmarks": {}}),
+        ]
+        result = target.process_lines(lines)
+        assert result.is_success
 
-        with (
-            patch("sys.stdin", io.StringIO(stdin_data)),
-            patch(
-                "flext_target_oracle_wms.singer.target.SingerTargetOracleWMS",
-            ) as mock_target_class,
-        ):
-            mock_target = Mock()
-            mock_target_class.return_value = mock_target
-            mock_target.setup.return_value = MagicMock(success=True)
-            mock_target.process_schema_message.return_value = MagicMock(
-                success=True,
-            )
-            mock_target.process_record_message.return_value = MagicMock(
-                success=True,
-            )
-            mock_target.process_state_message.return_value = MagicMock(
-                success=True,
-            )
-            mock_target.finalize.return_value = MagicMock(success=True, data={})
-            mock_target.cleanup.return_value = MagicMock(success=True)
+    def test_schema_update_mid_stream(self) -> None:
+        target = SingerTargetOracleWMS(_valid_config())
+        lines = [
+            _schema_line("s", {"id": {"type": "string"}}, ["id"]),
+            _record_line("s", {"id": "1"}),
+            _schema_line(
+                "s", {"id": {"type": "string"}, "name": {"type": "string"}}, ["id"]
+            ),
+            _record_line("s", {"id": "2", "name": "updated"}),
+        ]
+        result = target.process_lines(lines)
+        assert result.is_success
 
-            result = cli.execute()
-            assert result.is_success
-
-    def test_main_function_comprehensive_scenarios(self) -> None:
-        """Test main function with various command line scenarios."""
-        # Mock run to avoid actual execution
-        result = MagicMock()
-        result.is_success = True
-
-        # Test 1: No arguments (default behavior) - now simplified without FlextCliSettings
-        with (
-            patch("sys.argv", ["target-oracle-wms"]),
-            patch("run", return_value=result),
-        ):
-            main()  # main() returns None, not capturing result
-
-        # Test 2: Config file argument
-        with (
-            patch("sys.argv", ["target-oracle-wms", "--config", "test-config.json"]),
-            patch("run", return_value=result),
-        ):
-            main()  # main() returns None, not capturing result
-
-        # Test 3: KeyboardInterrupt handling
-        with (
-            patch("sys.argv", ["target-oracle-wms"]),
-            patch("run", side_effect=KeyboardInterrupt()),
-            patch("sys.exit") as mock_exit,
-            patch("sys.stderr.write"),
-        ):
-            main()
-            mock_exit.assert_called_once_with(1)
-
-        # Test 4: General exception handling
-        with (
-            patch("sys.argv", ["target-oracle-wms"]),
-            patch("run", side_effect=RuntimeError("Test error")),
-            patch("sys.exit") as mock_exit,
-            patch("sys.stderr.write"),
-        ):
-            main()
-            mock_exit.assert_called_once_with(1)
+    def test_state_only_workflow(self) -> None:
+        target = SingerTargetOracleWMS(_valid_config())
+        lines = [_state_line({"bookmarks": {}})]
+        result = target.process_lines(lines)
+        assert result.is_success
 
 
-class TestComprehensiveTargetCoverage:
-    """Comprehensive target tests to achieve 100% coverage."""
+class TestCliWorkflow:
+    """End-to-end CLI execution workflow."""
 
-    @pytest.fixture
-    def target_config(self) -> dict[str, str]:
-        """Production target configuration."""
-        return {
-            "base_url": "https://test.wms.oracle.com",
-            "username": "test_user",
-            "password": "test_password",
-            "environment": "test",
-            "default_target_schema": "TEST_SCHEMA",
-            "batch_size": "500",
-            "table_prefix": "TEST_",
-        }
+    @patch("flext_target_oracle_wms.cli.sys.stdin", [])
+    def test_cli_execute_empty_stdin(self) -> None:
+        cli = OracleWMSTargetCli()
+        result = cli.execute()
+        assert result.is_success
 
-    def test_target_initialization_comprehensive(
-        self,
-        target_config: dict[str, str],
-    ) -> None:
-        """Test target initialization with all configuration options."""
-        # Test with plugin system enabled
-        config_with_plugins = {
-            **target_config,
-            "enable_plugins": True,
-            "plugin_directory": "./test_plugins",
-            "load_method": "UPSERT",
-            "verify_ssl": False,
-            "enable_logging": True,
-            "timeout": 60.0,
-            "max_retries": 5,
-        }
-
-        with patch("flext_oracle_wms.FlextOracleWmsClient"):
-            target = SingerTargetOracleWMS(config_with_plugins)
-
-            # Verify all configuration options are set
-            assert target.config == config_with_plugins
-            assert int(target.batch_size) == 500  # Config values are strings by default
-            assert target.load_method == "UPSERT"
-            assert target.table_prefix == "TEST_"
-            assert target.plugin_enabled is True
-            assert target.plugin_directory == "./test_plugins"
-
-    def test_target_setup_failure_scenarios(
-        self,
-        target_config: dict[str, str],
-    ) -> None:
-        """Test target setup with various failure scenarios."""
-        # Test setup with Oracle client start failure
-        with patch("flext_oracle_wms.FlextOracleWmsClient") as mock_client_class:
-            mock_client = Mock()
-            mock_client_class.return_value = mock_client
-
-            # Mock start failure
-            mock_start_result = MagicMock()
-            mock_start_result.is_success = False
-            mock_start_result.error = "Connection timeout"
-            mock_client.start.return_value = mock_start_result
-
-            # Patch the target's setup method to actually check client start result
-            with patch.object(SingerTargetOracleWMS, "setup") as mock_setup:
-                mock_setup.return_value = MagicMock(
-                    success=False,
-                    error="Oracle WMS connection failed: Connection timeout",
-                )
-
-                target = SingerTargetOracleWMS(target_config)
-                result = target.setup()
-
-                assert not result.is_success
-                assert result.error is not None
-                assert result.error is not None
-                assert "Oracle WMS connection failed" in result.error
-
-    def test_target_message_processing_edge_cases(
-        self,
-        target_config: dict[str, str],
-    ) -> None:
-        """Test message processing edge cases and error paths."""
-        with patch("flext_oracle_wms.FlextOracleWmsClient"):
-            target = SingerTargetOracleWMS(target_config)
-
-            # Test SCHEMA message with missing fields
-            incomplete_schema = {"type": "SCHEMA", "stream": "test"}
-            result = target.process_schema_message(incomplete_schema)
-            assert not result.is_success
-            assert result.error is not None
-            assert result.error is not None
-            assert "missing stream or schema" in result.error
-
-            # Test RECORD message with missing fields
-            incomplete_record = {"type": "RECORD", "stream": "test"}
-            result = target.process_record_message(incomplete_record)
-            assert not result.is_success
-            assert result.error is not None
-            assert result.error is not None
-            assert "missing stream or record" in result.error
-
-            # Test STATE message with invalid type
-            invalid_state = {"type": "INVALID", "value": {}}
-            result = target.process_state_message(invalid_state)
-            assert not result.is_success
-            assert result.error is not None
-            assert result.error is not None
-            assert "Not a STATE message" in result.error
-
-    def test_target_table_management_coverage(
-        self,
-        target_config: dict[str, str],
-    ) -> None:
-        """Test table management methods for full coverage."""
-        with patch("flext_oracle_wms.FlextOracleWmsClient") as mock_client_class:
-            mock_client = Mock()
-            mock_client_class.return_value = mock_client
-
-            target = SingerTargetOracleWMS(target_config)
-
-            # Test _ensure_table_exists with no client
-            target.oracle_client = None  # Test scenario
-            result = target._ensure_table_exists(
-                "test_table",
-                "test_schema",
-                "CREATE TABLE...",
-            )
-            assert not result.is_success
-            assert result.error is not None
-            assert result.error is not None
-            assert "Oracle WMS client not initialized" in result.error
-
-            # Test _ensure_table_exists with exception - patch the method itself
-            target.oracle_client = mock_client
-            with (
-                patch.object(
-                    target,
-                    "_ensure_table_exists",
-                    side_effect=RuntimeError("Test error"),
-                ),
-                pytest.raises(RuntimeError, match="Test error"),
-            ):
-                target._ensure_table_exists(
-                    "test_table",
-                    "test_schema",
-                    "CREATE TABLE...",
-                )
-
-    def test_target_record_insertion_comprehensive(
-        self,
-        target_config: dict[str, str],
-    ) -> None:
-        """Test record insertion with comprehensive data types."""
-        with patch("flext_oracle_wms.FlextOracleWmsClient"):
-            target = SingerTargetOracleWMS(target_config)
-
-            # Test complex record with various data types
-            complex_record = {
-                "id": "TEST_001",
-                "name": "Test Record",
-                "value": 123.45,
-                "active": True,
-                "metadata": {"key": "value", "nested": {"inner": "data"}},
-                "tags": ["tag1", "tag2", "tag3"],
-                "null_field": None,
-                "empty_string": "",
-                "large_number": 9999999999,
-                "special_chars": "!@#$%^&*()",
-            }
-
-            result = target._insert_record("test_stream", complex_record)
-            assert result.is_success  # Should succeed with any data type
-
-    def test_target_cleanup_scenarios(
-        self,
-        target_config: dict[str, str],
-    ) -> None:
-        """Test cleanup with various scenarios."""
-        with patch("flext_oracle_wms.FlextOracleWmsClient") as mock_client_class:
-            mock_client = Mock()
-            mock_client_class.return_value = mock_client
-
-            target = SingerTargetOracleWMS(target_config)
-
-            # Test cleanup with client stop failure (should not fail cleanup)
-            mock_stop_result = MagicMock()
-            mock_stop_result.is_success = False
-            mock_stop_result.error = "Stop failed"
-            mock_client.stop.return_value = mock_stop_result
-
-            result = target.cleanup()
-            assert result.is_success  # Cleanup should succeed despite stop failure
-
-    def test_target_finalize_comprehensive(
-        self,
-        target_config: dict[str, str],
-    ) -> None:
-        """Test finalize method with comprehensive statistics."""
-        with patch("flext_oracle_wms.FlextOracleWmsClient"):
-            target = SingerTargetOracleWMS(target_config)
-
-            # Mock stream processor stats
-            mock_stats = MagicMock()
-            mock_stats.records_processed = 100
-            mock_stats.records_success = 95
-            mock_stats.records_failed = 5
-            mock_stats.success_rate = 95.0
-
-            stats_data = {"stream1": mock_stats, "stream2": mock_stats}
-
-            mock_result = MagicMock()
-            mock_result.is_success = True
-            mock_result.data = stats_data
-
-            with patch.object(
-                target.stream_processor,
-                "get_all_stats",
-                return_value=mock_result,
-            ):
-                result = target.finalize()
-
-                assert result.is_success
-                assert result.data is not None
-                summary = result.data
-                assert summary["total_records_processed"] == 200  # 100 * 2 streams
-                assert summary["total_records_success"] == 190  # 95 * 2 streams
-                assert summary["total_records_failed"] == 10  # 5 * 2 streams
-                assert summary["streams_processed"] == 2
-                assert "stream_stats" in summary
+    @patch("flext_target_oracle_wms.cli.sys.stdin")
+    def test_cli_execute_with_messages(self, mock_stdin: MagicMock) -> None:
+        lines = [
+            _schema_line("test", {"id": {"type": "string"}}, ["id"]) + "\n",
+            _record_line("test", {"id": "1"}) + "\n",
+            _state_line({"bookmarks": {}}) + "\n",
+        ]
+        mock_stdin.__iter__ = MagicMock(return_value=iter(lines))
+        mock_stdin.__next__ = MagicMock(side_effect=lines)
+        cli = OracleWMSTargetCli()
+        result = cli.execute()
+        assert result.is_success
 
 
-class TestComprehensiveIntegrationCoverage:
-    """Comprehensive integration tests for complete coverage."""
+class TestErrorWorkflows:
+    """Tests for error handling in workflows."""
 
-    def test_full_workflow_integration(self) -> None:
-        """Test complete Singer workflow integration."""
-        config = {
-            "base_url": "https://integration.wms.oracle.com",
-            "username": "integration_user",
-            "password": "integration_password",
-            "environment": "integration",
-            "default_target_schema": "INTEGRATION_SCHEMA",
-            "table_prefix": "INT_",
-        }
+    def test_malformed_json_stops_processing(self) -> None:
+        target = SingerTargetOracleWMS(_valid_config())
+        lines = [
+            _schema_line("s", {"id": {"type": "string"}}, ["id"]),
+            "NOT VALID JSON",
+        ]
+        result = target.process_lines(lines)
+        assert result.is_failure
 
-        with patch("flext_oracle_wms.FlextOracleWmsClient") as mock_client_class:
-            # Setup successful Oracle client mock
-            mock_client = Mock()
-            mock_client_class.return_value = mock_client
-            mock_client.start.return_value = MagicMock(success=True)
-            mock_client.stop.return_value = MagicMock(success=True)
-
-            target = SingerTargetOracleWMS(config)
-
-            # 1. Setup
-            setup_result = target.setup()
-            assert setup_result.is_success
-
-            # 2. Process SCHEMA
-            schema_message = {
-                "type": "SCHEMA",
-                "stream": "integration_test",
-                "schema": {
-                    "type": "object",
-                    "properties": {
-                        "id": {"type": "string"},
-                        "name": {"type": "string"},
-                        "value": {"type": "number"},
-                    },
-                },
-                "key_properties": ["id"],
-            }
-
-            schema_result = target.process_schema_message(schema_message)
-            assert schema_result.is_success
-
-            # 3. Process multiple RECORDs
-            records = [
-                {"id": "1", "name": "Record 1", "value": 100.0},
-                {"id": "2", "name": "Record 2", "value": 200.0},
-                {"id": "3", "name": "Record 3", "value": 300.0},
-            ]
-
-            for record_data in records:
-                record_message = {
-                    "type": "RECORD",
-                    "stream": "integration_test",
-                    "record": record_data,
-                    "time_extracted": "2024-01-15T12:00:00Z",
-                }
-
-                record_result = target.process_record_message(record_message)
-                assert record_result.is_success
-
-            # 4. Process STATE
-            state_message = {
-                "type": "STATE",
-                "value": {"bookmarks": {"integration_test": {"id": "3"}}},
-            }
-
-            with patch("sys.stdout", new_callable=io.StringIO) as mock_stdout:
-                state_result = target.process_state_message(state_message)
-                assert state_result.is_success
-                # Verify STATE was written to stdout
-                assert state_message == json.loads(mock_stdout.getvalue().strip())
-
-            # 5. Finalize
-            finalize_result = target.finalize()
-            assert finalize_result.is_success
-            assert finalize_result.data is not None
-
-            # 6. Cleanup
-            cleanup_result = target.cleanup()
-            assert cleanup_result.is_success
-
-    def test_cli_full_integration_with_file_input(self) -> None:
-        """Test CLI with file-based input integration."""
-        config_data = {
-            "base_url": "https://file-test.wms.oracle.com",
-            "username": "file_user",
-            "password": "file_password",
-            "environment": "file_test",
-        }
-
-        # Create mock config file
-        config_file_content = json.dumps(config_data)
-
-        with (
-            patch("pathlib.Path.exists", return_value=True),
-            patch("pathlib.Path.read_text", return_value=config_file_content),
-        ):
-            cli = OracleWMSTargetCli()
-            loaded_config = cli._load_config("test-config.json")
-
-            assert loaded_config == config_data
-
-            # Test CLI initialization works correctly
-            cli_new = OracleWMSTargetCli()
-            assert cli_new.name == "target-oracle-wms"
+    def test_record_for_unknown_stream_fails(self) -> None:
+        target = SingerTargetOracleWMS(_valid_config())
+        lines = [_record_line("unknown_stream", {"id": "1"})]
+        result = target.process_lines(lines)
+        assert result.is_failure

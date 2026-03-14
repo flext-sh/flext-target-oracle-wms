@@ -14,23 +14,17 @@ from __future__ import annotations
 
 import os
 
-from flext_core import FlextLogger, FlextTypes as t
+from flext_core import FlextLogger
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
-# Import factory patterns for easier usage
 from flext_target_oracle_wms import (
     FlextTargetFactory,
     TargetCreationRequest,
     create_oracle_wms_target,
 )
 
-# Get logger using flext-core patterns
 logger = FlextLogger(__name__)
-
-# Monitor using flext-observability
 monitor = FlextObservabilityMonitor()
-
-# Constants for demo configuration
 DEMO_PASSWORD = os.getenv("DEMO_PASSWORD", "demo_password")
 
 
@@ -43,7 +37,6 @@ def _demonstrate_simple_target() -> None:
         password=DEMO_PASSWORD,
         environment="demo",
     )
-
     if simple_target_result.is_success and simple_target_result.data:
         logger.info("✅ Simple target created successfully")
         simple_target = simple_target_result.data
@@ -59,23 +52,17 @@ def _demonstrate_development_target() -> None:
     """Demonstrate development target with preset."""
     logger.info("\n🔧 Example 2: Development Target with Preset")
     dev_target_result = FlextTargetFactory.create_development_target(
-        base_url="https://dev.wms.oracle.com",
-        # Override some development defaults
-        batch_size=50,
-        custom_debug_mode=True,
+        base_url="https://dev.wms.oracle.com", batch_size=50, custom_debug_mode=True
     )
-
     if dev_target_result.is_success and dev_target_result.data:
         logger.info("✅ Development target created with optimized settings")
         dev_target = dev_target_result.data
-        # Development preset automatically sets dev-friendly options
         logger.info("Batch size: %s", dev_target.config.get("batch_size"))
         logger.info("Table prefix: %s", dev_target.config.get("table_prefix"))
         logger.info("Verify SSL: %s", dev_target.config.get("verify_ssl"))
     else:
         logger.error(
-            "❌ Development target creation failed: %s",
-            dev_target_result.error,
+            "❌ Development target creation failed: %s", dev_target_result.error
         )
 
 
@@ -86,23 +73,19 @@ def _demonstrate_production_target() -> None:
         base_url="https://prod.wms.oracle.com",
         username="prod_user",
         password=DEMO_PASSWORD,
-        # Production-specific overrides
         connection_pool_size=20,
         enable_audit_logging=True,
     )
-
     if prod_target_result.is_success and prod_target_result.data:
         logger.info("✅ Production target created with strict settings")
         prod_target = prod_target_result.data
-        # Production preset automatically sets production-grade options
         logger.info("Batch size: %s", prod_target.config.get("batch_size"))
         logger.info("Max retries: %s", prod_target.config.get("max_retries"))
         logger.info("Verify SSL: %s", prod_target.config.get("verify_ssl"))
         logger.info("Timeout: %s", prod_target.config.get("timeout"))
     else:
         logger.error(
-            "❌ Production target creation failed: %s",
-            prod_target_result.error,
+            "❌ Production target creation failed: %s", prod_target_result.error
         )
 
 
@@ -110,10 +93,8 @@ def _demonstrate_testing_target() -> None:
     """Demonstrate testing target with minimal settings."""
     logger.info("\n🧪 Example 4: Testing Target with Minimal Settings")
     test_target_result = FlextTargetFactory.create_testing_target(
-        test_mode=True,
-        fast_execution=True,
+        test_mode=True, fast_execution=True
     )
-
     if test_target_result.is_success and test_target_result.data:
         logger.info("✅ Testing target created with minimal settings")
         test_target = test_target_result.data
@@ -127,7 +108,7 @@ def _demonstrate_testing_target() -> None:
 def _demonstrate_config_target() -> None:
     """Demonstrate configuration-based target creation."""
     logger.info("\n📋 Example 5: Configuration-based Target Creation")
-    config_dict: dict[str, t.GeneralValueType] = {
+    config_dict: dict[str, object] = {
         "base_url": "https://config.wms.oracle.com",
         "username": "config_user",
         "password": DEMO_PASSWORD,
@@ -136,7 +117,6 @@ def _demonstrate_config_target() -> None:
         "custom_field": "custom_value",
         "enable_compression": True,
     }
-
     config_target_result = FlextTargetFactory.create_from_config_dict(config_dict)
     if config_target_result.is_success and config_target_result.data:
         logger.info("✅ Configuration-based target created successfully")
@@ -154,7 +134,6 @@ def _demonstrate_config_target() -> None:
 def demonstrate_factory_patterns() -> None:
     """Demonstrate various factory patterns for easier library usage."""
     logger.info("🏭 Starting Oracle WMS Target Factory Usage Examples")
-
     _demonstrate_simple_target()
     _demonstrate_development_target()
     _demonstrate_production_target()
@@ -166,22 +145,17 @@ def demonstrate_factory_patterns() -> None:
 def demonstrate_preset_differences() -> None:
     """Demonstrate differences between environment presets."""
     logger.info("\n🔍 Preset Comparison - How Factory Makes Configuration Easy")
-
     presets_to_compare = ["development", "staging", "production", "testing"]
-
     for preset_name in presets_to_compare:
         logger.info("\n📋 %s Preset Configuration:", preset_name.upper())
         preset_config = FlextTargetFactory.PRESETS[preset_name]
-
         for key, value in preset_config.items():
             logger.info("  %s: %s", key, value)
-
-        # Show how preset optimizes for environment
         if preset_name == "development":
             logger.info("  💡 Optimized for: Fast feedback, easy debugging")
         elif preset_name == "staging":
             logger.info(
-                "  💡 Optimized for: Production-like testing, performance validation",
+                "  💡 Optimized for: Production-like testing, performance validation"
             )
         elif preset_name == "production":
             logger.info("  💡 Optimized for: High performance, reliability, security")
@@ -193,19 +167,11 @@ def demonstrate_preset_differences() -> None:
 def demonstrate_error_handling() -> None:
     """Demonstrate factory error handling patterns."""
     logger.info("\n⚠️  Error Handling Examples")
-
-    # Example 1: Missing required configuration
     logger.info("\n❌ Example: Missing Required Configuration")
-    incomplete_config = {
-        "base_url": "https://incomplete.wms.oracle.com",
-        # Missing username and password
-    }
-
+    incomplete_config = {"base_url": "https://incomplete.wms.oracle.com"}
     error_result = FlextTargetFactory.create_from_config_dict(incomplete_config)
     if not error_result.is_success:
         logger.info("✅ Handled missing config gracefully: %s", error_result.error)
-
-    # Example 2: Unknown preset handling
     logger.info("\n⚠️  Example: Unknown Preset")
     unknown_preset_result = FlextTargetFactory.create_target(
         TargetCreationRequest(
@@ -213,9 +179,8 @@ def demonstrate_error_handling() -> None:
             username="test_user",
             password=DEMO_PASSWORD,
             environment="test",
-        ),
+        )
     )
-
     if unknown_preset_result.is_success:
         logger.info("✅ Unknown preset handled gracefully with fallback to defaults")
     else:
@@ -226,19 +191,10 @@ def main() -> None:
     """Run all factory usage examples."""
     logger.info("🎯 Oracle WMS Target Factory Usage Examples")
     logger.info("=" * 50)
-
     try:
-        # Demonstrate core factory patterns
         demonstrate_factory_patterns()
-
-        # Show preset differences
         demonstrate_preset_differences()
-
-        # Demonstrate error handling
         demonstrate_error_handling()
-
-        # Show configuration flexibility (demonstrated through factory patterns above)
-
         logger.info("\n🎉 Factory Usage Examples Completed Successfully!")
         logger.info("\n📚 Key Takeaways:")
         logger.info("  🏭 FlextTargetFactory simplifies target creation")
@@ -247,12 +203,19 @@ def main() -> None:
         logger.info("  🔧 Configuration-based creation enables flexibility")
         logger.info("  ⚡ Convenience functions reduce boilerplate code")
         logger.info("  🛡️  Built-in error handling improves reliability")
-
-    except Exception:
+    except (
+        ValueError,
+        TypeError,
+        KeyError,
+        AttributeError,
+        OSError,
+        RuntimeError,
+        ImportError,
+    ):
         logger.exception("Factory usage example failed")
         raise
 
 
 if __name__ == "__main__":
-    """Run the factory usage examples."""
+    "Run the factory usage examples."
     main()

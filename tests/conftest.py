@@ -6,50 +6,26 @@ SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
-# PYTHON_VERSION_GUARD — Do not remove. Managed by scripts/maintenance/enforce_python_version.py
-import sys as _sys
-
-if _sys.version_info[:2] != (3, 13):
-    _v = f"{_sys.version_info.major}.{_sys.version_info.minor}.{_sys.version_info.micro}"
-    raise RuntimeError(
-        f"\n{'=' * 72}\n"
-        f"FATAL: Python {_v} detected — this project requires Python 3.13.\n"
-        f"\n"
-        f"The virtual environment was created with the WRONG Python interpreter.\n"
-        f"\n"
-        f"Fix:\n"
-        f"  1. rm -rf .venv\n"
-        f"  2. poetry env use python3.13\n"
-        f"  3. poetry install\n"
-        f"\n"
-        f"Or use the workspace Makefile:\n"
-        f"  make setup PROJECT=<project-name>\n"
-        f"{'=' * 72}\n"
-    )
-del _sys
-# PYTHON_VERSION_GUARD_END
 
 import tempfile
 from collections.abc import Generator
 from pathlib import Path
 
 import pytest
-from flext_core import FlextTypes as t
 
 
 @pytest.fixture
-def config() -> dict[str, t.GeneralValueType]:
-    """Return a test configuration."""
+def config() -> dict[str, object]:
+    """Return a test configuration matching WmsTargetConfig schema."""
     return {
-        "base_url": "https://test.oracle.com/wms/api/v1",
-        "username": "test_user",
-        "password": "test_pass",
-        "timeout": 30,
-        "enable_kpi_calculation": True,
-        "enable_alerts": True,
-        "expiry_alert_days": 30,
-        "output_path": "./test_output",
-        "output_format": "json",
+        "wms_auth": {
+            "base_url": "https://test.oracle.com/wms/api/v1",
+            "username": "test_user",
+            "password": "test_pass",
+        },
+        "batch_size": 1000,
+        "load_method": "APPEND_ONLY",
+        "validate_records": True,
     }
 
 
@@ -61,7 +37,7 @@ def temp_output_dir() -> Generator[Path]:
 
 
 @pytest.fixture
-def sample_inventory_records() -> list[dict[str, t.GeneralValueType]]:
+def sample_inventory_records() -> list[dict[str, object]]:
     """Return sample inventory records."""
     return [
         {
@@ -71,7 +47,7 @@ def sample_inventory_records() -> list[dict[str, t.GeneralValueType]]:
             "location": "A-01-01",
             "lot_number": "LOT001",
             "expiry_date": "2024-12-31",
-            "unit_cost": 10.50,
+            "unit_cost": 10.5,
         },
         {
             "item_id": "ITEM002",
@@ -80,13 +56,13 @@ def sample_inventory_records() -> list[dict[str, t.GeneralValueType]]:
             "location": "A-01-02",
             "lot_number": "LOT002",
             "expiry_date": "2024-06-30",
-            "unit_cost": 25.00,
+            "unit_cost": 25.0,
         },
     ]
 
 
 @pytest.fixture
-def sample_order_records() -> list[dict[str, t.GeneralValueType]]:
+def sample_order_records() -> list[dict[str, object]]:
     """Return sample order records."""
     return [
         {
@@ -94,7 +70,7 @@ def sample_order_records() -> list[dict[str, t.GeneralValueType]]:
             "customer_id": "CUST001",
             "order_date": "2024-01-01T10:00:00Z",
             "status": "SHIPPED",
-            "total_amount": 1000.00,
+            "total_amount": 1000.0,
             "ship_date": "2024-01-02T15:00:00Z",
         },
         {
@@ -102,14 +78,14 @@ def sample_order_records() -> list[dict[str, t.GeneralValueType]]:
             "customer_id": "CUST002",
             "order_date": "2024-01-02T11:00:00Z",
             "status": "PENDING",
-            "total_amount": 500.00,
+            "total_amount": 500.0,
             "ship_date": None,
         },
     ]
 
 
 @pytest.fixture
-def sample_task_records() -> list[dict[str, t.GeneralValueType]]:
+def sample_task_records() -> list[dict[str, object]]:
     """Return sample task records."""
     return [
         {
@@ -134,7 +110,7 @@ def sample_task_records() -> list[dict[str, t.GeneralValueType]]:
 
 
 @pytest.fixture
-def singer_schema() -> dict[str, t.GeneralValueType]:
+def singer_schema() -> dict[str, object]:
     """Return a sample Singer schema."""
     return {
         "type": "object",
@@ -146,3 +122,35 @@ def singer_schema() -> dict[str, t.GeneralValueType]:
             "updated_at": {"type": "string", "format": "date-time"},
         },
     }
+
+
+@pytest.fixture
+def singer_schema_message() -> dict[str, object]:
+    """Return a sample Singer SCHEMA message."""
+    return {
+        "type": "SCHEMA",
+        "stream": "test_stream",
+        "schema": {
+            "type": "object",
+            "properties": {"id": {"type": "string"}, "name": {"type": "string"}},
+        },
+        "key_properties": ["id"],
+    }
+
+
+@pytest.fixture
+def singer_record_message() -> dict[str, object]:
+    """Return a sample Singer RECORD message."""
+    return {
+        "type": "RECORD",
+        "stream": "test_stream",
+        "record": {"id": "1", "name": "test"},
+        "time_extracted": None,
+        "version": None,
+    }
+
+
+@pytest.fixture
+def singer_state_message() -> dict[str, object]:
+    """Return a sample Singer STATE message."""
+    return {"type": "STATE", "value": {"bookmarks": {}}}

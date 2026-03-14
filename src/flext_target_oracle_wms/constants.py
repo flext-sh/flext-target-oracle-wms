@@ -5,10 +5,8 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import Final
 
-from flext_core import FlextConstants
 
-
-class FlextTargetOracleWmsConstants(FlextConstants):
+class FlextTargetOracleWmsConstants:
     """Typed constant namespace used by target Oracle WMS modules."""
 
     class TargetOracleWms:
@@ -55,5 +53,4 @@ class FlextTargetOracleWmsConstants(FlextConstants):
 
 
 c = FlextTargetOracleWmsConstants
-
 __all__ = ["FlextTargetOracleWmsConstants", "c"]

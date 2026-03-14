@@ -1,202 +1,98 @@
-"""Tests for Singer Target components - DRY REFACTORED.
+"""Component integration tests for target Oracle WMS.
+
+Tests target initialization and component wiring.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
-
 """
 
 from __future__ import annotations
 
-from unittest.mock import Mock, patch
+from flext_target_oracle_wms.target_client import (
+    SingerTargetOracleWMS,
+    SingerWMSCatalogManager,
+    SingerWMSStreamProcessor,
+)
+from flext_target_oracle_wms.target_models import WMSDataTransformer, WMSTableManager
 
-from flext_core import FlextResult
 
-from flext_target_oracle_wms import SingerTargetOracleWMS
-
-
-class TestSingerTargetComponents:
-    """Test Singer Target Oracle WMS components - REAL implementation."""
-
-    def test_singer_target_initialization(self) -> None:
-        """Test Singer target initialization with components - REAL API."""
-        config = {
+def _valid_config() -> dict[str, object]:
+    return {
+        "wms_auth": {
             "base_url": "https://test.wms.example.com",
-            "username": "test_user",
-            "password": "test_pass",
-            "environment": "test",
+            "username": "user",
+            "password": "pass",
         }
-        target = SingerTargetOracleWMS(config)
+    }
 
-        # Test Singer protocol compliance
-        assert target.name == "target-oracle-wms"
-        assert target.config == config
 
-        # Test component initialization
-        assert target.oracle_client is not None
-        assert target.catalog_manager is not None
-        assert target.table_manager is not None
-        assert target.data_transformer is not None
-        assert target.stream_processor is not None
+class TestTargetComponentWiring:
+    """Verify target initializes all expected sub-components."""
 
-    def test_catalog_manager_functionality(self) -> None:
-        """Test catalog manager stream handling - REAL implementation."""
-        config = {"base_url": "https://test.wms.example.com"}
-        target = SingerTargetOracleWMS(config)
+    def test_target_has_catalog_manager(self) -> None:
+        target = SingerTargetOracleWMS(_valid_config())
+        assert isinstance(target.catalog_manager, SingerWMSCatalogManager)
 
-        # Test catalog manager operations
-        test_schema = {
-            "type": "object",
-            "properties": {
-                "id": {"type": "string"},
-                "name": {"type": "string"},
-            },
+    def test_target_has_table_manager(self) -> None:
+        target = SingerTargetOracleWMS(_valid_config())
+        assert isinstance(target.table_manager, WMSTableManager)
+
+    def test_target_has_data_transformer(self) -> None:
+        target = SingerTargetOracleWMS(_valid_config())
+        assert isinstance(target.data_transformer, WMSDataTransformer)
+
+    def test_target_has_stream_processor(self) -> None:
+        target = SingerTargetOracleWMS(_valid_config())
+        assert isinstance(target.stream_processor, SingerWMSStreamProcessor)
+
+    def test_stream_processor_uses_table_manager(self) -> None:
+        target = SingerTargetOracleWMS(_valid_config())
+        assert target.stream_processor.table_manager is target.table_manager
+
+    def test_stream_processor_uses_data_transformer(self) -> None:
+        target = SingerTargetOracleWMS(_valid_config())
+        assert target.stream_processor.data_transformer is target.data_transformer
+
+
+class TestCatalogAndTableIntegration:
+    """Verify catalog and table managers work together through target."""
+
+    def test_schema_registers_in_both_catalog_and_table(self) -> None:
+        target = SingerTargetOracleWMS(_valid_config())
+        schema = {
+            "type": "SCHEMA",
+            "stream": "items",
+            "schema": {"type": "object", "properties": {"id": {"type": "string"}}},
+            "key_properties": ["id"],
         }
+        target.handle_schema_message(schema)
+        assert target.catalog_manager.get_stream("items").is_success
+        assert target.table_manager.get_table_name("items").is_success
 
-        # Add stream to catalog
-        result = target.catalog_manager.add_stream("test_stream", test_schema)
+    def test_table_name_is_uppercased_stream(self) -> None:
+        target = SingerTargetOracleWMS(_valid_config())
+        schema = {
+            "type": "SCHEMA",
+            "stream": "orders",
+            "schema": {"type": "object", "properties": {"id": {"type": "string"}}},
+            "key_properties": ["id"],
+        }
+        target.handle_schema_message(schema)
+        assert target.table_manager.get_table_name("orders").value == "ORDERS"
+
+
+class TestTransformationIntegration:
+    """Verify transformer pipeline through target record handling."""
+
+    def test_record_keys_uppercased(self) -> None:
+        target = SingerTargetOracleWMS(_valid_config())
+        schema = {
+            "type": "SCHEMA",
+            "stream": "s",
+            "schema": {"type": "object", "properties": {"name": {"type": "string"}}},
+            "key_properties": ["name"],
+        }
+        target.handle_schema_message(schema)
+        record = {"type": "RECORD", "stream": "s", "record": {"name": "test"}}
+        result = target.handle_record_message(record)
         assert result.is_success
-
-        # Get stream from catalog
-        stream_result = target.catalog_manager.get_stream("test_stream")
-        assert stream_result.is_success
-        assert stream_result.data is not None
-
-    def test_table_manager_functionality(self) -> None:
-        """Test table manager operations - REAL implementation."""
-        config = {"base_url": "https://test.wms.example.com"}
-        target = SingerTargetOracleWMS(config)
-
-        # Test table name generation
-        table_name = target.table_manager.generate_table_name("test_stream")
-        assert isinstance(table_name, str)
-        assert table_name == "TEST_STREAM"  # Oracle normalized
-
-        # Test with prefix
-        prefixed_name = target.table_manager.generate_table_name(
-            "test_stream",
-            "PREFIX",
-        )
-        assert prefixed_name == "PREFIX_TEST_STREAM"
-
-    def test_data_transformer_functionality(self) -> None:
-        """Test data transformer operations - REAL implementation."""
-        config = {"base_url": "https://test.wms.example.com"}
-        target = SingerTargetOracleWMS(config)
-
-        # Test record transformation
-        test_record = {"field1": "value1", "field2": 123, "field3": True}
-        test_schema = {
-            "properties": {
-                "field1": {"type": "string"},
-                "field2": {"type": "integer"},
-                "field3": {"type": "boolean"},
-            },
-        }
-
-        result = target.data_transformer.transform_record(test_record, test_schema)
-        assert result.is_success
-        assert result.data is not None
-
-        transformed = result.data
-        assert "FIELD1" in transformed  # Oracle normalized
-        assert "FIELD2" in transformed
-        assert "FIELD3" in transformed
-        assert transformed["FIELD1"] == "value1"
-        assert transformed["FIELD2"] == 123
-        assert transformed["FIELD3"] == 1  # Boolean converted to 1/0
-
-    def test_stream_processor_functionality(self) -> None:
-        """Test stream processor operations - REAL implementation."""
-        config = {"base_url": "https://test.wms.example.com"}
-        target = SingerTargetOracleWMS(config)
-
-        # Initialize stream
-        test_schema = {
-            "type": "object",
-            "properties": {"id": {"type": "string"}},
-        }
-
-        init_result = target.stream_processor.initialize_stream(
-            "test_stream",
-            test_schema,
-        )
-        assert init_result.is_success
-
-        # Process record
-        test_record = {"id": "TEST001"}
-        process_result = target.stream_processor.process_record(
-            "test_stream",
-            test_record,
-        )
-        assert process_result.is_success
-        assert process_result.data is not None
-
-    def test_oracle_wms_client_integration(self) -> None:
-        """Test Oracle WMS client integration - REAL flext-oracle-wms."""
-        config = {
-            "base_url": "https://test.wms.example.com",
-            "username": "test_user",
-            "password": "test_pass",
-            "timeout": 30.0,
-            "max_retries": 3,
-        }
-        target = SingerTargetOracleWMS(config)
-
-        # Test client configuration
-        assert target.oracle_client is not None
-        # Oracle client should be configured with proper settings
-        # (We can't test actual connection without real Oracle WMS instance)
-
-    def test_configuration_options(self) -> None:
-        """Test target configuration options - REAL implementation."""
-        config = {
-            "base_url": "https://test.wms.example.com",
-            "batch_size": 500,
-            "load_method": "UPSERT",
-            "table_prefix": "TEST_",
-            "enable_plugins": True,
-            "plugin_directory": "./custom_plugins",
-        }
-        target = SingerTargetOracleWMS(config)
-
-        # Test configuration is applied
-        assert target.batch_size == 500
-        assert target.load_method == "UPSERT"
-        assert target.table_prefix == "TEST_"
-        assert target.plugin_enabled is True
-        assert target.plugin_directory == "./custom_plugins"
-
-    def test_target_lifecycle(self) -> None:
-        """Test complete target lifecycle - REAL implementation."""
-        config = {"base_url": "https://test.wms.example.com"}
-        target = SingerTargetOracleWMS(config)
-
-        # Mock oracle client for testing using patch
-
-        with (
-            patch.object(
-                target.oracle_client,
-                "start",
-                new_callable=Mock,
-            ) as mock_start,
-            patch.object(
-                target.oracle_client,
-                "stop",
-                new_callable=Mock,
-            ) as mock_stop,
-        ):
-            mock_start.return_value = FlextResult[None].ok(None)
-            mock_stop.return_value = FlextResult[None].ok(None)
-
-            # Test setup
-            setup_result = target.setup()
-            assert setup_result.is_success
-
-            # Test finalization
-            finalize_result = target.finalize()
-            assert finalize_result.is_success
-            assert finalize_result.data is not None
-
-            # Test cleanup
-            cleanup_result = target.cleanup()
-            assert cleanup_result.is_success

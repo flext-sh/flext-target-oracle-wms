@@ -1,18 +1,16 @@
-"""Comprehensive tests for WMS patterns - REAL flext-core integration.
+"""Tests for WMS target model helpers: WMSTypeConverter, WMSDataTransformer, WMSSchemaMapper, WMSTableManager.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
-
 """
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
+import math
 
-import pytest
-from flext_core import FlextResult, FlextTypes as t
+from pydantic import TypeAdapter
 
-from flext_target_oracle_wms.services import (
+from flext_target_oracle_wms.target_models import (
     WMSDataTransformer,
     WMSSchemaMapper,
     WMSTableManager,
@@ -20,557 +18,151 @@ from flext_target_oracle_wms.services import (
 )
 
 
+def _schema_msg(
+    stream: str = "test_stream",
+    properties: dict[str, dict[str, str]] | None = None,
+    key_properties: list[str] | None = None,
+) -> dict[str, object]:
+    return {
+        "type": "SCHEMA",
+        "stream": stream,
+        "schema": {
+            "type": "object",
+            "properties": properties or {"id": {"type": "string"}},
+        },
+        "key_properties": key_properties or ["id"],
+    }
+
+
+def _record_msg(
+    stream: str = "test_stream", record: dict[str, object] | None = None
+) -> dict[str, object]:
+    return {"type": "RECORD", "stream": stream, "record": record or {"id": "1"}}
+
+
 class TestWMSTypeConverter:
-    """Test WMS type converter with comprehensive coverage."""
+    """Tests for WMSTypeConverter.convert_singer_to_oracle."""
 
-    def test_type_converter_initialization(self) -> None:
-        """Test WMS type converter can be initialized."""
-        converter = WMSTypeConverter()
-        assert converter is not None
-
-    @pytest.mark.parametrize(
-        ("singer_type", "value", "expected"),
-        [
-            ("string", "test", "test"),
-            ("text", "text_value", "text_value"),
-            ("integer", 123, 123),
-            ("integer", "456", 456),
-            ("number", 123.45, 123.45),
-            ("number", "78.9", 78.9),
-            ("boolean", True, 1),
-            ("boolean", False, 0),
-            ("object", {"key": "value"}, '{"key": "value"}'),
-            ("array", [1, 2, 3], "[1, 2, 3]"),
-            ("unknown", "fallback", "fallback"),
-        ],
-    )
-    def test_convert_singer_to_oracle_types(
-        self,
-        singer_type: str,
-        value: object,
-        expected: object,
-    ) -> None:
-        """Test Singer to Oracle type conversion with various types."""
-        converter = WMSTypeConverter()
-        result = converter.convert_singer_to_oracle(singer_type, value)
-
-        assert isinstance(result, FlextResult)
+    def test_string_type(self) -> None:
+        result = WMSTypeConverter().convert_singer_to_oracle("string", "hello")
         assert result.is_success
-        assert result.data == expected
+        assert result.value == "hello"
 
-    def test_convert_none_value(self) -> None:
-        """Test None value conversion."""
-        converter = WMSTypeConverter()
-        result = converter.convert_singer_to_oracle("string", None)
-
-        assert isinstance(result, FlextResult)
+    def test_integer_type(self) -> None:
+        result = WMSTypeConverter().convert_singer_to_oracle("integer", 42)
         assert result.is_success
-        assert result.data is None
+        assert result.value == 42
 
-    def test_convert_invalid_number(self) -> None:
-        """Test invalid number conversion fallback."""
-        converter = WMSTypeConverter()
-        result = converter.convert_singer_to_oracle("integer", "not_a_number")
-
-        assert isinstance(result, FlextResult)
-        assert result.is_success  # Should succeed with fallback to string
-        assert result.data == "not_a_number"  # Fallback to string conversion
-
-    def test_convert_with_exception_handling(self) -> None:
-        """Test type conversion with exception handling fallback."""
-        converter = WMSTypeConverter()
-
-        # Test with an object that can't be JSON serialized but has a working __str__
-        class BadJSONObject:
-            def __str__(self) -> str:
-                return "BadJSONObject string representation"
-
-        bad_obj = BadJSONObject()
-
-        # This should trigger JSON encoding error and fallback to string
-        result = converter.convert_singer_to_oracle("object", bad_obj)
-
-        # Should succeed with string fallback - use REAL FlextResult typing
-
-        assert isinstance(result, FlextResult)
+    def test_number_type_float(self) -> None:
+        result = WMSTypeConverter().convert_singer_to_oracle("number", math.pi)
         assert result.is_success
-        if result.data is not None:
-            assert result.data == "BadJSONObject string representation"
+        assert result.value == math.pi
 
-    def test_convert_complex_object_json_serialization(self) -> None:
-        """Test object/array conversion with JSON serialization."""
-        converter = WMSTypeConverter()
-
-        # Test complex object
-        complex_obj = {"nested": {"array": [1, 2, 3], "bool": True}}
-        result = converter.convert_singer_to_oracle("object", complex_obj)
-
-        assert isinstance(result, FlextResult)
+    def test_none_value(self) -> None:
+        result = WMSTypeConverter().convert_singer_to_oracle("string", None)
         assert result.is_success
-        assert result.data is not None
-        assert isinstance(result.data, str)
-        assert "nested" in result.data
+        assert result.value == ""
 
-        # Test array
-        test_array = ["item1", "item2", {"key": "value"}]
-        result = converter.convert_singer_to_oracle("array", test_array)
-        # Use REAL FlextResult typing - DRY approach
-        assert isinstance(result, FlextResult)
+    def test_object_type_serializes_to_json(self) -> None:
+        data = {"nested": "value"}
+        result = WMSTypeConverter().convert_singer_to_oracle("object", data)
         assert result.is_success
-        if result.data is not None:
-            assert isinstance(result.data, str)
-            assert "item1" in result.data
+        assert TypeAdapter(object).validate_json(str(result.value)) == data
+
+    def test_array_type_serializes_to_json(self) -> None:
+        data = [1, 2, 3]
+        result = WMSTypeConverter().convert_singer_to_oracle("array", data)
+        assert result.is_success
+        assert TypeAdapter(object).validate_json(str(result.value)) == data
+
+    def test_boolean_type_becomes_string(self) -> None:
+        result = WMSTypeConverter().convert_singer_to_oracle("boolean", True)
+        assert result.is_success
+        assert result.value == "True"
 
 
 class TestWMSDataTransformer:
-    """Test WMS data transformer with comprehensive coverage."""
+    """Tests for WMSDataTransformer.transform_record."""
 
-    def test_data_transformer_initialization(self) -> None:
-        """Test WMS data transformer initialization."""
+    def test_uppercases_record_keys(self) -> None:
         transformer = WMSDataTransformer()
-        assert transformer is not None
-        assert transformer.type_converter is not None
+        result = transformer.transform_record(
+            _record_msg("s", {"name": "alice", "age": "30"}),
+            _schema_msg(
+                "s", properties={"name": {"type": "string"}, "age": {"type": "string"}}
+            ),
+        )
+        assert result.is_success
+        assert "NAME" in result.value.record
+        assert "AGE" in result.value.record
 
-    def test_data_transformer_with_custom_converter(self) -> None:
-        """Test WMS data transformer with custom type converter."""
+    def test_preserves_stream_name(self) -> None:
+        transformer = WMSDataTransformer()
+        result = transformer.transform_record(
+            _record_msg("orders", {"id": "1"}), _schema_msg("orders")
+        )
+        assert result.is_success
+        assert result.value.stream == "orders"
+
+    def test_uses_custom_type_converter(self) -> None:
         converter = WMSTypeConverter()
-        transformer = WMSDataTransformer(converter)
-        assert transformer.type_converter is converter
-
-    def test_transform_record_without_schema(self) -> None:
-        """Test record transformation without schema."""
-        transformer = WMSDataTransformer()
-        record = {
-            "id": 123,
-            "name": "test item",
-            "is-active": True,
-        }
-
-        result = transformer.transform_record(record)
+        transformer = WMSDataTransformer(type_converter=converter)
+        result = transformer.transform_record(
+            _record_msg("s", {"qty": 10}),
+            _schema_msg("s", properties={"qty": {"type": "integer"}}),
+        )
         assert result.is_success
-        assert result.data is not None
+        assert result.value.record["QTY"] == 10
 
-        transformed = result.data
-        assert "ID" in transformed
-        assert "NAME" in transformed
-        assert "IS_ACTIVE" in transformed
-        assert transformed["ID"] == "123"  # Converted to string when no schema
-        assert transformed["NAME"] == "test item"
-        assert transformed["IS_ACTIVE"] == "True"  # Converted to string when no schema
-
-    def test_transform_record_with_schema(self) -> None:
-        """Test record transformation with schema."""
+    def test_transform_without_schema(self) -> None:
         transformer = WMSDataTransformer()
-        record = {
-            "id": 123,
-            "name": "test item",
-            "is_active": True,
-            "price": 99.99,
-        }
-        schema: dict[str, t.GeneralValueType] = {
-            "properties": {
-                "id": {"type": "integer"},
-                "name": {"type": "string"},
-                "is_active": {"type": "boolean"},
-                "price": {"type": "number"},
-            },
-        }
-
-        result = transformer.transform_record(record, schema)
+        result = transformer.transform_record(_record_msg("s", {"name": "bob"}), None)
         assert result.is_success
-        assert result.data is not None
-
-        transformed = result.data
-        assert "ID" in transformed
-        assert "NAME" in transformed
-        assert "IS_ACTIVE" in transformed
-        assert "PRICE" in transformed
-        assert transformed["ID"] == 123
-        assert transformed["NAME"] == "test item"
-        assert transformed["IS_ACTIVE"] == 1  # Boolean converted to 1
-        assert transformed["PRICE"] == 99.99
-
-    def test_prepare_batch_parameters(self) -> None:
-        """Test batch parameter preparation."""
-        transformer = WMSDataTransformer()
-        records = [
-            {"ID": 1, "NAME": "Item1", "_SDC_EXTRACTED_AT": "2023-01-01"},
-            {"ID": 2, "NAME": "Item2", "_SDC_EXTRACTED_AT": "2023-01-02"},
-        ]
-        columns = ["ID", "NAME", "_SDC_EXTRACTED_AT"]
-
-        result = transformer.prepare_batch_parameters(records, columns)
-        assert result.is_success
-        assert result.data is not None
-
-        batch_params = result.data
-        assert len(batch_params) == 2
-        assert batch_params[0]["ID"] == "1"
-        assert batch_params[0]["NAME"] == "Item1"
-        assert (
-            batch_params[0]["SDC_EXTRACTED_AT"] == "2023-01-01"
-        )  # Underscore stripped
-
-    def test_transform_record_with_transformation_error(self) -> None:
-        """Test record transformation when type converter fails."""
-
-        # Create a mock type converter that fails - USE REAL INHERITANCE
-        class FailingTypeConverter(WMSTypeConverter):
-            def convert_singer_to_oracle(
-                self,
-                _singer_type: str,
-                _value: object,
-            ) -> FlextResult[object]:
-                return FlextResult[object].fail("Type conversion failed")
-
-        transformer = WMSDataTransformer(FailingTypeConverter())
-        record = {"id": 123, "name": "test"}
-        schema: dict[str, t.GeneralValueType] = {
-            "properties": {"id": {"type": "integer"}, "name": {"type": "string"}},
-        }
-
-        # This should trigger line 122 (error handling in transform_record)
-        result = transformer.transform_record(record, schema)
-        assert result.is_success  # Should still succeed with fallback to string conversion
-
-    def test_transform_record_exception_handling(self) -> None:
-        """Test record transformation exception handling."""
-        transformer = WMSDataTransformer()
-
-        # Use proper mock to simulate record processing failure - SOLID pattern
-        with patch.object(transformer, "_apply_wms_filters") as mock_validate:
-            mock_validate.side_effect = RuntimeError("Record validation failed")
-            result = transformer.transform_record({"test": "data"}, {})
-
-        assert not result.is_success
-        assert result.error is not None
-        assert result.error is not None
-        assert "Record transformation failed" in result.error
-
-    def test_prepare_batch_parameters_exception_handling(self) -> None:
-        """Test batch parameter preparation exception handling."""
-        transformer = WMSDataTransformer()
-
-        # Use proper mock to simulate parameter processing failure - SOLID pattern
-        with patch.object(transformer, "chunk_processor") as mock_chunk:
-            mock_chunk.side_effect = RuntimeError("Parameter validation failed")
-            result = transformer.prepare_batch_parameters(
-                [{"ID": 1, "NAME": "test"}],
-                ["ID", "NAME"],
-            )
-
-        assert not result.is_success
-        assert result.error is not None
-        assert result.error is not None
-        assert "Parameter preparation failed" in result.error
-
-    def test_prepare_batch_parameters_with_none_values(self) -> None:
-        """Test batch parameter preparation with None values."""
-        transformer = WMSDataTransformer()
-        records: list[dict[str, t.GeneralValueType]] = [
-            {"ID": None, "NAME": "Item1", "PRICE": None},
-            {"ID": 2, "NAME": None, "PRICE": 99.99},
-        ]
-        columns = ["ID", "NAME", "PRICE"]
-
-        result = transformer.prepare_batch_parameters(records, columns)
-        assert result.is_success
-        assert result.data is not None
-
-        batch_params = result.data
-        assert len(batch_params) == 2
-        assert batch_params[0]["ID"] is not None  # None converted to empty string
-        assert batch_params[0]["NAME"] == "Item1"
-        assert batch_params[0]["PRICE"] is not None  # None converted to empty string
-        assert batch_params[1]["ID"] == "2"
-        assert batch_params[1]["NAME"] is not None  # None converted to empty string
-        assert batch_params[1]["PRICE"] == "99.99"
+        assert "NAME" in result.value.record
 
 
 class TestWMSSchemaMapper:
-    """Test WMS schema mapper with comprehensive coverage."""
+    """Tests for WMSSchemaMapper.map_stream_schema."""
 
-    def test_schema_mapper_initialization(self) -> None:
-        """Test WMS schema mapper initialization."""
+    def test_returns_catalog_entry(self) -> None:
         mapper = WMSSchemaMapper()
-        assert mapper is not None
-
-    def test_map_singer_schema_to_oracle_basic(self) -> None:
-        """Test basic Singer schema to Oracle mapping."""
-        mapper = WMSSchemaMapper()
-        schema: dict[str, t.GeneralValueType] = {
-            "properties": {
-                "id": {"type": "integer"},
-                "name": {"type": "string"},
-                "created_at": {"type": "string", "format": "date-time"},
-                "is_active": {"type": "boolean"},
-                "metadata": {"type": "object"},
-            },
-        }
-
-        result = mapper.map_singer_schema_to_oracle(schema)
+        result = mapper.map_stream_schema(_schema_msg("inventory"))
         assert result.is_success
-        assert result.data is not None
+        entry = result.value
+        assert entry.stream == "inventory"
+        assert entry.tap_stream_id == "inventory"
+        assert entry.table_name == "INVENTORY"
 
-        columns = result.data
-        assert "ID" in columns
-        assert "NAME" in columns
-        assert "CREATED_AT" in columns
-        assert "IS_ACTIVE" in columns
-        assert "METADATA" in columns
-
-        # Note: The type mappings depend on the actual implementation
-        # These assertions verify the mapping is working correctly
-        assert columns["ID"] in {
-            "NUMBER",
-            "VARCHAR2(4000)",
-        }  # May vary based on implementation
-        assert columns["NAME"] == "VARCHAR2(4000)"
-        assert columns["CREATED_AT"] == "TIMESTAMP"
-        assert columns["IS_ACTIVE"] in {
-            "NUMBER(1)",
-            "VARCHAR2(4000)",
-        }  # May vary based on implementation
-        assert columns["METADATA"] in {
-            "CLOB",
-            "VARCHAR2(4000)",
-        }  # May vary based on implementation
-
-    def test_map_schema_with_unknown_types(self) -> None:
-        """Test schema mapping with unknown types."""
+    def test_preserves_key_properties(self) -> None:
         mapper = WMSSchemaMapper()
-        schema: dict[str, t.GeneralValueType] = {
-            "properties": {
-                "unknown_field": {"type": "unknown_type"},
-                "no_type_field": {},
-            },
-        }
-
-        result = mapper.map_singer_schema_to_oracle(schema)
-        assert result.is_success
-        assert result.data is not None
-
-        columns = result.data
-        assert columns["UNKNOWN_FIELD"] == "VARCHAR2(4000)"  # Default fallback
-        assert columns["NO_TYPE_FIELD"] == "VARCHAR2(4000)"  # Default fallback
-
-    def test_map_empty_schema(self) -> None:
-        """Test mapping empty schema."""
-        mapper = WMSSchemaMapper()
-        schema: dict[str, t.GeneralValueType] = {"properties": {}}
-
-        result = mapper.map_singer_schema_to_oracle(schema)
-        assert result.is_success
-        assert result.data == {}
-
-    def test_map_singer_schema_to_oracle_exception_handling(self) -> None:
-        """Test schema mapping exception handling."""
-        mapper = WMSSchemaMapper()
-
-        # Use proper mock to simulate schema access failure - SOLID pattern
-        bad_schema = MagicMock()
-        bad_schema.get.side_effect = RuntimeError("get() failed")
-
-        result = mapper.map_singer_schema_to_oracle(bad_schema)
-        assert not result.is_success
-        assert result.error is not None
-        assert result.error is not None
-        assert "Schema mapping failed" in result.error
-
-    def test_map_singer_type_to_oracle_exception_handling(self) -> None:
-        """Test type mapping exception handling."""
-        mapper = WMSSchemaMapper()
-
-        # Use proper mock to simulate property definition access failure - SOLID pattern
-        bad_prop_def = MagicMock()
-        bad_prop_def.get.side_effect = RuntimeError("get() failed")
-
-        # This should trigger the exception handling path in _map_singer_type_to_oracle
-        result = mapper._map_singer_type_to_oracle(bad_prop_def)
-        assert result.is_success  # Should fallback to default
-        assert result.data == "VARCHAR2(4000)"  # Default fallback
+        result = mapper.map_stream_schema(_schema_msg("s", key_properties=["a", "b"]))
+        assert result.value.key_properties == ["a", "b"]
 
 
 class TestWMSTableManager:
-    """Test WMS table manager with comprehensive coverage."""
+    """Tests for WMSTableManager."""
 
-    def test_table_manager_initialization(self) -> None:
-        """Test WMS table manager initialization."""
-        manager = WMSTableManager()
-        assert manager is not None
-
-    def test_generate_table_name_basic(self) -> None:
-        """Test basic table name generation."""
-        manager = WMSTableManager()
-
-        table_name = manager.generate_table_name("test_stream")
-        assert table_name == "TEST_STREAM"
-
-    def test_generate_table_name_with_prefix(self) -> None:
-        """Test table name generation with prefix."""
-        manager = WMSTableManager()
-
-        table_name = manager.generate_table_name("test_stream", "WMS")
-        assert table_name == "WMS_TEST_STREAM"
-
-    def test_generate_table_name_with_special_chars(self) -> None:
-        """Test table name generation with special characters."""
-        manager = WMSTableManager()
-
-        table_name = manager.generate_table_name("test-stream with spaces")
-        assert table_name == "TEST_STREAM_WITH_SPACES"
-
-    def test_generate_table_name_truncation(self) -> None:
-        """Test table name truncation for Oracle limit."""
-        manager = WMSTableManager()
-
-        long_name = "a" * 50  # Longer than Oracle 30-char limit
-        table_name = manager.generate_table_name(long_name)
-        assert len(table_name) == 30
-
-    def test_generate_create_table_sql(self) -> None:
-        """Test CREATE TABLE SQL generation."""
-        manager = WMSTableManager()
-        schema: dict[str, t.GeneralValueType] = {
-            "properties": {
-                "id": {"type": "integer"},
-                "name": {"type": "string"},
-                "created_at": {"type": "string", "format": "date-time"},
-            },
-        }
-
-        result = manager.generate_create_table_sql("TEST_TABLE", "WMS_SCHEMA", schema)
+    def test_register_stream_returns_uppercase(self) -> None:
+        tm = WMSTableManager()
+        result = tm.register_stream("orders")
         assert result.is_success
-        assert result.data is not None
+        assert result.value == "ORDERS"
 
-        sql = result.data
-        assert "CREATE TABLE" in sql
-        assert '"WMS_SCHEMA"."TEST_TABLE"' in sql
-        # Note: Type mappings may vary based on implementation details
-        assert '"ID" NUMBER' in sql or '"ID" VARCHAR2(4000)' in sql
-        assert '"NAME" VARCHAR2(4000)' in sql
-        assert '"CREATED_AT" TIMESTAMP' in sql
-        assert '"_SDC_EXTRACTED_AT" TIMESTAMP' in sql  # Metadata columns
-
-    def test_generate_insert_sql(self) -> None:
-        """Test INSERT SQL generation."""
-        manager = WMSTableManager()
-        columns = ["ID", "NAME", "CREATED_AT", "_SDC_EXTRACTED_AT"]
-
-        result = manager.generate_insert_sql("TEST_TABLE", "WMS_SCHEMA", columns)
+    def test_get_registered_table(self) -> None:
+        tm = WMSTableManager()
+        tm.register_stream("items")
+        result = tm.get_table_name("items")
         assert result.is_success
-        assert result.data is not None
+        assert result.value == "ITEMS"
 
-        sql = result.data
-        assert "INSERT INTO" in sql
-        assert '"WMS_SCHEMA"."TEST_TABLE"' in sql
-        assert '"ID", "NAME", "CREATED_AT", "_SDC_EXTRACTED_AT"' in sql
-        assert ":id, :name, :created_at, :sdc_extracted_at" in sql
+    def test_get_unregistered_fails(self) -> None:
+        tm = WMSTableManager()
+        result = tm.get_table_name("nope")
+        assert result.is_failure
 
-    def test_generate_insert_sql_with_underscore_columns(self) -> None:
-        """Test INSERT SQL generation with underscore columns."""
-        manager = WMSTableManager()
-        columns = ["_ID", "__NAME", "___FIELD"]
-
-        result = manager.generate_insert_sql("TEST_TABLE", "WMS_SCHEMA", columns)
-        assert result.is_success
-        assert result.data is not None
-
-        sql = result.data
-        # Bind parameters should strip leading underscores
-        assert ":id, :name, :field" in sql.lower()
-
-    def test_generate_create_table_sql_schema_mapping_failure(self) -> None:
-        """Test CREATE TABLE SQL generation with schema mapping failure."""
-        manager = WMSTableManager()
-
-        # Use proper mock to simulate schema mapping failure - SOLID pattern
-        with patch(
-            "flext_target_oracle_wms.target_models.WMSSchemaMapper",
-        ) as mock_schema_mapper_class:
-            mock_schema_mapper = mock_schema_mapper_class.return_value
-            mock_schema_mapper.map_singer_schema_to_oracle.return_value = FlextResult[
-                None
-            ].fail("Schema mapping failed")
-            schema: dict[str, t.GeneralValueType] = {
-                "properties": {"id": {"type": "integer"}}
-            }
-            result = manager.generate_create_table_sql(
-                "TEST_TABLE",
-                "WMS_SCHEMA",
-                schema,
-            )
-
-        assert not result.is_success
-        assert result.error is not None
-        assert result.error is not None
-        assert "Schema mapping failed" in result.error
-
-    def test_generate_create_table_sql_exception_handling(self) -> None:
-        """Test CREATE TABLE SQL generation exception handling."""
-        manager = WMSTableManager()
-
-        # Use proper mock to simulate table name processing failure - SOLID pattern
-        with patch(
-            "flext_target_oracle_wms.target_models.WMSSchemaMapper",
-        ) as mock_schema_mapper_class:
-            mock_schema_mapper = mock_schema_mapper_class.return_value
-            mock_schema_mapper.map_singer_schema_to_oracle.side_effect = RuntimeError(
-                "Schema mapping failed",
-            )
-            schema: dict[str, t.GeneralValueType] = {
-                "properties": {"id": {"type": "integer"}}
-            }
-            result = manager.generate_create_table_sql(
-                "TEST_TABLE",
-                "WMS_SCHEMA",
-                schema,
-            )
-
-        assert not result.is_success
-        assert result.error is not None
-        assert result.error is not None
-        assert "SQL generation failed" in result.error
-
-    def test_generate_insert_sql_exception_handling(self) -> None:
-        """Test INSERT SQL generation with edge cases."""
-        manager = WMSTableManager()
-
-        # Test with empty inputs - should still succeed but generate empty SQL
-        result = manager.generate_insert_sql(
-            "",  # Empty table name
-            "",  # Empty schema name
-            [],  # Empty columns
-        )
-
-        # The method should handle edge cases gracefully
-        assert result.is_success
-        assert result.data is not None
-        assert "INSERT INTO" in result.data
-
-    def test_generate_create_table_sql_with_none_columns(self) -> None:
-        """Test CREATE TABLE SQL generation when column mapping returns None."""
-        manager = WMSTableManager()
-
-        # Use proper mock to simulate None columns return - SOLID pattern
-        with patch(
-            "flext_target_oracle_wms.target_models.WMSSchemaMapper",
-        ) as mock_schema_mapper_class:
-            mock_schema_mapper = mock_schema_mapper_class.return_value
-            mock_schema_mapper.map_singer_schema_to_oracle.return_value = FlextResult[
-                None
-            ].ok(None)
-
-            schema: dict[str, t.GeneralValueType] = {
-                "properties": {"id": {"type": "integer"}}
-            }
-            result = manager.generate_create_table_sql(
-                "TEST_TABLE",
-                "WMS_SCHEMA",
-                schema,
-            )
-
-        assert not result.is_success
-        assert result.error is not None
-        assert result.error is not None
-        assert "Column mapping returned None" in result.error
+    def test_multiple_streams(self) -> None:
+        tm = WMSTableManager()
+        tm.register_stream("a")
+        tm.register_stream("b")
+        assert tm.get_table_name("a").value == "A"
+        assert tm.get_table_name("b").value == "B"

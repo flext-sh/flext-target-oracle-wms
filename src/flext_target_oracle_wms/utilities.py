@@ -2,23 +2,34 @@
 
 from __future__ import annotations
 
-from flext_core import FlextResult, FlextTypes as t
+from collections.abc import Mapping
+
+from flext_core import r
+from flext_meltano import FlextMeltanoUtilities
+from flext_oracle_wms import FlextOracleWmsUtilities
 
 from .constants import c
 
 
-class FlextTargetOracleWmsUtilities:
+class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtilities):
     """Namespace with Singer-target utility helpers."""
 
     class TargetOracleWms:
         """Helpers for Singer message shape handling."""
 
         @staticmethod
+        def create_record_message(
+            stream_name: str, record: Mapping[str, object]
+        ) -> Mapping[str, object]:
+            """Create a Singer RECORD message payload."""
+            return {"type": "RECORD", "stream": stream_name, "record": record}
+
+        @staticmethod
         def create_schema_message(
             stream_name: str,
-            schema: dict[str, t.GeneralValueType],
+            schema: Mapping[str, object],
             key_properties: list[str] | None = None,
-        ) -> dict[str, t.GeneralValueType]:
+        ) -> Mapping[str, object]:
             """Create a Singer SCHEMA message payload."""
             return {
                 "type": "SCHEMA",
@@ -28,17 +39,9 @@ class FlextTargetOracleWmsUtilities:
             }
 
         @staticmethod
-        def create_record_message(
-            stream_name: str,
-            record: dict[str, t.GeneralValueType],
-        ) -> dict[str, t.GeneralValueType]:
-            """Create a Singer RECORD message payload."""
-            return {"type": "RECORD", "stream": stream_name, "record": record}
-
-        @staticmethod
         def create_state_message(
-            state: dict[str, t.GeneralValueType],
-        ) -> dict[str, t.GeneralValueType]:
+            state: Mapping[str, object],
+        ) -> Mapping[str, object]:
             """Create a Singer STATE message payload."""
             return {"type": "STATE", "value": state}
 
@@ -47,24 +50,20 @@ class FlextTargetOracleWmsUtilities:
 
         @staticmethod
         def validate_wms_target_config(
-            config: dict[str, t.GeneralValueType],
-        ) -> FlextResult[bool]:
+            config: Mapping[str, object],
+        ) -> r[bool]:
             """Validate minimal required target configuration fields."""
             required = {"base_url", "username", "password"}
             missing = sorted(key for key in required if key not in config)
             if missing:
-                return FlextResult[bool].fail(
-                    f"Missing required configuration fields: {missing}",
-                )
+                return r[bool].fail(f"Missing required configuration fields: {missing}")
             load_method = config.get(
                 "load_method", c.TargetOracleWms.LoadMethods.APPEND_ONLY
             )
-            if (
-                isinstance(load_method, str)
-                and load_method not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS
-            ):
-                return FlextResult[bool].fail("Invalid load_method")
-            return FlextResult[bool].ok(value=True)
+            if load_method not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS:
+                return r[bool].fail("Invalid load_method")
+            return r[bool].ok(value=True)
 
 
-__all__ = ["FlextTargetOracleWmsUtilities"]
+__all__ = ["FlextTargetOracleWmsUtilities", "u"]
+u = FlextTargetOracleWmsUtilities
