@@ -24,11 +24,19 @@ if TYPE_CHECKING:
         TestExamplesStructure,
     )
 
-# Lazy import mapping: export_name -> (module_path, attr_name)
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
-    "TestExamplesCodeQuality": ("tests.examples.test_examples", "TestExamplesCodeQuality"),
-    "TestExamplesFlextIntegration": ("tests.examples.test_examples", "TestExamplesFlextIntegration"),
-    "TestExamplesImportability": ("tests.examples.test_examples", "TestExamplesImportability"),
+    "TestExamplesCodeQuality": (
+        "tests.examples.test_examples",
+        "TestExamplesCodeQuality",
+    ),
+    "TestExamplesFlextIntegration": (
+        "tests.examples.test_examples",
+        "TestExamplesFlextIntegration",
+    ),
+    "TestExamplesImportability": (
+        "tests.examples.test_examples",
+        "TestExamplesImportability",
+    ),
     "TestExamplesStructure": ("tests.examples.test_examples", "TestExamplesStructure"),
 }
 

@@ -22,9 +22,11 @@ if TYPE_CHECKING:
         TestTargetLifecycle,
     )
 
-# Lazy import mapping: export_name -> (module_path, attr_name)
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
-    "TestMultiStreamIntegration": ("tests.integration.test_oracle", "TestMultiStreamIntegration"),
+    "TestMultiStreamIntegration": (
+        "tests.integration.test_oracle",
+        "TestMultiStreamIntegration",
+    ),
     "TestTargetLifecycle": ("tests.integration.test_oracle", "TestTargetLifecycle"),
 }
 
