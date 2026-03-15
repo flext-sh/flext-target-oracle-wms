@@ -12,6 +12,7 @@ from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 if TYPE_CHECKING:
     from flext_core.typings import FlextTypes
 
+    from tests import examples, integration
     from tests.conftest import (
         config,
         sample_inventory_records,
@@ -266,6 +267,8 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     ),
     "c": ("tests.constants", "TestsFlextTargetOracleWmsConstants"),
     "config": ("tests.conftest", "config"),
+    "examples": ("tests.examples", ""),
+    "integration": ("tests.integration", ""),
     "m": ("tests.models", "m"),
     "p": ("tests.protocols", "p"),
     "sample_inventory_records": ("tests.conftest", "sample_inventory_records"),
@@ -347,6 +350,8 @@ __all__ = [
     "TestsFlextTargetOracleWmsUtilities",
     "c",
     "config",
+    "examples",
+    "integration",
     "m",
     "p",
     "sample_inventory_records",
