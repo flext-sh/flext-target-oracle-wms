@@ -4,23 +4,9 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
-from zipfile import Path
-from zipfile._path import Path
 
-from anyio import Path
-from anyio._core._fileio import Path
-from click import Path
-from click.types import Path
-from fastapi import Path
-from fastapi.param_functions import Path
-from fastapi.params import Path
 from flext_core import r, t
-from jsonpath_ng.ext.iterable import Path
-from matplotlib.path import Path
 from pydantic import TypeAdapter
-from tomlkit import datetime
-from tomlkit.api import datetime
-from zipp import Path
 
 from .models import m
 
@@ -59,8 +45,10 @@ class WMSDataTransformer:
 
     def transform_record(
         self,
-        record_message,
-        schema_message=None,
+        record_message: m.Meltano.SingerRecordMessage | dict[str, t.ContainerValue],
+        schema_message: m.Meltano.SingerSchemaMessage
+        | dict[str, t.ContainerValue]
+        | None = None,
     ) -> r[m.Meltano.SingerRecordMessage]:
         """Transform one typed Singer RECORD payload with optional typed schema."""
         typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
@@ -101,7 +89,10 @@ class WMSDataTransformer:
 class WMSSchemaMapper:
     """Map Singer schema payloads to Oracle DDL-friendly structures."""
 
-    def map_stream_schema(self, schema_message) -> r[m.Meltano.SingerCatalogEntry]:
+    def map_stream_schema(
+        self,
+        schema_message: m.Meltano.SingerSchemaMessage | dict[str, t.ContainerValue],
+    ) -> r[m.Meltano.SingerCatalogEntry]:
         """Build normalized schema map for table creation."""
         typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
         return r[m.Meltano.SingerCatalogEntry].ok(

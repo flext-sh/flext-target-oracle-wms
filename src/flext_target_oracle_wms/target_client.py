@@ -6,10 +6,8 @@ import sys
 from typing import ClassVar
 
 from flext_core import FlextLogger, r, t
-from flext_meltano import FlextMeltanoModels
 from flext_meltano.models import FlextMeltanoModels
 from pydantic import TypeAdapter, ValidationError
-from src.flext_meltano.models import FlextMeltanoModels
 
 from .models import m
 from .target_models import WMSDataTransformer, WMSTableManager
@@ -73,7 +71,7 @@ class SingerWMSStreamProcessor:
     def process_record(
         self,
         record_message: FlextMeltanoModels.Meltano.SingerRecordMessage,
-        schema_message: object,
+        schema_message: m.Meltano.SingerSchemaMessage | dict[str, t.ContainerValue],
     ) -> r[m.Meltano.SingerRecordMessage]:
         """Transform one typed Singer record."""
         typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
@@ -93,7 +91,10 @@ class SingerTargetOracleWMS:
     _schema_type: ClassVar[str] = "SCHEMA"
     _record_type: ClassVar[str] = "RECORD"
 
-    def __init__(self, config) -> None:
+    def __init__(
+        self,
+        config: dict[str, t.ContainerValue] | m.TargetOracleWms.WmsTargetConfig,
+    ) -> None:
         """Initialize target runtime with validated config."""
         self.config = m.TargetOracleWms.WmsTargetConfig.model_validate(config)
         self.catalog_manager = SingerWMSCatalogManager()
@@ -102,7 +103,7 @@ class SingerTargetOracleWMS:
         self.stream_processor = SingerWMSStreamProcessor(
             self.table_manager, self.data_transformer
         )
-        self._schemas: dict[str, object] = {}
+        self._schemas: dict[str, m.Meltano.SingerSchemaMessage] = {}
 
     def cleanup(self) -> r[bool]:
         """Release target runtime resources."""
