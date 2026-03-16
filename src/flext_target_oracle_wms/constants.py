@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from enum import StrEnum
+from enum import StrEnum, unique
 from typing import Final
 
 
@@ -39,9 +39,43 @@ class FlextTargetOracleWmsConstants:
                 TRUNCATE_INSERT,
             }
 
+    @unique
     class ErrorType(StrEnum):
         """Project error categories."""
 
+        WMS_CONNECTION = "WMS_CONNECTION"
+        WMS_AUTHENTICATION = "WMS_AUTHENTICATION"
+        WMS_BUSINESS_RULE = "WMS_BUSINESS_RULE"
+        WMS_VALIDATION = "WMS_VALIDATION"
+        SINGER_PROTOCOL = "SINGER_PROTOCOL"
+        DATA_TRANSFORMATION = "DATA_TRANSFORMATION"
+        PERFORMANCE = "PERFORMANCE"
+        CONFIGURATION = "CONFIGURATION"
+
+    @unique
+    class ProjectType(StrEnum):
+        LIBRARY = "library"
+        APPLICATION = "application"
+        SERVICE = "service"
+        SINGER_TARGET = "singer-target"
+        WMS_LOADER = "wms-loader"
+        WAREHOUSE_LOADER = "warehouse-loader"
+        SINGER_TARGET_ORACLE_WMS = "singer-target-oracle-wms"
+        TARGET_ORACLE_WMS = "target-oracle-wms"
+        WMS_CONNECTOR = "wms-connector"
+        WAREHOUSE_CONNECTOR = "warehouse-connector"
+        SINGER_PROTOCOL = "singer-protocol"
+        WMS_INTEGRATION = "wms-integration"
+        ORACLE_WMS = "oracle-wms"
+        WAREHOUSE_MANAGEMENT = "warehouse-management"
+        SINGER_STREAM = "singer-stream"
+        ETL_TARGET = "etl-target"
+        DATA_PIPELINE = "data-pipeline"
+        WMS_SINK = "wms-sink"
+        SINGER_INTEGRATION = "singer-integration"
+
+    @unique
+    class ErrorTypeLiteral(StrEnum):
         WMS_CONNECTION = "WMS_CONNECTION"
         WMS_AUTHENTICATION = "WMS_AUTHENTICATION"
         WMS_BUSINESS_RULE = "WMS_BUSINESS_RULE"

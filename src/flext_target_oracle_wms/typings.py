@@ -15,10 +15,11 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Literal
 
 from flext_meltano import FlextMeltanoTypes
 from flext_oracle_wms import FlextOracleWmsTypes
+
+from flext_target_oracle_wms import c
 
 
 class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
@@ -224,37 +225,8 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
         Singer target Oracle WMS domain owns WMS loading and Singer protocol-specific types.
         """
 
-        type ProjectType = Literal[
-            "library",
-            "application",
-            "service",
-            "singer-target",
-            "wms-loader",
-            "warehouse-loader",
-            "singer-target-oracle-wms",
-            "target-oracle-wms",
-            "wms-connector",
-            "warehouse-connector",
-            "singer-protocol",
-            "wms-integration",
-            "oracle-wms",
-            "warehouse-management",
-            "singer-stream",
-            "etl-target",
-            "data-pipeline",
-            "wms-sink",
-            "singer-integration",
-        ]
-        type ErrorTypeLiteral = Literal[
-            "WMS_CONNECTION",
-            "WMS_AUTHENTICATION",
-            "WMS_BUSINESS_RULE",
-            "WMS_VALIDATION",
-            "SINGER_PROTOCOL",
-            "DATA_TRANSFORMATION",
-            "PERFORMANCE",
-            "CONFIGURATION",
-        ]
+        type ProjectType = c.ProjectType
+        type ErrorTypeLiteral = c.ErrorTypeLiteral
         type SingerTargetOracleWmsProjectConfig = dict[str, FlextMeltanoTypes.Container]
         type WmsLoaderConfig = dict[str, str | int | bool | list[str]]
         type SingerProtocolConfig = dict[
