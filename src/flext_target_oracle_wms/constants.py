@@ -54,6 +54,8 @@ class FlextTargetOracleWmsConstants:
 
     @unique
     class ProjectType(StrEnum):
+        """Project type literals for target package metadata."""
+
         LIBRARY = "library"
         APPLICATION = "application"
         SERVICE = "service"
@@ -76,6 +78,8 @@ class FlextTargetOracleWmsConstants:
 
     @unique
     class ErrorTypeLiteral(StrEnum):
+        """Error category literals for target operations."""
+
         WMS_CONNECTION = "WMS_CONNECTION"
         WMS_AUTHENTICATION = "WMS_AUTHENTICATION"
         WMS_BUSINESS_RULE = "WMS_BUSINESS_RULE"
