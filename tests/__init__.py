@@ -12,8 +12,8 @@ from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 if TYPE_CHECKING:
     from flext_core.typings import FlextTypes
 
-    from tests import examples, integration
-    from tests.conftest import (
+    from . import examples as examples, integration as integration
+    from .conftest import (
         config,
         sample_inventory_records,
         sample_order_records,
@@ -24,23 +24,20 @@ if TYPE_CHECKING:
         singer_state_message,
         temp_output_dir,
     )
-    from tests.constants import (
+    from .constants import (
         TestsFlextTargetOracleWmsConstants,
         TestsFlextTargetOracleWmsConstants as c,
     )
-    from tests.examples.test_examples import (
+    from .examples.test_examples import (
         TestExamplesCodeQuality,
         TestExamplesFlextIntegration,
         TestExamplesImportability,
         TestExamplesStructure,
     )
-    from tests.integration.test_oracle import (
-        TestMultiStreamIntegration,
-        TestTargetLifecycle,
-    )
-    from tests.models import TestsFlextTargetOracleWmsModels, m, tm
-    from tests.protocols import TestsFlextTargetOracleWmsProtocols, p
-    from tests.test_benchmarks import (
+    from .integration.test_oracle import TestMultiStreamIntegration, TestTargetLifecycle
+    from .models import TestsFlextTargetOracleWmsModels, m, tm
+    from .protocols import TestsFlextTargetOracleWmsProtocols, p
+    from .test_benchmarks import (
         PERF_ITERATIONS,
         PERF_THRESHOLD_SEC,
         TestCatalogBenchmarks,
@@ -50,51 +47,48 @@ if TYPE_CHECKING:
         TestTableManagerBenchmarks,
         TestTypeConverterBenchmarks,
     )
-    from tests.test_catalog import (
+    from .test_catalog import (
         TestCatalogAddStream,
         TestCatalogGetStream,
         TestCatalogMultipleStreams,
     )
-    from tests.test_features import (
+    from .test_features import (
         TestTargetFeatures,
         TestTransformerFeatures,
         TestUtilitiesFeatures,
     )
-    from tests.test_oracle_wms_cli import (
+    from .test_oracle_wms_cli import (
         TestMain,
         TestOracleWMSTargetCliExecute,
         TestOracleWMSTargetCliInit,
         TestOracleWMSTargetCliLoadConfig,
     )
-    from tests.test_oracle_wms_factory import (
+    from .test_oracle_wms_factory import (
         TestConvenienceFunctions,
         TestFlextTargetFactory,
         TestFlextTargetMonitoringFactory,
         TestMonitoredTargetCreationRequest,
         TestTargetCreationRequest,
     )
-    from tests.test_oracle_wms_init import TestModuleInit
-    from tests.test_quality import (
+    from .test_oracle_wms_init import TestModuleInit
+    from .test_quality import (
         TestClassAttributes,
         TestConstantsNamespace,
         TestModelsNamespace,
         TestProtocolsNamespace,
     )
-    from tests.test_sinks import (
+    from .test_sinks import (
         TestCatalogAndTableIntegration,
         TestTargetComponentWiring,
         TestTransformationIntegration,
     )
-    from tests.test_stream import (
+    from .test_stream import (
         TestStreamProcessorInitialize,
         TestStreamProcessorMultipleStreams,
         TestStreamProcessorRecord,
     )
-    from tests.test_structure import (
-        test_import_from_correct_module,
-        test_no_dual_structure,
-    )
-    from tests.test_target import (
+    from .test_structure import test_import_from_correct_module, test_no_dual_structure
+    from .test_target import (
         TestTargetHandleRecordMessage,
         TestTargetHandleSchemaMessage,
         TestTargetHandleStateMessage,
@@ -102,22 +96,22 @@ if TYPE_CHECKING:
         TestTargetProcessLines,
         TestTargetSetupCleanup,
     )
-    from tests.test_wms_patterns import (
+    from .test_wms_patterns import (
         TestWMSDataTransformer,
         TestWMSSchemaMapper,
         TestWMSTableManager,
         TestWMSTypeConverter,
     )
-    from tests.test_workflow import (
+    from .test_workflow import (
         TestCliWorkflow,
         TestErrorWorkflows,
         TestFullSingerWorkflow,
     )
-    from tests.typings import (
+    from .typings import (
         TestsFlextTargetOracleWmsTypes,
         TestsFlextTargetOracleWmsTypes as t,
     )
-    from tests.utilities import (
+    from .utilities import (
         TestsFlextTargetOracleWmsUtilities,
         TestsFlextTargetOracleWmsUtilities as u,
     )
