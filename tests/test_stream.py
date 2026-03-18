@@ -10,6 +10,7 @@ from unittest.mock import MagicMock
 
 from flext_core import r
 
+from flext_target_oracle_wms.models import m
 from flext_target_oracle_wms.target_client import SingerWMSStreamProcessor
 from flext_target_oracle_wms.target_models import WMSDataTransformer, WMSTableManager
 
@@ -18,20 +19,24 @@ def _schema_msg(
     stream: str = "test_stream",
     schema: dict[str, object] | None = None,
     key_properties: list[str] | None = None,
-) -> dict[str, object]:
-    return {
+) -> m.Meltano.SingerSchemaMessage:
+    return m.Meltano.SingerSchemaMessage.model_validate({
         "type": "SCHEMA",
         "stream": stream,
         "schema": schema
         or {"type": "object", "properties": {"id": {"type": "string"}}},
         "key_properties": key_properties or ["id"],
-    }
+    })
 
 
 def _record_msg(
     stream: str = "test_stream", record: dict[str, object] | None = None
-) -> dict[str, object]:
-    return {"type": "RECORD", "stream": stream, "record": record or {"id": "1"}}
+) -> m.Meltano.SingerRecordMessage:
+    return m.Meltano.SingerRecordMessage.model_validate({
+        "type": "RECORD",
+        "stream": stream,
+        "record": record or {"id": "1"},
+    })
 
 
 class TestStreamProcessorInitialize:
@@ -68,9 +73,9 @@ class TestStreamProcessorRecord:
             _record_msg("orders", {"id": "1"}), _schema_msg("orders")
         )
         assert result.is_failure
+        assert result.error is not None
         assert (
-            "not registered" in (result.error or "").lower()
-            or "lookup" in (result.error or "").lower()
+            "not registered" in result.error.lower() or "lookup" in result.error.lower()
         )
 
     def test_process_record_uppercases_keys(self) -> None:
@@ -81,6 +86,7 @@ class TestStreamProcessorRecord:
         proc.initialize_stream(schema)
         result = proc.process_record(_record_msg("s", {"name": "hello"}), schema)
         assert result.is_success
+        assert result.value is not None
         transformed = result.value
         assert "NAME" in transformed.record
 

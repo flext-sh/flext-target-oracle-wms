@@ -7,12 +7,13 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import pytest
-from pydantic import TypeAdapter
+from flext_core import t
 
+from flext_target_oracle_wms.models import m
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 
-def _valid_config() -> dict[str, object]:
+def _valid_config() -> dict[str, t.ContainerValue]:
     return {
         "wms_auth": {
             "base_url": "https://test.wms.example.com",
@@ -27,41 +28,50 @@ def _schema_line(
     properties: dict[str, dict[str, str]] | None = None,
     key_properties: list[str] | None = None,
 ) -> str:
-    return (
-        TypeAdapter(object)
-        .dump_json({
-            "type": "SCHEMA",
-            "stream": stream,
-            "schema": {
-                "type": "object",
-                "properties": properties or {"id": {"type": "string"}},
-            },
-            "key_properties": key_properties or ["id"],
-        })
-        .decode("utf-8")
-    )
+    return _schema_msg(stream, properties, key_properties).model_dump_json()
 
 
 def _record_line(
     stream: str = "test_stream", record: dict[str, object] | None = None
 ) -> str:
-    return (
-        TypeAdapter(object)
-        .dump_json({
-            "type": "RECORD",
-            "stream": stream,
-            "record": record or {"id": "1"},
-        })
-        .decode("utf-8")
-    )
+    return _record_msg(stream, record).model_dump_json()
 
 
 def _state_line(state: dict[str, object] | None = None) -> str:
-    return (
-        TypeAdapter(object)
-        .dump_json({"type": "STATE", "value": state or {"bookmarks": {}}})
-        .decode("utf-8")
-    )
+    return _state_msg(state).model_dump_json()
+
+
+def _schema_msg(
+    stream: str = "test_stream",
+    properties: dict[str, dict[str, str]] | None = None,
+    key_properties: list[str] | None = None,
+) -> m.Meltano.SingerSchemaMessage:
+    return m.Meltano.SingerSchemaMessage.model_validate({
+        "type": "SCHEMA",
+        "stream": stream,
+        "schema": {
+            "type": "object",
+            "properties": properties or {"id": {"type": "string"}},
+        },
+        "key_properties": key_properties or ["id"],
+    })
+
+
+def _record_msg(
+    stream: str = "test_stream", record: dict[str, object] | None = None
+) -> m.Meltano.SingerRecordMessage:
+    return m.Meltano.SingerRecordMessage.model_validate({
+        "type": "RECORD",
+        "stream": stream,
+        "record": record or {"id": "1"},
+    })
+
+
+def _state_msg(state: dict[str, object] | None = None) -> m.Meltano.SingerStateMessage:
+    return m.Meltano.SingerStateMessage.model_validate({
+        "type": "STATE",
+        "value": state or {"bookmarks": {}},
+    })
 
 
 class TestTargetInit:
@@ -106,23 +116,13 @@ class TestTargetHandleSchemaMessage:
 
     def test_handle_schema_success(self) -> None:
         target = SingerTargetOracleWMS(_valid_config())
-        msg = {
-            "type": "SCHEMA",
-            "stream": "orders",
-            "schema": {"type": "object", "properties": {"id": {"type": "string"}}},
-            "key_properties": ["id"],
-        }
+        msg = _schema_msg("orders")
         result = target.handle_schema_message(msg)
         assert result.is_success
 
     def test_schema_registered_in_catalog(self) -> None:
         target = SingerTargetOracleWMS(_valid_config())
-        msg = {
-            "type": "SCHEMA",
-            "stream": "items",
-            "schema": {"type": "object", "properties": {"id": {"type": "string"}}},
-            "key_properties": ["id"],
-        }
+        msg = _schema_msg("items")
         target.handle_schema_message(msg)
         assert target.catalog_manager.get_stream("items").is_success
 
@@ -132,21 +132,17 @@ class TestTargetHandleRecordMessage:
 
     def test_record_without_schema_fails(self) -> None:
         target = SingerTargetOracleWMS(_valid_config())
-        msg = {"type": "RECORD", "stream": "orphan", "record": {"id": "1"}}
+        msg = _record_msg("orphan", {"id": "1"})
         result = target.handle_record_message(msg)
         assert result.is_failure
-        assert "schema not registered" in (result.error or "").lower()
+        assert result.error is not None
+        assert "schema not registered" in result.error.lower()
 
     def test_record_after_schema_succeeds(self) -> None:
         target = SingerTargetOracleWMS(_valid_config())
-        schema = {
-            "type": "SCHEMA",
-            "stream": "s",
-            "schema": {"type": "object", "properties": {"id": {"type": "string"}}},
-            "key_properties": ["id"],
-        }
+        schema = _schema_msg("s")
         target.handle_schema_message(schema)
-        record = {"type": "RECORD", "stream": "s", "record": {"id": "1"}}
+        record = _record_msg("s", {"id": "1"})
         result = target.handle_record_message(record)
         assert result.is_success
 
@@ -156,7 +152,7 @@ class TestTargetHandleStateMessage:
 
     def test_state_message_succeeds(self) -> None:
         target = SingerTargetOracleWMS(_valid_config())
-        msg = {"type": "STATE", "value": {"bookmarks": {"pos": "42"}}}
+        msg = _state_msg({"bookmarks": {"pos": "42"}})
         result = target.handle_state_message(msg)
         assert result.is_success
 
@@ -178,7 +174,8 @@ class TestTargetProcessLines:
         target = SingerTargetOracleWMS(_valid_config())
         result = target.process_lines(["not json"])
         assert result.is_failure
-        assert "invalid json" in (result.error or "").lower()
+        assert result.error is not None
+        assert "invalid json" in result.error.lower()
 
     def test_schema_then_record_then_state(self) -> None:
         target = SingerTargetOracleWMS(_valid_config())

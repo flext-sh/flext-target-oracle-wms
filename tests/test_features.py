@@ -8,12 +8,14 @@ from __future__ import annotations
 
 import math
 
+from flext_core import t
+from flext_target_oracle_wms.models import m
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 from flext_target_oracle_wms.target_models import WMSDataTransformer, WMSTypeConverter
 from flext_target_oracle_wms.utilities import FlextTargetOracleWmsUtilities
 
 
-def _valid_config() -> dict[str, object]:
+def _valid_config() -> dict[str, t.ContainerValue]:
     return {
         "wms_auth": {
             "base_url": "https://test.wms.example.com",
@@ -45,13 +47,13 @@ class TestTransformerFeatures:
 
     def test_type_converter_handles_all_types(self) -> None:
         converter = WMSTypeConverter()
-        types_and_values: list[tuple[str, object]] = [
+        types_and_values: list[tuple[str, bool | float | str]] = [
             ("string", "hello"),
             ("integer", 42),
             ("number", math.pi),
             ("boolean", True),
-            ("object", {"key": "val"}),
-            ("array", [1, 2]),
+            ("object", '{"key": "val"}'),
+            ("array", "[1, 2]"),
         ]
         for singer_type, value in types_and_values:
             result = converter.convert_singer_to_oracle(singer_type, value)
@@ -59,21 +61,26 @@ class TestTransformerFeatures:
 
     def test_type_converter_null_handling(self) -> None:
         converter = WMSTypeConverter()
-        result = converter.convert_singer_to_oracle("string", None)
+        result = converter.convert_singer_to_oracle("string", "")
         assert result.is_success
         assert result.value == ""
 
     def test_transformer_uppercases_keys(self) -> None:
         transformer = WMSDataTransformer()
-        record = {"type": "RECORD", "stream": "s", "record": {"name": "test"}}
-        schema = {
+        record = m.Meltano.SingerRecordMessage.model_validate({
+            "type": "RECORD",
+            "stream": "s",
+            "record": {"name": "test"},
+        })
+        schema = m.Meltano.SingerSchemaMessage.model_validate({
             "type": "SCHEMA",
             "stream": "s",
             "schema": {"type": "object", "properties": {"name": {"type": "string"}}},
             "key_properties": ["name"],
-        }
+        })
         result = transformer.transform_record(record, schema)
         assert result.is_success
+        assert result.value is not None
         assert "NAME" in result.value.record
 
 

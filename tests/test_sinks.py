@@ -8,6 +8,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from flext_core import t
+from flext_target_oracle_wms.models import m
 from flext_target_oracle_wms.target_client import (
     SingerTargetOracleWMS,
     SingerWMSCatalogManager,
@@ -16,7 +18,7 @@ from flext_target_oracle_wms.target_client import (
 from flext_target_oracle_wms.target_models import WMSDataTransformer, WMSTableManager
 
 
-def _valid_config() -> dict[str, object]:
+def _valid_config() -> dict[str, t.ContainerValue]:
     return {
         "wms_auth": {
             "base_url": "https://test.wms.example.com",
@@ -24,6 +26,30 @@ def _valid_config() -> dict[str, object]:
             "password": "pass",
         }
     }
+
+
+def _schema_msg(
+    stream: str = "items", properties: dict[str, dict[str, str]] | None = None
+) -> m.Meltano.SingerSchemaMessage:
+    return m.Meltano.SingerSchemaMessage.model_validate({
+        "type": "SCHEMA",
+        "stream": stream,
+        "schema": {
+            "type": "object",
+            "properties": properties or {"id": {"type": "string"}},
+        },
+        "key_properties": ["id"],
+    })
+
+
+def _record_msg(
+    stream: str = "items", record: dict[str, object] | None = None
+) -> m.Meltano.SingerRecordMessage:
+    return m.Meltano.SingerRecordMessage.model_validate({
+        "type": "RECORD",
+        "stream": stream,
+        "record": record or {"id": "1"},
+    })
 
 
 class TestTargetComponentWiring:
@@ -59,26 +85,19 @@ class TestCatalogAndTableIntegration:
 
     def test_schema_registers_in_both_catalog_and_table(self) -> None:
         target = SingerTargetOracleWMS(_valid_config())
-        schema = {
-            "type": "SCHEMA",
-            "stream": "items",
-            "schema": {"type": "object", "properties": {"id": {"type": "string"}}},
-            "key_properties": ["id"],
-        }
+        schema = _schema_msg("items")
         target.handle_schema_message(schema)
         assert target.catalog_manager.get_stream("items").is_success
         assert target.table_manager.get_table_name("items").is_success
 
     def test_table_name_is_uppercased_stream(self) -> None:
         target = SingerTargetOracleWMS(_valid_config())
-        schema = {
-            "type": "SCHEMA",
-            "stream": "orders",
-            "schema": {"type": "object", "properties": {"id": {"type": "string"}}},
-            "key_properties": ["id"],
-        }
+        schema = _schema_msg("orders")
         target.handle_schema_message(schema)
-        assert target.table_manager.get_table_name("orders").value == "ORDERS"
+        table_result = target.table_manager.get_table_name("orders")
+        assert table_result.is_success
+        assert table_result.value is not None
+        assert table_result.value == "ORDERS"
 
 
 class TestTransformationIntegration:
@@ -86,13 +105,8 @@ class TestTransformationIntegration:
 
     def test_record_keys_uppercased(self) -> None:
         target = SingerTargetOracleWMS(_valid_config())
-        schema = {
-            "type": "SCHEMA",
-            "stream": "s",
-            "schema": {"type": "object", "properties": {"name": {"type": "string"}}},
-            "key_properties": ["name"],
-        }
+        schema = _schema_msg("s", properties={"name": {"type": "string"}})
         target.handle_schema_message(schema)
-        record = {"type": "RECORD", "stream": "s", "record": {"name": "test"}}
+        record = _record_msg("s", {"name": "test"})
         result = target.handle_record_message(record)
         assert result.is_success

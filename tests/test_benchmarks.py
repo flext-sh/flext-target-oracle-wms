@@ -9,13 +9,14 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import time
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from flext_target_oracle_wms.factory import (
     FlextTargetFactory,
     TargetCreationRequest,
     create_oracle_wms_target,
 )
+from flext_target_oracle_wms.models import m
 from flext_target_oracle_wms.target_client import SingerWMSCatalogManager
 from flext_target_oracle_wms.target_models import (
     WMSDataTransformer,
@@ -28,8 +29,8 @@ PERF_ITERATIONS = 500
 PERF_THRESHOLD_SEC = 5.0
 
 
-def _schema_msg(stream: str = "bench") -> dict[str, object]:
-    return {
+def _schema_msg(stream: str = "bench") -> m.Meltano.SingerSchemaMessage:
+    return m.Meltano.SingerSchemaMessage.model_validate({
         "type": "SCHEMA",
         "stream": stream,
         "schema": {
@@ -37,11 +38,15 @@ def _schema_msg(stream: str = "bench") -> dict[str, object]:
             "properties": {"id": {"type": "string"}, "qty": {"type": "integer"}},
         },
         "key_properties": ["id"],
-    }
+    })
 
 
-def _record_msg(stream: str = "bench") -> dict[str, object]:
-    return {"type": "RECORD", "stream": stream, "record": {"id": "1", "qty": 100}}
+def _record_msg(stream: str = "bench") -> m.Meltano.SingerRecordMessage:
+    return m.Meltano.SingerRecordMessage.model_validate({
+        "type": "RECORD",
+        "stream": stream,
+        "record": {"id": "1", "qty": 100},
+    })
 
 
 class TestTypeConverterBenchmarks:
@@ -109,18 +114,21 @@ class TestFactoryBenchmarks:
     """Performance tests for FlextTargetFactory."""
 
     @patch("flext_target_oracle_wms.factory.SingerTargetOracleWMS")
-    def test_create_target_performance(self, mock_target) -> None:
+    def test_create_target_performance(self, mock_target: MagicMock) -> None:
         start = time.time()
         for _ in range(PERF_ITERATIONS):
             req = TargetCreationRequest(
-                base_url="https://bench.example.com", username="u", password="p"
+                base_url="https://bench.example.com",
+                username="u",
+                password="p",
+                additional_config=None,
             )
             FlextTargetFactory.create_target(req)
         elapsed = time.time() - start
         assert elapsed < PERF_THRESHOLD_SEC
 
     @patch("flext_target_oracle_wms.factory.SingerTargetOracleWMS")
-    def test_convenience_function_performance(self, mock_target) -> None:
+    def test_convenience_function_performance(self, mock_target: MagicMock) -> None:
         start = time.time()
         for _ in range(PERF_ITERATIONS):
             create_oracle_wms_target(

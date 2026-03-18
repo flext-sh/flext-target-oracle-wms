@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import pytest
 
+from flext_target_oracle_wms.models import m
 from flext_target_oracle_wms.target_client import SingerWMSCatalogManager
 
 
@@ -15,15 +16,15 @@ def _make_schema_message(
     stream_name: str = "test_stream",
     schema: dict[str, object] | None = None,
     key_properties: list[str] | None = None,
-) -> dict[str, object]:
+) -> m.Meltano.SingerSchemaMessage:
     """Build a valid SingerSchemaMessage dict."""
-    return {
+    return m.Meltano.SingerSchemaMessage.model_validate({
         "type": "SCHEMA",
         "stream": stream_name,
         "schema": schema
         or {"type": "object", "properties": {"id": {"type": "string"}}},
         "key_properties": key_properties or ["id"],
-    }
+    })
 
 
 class TestCatalogAddStream:
@@ -49,6 +50,7 @@ class TestCatalogAddStream:
         mgr.add_stream(schema_v2)
         result = mgr.get_stream("s")
         assert result.is_success
+        assert result.value is not None
         entry = result.value
         assert entry.key_properties == ["id", "name"]
 
@@ -60,13 +62,15 @@ class TestCatalogGetStream:
         mgr = SingerWMSCatalogManager()
         result = mgr.get_stream("nope")
         assert result.is_failure
-        assert "nope" in (result.error or "")
+        assert result.error is not None
+        assert "nope" in result.error
 
     def test_get_existing_stream_returns_catalog_entry(self) -> None:
         mgr = SingerWMSCatalogManager()
         mgr.add_stream(_make_schema_message("orders"))
         result = mgr.get_stream("orders")
         assert result.is_success
+        assert result.value is not None
         entry = result.value
         assert entry.stream == "orders"
         assert entry.tap_stream_id == "orders"
@@ -74,7 +78,10 @@ class TestCatalogGetStream:
     def test_entry_has_correct_key_properties(self) -> None:
         mgr = SingerWMSCatalogManager()
         mgr.add_stream(_make_schema_message("items", key_properties=["item_id", "lot"]))
-        entry = mgr.get_stream("items").value
+        stream_result = mgr.get_stream("items")
+        assert stream_result.is_success
+        assert stream_result.value is not None
+        entry = stream_result.value
         assert entry.key_properties == ["item_id", "lot"]
 
 
