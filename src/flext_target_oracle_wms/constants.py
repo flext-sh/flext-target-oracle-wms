@@ -5,8 +5,15 @@ from __future__ import annotations
 from enum import StrEnum, unique
 from typing import Final
 
+from flext_core.constants import (
+    PROJECT_KIND_APPLICATION,
+    PROJECT_KIND_LIBRARY,
+    PROJECT_KIND_SERVICE,
+)
+from flext_meltano import FlextMeltanoConstants
 
-class FlextTargetOracleWmsConstants:
+
+class FlextTargetOracleWmsConstants(FlextMeltanoConstants):
     """Typed constant namespace used by target Oracle WMS modules."""
 
     class TargetOracleWms:
@@ -56,9 +63,9 @@ class FlextTargetOracleWmsConstants:
     class ProjectType(StrEnum):
         """Project type literals for target package metadata."""
 
-        LIBRARY = "library"
-        APPLICATION = "application"
-        SERVICE = "service"
+        LIBRARY = PROJECT_KIND_LIBRARY
+        APPLICATION = PROJECT_KIND_APPLICATION
+        SERVICE = PROJECT_KIND_SERVICE
         SINGER_TARGET = "singer-target"
         WMS_LOADER = "wms-loader"
         WAREHOUSE_LOADER = "warehouse-loader"
