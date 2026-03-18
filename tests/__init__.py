@@ -24,10 +24,7 @@ if TYPE_CHECKING:
         singer_state_message,
         temp_output_dir,
     )
-    from .constants import (
-        TestsFlextTargetOracleWmsConstants,
-        TestsFlextTargetOracleWmsConstants as c,
-    )
+    from .constants import TestsFlextTargetOracleWmsConstants, c
     from .examples.test_examples import (
         TestExamplesCodeQuality,
         TestExamplesFlextIntegration,
@@ -107,14 +104,8 @@ if TYPE_CHECKING:
         TestErrorWorkflows,
         TestFullSingerWorkflow,
     )
-    from .typings import (
-        TestsFlextTargetOracleWmsTypes,
-        TestsFlextTargetOracleWmsTypes as t,
-    )
-    from .utilities import (
-        TestsFlextTargetOracleWmsUtilities,
-        TestsFlextTargetOracleWmsUtilities as u,
-    )
+    from .typings import TestsFlextTargetOracleWmsTypes, t
+    from .utilities import TestsFlextTargetOracleWmsUtilities, u
 
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "PERF_ITERATIONS": ("tests.test_benchmarks", "PERF_ITERATIONS"),
@@ -259,7 +250,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
         "tests.utilities",
         "TestsFlextTargetOracleWmsUtilities",
     ),
-    "c": ("tests.constants", "TestsFlextTargetOracleWmsConstants"),
+    "c": ("tests.constants", "c"),
     "config": ("tests.conftest", "config"),
     "examples": ("tests.examples", ""),
     "integration": ("tests.integration", ""),
@@ -272,7 +263,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "singer_schema": ("tests.conftest", "singer_schema"),
     "singer_schema_message": ("tests.conftest", "singer_schema_message"),
     "singer_state_message": ("tests.conftest", "singer_state_message"),
-    "t": ("tests.typings", "TestsFlextTargetOracleWmsTypes"),
+    "t": ("tests.typings", "t"),
     "temp_output_dir": ("tests.conftest", "temp_output_dir"),
     "test_import_from_correct_module": (
         "tests.test_structure",
@@ -280,7 +271,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     ),
     "test_no_dual_structure": ("tests.test_structure", "test_no_dual_structure"),
     "tm": ("tests.models", "tm"),
-    "u": ("tests.utilities", "TestsFlextTargetOracleWmsUtilities"),
+    "u": ("tests.utilities", "u"),
 }
 
 __all__ = [
