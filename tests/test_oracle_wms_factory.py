@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from flext_target_oracle_wms.factory import (
     FlextTargetFactory,
@@ -24,7 +24,12 @@ class TestTargetCreationRequest:
     """Tests for TargetCreationRequest dataclass."""
 
     def test_required_fields(self) -> None:
-        req = TargetCreationRequest(base_url="https://x", username="u", password="p")
+        req = TargetCreationRequest(
+            base_url="https://x",
+            username="u",
+            password="p",
+            additional_config=None,
+        )
         assert req.base_url == "https://x"
         assert req.environment == "development"
         assert req.preset is None
@@ -32,7 +37,11 @@ class TestTargetCreationRequest:
 
     def test_custom_environment(self) -> None:
         req = TargetCreationRequest(
-            base_url="https://x", username="u", password="p", environment="production"
+            base_url="https://x",
+            username="u",
+            password="p",
+            environment="production",
+            additional_config=None,
         )
         assert req.environment == "production"
 
@@ -42,13 +51,20 @@ class TestMonitoredTargetCreationRequest:
 
     def test_default_monitor_name(self) -> None:
         req = MonitoredTargetCreationRequest(
-            base_url="https://x", username="u", password="p"
+            base_url="https://x",
+            username="u",
+            password="p",
+            additional_config=None,
         )
         assert req.monitor_name == "oracle_wms_target"
 
     def test_custom_monitor_name(self) -> None:
         req = MonitoredTargetCreationRequest(
-            base_url="https://x", username="u", password="p", monitor_name="custom"
+            base_url="https://x",
+            username="u",
+            password="p",
+            monitor_name="custom",
+            additional_config=None,
         )
         assert req.monitor_name == "custom"
 
@@ -64,21 +80,30 @@ class TestFlextTargetFactory:
         }
 
     @patch(_PATCH_TARGET)
-    def test_create_target_success(self, mock_cls) -> None:
-        req = TargetCreationRequest(base_url="https://x", username="u", password="p")
-        result = FlextTargetFactory.create_target(req)
-        assert result.is_success
-
-    @patch(_PATCH_TARGET)
-    def test_create_target_with_preset(self, mock_cls) -> None:
+    def test_create_target_success(self, _mock_cls: MagicMock) -> None:
         req = TargetCreationRequest(
-            base_url="https://x", username="u", password="p", preset="testing"
+            base_url="https://x",
+            username="u",
+            password="p",
+            additional_config=None,
         )
         result = FlextTargetFactory.create_target(req)
         assert result.is_success
 
     @patch(_PATCH_TARGET)
-    def test_create_target_with_additional_config(self, mock_cls) -> None:
+    def test_create_target_with_preset(self, _mock_cls: MagicMock) -> None:
+        req = TargetCreationRequest(
+            base_url="https://x",
+            username="u",
+            password="p",
+            preset="testing",
+            additional_config=None,
+        )
+        result = FlextTargetFactory.create_target(req)
+        assert result.is_success
+
+    @patch(_PATCH_TARGET)
+    def test_create_target_with_additional_config(self, _mock_cls: MagicMock) -> None:
         req = TargetCreationRequest(
             base_url="https://x",
             username="u",
@@ -89,7 +114,7 @@ class TestFlextTargetFactory:
         assert result.is_success
 
     @patch(_PATCH_TARGET)
-    def test_create_from_config_dict_success(self, mock_cls) -> None:
+    def test_create_from_config_dict_success(self, _mock_cls: MagicMock) -> None:
         result = FlextTargetFactory.create_from_config_dict({
             "base_url": "https://x",
             "username": "u",
@@ -103,7 +128,8 @@ class TestFlextTargetFactory:
             "password": "p",
         })
         assert result.is_failure
-        assert "base_url" in (result.error or "")
+        assert result.error is not None
+        assert "base_url" in result.error
 
     def test_create_from_config_dict_missing_username(self) -> None:
         result = FlextTargetFactory.create_from_config_dict({
@@ -111,7 +137,8 @@ class TestFlextTargetFactory:
             "password": "p",
         })
         assert result.is_failure
-        assert "username" in (result.error or "")
+        assert result.error is not None
+        assert "username" in result.error
 
     def test_create_from_config_dict_missing_password(self) -> None:
         result = FlextTargetFactory.create_from_config_dict({
@@ -119,7 +146,8 @@ class TestFlextTargetFactory:
             "username": "u",
         })
         assert result.is_failure
-        assert "password" in (result.error or "")
+        assert result.error is not None
+        assert "password" in result.error
 
 
 class TestFlextTargetMonitoringFactory:
@@ -134,10 +162,13 @@ class TestFlextTargetMonitoringFactory:
         assert factory.monitor_name == "custom"
 
     @patch(_PATCH_TARGET)
-    def test_create_monitored_target_success(self, mock_cls) -> None:
+    def test_create_monitored_target_success(self, _mock_cls: MagicMock) -> None:
         factory = FlextTargetMonitoringFactory()
         req = MonitoredTargetCreationRequest(
-            base_url="https://x", username="u", password="p"
+            base_url="https://x",
+            username="u",
+            password="p",
+            additional_config=None,
         )
         result = factory.create_monitored_target(req)
         assert result.is_success
@@ -147,23 +178,26 @@ class TestConvenienceFunctions:
     """Tests for module-level convenience functions."""
 
     @patch(_PATCH_TARGET)
-    def test_create_oracle_wms_target(self, mock_cls) -> None:
+    def test_create_oracle_wms_target(self, _mock_cls: MagicMock) -> None:
         result = create_oracle_wms_target(
             base_url="https://x", username="u", password="p"
         )
         assert result.is_success
 
     @patch(_PATCH_TARGET)
-    def test_create_oracle_wms_target_with_preset(self, mock_cls) -> None:
+    def test_create_oracle_wms_target_with_preset(self, _mock_cls: MagicMock) -> None:
         result = create_oracle_wms_target(
             base_url="https://x", username="u", password="p", preset="production"
         )
         assert result.is_success
 
     @patch(_PATCH_TARGET)
-    def test_create_monitored_oracle_wms_target(self, mock_cls) -> None:
+    def test_create_monitored_oracle_wms_target(self, _mock_cls: MagicMock) -> None:
         req = MonitoredTargetCreationRequest(
-            base_url="https://x", username="u", password="p"
+            base_url="https://x",
+            username="u",
+            password="p",
+            additional_config=None,
         )
         result = create_monitored_oracle_wms_target(req)
         assert result.is_success
