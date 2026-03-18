@@ -42,19 +42,6 @@ class FlextTargetOracleWmsConstants(FlextMeltanoConstants):
             }
 
     @unique
-    class ErrorType(StrEnum):
-        """Project error categories."""
-
-        WMS_CONNECTION = "WMS_CONNECTION"
-        WMS_AUTHENTICATION = "WMS_AUTHENTICATION"
-        WMS_BUSINESS_RULE = "WMS_BUSINESS_RULE"
-        WMS_VALIDATION = "WMS_VALIDATION"
-        SINGER_PROTOCOL = "SINGER_PROTOCOL"
-        DATA_TRANSFORMATION = "DATA_TRANSFORMATION"
-        PERFORMANCE = "PERFORMANCE"
-        CONFIGURATION = "CONFIGURATION"
-
-    @unique
     class ProjectType(StrEnum):
         """Project type literals for target package metadata."""
 
