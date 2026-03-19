@@ -17,9 +17,9 @@ from flext_target_oracle_wms import (
     WMSTableManager,
     WMSTypeConverter,
     m,
+    p,
 )
 from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants, c
-from flext_target_oracle_wms.protocols import p
 
 
 class TestModelsNamespace:

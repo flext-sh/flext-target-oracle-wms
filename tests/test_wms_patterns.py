@@ -10,7 +10,7 @@ import math
 
 from pydantic import TypeAdapter
 
-from flext_target_oracle_wms.models import m
+from flext_target_oracle_wms import m
 from flext_target_oracle_wms.target_models import (
     WMSDataTransformer,
     WMSSchemaMapper,

@@ -11,12 +11,12 @@ from __future__ import annotations
 import time
 from unittest.mock import MagicMock, patch
 
+from flext_target_oracle_wms import m
 from flext_target_oracle_wms.factory import (
     FlextTargetFactory,
     TargetCreationRequest,
     create_oracle_wms_target,
 )
-from flext_target_oracle_wms.models import m
 from flext_target_oracle_wms.target_client import SingerWMSCatalogManager
 from flext_target_oracle_wms.target_models import (
     WMSDataTransformer,

@@ -9,7 +9,7 @@ from __future__ import annotations
 import pytest
 from flext_core import t
 
-from flext_target_oracle_wms.models import m
+from flext_target_oracle_wms import m
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 
