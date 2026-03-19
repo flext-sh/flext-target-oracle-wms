@@ -5,8 +5,10 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Annotated, ClassVar
 
-from flext_core import FlextLogger, FlextModels, r, t
+from flext_core import FlextLogger, FlextModels, r
 from pydantic import Field
+
+from flext_target_oracle_wms import t
 
 from .target_client import SingerTargetOracleWMS
 

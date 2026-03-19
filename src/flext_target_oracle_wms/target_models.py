@@ -5,8 +5,10 @@ from __future__ import annotations
 from datetime import datetime
 from pathlib import Path
 
-from flext_core import r, t
+from flext_core import r
 from pydantic import TypeAdapter
+
+from flext_target_oracle_wms import t
 
 from .models import m
 
