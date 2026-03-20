@@ -24,7 +24,10 @@ if TYPE_CHECKING:
         singer_state_message,
         temp_output_dir,
     )
-    from .constants import TestsFlextTargetOracleWmsConstants, c
+    from .constants import (
+        TestsFlextTargetOracleWmsConstants,
+        TestsFlextTargetOracleWmsConstants as c,
+    )
     from .examples.test_examples import (
         TestExamplesCodeQuality,
         TestExamplesFlextIntegration,
@@ -32,8 +35,15 @@ if TYPE_CHECKING:
         TestExamplesStructure,
     )
     from .integration.test_oracle import TestMultiStreamIntegration, TestTargetLifecycle
-    from .models import TestsFlextTargetOracleWmsModels, m, tm
-    from .protocols import TestsFlextTargetOracleWmsProtocols, p
+    from .models import (
+        TestsFlextTargetOracleWmsModels,
+        TestsFlextTargetOracleWmsModels as m,
+        tm,
+    )
+    from .protocols import (
+        TestsFlextTargetOracleWmsProtocols,
+        TestsFlextTargetOracleWmsProtocols as p,
+    )
     from .test_benchmarks import (
         PERF_ITERATIONS,
         PERF_THRESHOLD_SEC,
@@ -104,8 +114,14 @@ if TYPE_CHECKING:
         TestErrorWorkflows,
         TestFullSingerWorkflow,
     )
-    from .typings import TestsFlextTargetOracleWmsTypes, t
-    from .utilities import TestsFlextTargetOracleWmsUtilities, u
+    from .typings import (
+        TestsFlextTargetOracleWmsTypes,
+        TestsFlextTargetOracleWmsTypes as t,
+    )
+    from .utilities import (
+        TestsFlextTargetOracleWmsUtilities,
+        TestsFlextTargetOracleWmsUtilities as u,
+    )
 
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "PERF_ITERATIONS": ("tests.test_benchmarks", "PERF_ITERATIONS"),
@@ -250,12 +266,12 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
         "tests.utilities",
         "TestsFlextTargetOracleWmsUtilities",
     ),
-    "c": ("tests.constants", "c"),
+    "c": ("tests.constants", "TestsFlextTargetOracleWmsConstants"),
     "config": ("tests.conftest", "config"),
     "examples": ("tests.examples", ""),
     "integration": ("tests.integration", ""),
-    "m": ("tests.models", "m"),
-    "p": ("tests.protocols", "p"),
+    "m": ("tests.models", "TestsFlextTargetOracleWmsModels"),
+    "p": ("tests.protocols", "TestsFlextTargetOracleWmsProtocols"),
     "sample_inventory_records": ("tests.conftest", "sample_inventory_records"),
     "sample_order_records": ("tests.conftest", "sample_order_records"),
     "sample_task_records": ("tests.conftest", "sample_task_records"),
@@ -263,7 +279,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "singer_schema": ("tests.conftest", "singer_schema"),
     "singer_schema_message": ("tests.conftest", "singer_schema_message"),
     "singer_state_message": ("tests.conftest", "singer_state_message"),
-    "t": ("tests.typings", "t"),
+    "t": ("tests.typings", "TestsFlextTargetOracleWmsTypes"),
     "temp_output_dir": ("tests.conftest", "temp_output_dir"),
     "test_import_from_correct_module": (
         "tests.test_structure",
@@ -271,7 +287,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     ),
     "test_no_dual_structure": ("tests.test_structure", "test_no_dual_structure"),
     "tm": ("tests.models", "tm"),
-    "u": ("tests.utilities", "u"),
+    "u": ("tests.utilities", "TestsFlextTargetOracleWmsUtilities"),
 }
 
 __all__ = [
