@@ -17,7 +17,7 @@ class FlextTargetOracleWmsConstants(FlextMeltanoConstants):
         class OracleWms:
             """Oracle WMS runtime defaults."""
 
-            DEFAULT_TIMEOUT: Final[int] = FlextMeltanoConstants.Network.DEFAULT_TIMEOUT
+            DEFAULT_TIMEOUT: Final[int] = FlextMeltanoConstants.DEFAULT_TIMEOUT_SECONDS
             DEFAULT_MAX_RETRIES: Final[int] = (
                 FlextMeltanoConstants.DEFAULT_MAX_RETRY_ATTEMPTS
             )
