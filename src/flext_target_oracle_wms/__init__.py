@@ -33,7 +33,10 @@ if TYPE_CHECKING:
         OracleWMSTargetCli,
         main,
     )
-    from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants, c
+    from flext_target_oracle_wms.constants import (
+        FlextTargetOracleWmsConstants,
+        FlextTargetOracleWmsConstants as c,
+    )
     from flext_target_oracle_wms.factory import (
         FlextTargetFactory,
         FlextTargetMonitoringFactory,
@@ -42,8 +45,14 @@ if TYPE_CHECKING:
         create_monitored_oracle_wms_target,
         create_oracle_wms_target,
     )
-    from flext_target_oracle_wms.models import FlextTargetOracleWmsModels, m
-    from flext_target_oracle_wms.protocols import FlextTargetOracleWmsProtocols, p
+    from flext_target_oracle_wms.models import (
+        FlextTargetOracleWmsModels,
+        FlextTargetOracleWmsModels as m,
+    )
+    from flext_target_oracle_wms.protocols import (
+        FlextTargetOracleWmsProtocols,
+        FlextTargetOracleWmsProtocols as p,
+    )
     from flext_target_oracle_wms.target_client import (
         SingerTargetOracleWMS,
         SingerWMSCatalogManager,
@@ -59,8 +68,14 @@ if TYPE_CHECKING:
         WMSTableManager,
         WMSTypeConverter,
     )
-    from flext_target_oracle_wms.typings import FlextTargetOracleWmsTypes, t
-    from flext_target_oracle_wms.utilities import FlextTargetOracleWmsUtilities, u
+    from flext_target_oracle_wms.typings import (
+        FlextTargetOracleWmsTypes,
+        FlextTargetOracleWmsTypes as t,
+    )
+    from flext_target_oracle_wms.utilities import (
+        FlextTargetOracleWmsUtilities,
+        FlextTargetOracleWmsUtilities as u,
+    )
 
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "FlextTargetFactory": ("flext_target_oracle_wms.factory", "FlextTargetFactory"),
@@ -130,7 +145,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "__url__": ("flext_target_oracle_wms.__version__", "__url__"),
     "__version__": ("flext_target_oracle_wms.__version__", "__version__"),
     "__version_info__": ("flext_target_oracle_wms.__version__", "__version_info__"),
-    "c": ("flext_target_oracle_wms.constants", "c"),
+    "c": ("flext_target_oracle_wms.constants", "FlextTargetOracleWmsConstants"),
     "create_monitored_oracle_wms_target": (
         "flext_target_oracle_wms.factory",
         "create_monitored_oracle_wms_target",
@@ -143,13 +158,13 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "d": ("flext_meltano", "d"),
     "e": ("flext_meltano", "e"),
     "h": ("flext_meltano", "h"),
-    "m": ("flext_target_oracle_wms.models", "m"),
+    "m": ("flext_target_oracle_wms.models", "FlextTargetOracleWmsModels"),
     "main": ("flext_target_oracle_wms.cli", "main"),
-    "p": ("flext_target_oracle_wms.protocols", "p"),
+    "p": ("flext_target_oracle_wms.protocols", "FlextTargetOracleWmsProtocols"),
     "r": ("flext_meltano", "r"),
     "s": ("flext_meltano", "s"),
-    "t": ("flext_target_oracle_wms.typings", "t"),
-    "u": ("flext_target_oracle_wms.utilities", "u"),
+    "t": ("flext_target_oracle_wms.typings", "FlextTargetOracleWmsTypes"),
+    "u": ("flext_target_oracle_wms.utilities", "FlextTargetOracleWmsUtilities"),
     "x": ("flext_meltano", "x"),
 }
 
