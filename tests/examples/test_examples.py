@@ -299,7 +299,7 @@ class TestExamplesFlextIntegration:
         example_files = list(examples_dir.glob("*.py"))
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
-            if "r" in content:
+            if "import r" in content or "from flext_core import r" in content:
                 assert ".is_success" in content or ".is_failure" in content, (
                     f"{example_file.name} uses r but not .is_success/.is_failure"
                 )

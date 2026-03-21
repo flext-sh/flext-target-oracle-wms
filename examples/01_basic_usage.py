@@ -16,14 +16,27 @@ from pathlib import Path
 from flext_core import FlextLogger, t
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
+from flext_target_oracle_wms import WMSTableManager
+
 logger = FlextLogger(__name__)
 monitor = FlextObservabilityMonitor()
+
+
+WMS_AUTH = {
+    "base_url": "https://wms.example.oraclecloud.com",
+    "username": "wms_user",
+    "password": "wms_pass",
+}
+BATCH_SIZE = 100
 
 
 @flext_monitor_function(monitor)
 def run_basic_example() -> t.Scalar:
     """Run basic Oracle WMS target example with REAL configuration."""
     logger.info("Starting basic Oracle WMS target example")
+    logger.info("Using base_url=%s, batch_size=%d", WMS_AUTH["base_url"], BATCH_SIZE)
+    tm = WMSTableManager()
+    tm.register_stream("orders")
     logger.info("Example completed successfully")
     return True
 

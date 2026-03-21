@@ -28,7 +28,9 @@ def _schema_line(
     properties: dict[str, dict[str, str]] | None = None,
     key_properties: list[str] | None = None,
 ) -> str:
-    return _schema_msg(stream, properties, key_properties).model_dump_json()
+    return _schema_msg(stream, properties, key_properties).model_dump_json(
+        by_alias=True
+    )
 
 
 def _record_line(

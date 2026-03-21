@@ -2,9 +2,6 @@
 
 from __future__ import annotations
 
-from datetime import datetime
-from pathlib import Path
-
 from flext_core import r
 from flext_core.typings import t
 from pydantic import TypeAdapter
@@ -16,7 +13,7 @@ class WMSTypeConverter:
     """Convert source scalar values to Oracle-friendly payload values."""
 
     def convert_singer_to_oracle(
-        self, singer_type: str, value: Path | bool | datetime | float | str
+        self, singer_type: str, value: t.ContainerValue
     ) -> r[t.Container]:
         """Convert a single source value according to Singer type."""
         if value is None:
