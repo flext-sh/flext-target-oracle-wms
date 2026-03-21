@@ -20,10 +20,7 @@ if TYPE_CHECKING:
     from .test_oracle import TestMultiStreamIntegration, TestTargetLifecycle
 
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
-    "TestMultiStreamIntegration": (
-        "tests.integration.test_oracle",
-        "TestMultiStreamIntegration",
-    ),
+    "TestMultiStreamIntegration": ("tests.integration.test_oracle", "TestMultiStreamIntegration"),
     "TestTargetLifecycle": ("tests.integration.test_oracle", "TestTargetLifecycle"),
 }
 
