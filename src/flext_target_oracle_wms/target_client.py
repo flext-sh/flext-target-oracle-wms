@@ -6,10 +6,9 @@ import sys
 from typing import ClassVar
 
 from flext_core import FlextLogger, r
+from flext_core.typings import t
 from flext_meltano.models import FlextMeltanoModels
 from pydantic import TypeAdapter, ValidationError
-
-from flext_target_oracle_wms import t
 
 from .models import m
 from .target_models import WMSDataTransformer, WMSTableManager

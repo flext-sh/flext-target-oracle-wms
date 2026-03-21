@@ -6,8 +6,8 @@ import sys
 from pathlib import Path
 
 from flext_core import r
-
-from flext_target_oracle_wms import t, u
+from flext_core.typings import t
+from flext_core.utilities import u
 
 from .models import m
 from .target_client import SingerTargetOracleWMS

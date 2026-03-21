@@ -5,10 +5,9 @@ from __future__ import annotations
 from collections.abc import Mapping
 
 from flext_core import r
+from flext_core.typings import t
 from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_wms import FlextOracleWmsUtilities
-
-from flext_target_oracle_wms import t
 
 from .constants import c
 

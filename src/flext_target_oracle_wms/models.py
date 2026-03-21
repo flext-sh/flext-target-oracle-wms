@@ -9,11 +9,10 @@ from __future__ import annotations
 from typing import Annotated, Literal
 
 from flext_core import FlextModels, r
+from flext_core.typings import t
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_wms.wms_models import FlextOracleWmsModels
 from pydantic import ConfigDict, Field, SecretStr
-
-from flext_target_oracle_wms import t
 
 from .constants import c
 

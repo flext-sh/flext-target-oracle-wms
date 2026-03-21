@@ -73,12 +73,12 @@ class TestTableManagerBenchmarks:
     """Performance tests for WMSTableManager."""
 
     def test_register_and_lookup_performance(self) -> None:
-        tm = WMSTableManager()
+        WMSTableManager()
         start = time.time()
         for i in range(PERF_ITERATIONS):
             name = f"stream_{i}"
-            tm.register_stream(name)
-            tm.get_table_name(name)
+            u.Tests.Matchers.register_stream(name)
+            u.Tests.Matchers.get_table_name(name)
         elapsed = time.time() - start
         assert elapsed < PERF_THRESHOLD_SEC
 

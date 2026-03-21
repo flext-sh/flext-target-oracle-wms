@@ -16,10 +16,9 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
+from flext_core.constants import c
 from flext_meltano import FlextMeltanoTypes
 from flext_oracle_wms import FlextOracleWmsTypes
-
-from flext_target_oracle_wms import c
 
 
 class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):

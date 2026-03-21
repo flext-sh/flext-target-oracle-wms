@@ -6,9 +6,8 @@ from collections.abc import Mapping
 from typing import Annotated, ClassVar
 
 from flext_core import FlextLogger, FlextModels, r
+from flext_core.typings import t
 from pydantic import Field
-
-from flext_target_oracle_wms import t
 
 from .target_client import SingerTargetOracleWMS
 

@@ -6,9 +6,8 @@ from datetime import datetime
 from pathlib import Path
 
 from flext_core import r
+from flext_core.typings import t
 from pydantic import TypeAdapter
-
-from flext_target_oracle_wms import t
 
 from .models import m
 
