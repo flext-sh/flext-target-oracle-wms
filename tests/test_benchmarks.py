@@ -11,6 +11,8 @@ from __future__ import annotations
 import time
 from unittest.mock import MagicMock, patch
 
+from flext_tests import u
+
 from flext_target_oracle_wms import m
 from flext_target_oracle_wms.factory import (
     FlextTargetFactory,

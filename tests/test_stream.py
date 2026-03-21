@@ -9,6 +9,7 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 from flext_core import r
+from flext_tests import u
 
 from flext_target_oracle_wms import m
 from flext_target_oracle_wms.target_client import SingerWMSStreamProcessor

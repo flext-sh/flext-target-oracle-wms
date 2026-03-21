@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import math
 
+from flext_tests import u
 from pydantic import TypeAdapter
 
 from flext_target_oracle_wms import m
