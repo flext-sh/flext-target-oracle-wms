@@ -13,11 +13,9 @@ class WMSTypeConverter:
     """Convert source scalar values to Oracle-friendly payload values."""
 
     def convert_singer_to_oracle(
-        self, singer_type: str, value: t.ContainerValue
+        self, singer_type: str, value: t.Container | t.ContainerValue
     ) -> r[t.Container]:
         """Convert a single source value according to Singer type."""
-        if value is None:
-            return r[t.Container].ok("")
         if singer_type in {"object", "array"}:
             return r[t.Container].ok(
                 TypeAdapter(object).dump_json(value).decode("utf-8")

@@ -126,6 +126,32 @@ project-excludes = [
 python-version = "3.13"
 search-path = [
   ".",
+  "../flext-cli/examples",
+  "../flext-cli/src",
+  "../flext-cli/tests",
+  "../flext-core/examples",
+  "../flext-core/src",
+  "../flext-core/tests",
+  "../flext-db-oracle/docs",
+  "../flext-db-oracle/examples",
+  "../flext-db-oracle/src",
+  "../flext-db-oracle/tests",
+  "../flext-meltano/docs",
+  "../flext-meltano/examples",
+  "../flext-meltano/src",
+  "../flext-meltano/tests",
+  "../flext-observability/docs",
+  "../flext-observability/examples",
+  "../flext-observability/src",
+  "../flext-observability/tests",
+  "../flext-oracle-wms/docs",
+  "../flext-oracle-wms/examples",
+  "../flext-oracle-wms/src",
+  "../flext-oracle-wms/tests",
+  "docs",
+  "examples",
+  "src",
+  "tests",
 ]
 
 [tool.pyrefly.errors]
@@ -152,7 +178,35 @@ disable_error_code = [
   "prop-decorator",
 ]
 mypy_path = [
+  ".",
+  "../flext-cli/examples",
+  "../flext-cli/src",
+  "../flext-cli/tests",
+  "../flext-core/examples",
+  "../flext-core/src",
+  "../flext-core/tests",
+  "../flext-db-oracle/docs",
+  "../flext-db-oracle/examples",
+  "../flext-db-oracle/src",
+  "../flext-db-oracle/tests",
+  "../flext-meltano/docs",
+  "../flext-meltano/examples",
+  "../flext-meltano/src",
+  "../flext-meltano/tests",
+  "../flext-observability/docs",
+  "../flext-observability/examples",
+  "../flext-observability/src",
+  "../flext-observability/tests",
+  "../flext-oracle-wms/docs",
+  "../flext-oracle-wms/examples",
+  "../flext-oracle-wms/src",
+  "../flext-oracle-wms/tests",
+  "../typings",
+  "../typings/generated",
+  "docs",
+  "examples",
   "src",
+  "tests",
 ]
 plugins = [
   "pydantic.mypy",
@@ -163,6 +217,7 @@ python_version = "3.13"
 explicit_package_bases = true
 ignore_missing_imports = true
 namespace_packages = true
+
 [tool.pydantic-mypy]
 init_forbid_extra = true
 init_typed = true
@@ -192,7 +247,10 @@ preview = true
 respect-gitignore = true
 show-fixes = true
 src = [
+  "docs",
+  "examples",
   "src",
+  "tests",
 ]
 target-version = "py313"
 
@@ -535,7 +593,35 @@ line-ending = "lf"
 quote-style = "double"
 [tool.pyright]
 extraPaths = [
+  ".",
+  "../flext-cli/examples",
+  "../flext-cli/src",
+  "../flext-cli/tests",
+  "../flext-core/examples",
+  "../flext-core/src",
+  "../flext-core/tests",
+  "../flext-db-oracle/docs",
+  "../flext-db-oracle/examples",
+  "../flext-db-oracle/src",
+  "../flext-db-oracle/tests",
+  "../flext-meltano/docs",
+  "../flext-meltano/examples",
+  "../flext-meltano/src",
+  "../flext-meltano/tests",
+  "../flext-observability/docs",
+  "../flext-observability/examples",
+  "../flext-observability/src",
+  "../flext-observability/tests",
+  "../flext-oracle-wms/docs",
+  "../flext-oracle-wms/examples",
+  "../flext-oracle-wms/src",
+  "../flext-oracle-wms/tests",
+  "../typings",
+  "../typings/generated",
+  "docs",
+  "examples",
   "src",
+  "tests",
 ]
 pythonPlatform = "Linux"
 pythonVersion = "3.13"
@@ -557,6 +643,14 @@ reportUnusedVariable = "error"
 typeCheckingMode = "strict"
 
 [[tool.pyright.executionEnvironments]]
+reportPrivateUsage = "none"
+root = "docs"
+
+[[tool.pyright.executionEnvironments]]
+reportPrivateUsage = "none"
+root = "examples"
+
+[[tool.pyright.executionEnvironments]]
 reportPrivateUsage = "error"
 root = "src"
 
@@ -564,7 +658,6 @@ root = "src"
 reportPrivateUsage = "none"
 root = "tests"
 
-# [MANAGED] tomlsort
 [tool.tomlsort]
 all = true
 in_place = true

@@ -17,7 +17,7 @@ from pydantic import ConfigDict, Field, SecretStr
 from .constants import c
 
 
-class _MeltanoModels:
+class _MeltanoModels(FlextMeltanoModels.Meltano):
     """Singer message models with ContainerValue support for nested data.
 
     Upstream FlextMeltanoModels.Meltano uses dict[str, t.Container] for
@@ -25,9 +25,7 @@ class _MeltanoModels:
     JSON structures. This namespace provides models with t.ContainerValue.
     """
 
-    SingerStateMessage = FlextMeltanoModels.Meltano.SingerStateMessage
-
-    class SingerSchemaMessage(FlextModels.ArbitraryTypesModel):
+    class SingerSchemaMessage(FlextModels.ArbitraryTypesModel):  # pyright: ignore[reportIncompatibleVariableOverride]
         """Singer SCHEMA message with ContainerValue schema support."""
 
         model_config = ConfigDict(
@@ -67,7 +65,7 @@ class _MeltanoModels:
             ),
         ]
 
-    class SingerRecordMessage(FlextModels.ArbitraryTypesModel):
+    class SingerRecordMessage(FlextModels.ArbitraryTypesModel):  # pyright: ignore[reportIncompatibleVariableOverride]
         """Singer RECORD message with ContainerValue record support."""
 
         type: Annotated[
@@ -97,7 +95,7 @@ class _MeltanoModels:
             ),
         ]
 
-    class SingerCatalogEntry(FlextModels.ArbitraryTypesModel):
+    class SingerCatalogEntry(FlextModels.ArbitraryTypesModel):  # pyright: ignore[reportIncompatibleVariableOverride]
         """Singer catalog entry with ContainerValue schema support."""
 
         model_config = ConfigDict(
