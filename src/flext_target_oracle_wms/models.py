@@ -49,7 +49,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             stream_maps: Annotated[
                 dict[str, dict[str, str]], Field(default_factory=dict)
             ]
-            batch_size: int = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
+            batch_size: t.BatchSize = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
             load_method: str = c.TargetOracleWms.LoadMethods.APPEND_ONLY
             validate_records: bool = True
 
@@ -67,9 +67,9 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
         class WmsTargetResult(FlextModels.ArbitraryTypesModel):
             """Execution summary for the target pipeline."""
 
-            total_records_processed: int = 0
-            successful_records: int = 0
-            failed_records: int = 0
+            total_records_processed: t.NonNegativeInt = 0
+            successful_records: t.NonNegativeInt = 0
+            failed_records: t.NonNegativeInt = 0
             error_messages: Annotated[list[str], Field(default_factory=list)]
             metrics: Annotated[dict[str, t.Scalar], Field(default_factory=dict)]
 
