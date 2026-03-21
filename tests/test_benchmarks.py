@@ -11,8 +11,6 @@ from __future__ import annotations
 import time
 from unittest.mock import MagicMock, patch
 
-from flext_tests import u
-
 from flext_target_oracle_wms import m
 from flext_target_oracle_wms.factory import (
     FlextTargetFactory,
@@ -75,12 +73,12 @@ class TestTableManagerBenchmarks:
     """Performance tests for WMSTableManager."""
 
     def test_register_and_lookup_performance(self) -> None:
-        WMSTableManager()
+        tm = WMSTableManager()
         start = time.time()
         for i in range(PERF_ITERATIONS):
             name = f"stream_{i}"
-            u.Tests.Matchers.register_stream(name)
-            u.Tests.Matchers.get_table_name(name)
+            tm.register_stream(name)
+            tm.get_table_name(name)
         elapsed = time.time() - start
         assert elapsed < PERF_THRESHOLD_SEC
 

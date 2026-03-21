@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import math
 
-from flext_tests import u
 from pydantic import TypeAdapter
 
 from flext_target_oracle_wms import m
@@ -157,31 +156,31 @@ class TestWMSTableManager:
     """Tests for WMSTableManager."""
 
     def test_register_stream_returns_uppercase(self) -> None:
-        WMSTableManager()
-        result = u.Tests.Matchers.register_stream("orders")
+        tm = WMSTableManager()
+        result = tm.register_stream("orders")
         assert result.is_success
         assert result.value == "ORDERS"
 
     def test_get_registered_table(self) -> None:
-        WMSTableManager()
-        u.Tests.Matchers.register_stream("items")
-        result = u.Tests.Matchers.get_table_name("items")
+        tm = WMSTableManager()
+        tm.register_stream("items")
+        result = tm.get_table_name("items")
         assert result.is_success
         assert result.value == "ITEMS"
 
     def test_get_unregistered_fails(self) -> None:
-        WMSTableManager()
-        result = u.Tests.Matchers.get_table_name("nope")
+        tm = WMSTableManager()
+        result = tm.get_table_name("nope")
         assert result.is_failure
 
     def test_multiple_streams(self) -> None:
-        WMSTableManager()
-        u.Tests.Matchers.register_stream("a")
-        u.Tests.Matchers.register_stream("b")
-        result_a = u.Tests.Matchers.get_table_name("a")
+        tm = WMSTableManager()
+        tm.register_stream("a")
+        tm.register_stream("b")
+        result_a = tm.get_table_name("a")
         assert result_a.is_success
         assert result_a.value is not None
-        result_b = u.Tests.Matchers.get_table_name("b")
+        result_b = tm.get_table_name("b")
         assert result_b.is_success
         assert result_b.value is not None
         assert result_a.value == "A"

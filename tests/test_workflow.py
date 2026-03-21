@@ -8,13 +8,14 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
+from flext_core.typings import t
 from pydantic import TypeAdapter
 
 from flext_target_oracle_wms.cli import OracleWMSTargetCli
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 
-def _valid_config() -> dict[str, object]:
+def _valid_config() -> dict[str, t.ContainerValue]:
     return {
         "wms_auth": {
             "base_url": "https://test.wms.example.com",

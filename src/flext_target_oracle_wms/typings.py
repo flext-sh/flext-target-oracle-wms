@@ -16,9 +16,10 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from flext_core.constants import c
 from flext_meltano import FlextMeltanoTypes
 from flext_oracle_wms import FlextOracleWmsTypes
+
+from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants as _c
 
 
 class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
@@ -224,8 +225,8 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
         Singer target Oracle WMS domain owns WMS loading and Singer protocol-specific types.
         """
 
-        type ProjectType = c.ProjectType
-        type ErrorTypeLiteral = c.ErrorTypeLiteral
+        type ProjectType = _c.ProjectType
+        type ErrorTypeLiteral = _c.ErrorTypeLiteral
         type SingerTargetOracleWmsProjectConfig = dict[str, FlextMeltanoTypes.Container]
         type WmsLoaderConfig = dict[str, str | int | bool | list[str]]
         type SingerProtocolConfig = dict[

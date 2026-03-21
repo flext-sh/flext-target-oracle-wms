@@ -10,7 +10,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-from pydantic import TypeAdapter
+from pydantic import TypeAdapter, ValidationError
 
 from flext_target_oracle_wms.cli import OracleWMSTargetCli, main
 
@@ -65,8 +65,8 @@ class TestOracleWMSTargetCliLoadConfig:
             TypeAdapter(list[int]).dump_json([1, 2, 3]).decode("utf-8"),
             encoding="utf-8",
         )
-        with pytest.raises(TypeError):
-            cli._load_config(str(bad_file))
+        with pytest.raises(ValidationError):
+            cli._prepare_config(str(bad_file))
 
 
 class TestOracleWMSTargetCliExecute:

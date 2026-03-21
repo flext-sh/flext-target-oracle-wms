@@ -9,7 +9,6 @@ from __future__ import annotations
 from unittest.mock import MagicMock
 
 from flext_core import r
-from flext_tests import u
 
 from flext_target_oracle_wms import m
 from flext_target_oracle_wms.target_client import SingerWMSStreamProcessor
@@ -53,7 +52,7 @@ class TestStreamProcessorInitialize:
         tm = WMSTableManager()
         proc = SingerWMSStreamProcessor(tm, WMSDataTransformer())
         proc.initialize_stream(_schema_msg("items"))
-        table_result = u.Tests.Matchers.get_table_name("items")
+        table_result = tm.get_table_name("items")
         assert table_result.is_success
         assert table_result.value == "ITEMS"
 
@@ -96,7 +95,7 @@ class TestStreamProcessorRecord:
         dt = MagicMock(spec=WMSDataTransformer)
         dt.transform_record.return_value = r.fail("transformer error")
         proc = SingerWMSStreamProcessor(tm, dt)
-        u.Tests.Matchers.register_stream("s")
+        tm.register_stream("s")
         result = proc.process_record(_record_msg("s"), _schema_msg("s"))
         assert result.is_failure
 

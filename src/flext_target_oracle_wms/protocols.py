@@ -7,11 +7,10 @@ from typing import Protocol, runtime_checkable
 
 from flext_core import r
 from flext_core.typings import t
-from flext_meltano import FlextMeltanoProtocols
 from flext_oracle_wms.protocols import FlextOracleWmsProtocols
 
 
-class FlextTargetOracleWmsProtocols(FlextMeltanoProtocols, FlextOracleWmsProtocols):
+class FlextTargetOracleWmsProtocols(FlextOracleWmsProtocols):
     """Namespace for target Oracle WMS protocol contracts."""
 
     class TargetOracleWms:

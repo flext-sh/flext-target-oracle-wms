@@ -28,6 +28,108 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
         m.TargetOracleWms.* — target-specific config, result, schema helpers
     """
 
+    class Meltano(FlextMeltanoModels.Meltano):
+        """Override Singer message models to accept nested ContainerValue data.
+
+        Upstream FlextMeltanoModels.Meltano uses dict[str, t.Container] for
+        schema_definition and record fields, but Singer protocol requires nested
+        JSON structures. This override widens the field types to t.ContainerValue.
+        """
+
+        class SingerSchemaMessage(FlextModels.ArbitraryTypesModel):
+            """Singer SCHEMA message with ContainerValue schema support."""
+
+            type: Annotated[
+                Literal["SCHEMA"],
+                Field(default="SCHEMA", description="Singer message discriminator"),
+            ]
+            stream: Annotated[
+                t.NonEmptyStr,
+                Field(description="Singer stream name"),
+            ]
+            schema_definition: Annotated[
+                dict[str, t.ContainerValue],
+                Field(
+                    alias="schema",
+                    serialization_alias="schema",
+                    validation_alias="schema",
+                    description="Singer JSON schema payload",
+                ),
+            ]
+            key_properties: Annotated[
+                list[str],
+                Field(
+                    default_factory=list,
+                    description="Singer stream key properties",
+                ),
+            ]
+            bookmark_properties: Annotated[
+                list[str],
+                Field(
+                    default_factory=list,
+                    description="Singer bookmark columns for incremental replication",
+                ),
+            ]
+
+        class SingerRecordMessage(FlextModels.ArbitraryTypesModel):
+            """Singer RECORD message with ContainerValue record support."""
+
+            type: Annotated[
+                Literal["RECORD"],
+                Field(default="RECORD", description="Singer message discriminator"),
+            ]
+            stream: Annotated[
+                str,
+                Field(description="Singer stream name"),
+            ]
+            record: Annotated[
+                dict[str, t.ContainerValue],
+                Field(description="Singer record payload"),
+            ]
+            time_extracted: Annotated[
+                str | None,
+                Field(
+                    default=None,
+                    description="ISO 8601 timestamp when the record was extracted",
+                ),
+            ]
+            version: Annotated[
+                int | None,
+                Field(
+                    default=None,
+                    description="Stream version for activate_version protocol",
+                ),
+            ]
+
+        class SingerCatalogEntry(FlextModels.ArbitraryTypesModel):
+            """Singer catalog entry with ContainerValue schema support."""
+
+            tap_stream_id: Annotated[
+                str,
+                Field(description="Tap stream identifier"),
+            ]
+            stream: Annotated[
+                str,
+                Field(description="Singer stream name"),
+            ]
+            schema_definition: Annotated[
+                dict[str, t.ContainerValue],
+                Field(
+                    alias="schema",
+                    serialization_alias="schema",
+                    validation_alias="schema",
+                    description="Singer stream schema payload",
+                ),
+            ]
+            key_properties: Annotated[
+                list[str],
+                Field(
+                    default_factory=list,
+                    description="Singer stream key properties",
+                ),
+            ]
+            table_name: str | None = None
+
     class TargetOracleWms:
         """Target Oracle WMS model namespace — m.TargetOracleWms.*."""
 
