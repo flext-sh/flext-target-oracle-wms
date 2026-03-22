@@ -10,13 +10,14 @@ from __future__ import annotations
 
 from flext_core import t
 
-from flext_target_oracle_wms import m
-from flext_target_oracle_wms.target_client import (
+from flext_target_oracle_wms import (
     SingerTargetOracleWMS,
     SingerWMSCatalogManager,
     SingerWMSStreamProcessor,
+    WMSDataTransformer,
+    WMSTableManager,
+    m,
 )
-from flext_target_oracle_wms.target_models import WMSDataTransformer, WMSTableManager
 
 
 def _valid_config() -> dict[str, t.ContainerValue]:
