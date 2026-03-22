@@ -17,6 +17,7 @@ from flext_target_oracle_wms import (
     WMSTypeConverter,
     m,
 )
+from tests import t
 
 
 def _schema_msg(
@@ -28,7 +29,7 @@ def _schema_msg(
         "type": "SCHEMA",
         "stream": stream,
         "schema": {
-            "type": "object",
+            "type": "t.NormalizedValue",
             "properties": properties or {"id": {"type": "string"}},
         },
         "key_properties": key_properties or ["id"],
@@ -36,7 +37,7 @@ def _schema_msg(
 
 
 def _record_msg(
-    stream: str = "test_stream", record: dict[str, object] | None = None
+    stream: str = "test_stream", record: dict[str, t.NormalizedValue] | None = None
 ) -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage.model_validate({
         "type": "RECORD",
@@ -70,7 +71,7 @@ class TestWMSTypeConverter:
 
     def test_object_type_serializes_to_json(self) -> None:
         data = '{"nested": "value"}'
-        result = WMSTypeConverter().convert_singer_to_oracle("object", data)
+        result = WMSTypeConverter().convert_singer_to_oracle("t.NormalizedValue", data)
         assert result.is_success
         assert result.value is not None
         assert TypeAdapter(str).validate_json(str(result.value)) == data

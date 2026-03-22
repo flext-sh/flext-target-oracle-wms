@@ -8,8 +8,6 @@ from __future__ import annotations
 
 import math
 
-from flext_core import t
-
 from flext_target_oracle_wms import (
     FlextTargetOracleWmsUtilities,
     SingerTargetOracleWMS,
@@ -17,6 +15,7 @@ from flext_target_oracle_wms import (
     WMSTypeConverter,
     m,
 )
+from tests import t
 
 
 def _valid_config() -> dict[str, t.ContainerValue]:
@@ -56,7 +55,7 @@ class TestTransformerFeatures:
             ("integer", 42),
             ("number", math.pi),
             ("boolean", True),
-            ("object", '{"key": "val"}'),
+            ("t.NormalizedValue", '{"key": "val"}'),
             ("array", "[1, 2]"),
         ]
         for singer_type, value in types_and_values:
@@ -79,7 +78,10 @@ class TestTransformerFeatures:
         schema = m.Meltano.SingerSchemaMessage.model_validate({
             "type": "SCHEMA",
             "stream": "s",
-            "schema": {"type": "object", "properties": {"name": {"type": "string"}}},
+            "schema": {
+                "type": "t.NormalizedValue",
+                "properties": {"name": {"type": "string"}},
+            },
             "key_properties": ["name"],
         })
         result = transformer.transform_record(record, schema)
@@ -93,7 +95,7 @@ class TestUtilitiesFeatures:
 
     def test_create_schema_message(self) -> None:
         msg = FlextTargetOracleWmsUtilities.TargetOracleWms.create_schema_message(
-            "test", {"type": "object", "properties": {}}
+            "test", {"type": "t.NormalizedValue", "properties": {}}
         )
         assert msg["type"] == "SCHEMA"
         assert msg["stream"] == "test"

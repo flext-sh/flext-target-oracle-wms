@@ -27,28 +27,30 @@ def _valid_config() -> dict[str, t.ContainerValue]:
 
 def _schema_line(stream: str, props: dict[str, dict[str, str]], keys: list[str]) -> str:
     return (
-        TypeAdapter(object)
+        TypeAdapter(t.NormalizedValue)
         .dump_json({
             "type": "SCHEMA",
             "stream": stream,
-            "schema": {"type": "object", "properties": props},
+            "schema": {"type": "t.NormalizedValue", "properties": props},
             "key_properties": keys,
         })
         .decode("utf-8")
     )
 
 
-def _record_line(stream: str, record: dict[str, object]) -> str:
+def _record_line(stream: str, record: dict[str, t.NormalizedValue]) -> str:
     return (
-        TypeAdapter(object)
+        TypeAdapter(t.NormalizedValue)
         .dump_json({"type": "RECORD", "stream": stream, "record": record})
         .decode("utf-8")
     )
 
 
-def _state_line(value: dict[str, object]) -> str:
+def _state_line(value: dict[str, t.NormalizedValue]) -> str:
     return (
-        TypeAdapter(object).dump_json({"type": "STATE", "value": value}).decode("utf-8")
+        TypeAdapter(t.NormalizedValue)
+        .dump_json({"type": "STATE", "value": value})
+        .decode("utf-8")
     )
 
 

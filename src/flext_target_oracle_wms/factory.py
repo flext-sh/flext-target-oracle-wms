@@ -73,7 +73,7 @@ class FlextTargetFactory:
         cls,
         request: TargetCreationRequest,
     ) -> r[SingerTargetOracleWMS]:
-        """Create target instance from request object."""
+        """Create target instance from request t.NormalizedValue."""
         config: dict[str, t.ContainerValue] = {
             "base_url": request.base_url,
             "username": request.username,

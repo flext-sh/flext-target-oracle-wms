@@ -114,7 +114,7 @@ Shows sophisticated configuration and custom business logic:
 ```python
 # Custom business type converter
 class CustomWMSTypeConverter(WMSTypeConverter):
-    def convert_singer_to_oracle(self, singer_type: str, value) -> r[object]:
+    def convert_singer_to_oracle(self, singer_type: str, value) -> r[t.NormalizedValue]:
         if singer_type == "business_currency":
             return r[bool].ok(round(float(value), 2))
         return super().convert_singer_to_oracle(singer_type, value)
@@ -191,7 +191,7 @@ config = {
 
 
 # Retry with backoff
-def retry_with_backoff(operation, max_retries: int = 3) -> r[object]:
+def retry_with_backoff(operation, max_retries: int = 3) -> r[t.NormalizedValue]:
     for attempt in range(max_retries):
         try:
             return operation()

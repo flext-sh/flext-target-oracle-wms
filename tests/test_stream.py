@@ -16,24 +16,25 @@ from flext_target_oracle_wms import (
     WMSTableManager,
     m,
 )
+from tests import t
 
 
 def _schema_msg(
     stream: str = "test_stream",
-    schema: dict[str, object] | None = None,
+    schema: dict[str, t.NormalizedValue] | None = None,
     key_properties: list[str] | None = None,
 ) -> m.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage.model_validate({
         "type": "SCHEMA",
         "stream": stream,
         "schema": schema
-        or {"type": "object", "properties": {"id": {"type": "string"}}},
+        or {"type": "t.NormalizedValue", "properties": {"id": {"type": "string"}}},
         "key_properties": key_properties or ["id"],
     })
 
 
 def _record_msg(
-    stream: str = "test_stream", record: dict[str, object] | None = None
+    stream: str = "test_stream", record: dict[str, t.NormalizedValue] | None = None
 ) -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage.model_validate({
         "type": "RECORD",
@@ -84,7 +85,11 @@ class TestStreamProcessorRecord:
     def test_process_record_uppercases_keys(self) -> None:
         proc = SingerWMSStreamProcessor(WMSTableManager(), WMSDataTransformer())
         schema = _schema_msg(
-            "s", schema={"type": "object", "properties": {"name": {"type": "string"}}}
+            "s",
+            schema={
+                "type": "t.NormalizedValue",
+                "properties": {"name": {"type": "string"}},
+            },
         )
         proc.initialize_stream(schema)
         result = proc.process_record(_record_msg("s", {"name": "hello"}), schema)

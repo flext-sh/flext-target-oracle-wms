@@ -10,11 +10,12 @@ import pytest
 
 from flext_target_oracle_wms import m
 from flext_target_oracle_wms.target_client import SingerWMSCatalogManager
+from tests import t
 
 
 def _make_schema_message(
     stream_name: str = "test_stream",
-    schema: dict[str, object] | None = None,
+    schema: dict[str, t.NormalizedValue] | None = None,
     key_properties: list[str] | None = None,
 ) -> m.Meltano.SingerSchemaMessage:
     """Build a valid SingerSchemaMessage dict."""
@@ -22,7 +23,7 @@ def _make_schema_message(
         "type": "SCHEMA",
         "stream": stream_name,
         "schema": schema
-        or {"type": "object", "properties": {"id": {"type": "string"}}},
+        or {"type": "t.NormalizedValue", "properties": {"id": {"type": "string"}}},
         "key_properties": key_properties or ["id"],
     })
 

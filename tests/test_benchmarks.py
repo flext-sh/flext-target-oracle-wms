@@ -32,7 +32,7 @@ def _schema_msg(stream: str = "bench") -> m.Meltano.SingerSchemaMessage:
         "type": "SCHEMA",
         "stream": stream,
         "schema": {
-            "type": "object",
+            "type": "t.NormalizedValue",
             "properties": {"id": {"type": "string"}, "qty": {"type": "integer"}},
         },
         "key_properties": ["id"],
