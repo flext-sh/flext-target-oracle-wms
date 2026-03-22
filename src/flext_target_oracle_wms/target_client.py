@@ -10,7 +10,7 @@ from flext_core.typings import t
 from pydantic import TypeAdapter, ValidationError
 
 from .models import m
-from .utilities import WMSDataTransformer, WMSTableManager
+from .utilities import FlextTargetOracleWmsUtilities
 
 logger = FlextLogger(__name__)
 
@@ -50,7 +50,9 @@ class SingerWMSStreamProcessor:
     """Process Singer records using table and transform helpers."""
 
     def __init__(
-        self, table_manager: WMSTableManager, data_transformer: WMSDataTransformer
+        self,
+        table_manager: FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTableManager,
+        data_transformer: FlextTargetOracleWmsUtilities.TargetOracleWms.WMSDataTransformer,
     ) -> None:
         """Initialize processing dependencies."""
         self.table_manager = table_manager
@@ -96,8 +98,12 @@ class SingerTargetOracleWMS:
         """Initialize target runtime with validated config."""
         self.config = m.TargetOracleWms.WmsTargetConfig.model_validate(config)
         self.catalog_manager = SingerWMSCatalogManager()
-        self.table_manager = WMSTableManager()
-        self.data_transformer = WMSDataTransformer()
+        self.table_manager = (
+            FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTableManager()
+        )
+        self.data_transformer = (
+            FlextTargetOracleWmsUtilities.TargetOracleWms.WMSDataTransformer()
+        )
         self.stream_processor = SingerWMSStreamProcessor(
             self.table_manager, self.data_transformer
         )

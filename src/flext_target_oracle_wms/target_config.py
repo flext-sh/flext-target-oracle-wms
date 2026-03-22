@@ -19,6 +19,7 @@ class FlextTargetOracleWmsSettings(m.TargetOracleWms.WmsTargetConfig):
 
     @classmethod
     def create_settings(
+        cls,
         overrides: Mapping[str, t.ContainerValue] | None = None,
     ) -> r[FlextTargetOracleWmsSettings]:
         """Create settings instance with optional override values."""

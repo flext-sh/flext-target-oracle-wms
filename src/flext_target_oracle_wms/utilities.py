@@ -80,7 +80,7 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
                 self, singer_type: str, value: t.Container | t.ContainerValue
             ) -> r[t.Container]:
                 """Convert a single source value according to Singer type."""
-                if singer_type in {"t.NormalizedValue", "array"}:
+                if singer_type in {"object", "array"}:
                     return r[t.Container].ok(
                         TypeAdapter(t.NormalizedValue).dump_json(value).decode("utf-8")
                     )
@@ -98,9 +98,16 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
         class WMSDataTransformer:
             """Transform incoming Singer record payloads for loading."""
 
-            def __init__(self, type_converter: WMSTypeConverter | None = None) -> None:
+            def __init__(
+                self,
+                type_converter: FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTypeConverter
+                | None = None,
+            ) -> None:
                 """Initialize data transformer with optional converter."""
-                self.type_converter = type_converter or WMSTypeConverter()
+                self.type_converter = (
+                    type_converter
+                    or FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTypeConverter()
+                )
 
             def transform_record(
                 self,
@@ -190,26 +197,6 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
                 table_name = stream_name.upper()
                 self._stream_tables[stream_name] = table_name
                 return r[str].ok(table_name)
-
-        class WMSTypeConverter(WMSTypeConverter):
-            """Module-level alias for backwards compatibility."""
-
-            pass
-
-        class WMSDataTransformer(WMSDataTransformer):
-            """Module-level alias for backwards compatibility."""
-
-            pass
-
-        class WMSSchemaMapper(WMSSchemaMapper):
-            """Module-level alias for backwards compatibility."""
-
-            pass
-
-        class WMSTableManager(WMSTableManager):
-            """Module-level alias for backwards compatibility."""
-
-            pass
 
 
 __all__ = [

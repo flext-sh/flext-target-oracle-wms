@@ -14,13 +14,9 @@ from unittest.mock import MagicMock, patch
 from flext_target_oracle_wms import (
     FlextTargetFactory,
     SingerWMSCatalogManager,
-    TargetCreationRequest,
-    WMSDataTransformer,
-    WMSSchemaMapper,
-    WMSTableManager,
-    WMSTypeConverter,
     create_oracle_wms_target,
     m,
+    u,
 )
 
 PERF_ITERATIONS = 500
@@ -32,7 +28,7 @@ def _schema_msg(stream: str = "bench") -> m.Meltano.SingerSchemaMessage:
         "type": "SCHEMA",
         "stream": stream,
         "schema": {
-            "type": "t.NormalizedValue",
+            "type": "object",
             "properties": {"id": {"type": "string"}, "qty": {"type": "integer"}},
         },
         "key_properties": ["id"],
@@ -51,7 +47,7 @@ class TestTypeConverterBenchmarks:
     """Performance tests for WMSTypeConverter."""
 
     def test_convert_string_performance(self) -> None:
-        converter = WMSTypeConverter()
+        converter = u.TargetOracleWms.WMSTypeConverter()
         start = time.time()
         for _ in range(PERF_ITERATIONS):
             converter.convert_singer_to_oracle("string", "hello")
@@ -59,7 +55,7 @@ class TestTypeConverterBenchmarks:
         assert elapsed < PERF_THRESHOLD_SEC
 
     def test_convert_integer_performance(self) -> None:
-        converter = WMSTypeConverter()
+        converter = u.TargetOracleWms.WMSTypeConverter()
         start = time.time()
         for _ in range(PERF_ITERATIONS):
             converter.convert_singer_to_oracle("integer", 42)
@@ -71,7 +67,7 @@ class TestTableManagerBenchmarks:
     """Performance tests for WMSTableManager."""
 
     def test_register_and_lookup_performance(self) -> None:
-        tm = WMSTableManager()
+        tm = u.TargetOracleWms.WMSTableManager()
         start = time.time()
         for i in range(PERF_ITERATIONS):
             name = f"stream_{i}"
@@ -85,7 +81,7 @@ class TestSchemaMapperBenchmarks:
     """Performance tests for WMSSchemaMapper."""
 
     def test_map_stream_schema_performance(self) -> None:
-        mapper = WMSSchemaMapper()
+        mapper = u.TargetOracleWms.WMSSchemaMapper()
         msg = _schema_msg()
         start = time.time()
         for _ in range(PERF_ITERATIONS):
@@ -115,7 +111,7 @@ class TestFactoryBenchmarks:
     def test_create_target_performance(self, mock_target: MagicMock) -> None:
         start = time.time()
         for _ in range(PERF_ITERATIONS):
-            req = TargetCreationRequest(
+            req = m.TargetOracleWms.TargetCreationRequest(
                 base_url="https://bench.example.com",
                 username="u",
                 password="p",
@@ -140,7 +136,7 @@ class TestDataTransformerBenchmarks:
     """Performance tests for WMSDataTransformer."""
 
     def test_transform_record_performance(self) -> None:
-        transformer = WMSDataTransformer()
+        transformer = u.TargetOracleWms.WMSDataTransformer()
         rec = _record_msg()
         schema = _schema_msg()
         start = time.time()

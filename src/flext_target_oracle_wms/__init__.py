@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 
 if TYPE_CHECKING:
-    from flext_core.typings import FlextTypes
+    from flext_core import FlextTypes
     from flext_meltano import d, e, h, r, s, x
 
     from flext_target_oracle_wms.__version__ import (
@@ -40,8 +40,6 @@ if TYPE_CHECKING:
     from flext_target_oracle_wms.factory import (
         FlextTargetFactory,
         FlextTargetMonitoringFactory,
-        MonitoredTargetCreationRequest,
-        TargetCreationRequest,
         create_monitored_oracle_wms_target,
         create_oracle_wms_target,
     )
@@ -58,10 +56,7 @@ if TYPE_CHECKING:
         SingerWMSCatalogManager,
         SingerWMSStreamProcessor,
     )
-    from flext_target_oracle_wms.target_config import (
-        FlextTargetOracleWmsSettings,
-        create_settings,
-    )
+    from flext_target_oracle_wms.target_config import FlextTargetOracleWmsSettings
     from flext_target_oracle_wms.typings import (
         FlextTargetOracleWmsTypes,
         FlextTargetOracleWmsTypes as t,
@@ -69,10 +64,6 @@ if TYPE_CHECKING:
     from flext_target_oracle_wms.utilities import (
         FlextTargetOracleWmsUtilities,
         FlextTargetOracleWmsUtilities as u,
-        WMSDataTransformer,
-        WMSSchemaMapper,
-        WMSTableManager,
-        WMSTypeConverter,
     )
 
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
@@ -106,10 +97,6 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
         "FlextTargetOracleWmsUtilities",
     ),
     "MIN_CONFIG_ARG_COUNT": ("flext_target_oracle_wms.cli", "MIN_CONFIG_ARG_COUNT"),
-    "MonitoredTargetCreationRequest": (
-        "flext_target_oracle_wms.factory",
-        "MonitoredTargetCreationRequest",
-    ),
     "OracleWMSTargetCli": ("flext_target_oracle_wms.cli", "OracleWMSTargetCli"),
     "SingerTargetOracleWMS": (
         "flext_target_oracle_wms.target_client",
@@ -123,14 +110,6 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
         "flext_target_oracle_wms.target_client",
         "SingerWMSStreamProcessor",
     ),
-    "TargetCreationRequest": (
-        "flext_target_oracle_wms.factory",
-        "TargetCreationRequest",
-    ),
-    "WMSDataTransformer": ("flext_target_oracle_wms.utilities", "WMSDataTransformer"),
-    "WMSSchemaMapper": ("flext_target_oracle_wms.utilities", "WMSSchemaMapper"),
-    "WMSTableManager": ("flext_target_oracle_wms.utilities", "WMSTableManager"),
-    "WMSTypeConverter": ("flext_target_oracle_wms.utilities", "WMSTypeConverter"),
     "__all__": ("flext_target_oracle_wms.__version__", "__all__"),
     "__author__": ("flext_target_oracle_wms.__version__", "__author__"),
     "__author_email__": ("flext_target_oracle_wms.__version__", "__author_email__"),
@@ -149,7 +128,6 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
         "flext_target_oracle_wms.factory",
         "create_oracle_wms_target",
     ),
-    "create_settings": ("flext_target_oracle_wms.target_config", "create_settings"),
     "d": ("flext_meltano", "d"),
     "e": ("flext_meltano", "e"),
     "h": ("flext_meltano", "h"),
@@ -173,16 +151,10 @@ __all__ = [
     "FlextTargetOracleWmsSettings",
     "FlextTargetOracleWmsTypes",
     "FlextTargetOracleWmsUtilities",
-    "MonitoredTargetCreationRequest",
     "OracleWMSTargetCli",
     "SingerTargetOracleWMS",
     "SingerWMSCatalogManager",
     "SingerWMSStreamProcessor",
-    "TargetCreationRequest",
-    "WMSDataTransformer",
-    "WMSSchemaMapper",
-    "WMSTableManager",
-    "WMSTypeConverter",
     "__all__",
     "__author__",
     "__author_email__",
@@ -195,7 +167,6 @@ __all__ = [
     "c",
     "create_monitored_oracle_wms_target",
     "create_oracle_wms_target",
-    "create_settings",
     "d",
     "e",
     "h",

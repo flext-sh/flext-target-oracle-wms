@@ -7,12 +7,16 @@ Defines local TargetOracleWms namespace for target-specific models.
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Annotated, Literal
+from typing import Annotated, ClassVar, Literal
 
 from flext_core import r
 from flext_meltano import FlextMeltanoModels
-from flext_oracle_wms import FlextOracleWmsModels, c, t
+from flext_oracle_wms import FlextOracleWmsModels
+from flext_oracle_wms.typings import FlextOracleWmsTypes as t
 from pydantic import ConfigDict, Field, SecretStr
+
+# Declaration-module-safe: constants.py has no dependency on models.py
+from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants as _c
 
 
 class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
@@ -47,15 +51,15 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             stream_maps: Annotated[
                 dict[str, dict[str, str]], Field(default_factory=dict)
             ]
-            batch_size: t.BatchSize = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
-            load_method: str = c.TargetOracleWms.LoadMethods.APPEND_ONLY
+            batch_size: t.BatchSize = _c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
+            load_method: str = _c.TargetOracleWms.LoadMethods.APPEND_ONLY
             validate_records: bool = True
 
             def validate_business_rules(self) -> r[bool]:
                 """Validate basic config business rules."""
                 if (
                     self.load_method
-                    not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS
+                    not in _c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS
                 ):
                     return r[bool].fail("Invalid load method")
                 if self.batch_size <= 0:
