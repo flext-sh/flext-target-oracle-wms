@@ -11,6 +11,7 @@ from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 
 if TYPE_CHECKING:
     from flext_core.typings import FlextTypes
+    from flext_tests import d, e, h, r, s, x
 
     from . import examples as examples, integration as integration
     from .conftest import (
@@ -25,8 +26,8 @@ if TYPE_CHECKING:
         temp_output_dir,
     )
     from .constants import (
-        TestsFlextTargetOracleWmsConstants,
-        TestsFlextTargetOracleWmsConstants as c,
+        FlextTargetOracleWmsTestConstants,
+        FlextTargetOracleWmsTestConstants as c,
     )
     from .examples.test_examples import (
         TestExamplesCodeQuality,
@@ -36,13 +37,13 @@ if TYPE_CHECKING:
     )
     from .integration.test_oracle import TestMultiStreamIntegration, TestTargetLifecycle
     from .models import (
-        TestsFlextTargetOracleWmsModels,
-        TestsFlextTargetOracleWmsModels as m,
+        FlextTargetOracleWmsTestModels,
+        FlextTargetOracleWmsTestModels as m,
         tm,
     )
     from .protocols import (
-        TestsFlextTargetOracleWmsProtocols,
-        TestsFlextTargetOracleWmsProtocols as p,
+        FlextTargetOracleWmsTestProtocols,
+        FlextTargetOracleWmsTestProtocols as p,
     )
     from .test_benchmarks import (
         PERF_ITERATIONS,
@@ -115,15 +116,32 @@ if TYPE_CHECKING:
         TestFullSingerWorkflow,
     )
     from .typings import (
-        TestsFlextTargetOracleWmsTypes,
-        TestsFlextTargetOracleWmsTypes as t,
+        FlextTargetOracleWmsTestTypes,
+        FlextTargetOracleWmsTestTypes as t,
     )
     from .utilities import (
-        TestsFlextTargetOracleWmsUtilities,
-        TestsFlextTargetOracleWmsUtilities as u,
+        FlextTargetOracleWmsTestUtilities,
+        FlextTargetOracleWmsTestUtilities as u,
     )
 
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
+    "FlextTargetOracleWmsTestConstants": (
+        "tests.constants",
+        "FlextTargetOracleWmsTestConstants",
+    ),
+    "FlextTargetOracleWmsTestModels": (
+        "tests.models",
+        "FlextTargetOracleWmsTestModels",
+    ),
+    "FlextTargetOracleWmsTestProtocols": (
+        "tests.protocols",
+        "FlextTargetOracleWmsTestProtocols",
+    ),
+    "FlextTargetOracleWmsTestTypes": ("tests.typings", "FlextTargetOracleWmsTestTypes"),
+    "FlextTargetOracleWmsTestUtilities": (
+        "tests.utilities",
+        "FlextTargetOracleWmsTestUtilities",
+    ),
     "PERF_ITERATIONS": ("tests.test_benchmarks", "PERF_ITERATIONS"),
     "PERF_THRESHOLD_SEC": ("tests.test_benchmarks", "PERF_THRESHOLD_SEC"),
     "TestCatalogAddStream": ("tests.test_catalog", "TestCatalogAddStream"),
@@ -246,32 +264,17 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "TestWMSSchemaMapper": ("tests.test_wms_patterns", "TestWMSSchemaMapper"),
     "TestWMSTableManager": ("tests.test_wms_patterns", "TestWMSTableManager"),
     "TestWMSTypeConverter": ("tests.test_wms_patterns", "TestWMSTypeConverter"),
-    "TestsFlextTargetOracleWmsConstants": (
-        "tests.constants",
-        "TestsFlextTargetOracleWmsConstants",
-    ),
-    "TestsFlextTargetOracleWmsModels": (
-        "tests.models",
-        "TestsFlextTargetOracleWmsModels",
-    ),
-    "TestsFlextTargetOracleWmsProtocols": (
-        "tests.protocols",
-        "TestsFlextTargetOracleWmsProtocols",
-    ),
-    "TestsFlextTargetOracleWmsTypes": (
-        "tests.typings",
-        "TestsFlextTargetOracleWmsTypes",
-    ),
-    "TestsFlextTargetOracleWmsUtilities": (
-        "tests.utilities",
-        "TestsFlextTargetOracleWmsUtilities",
-    ),
-    "c": ("tests.constants", "TestsFlextTargetOracleWmsConstants"),
+    "c": ("tests.constants", "FlextTargetOracleWmsTestConstants"),
     "config": ("tests.conftest", "config"),
+    "d": ("flext_tests", "d"),
+    "e": ("flext_tests", "e"),
     "examples": ("tests.examples", ""),
+    "h": ("flext_tests", "h"),
     "integration": ("tests.integration", ""),
-    "m": ("tests.models", "TestsFlextTargetOracleWmsModels"),
-    "p": ("tests.protocols", "TestsFlextTargetOracleWmsProtocols"),
+    "m": ("tests.models", "FlextTargetOracleWmsTestModels"),
+    "p": ("tests.protocols", "FlextTargetOracleWmsTestProtocols"),
+    "r": ("flext_tests", "r"),
+    "s": ("flext_tests", "s"),
     "sample_inventory_records": ("tests.conftest", "sample_inventory_records"),
     "sample_order_records": ("tests.conftest", "sample_order_records"),
     "sample_task_records": ("tests.conftest", "sample_task_records"),
@@ -279,7 +282,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "singer_schema": ("tests.conftest", "singer_schema"),
     "singer_schema_message": ("tests.conftest", "singer_schema_message"),
     "singer_state_message": ("tests.conftest", "singer_state_message"),
-    "t": ("tests.typings", "TestsFlextTargetOracleWmsTypes"),
+    "t": ("tests.typings", "FlextTargetOracleWmsTestTypes"),
     "temp_output_dir": ("tests.conftest", "temp_output_dir"),
     "test_import_from_correct_module": (
         "tests.test_structure",
@@ -287,12 +290,18 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     ),
     "test_no_dual_structure": ("tests.test_structure", "test_no_dual_structure"),
     "tm": ("tests.models", "tm"),
-    "u": ("tests.utilities", "TestsFlextTargetOracleWmsUtilities"),
+    "u": ("tests.utilities", "FlextTargetOracleWmsTestUtilities"),
+    "x": ("flext_tests", "x"),
 }
 
 __all__ = [
     "PERF_ITERATIONS",
     "PERF_THRESHOLD_SEC",
+    "FlextTargetOracleWmsTestConstants",
+    "FlextTargetOracleWmsTestModels",
+    "FlextTargetOracleWmsTestProtocols",
+    "FlextTargetOracleWmsTestTypes",
+    "FlextTargetOracleWmsTestUtilities",
     "TestCatalogAddStream",
     "TestCatalogAndTableIntegration",
     "TestCatalogBenchmarks",
@@ -344,17 +353,17 @@ __all__ = [
     "TestWMSSchemaMapper",
     "TestWMSTableManager",
     "TestWMSTypeConverter",
-    "TestsFlextTargetOracleWmsConstants",
-    "TestsFlextTargetOracleWmsModels",
-    "TestsFlextTargetOracleWmsProtocols",
-    "TestsFlextTargetOracleWmsTypes",
-    "TestsFlextTargetOracleWmsUtilities",
     "c",
     "config",
+    "d",
+    "e",
     "examples",
+    "h",
     "integration",
     "m",
     "p",
+    "r",
+    "s",
     "sample_inventory_records",
     "sample_order_records",
     "sample_task_records",
@@ -368,6 +377,7 @@ __all__ = [
     "test_no_dual_structure",
     "tm",
     "u",
+    "x",
 ]
 
 

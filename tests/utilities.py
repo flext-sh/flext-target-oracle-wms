@@ -1,6 +1,6 @@
-"""Module skeleton for TestsFlextTargetOracleWmsUtilities.
+"""Module skeleton for FlextTargetOracleWmsTestUtilities.
 
-Test utilities for flexttargetoraclewms.
+Test utilities for flext-target-oracle-wms.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -8,12 +8,16 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tests import u
+from flext_tests import FlextTestsUtilities
+
+from flext_target_oracle_wms.utilities import FlextTargetOracleWmsUtilities
 
 
-class TestsFlextTargetOracleWmsUtilities(u):
-    """Test utilities for flexttargetoraclewms."""
+class FlextTargetOracleWmsTestUtilities(
+    FlextTestsUtilities, FlextTargetOracleWmsUtilities
+):
+    """Test utilities for flext-target-oracle-wms."""
 
 
-u = TestsFlextTargetOracleWmsUtilities
-__all__ = ["TestsFlextTargetOracleWmsUtilities", "u"]
+u = FlextTargetOracleWmsTestUtilities
+__all__ = ["FlextTargetOracleWmsTestUtilities", "u"]
