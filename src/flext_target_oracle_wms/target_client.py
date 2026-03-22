@@ -10,7 +10,7 @@ from flext_core.typings import t
 from pydantic import TypeAdapter, ValidationError
 
 from .models import m
-from .target_models import WMSDataTransformer, WMSTableManager
+from .utilities import WMSDataTransformer, WMSTableManager
 
 logger = FlextLogger(__name__)
 

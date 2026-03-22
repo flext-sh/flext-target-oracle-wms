@@ -62,12 +62,6 @@ if TYPE_CHECKING:
         FlextTargetOracleWmsSettings,
         create_settings,
     )
-    from flext_target_oracle_wms.target_models import (
-        WMSDataTransformer,
-        WMSSchemaMapper,
-        WMSTableManager,
-        WMSTypeConverter,
-    )
     from flext_target_oracle_wms.typings import (
         FlextTargetOracleWmsTypes,
         FlextTargetOracleWmsTypes as t,
@@ -75,6 +69,10 @@ if TYPE_CHECKING:
     from flext_target_oracle_wms.utilities import (
         FlextTargetOracleWmsUtilities,
         FlextTargetOracleWmsUtilities as u,
+        WMSDataTransformer,
+        WMSSchemaMapper,
+        WMSTableManager,
+        WMSTypeConverter,
     )
 
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
@@ -129,13 +127,10 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
         "flext_target_oracle_wms.factory",
         "TargetCreationRequest",
     ),
-    "WMSDataTransformer": (
-        "flext_target_oracle_wms.target_models",
-        "WMSDataTransformer",
-    ),
-    "WMSSchemaMapper": ("flext_target_oracle_wms.target_models", "WMSSchemaMapper"),
-    "WMSTableManager": ("flext_target_oracle_wms.target_models", "WMSTableManager"),
-    "WMSTypeConverter": ("flext_target_oracle_wms.target_models", "WMSTypeConverter"),
+    "WMSDataTransformer": ("flext_target_oracle_wms.utilities", "WMSDataTransformer"),
+    "WMSSchemaMapper": ("flext_target_oracle_wms.utilities", "WMSSchemaMapper"),
+    "WMSTableManager": ("flext_target_oracle_wms.utilities", "WMSTableManager"),
+    "WMSTypeConverter": ("flext_target_oracle_wms.utilities", "WMSTypeConverter"),
     "__all__": ("flext_target_oracle_wms.__version__", "__all__"),
     "__author__": ("flext_target_oracle_wms.__version__", "__author__"),
     "__author_email__": ("flext_target_oracle_wms.__version__", "__author_email__"),
