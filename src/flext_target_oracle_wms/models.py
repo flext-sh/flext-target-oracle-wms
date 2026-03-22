@@ -6,12 +6,13 @@ Defines local TargetOracleWms namespace for target-specific models.
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import Annotated, Literal
 
 from flext_core import FlextModels, r
 from flext_core.typings import t
 from flext_meltano import FlextMeltanoModels
-from flext_oracle_wms.wms_models import FlextOracleWmsModels
+from flext_oracle_wms.models import FlextOracleWmsModels
 from pydantic import ConfigDict, Field, SecretStr
 
 from .constants import c
@@ -214,6 +215,23 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                 ],
                 Field(default_factory=dict),
             ]
+
+        class TargetCreationRequest(FlextModels.ArbitraryTypesModel):
+            """Input object for target construction."""
+
+            base_url: str
+            username: str
+            password: str
+            environment: str = "development"
+            preset: str | None = None
+            additional_config: Annotated[
+                Mapping[str, t.Scalar] | None, Field(default=None)
+            ]
+
+        class MonitoredTargetCreationRequest(TargetCreationRequest):
+            """Input object for monitored target creation."""
+
+            monitor_name: str = "oracle_wms_target"
 
 
 m = FlextTargetOracleWmsModels

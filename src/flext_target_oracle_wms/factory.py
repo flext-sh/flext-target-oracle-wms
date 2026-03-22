@@ -3,32 +3,18 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Annotated, ClassVar
+from typing import ClassVar
 
-from flext_core import FlextLogger, FlextModels, r
+from flext_core import FlextLogger, r
 from flext_core.typings import t
-from pydantic import Field
 
+from .models import FlextTargetOracleWmsModels as m
 from .target_client import SingerTargetOracleWMS
 
 logger = FlextLogger(__name__)
 
-
-class TargetCreationRequest(FlextModels.ArbitraryTypesModel):
-    """Input object for target construction."""
-
-    base_url: str
-    username: str
-    password: str
-    environment: str = "development"
-    preset: str | None = None
-    additional_config: Annotated[Mapping[str, t.Scalar] | None, Field(default=None)]
-
-
-class MonitoredTargetCreationRequest(TargetCreationRequest):
-    """Input object for monitored target creation."""
-
-    monitor_name: str = "oracle_wms_target"
+TargetCreationRequest = m.TargetOracleWms.TargetCreationRequest
+MonitoredTargetCreationRequest = m.TargetOracleWms.MonitoredTargetCreationRequest
 
 
 class FlextTargetFactory:
