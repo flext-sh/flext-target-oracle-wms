@@ -25,7 +25,7 @@ class _MeltanoModels(FlextMeltanoModels.Meltano):
     JSON structures. This namespace provides models with t.ContainerValue.
     """
 
-    class SingerSchemaMessage(FlextModels.ArbitraryTypesModel):  # pyright: ignore[reportIncompatibleVariableOverride]
+    class SingerSchemaMessage(FlextModels.ArbitraryTypesModel):
         """Singer SCHEMA message with ContainerValue schema support."""
 
         model_config = ConfigDict(
@@ -65,7 +65,7 @@ class _MeltanoModels(FlextMeltanoModels.Meltano):
             ),
         ]
 
-    class SingerRecordMessage(FlextModels.ArbitraryTypesModel):  # pyright: ignore[reportIncompatibleVariableOverride]
+    class SingerRecordMessage(FlextModels.ArbitraryTypesModel):
         """Singer RECORD message with ContainerValue record support."""
 
         type: Annotated[
@@ -95,7 +95,7 @@ class _MeltanoModels(FlextMeltanoModels.Meltano):
             ),
         ]
 
-    class SingerCatalogEntry(FlextModels.ArbitraryTypesModel):  # pyright: ignore[reportIncompatibleVariableOverride]
+    class SingerCatalogEntry(FlextModels.ArbitraryTypesModel):
         """Singer catalog entry with ContainerValue schema support."""
 
         model_config = ConfigDict(
