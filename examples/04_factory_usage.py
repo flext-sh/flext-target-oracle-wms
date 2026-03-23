@@ -13,10 +13,8 @@ from __future__ import annotations
 from flext_core import FlextLogger, t
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
-from flext_target_oracle_wms import (
-    FlextTargetFactory,
-    TargetCreationRequest,
-)
+from flext_target_oracle_wms.factory import FlextTargetFactory
+from flext_target_oracle_wms.models import FlextTargetOracleWmsModels
 
 logger = FlextLogger(__name__)
 monitor = FlextObservabilityMonitor()
@@ -32,7 +30,7 @@ FACTORY_CONFIG = {
 def run_factory_example() -> t.Scalar:
     """Run factory usage example with Oracle WMS target creation."""
     logger.info("Starting factory usage example")
-    request = TargetCreationRequest(
+    request = FlextTargetOracleWmsModels.TargetOracleWms.TargetCreationRequest(
         base_url=FACTORY_CONFIG["base_url"],
         username=FACTORY_CONFIG["username"],
         password=FACTORY_CONFIG["password"],

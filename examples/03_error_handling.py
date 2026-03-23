@@ -13,7 +13,7 @@ from __future__ import annotations
 from flext_core import FlextLogger, t
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
-from flext_target_oracle_wms import WMSTableManager
+from flext_target_oracle_wms.utilities import FlextTargetOracleWmsUtilities
 
 logger = FlextLogger(__name__)
 monitor = FlextObservabilityMonitor()
@@ -24,7 +24,7 @@ def run_error_handling_example() -> t.Scalar:
     """Run error handling example with Oracle WMS resilience patterns."""
     logger.info("Starting error handling example")
     try:
-        tm = WMSTableManager()
+        tm = FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTableManager()
         result = tm.get_table_name("nonexistent")
         if result.is_failure:
             logger.info("Expected failure handled: %s", result.error)

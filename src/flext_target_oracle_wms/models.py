@@ -103,7 +103,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             ]
 
         class TargetCreationRequest(FlextMeltanoModels.ArbitraryTypesModel):
-            """Input t.NormalizedValue for target construction."""
+            """Input object for target construction."""
 
             base_url: str
             username: str
@@ -115,7 +115,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             ]
 
         class MonitoredTargetCreationRequest(TargetCreationRequest):
-            """Input t.NormalizedValue for monitored target creation."""
+            """Input object for monitored target creation."""
 
             monitor_name: str = "oracle_wms_target"
 

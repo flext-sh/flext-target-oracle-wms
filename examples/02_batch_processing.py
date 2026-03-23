@@ -13,7 +13,7 @@ from __future__ import annotations
 from flext_core import FlextLogger, t
 from flext_observability import FlextObservabilityMonitor, flext_monitor_function
 
-from flext_target_oracle_wms import WMSTableManager
+from flext_target_oracle_wms.utilities import FlextTargetOracleWmsUtilities
 
 logger = FlextLogger(__name__)
 monitor = FlextObservabilityMonitor()
@@ -32,7 +32,7 @@ BATCH_CONFIG = {
 def run_batch_example() -> t.Scalar:
     """Run batch processing example with Oracle WMS table management."""
     logger.info("Starting batch processing example")
-    tm = WMSTableManager()
+    tm = FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTableManager()
     result = tm.register_stream("orders")
     if result.is_success:
         logger.info("Registered stream table: %s", result.value)
