@@ -7,6 +7,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import math
+from collections.abc import Mapping, Sequence
 
 from flext_target_oracle_wms import (
     FlextTargetOracleWmsUtilities,
@@ -17,7 +18,7 @@ from flext_target_oracle_wms import (
 from tests import t
 
 
-def _valid_config() -> dict[str, t.ContainerValue]:
+def _valid_config() -> Mapping[str, t.ContainerValue]:
     return {
         "wms_auth": {
             "base_url": "https://test.wms.example.com",
@@ -49,7 +50,7 @@ class TestTransformerFeatures:
 
     def test_type_converter_handles_all_types(self) -> None:
         converter = u.TargetOracleWms.WMSTypeConverter()
-        types_and_values: list[tuple[str, bool | float | str]] = [
+        types_and_values: Sequence[tuple[str, bool | float | str]] = [
             ("string", "hello"),
             ("integer", 42),
             ("number", math.pi),

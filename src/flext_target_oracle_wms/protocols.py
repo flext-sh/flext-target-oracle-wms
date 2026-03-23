@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from typing import Protocol, runtime_checkable
 
 from flext_core import r, t
@@ -21,7 +21,7 @@ class FlextTargetOracleWmsProtocols(FlextOracleWmsProtocols):
 
             def load_data(
                 self,
-                records: list[Mapping[str, t.ContainerValue]],
+                records: Sequence[Mapping[str, t.ContainerValue]],
             ) -> r[bool]:
                 """Load a batch of records."""
                 ...

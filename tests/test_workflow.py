@@ -6,6 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
 from unittest.mock import MagicMock, patch
 
 from flext_core import t
@@ -15,7 +16,7 @@ from flext_target_oracle_wms.cli import OracleWMSTargetCli
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 
-def _valid_config() -> dict[str, t.ContainerValue]:
+def _valid_config() -> Mapping[str, t.ContainerValue]:
     return {
         "wms_auth": {
             "base_url": "https://test.wms.example.com",
@@ -25,7 +26,9 @@ def _valid_config() -> dict[str, t.ContainerValue]:
     }
 
 
-def _schema_line(stream: str, props: dict[str, dict[str, str]], keys: list[str]) -> str:
+def _schema_line(
+    stream: str, props: Mapping[str, Mapping[str, str]], keys: Sequence[str]
+) -> str:
     return (
         TypeAdapter(t.NormalizedValue)
         .dump_json({
@@ -38,7 +41,7 @@ def _schema_line(stream: str, props: dict[str, dict[str, str]], keys: list[str])
     )
 
 
-def _record_line(stream: str, record: dict[str, t.NormalizedValue]) -> str:
+def _record_line(stream: str, record: Mapping[str, t.NormalizedValue]) -> str:
     return (
         TypeAdapter(t.NormalizedValue)
         .dump_json({"type": "RECORD", "stream": stream, "record": record})
@@ -46,7 +49,7 @@ def _record_line(stream: str, record: dict[str, t.NormalizedValue]) -> str:
     )
 
 
-def _state_line(value: dict[str, t.NormalizedValue]) -> str:
+def _state_line(value: Mapping[str, t.NormalizedValue]) -> str:
     return (
         TypeAdapter(t.NormalizedValue)
         .dump_json({"type": "STATE", "value": value})

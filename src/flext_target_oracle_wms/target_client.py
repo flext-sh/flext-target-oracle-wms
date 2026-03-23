@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+from collections.abc import Mapping, Sequence
 from typing import ClassVar
 
 from flext_core import FlextLogger, r, t
@@ -19,7 +20,7 @@ class SingerWMSCatalogManager:
 
     def __init__(self) -> None:
         """Initialize catalog storage for stream metadata."""
-        self._catalog_entries: dict[str, m.Meltano.SingerCatalogEntry] = {}
+        self._catalog_entries: Mapping[str, m.Meltano.SingerCatalogEntry] = {}
 
     def add_stream(self, schema_message: m.Meltano.SingerSchemaMessage) -> r[bool]:
         """Register one stream schema entry."""
@@ -70,7 +71,7 @@ class SingerWMSStreamProcessor:
     def process_record(
         self,
         record_message: m.Meltano.SingerRecordMessage,
-        schema_message: m.Meltano.SingerSchemaMessage | dict[str, t.ContainerValue],
+        schema_message: m.Meltano.SingerSchemaMessage | Mapping[str, t.ContainerValue],
     ) -> r[m.Meltano.SingerRecordMessage]:
         """Transform one typed Singer record."""
         typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
@@ -92,7 +93,7 @@ class SingerTargetOracleWMS:
 
     def __init__(
         self,
-        config: dict[str, t.ContainerValue] | m.TargetOracleWms.WmsTargetConfig,
+        config: Mapping[str, t.ContainerValue] | m.TargetOracleWms.WmsTargetConfig,
     ) -> None:
         """Initialize target runtime with validated config."""
         self.config = m.TargetOracleWms.WmsTargetConfig.model_validate(config)
@@ -106,7 +107,7 @@ class SingerTargetOracleWMS:
         self.stream_processor = SingerWMSStreamProcessor(
             self.table_manager, self.data_transformer
         )
-        self._schemas: dict[str, m.Meltano.SingerSchemaMessage] = {}
+        self._schemas: Mapping[str, m.Meltano.SingerSchemaMessage] = {}
 
     def cleanup(self) -> r[bool]:
         """Release target runtime resources."""
@@ -143,14 +144,14 @@ class SingerTargetOracleWMS:
         logger.debug("Received state", state=str(typed_state.value))
         return r[bool].ok(value=True)
 
-    def process_lines(self, input_lines: list[str]) -> r[bool]:
+    def process_lines(self, input_lines: Sequence[str]) -> r[bool]:
         """Parse and process Singer JSON lines."""
         for raw_line in input_lines:
             line = raw_line.strip()
             if not line:
                 continue
-            message_adapter: TypeAdapter[dict[str, t.NormalizedValue]] = TypeAdapter(
-                dict[str, t.NormalizedValue]
+            message_adapter: TypeAdapter[Mapping[str, t.NormalizedValue]] = TypeAdapter(
+                Mapping[str, t.NormalizedValue]
             )
             try:
                 message = message_adapter.validate_json(line)

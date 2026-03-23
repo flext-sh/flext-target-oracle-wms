@@ -8,7 +8,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import tempfile
-from collections.abc import Generator
+from collections.abc import Generator, Mapping, Sequence
 from pathlib import Path
 
 import pytest
@@ -17,7 +17,7 @@ from tests import t
 
 
 @pytest.fixture
-def config() -> dict[str, t.NormalizedValue]:
+def config() -> Mapping[str, t.NormalizedValue]:
     """Return a test configuration matching WmsTargetConfig schema."""
     return {
         "wms_auth": {
@@ -39,7 +39,7 @@ def temp_output_dir() -> Generator[Path]:
 
 
 @pytest.fixture
-def sample_inventory_records() -> list[dict[str, t.NormalizedValue]]:
+def sample_inventory_records() -> Sequence[Mapping[str, t.NormalizedValue]]:
     """Return sample inventory records."""
     return [
         {
@@ -64,7 +64,7 @@ def sample_inventory_records() -> list[dict[str, t.NormalizedValue]]:
 
 
 @pytest.fixture
-def sample_order_records() -> list[dict[str, t.NormalizedValue]]:
+def sample_order_records() -> Sequence[Mapping[str, t.NormalizedValue]]:
     """Return sample order records."""
     return [
         {
@@ -87,7 +87,7 @@ def sample_order_records() -> list[dict[str, t.NormalizedValue]]:
 
 
 @pytest.fixture
-def sample_task_records() -> list[dict[str, t.NormalizedValue]]:
+def sample_task_records() -> Sequence[Mapping[str, t.NormalizedValue]]:
     """Return sample task records."""
     return [
         {
@@ -112,7 +112,7 @@ def sample_task_records() -> list[dict[str, t.NormalizedValue]]:
 
 
 @pytest.fixture
-def singer_schema() -> dict[str, t.NormalizedValue]:
+def singer_schema() -> Mapping[str, t.NormalizedValue]:
     """Return a sample Singer schema."""
     return {
         "type": "object",
@@ -127,7 +127,7 @@ def singer_schema() -> dict[str, t.NormalizedValue]:
 
 
 @pytest.fixture
-def singer_schema_message() -> dict[str, t.NormalizedValue]:
+def singer_schema_message() -> Mapping[str, t.NormalizedValue]:
     """Return a sample Singer SCHEMA message."""
     return {
         "type": "SCHEMA",
@@ -141,7 +141,7 @@ def singer_schema_message() -> dict[str, t.NormalizedValue]:
 
 
 @pytest.fixture
-def singer_record_message() -> dict[str, t.NormalizedValue]:
+def singer_record_message() -> Mapping[str, t.NormalizedValue]:
     """Return a sample Singer RECORD message."""
     return {
         "type": "RECORD",
@@ -153,6 +153,6 @@ def singer_record_message() -> dict[str, t.NormalizedValue]:
 
 
 @pytest.fixture
-def singer_state_message() -> dict[str, t.NormalizedValue]:
+def singer_state_message() -> Mapping[str, t.NormalizedValue]:
     """Return a sample Singer STATE message."""
     return {"type": "STATE", "value": {"bookmarks": {}}}

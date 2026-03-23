@@ -6,6 +6,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
+
 import pytest
 from flext_core import t
 
@@ -13,7 +15,7 @@ from flext_target_oracle_wms import m
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
 
 
-def _valid_config() -> dict[str, t.ContainerValue]:
+def _valid_config() -> Mapping[str, t.ContainerValue]:
     return {
         "wms_auth": {
             "base_url": "https://test.wms.example.com",
@@ -25,8 +27,8 @@ def _valid_config() -> dict[str, t.ContainerValue]:
 
 def _schema_line(
     stream: str = "test_stream",
-    properties: dict[str, dict[str, str]] | None = None,
-    key_properties: list[str] | None = None,
+    properties: Mapping[str, Mapping[str, str]] | None = None,
+    key_properties: Sequence[str] | None = None,
 ) -> str:
     return _schema_msg(stream, properties, key_properties).model_dump_json(
         by_alias=True
@@ -34,19 +36,19 @@ def _schema_line(
 
 
 def _record_line(
-    stream: str = "test_stream", record: dict[str, t.NormalizedValue] | None = None
+    stream: str = "test_stream", record: Mapping[str, t.NormalizedValue] | None = None
 ) -> str:
     return _record_msg(stream, record).model_dump_json()
 
 
-def _state_line(state: dict[str, t.NormalizedValue] | None = None) -> str:
+def _state_line(state: Mapping[str, t.NormalizedValue] | None = None) -> str:
     return _state_msg(state).model_dump_json()
 
 
 def _schema_msg(
     stream: str = "test_stream",
-    properties: dict[str, dict[str, str]] | None = None,
-    key_properties: list[str] | None = None,
+    properties: Mapping[str, Mapping[str, str]] | None = None,
+    key_properties: Sequence[str] | None = None,
 ) -> m.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage.model_validate({
         "type": "SCHEMA",
@@ -59,7 +61,7 @@ def _schema_msg(
 
 
 def _record_msg(
-    stream: str = "test_stream", record: dict[str, t.NormalizedValue] | None = None
+    stream: str = "test_stream", record: Mapping[str, t.NormalizedValue] | None = None
 ) -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage.model_validate({
         "type": "RECORD",
@@ -69,7 +71,7 @@ def _record_msg(
 
 
 def _state_msg(
-    state: dict[str, t.NormalizedValue] | None = None,
+    state: Mapping[str, t.NormalizedValue] | None = None,
 ) -> m.Meltano.SingerStateMessage:
     return m.Meltano.SingerStateMessage.model_validate({
         "type": "STATE",

@@ -8,6 +8,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
+
 from flext_target_oracle_wms import (
     SingerTargetOracleWMS,
     SingerWMSCatalogManager,
@@ -18,7 +20,7 @@ from flext_target_oracle_wms import (
 from tests import t
 
 
-def _valid_config() -> dict[str, t.ContainerValue]:
+def _valid_config() -> Mapping[str, t.ContainerValue]:
     return {
         "wms_auth": {
             "base_url": "https://test.wms.example.com",
@@ -40,7 +42,7 @@ def _schema_msg(stream: str = "items") -> m.Meltano.SingerSchemaMessage:
 
 
 def _record_msg(
-    stream: str = "items", record: dict[str, t.NormalizedValue] | None = None
+    stream: str = "items", record: Mapping[str, t.NormalizedValue] | None = None
 ) -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage.model_validate({
         "type": "RECORD",

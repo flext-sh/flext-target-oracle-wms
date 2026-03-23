@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 
 from flext_core import r, t
 from flext_meltano import FlextMeltanoUtilities
@@ -31,10 +31,10 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
         def create_schema_message(
             stream_name: str,
             schema: Mapping[str, t.ContainerValue],
-            key_properties: list[str] | None = None,
+            key_properties: Sequence[str] | None = None,
         ) -> Mapping[
             str,
-            t.ContainerValue | Mapping[str, t.ContainerValue] | list[str],
+            t.ContainerValue | Mapping[str, t.ContainerValue] | Sequence[str],
         ]:
             """Create a Singer SCHEMA message payload."""
             return {
@@ -111,17 +111,17 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
             def transform_record(
                 self,
                 record_message: m.Meltano.SingerRecordMessage
-                | dict[str, t.ContainerValue],
+                | Mapping[str, t.ContainerValue],
                 schema_message: m.Meltano.SingerSchemaMessage
-                | dict[str, t.ContainerValue]
+                | Mapping[str, t.ContainerValue]
                 | None = None,
             ) -> r[m.Meltano.SingerRecordMessage]:
                 """Transform one typed Singer RECORD payload with optional typed schema."""
                 typed_record = m.Meltano.SingerRecordMessage.model_validate(
                     record_message
                 )
-                transformed: dict[str, t.Container] = {}
-                empty_schema: dict[str, t.Container] = {}
+                transformed: Mapping[str, t.Container] = {}
+                empty_schema: Mapping[str, t.Container] = {}
                 schema_definition = (
                     m.Meltano.SingerSchemaMessage.model_validate(
                         schema_message
@@ -161,7 +161,7 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
             def map_stream_schema(
                 self,
                 schema_message: m.Meltano.SingerSchemaMessage
-                | dict[str, t.ContainerValue],
+                | Mapping[str, t.ContainerValue],
             ) -> r[m.Meltano.SingerCatalogEntry]:
                 """Build normalized schema map for table creation."""
                 typed_schema = m.Meltano.SingerSchemaMessage.model_validate(
@@ -182,7 +182,7 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
 
             def __init__(self) -> None:
                 """Initialize table manager map."""
-                self._stream_tables: dict[str, str] = {}
+                self._stream_tables: Mapping[str, str] = {}
 
             def get_table_name(self, stream_name: str) -> r[str]:
                 """Get registered table name for stream."""

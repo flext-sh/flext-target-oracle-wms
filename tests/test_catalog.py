@@ -6,6 +6,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
+
 import pytest
 
 from flext_target_oracle_wms import m
@@ -15,8 +17,8 @@ from tests import t
 
 def _make_schema_message(
     stream_name: str = "test_stream",
-    schema: dict[str, t.NormalizedValue] | None = None,
-    key_properties: list[str] | None = None,
+    schema: Mapping[str, t.NormalizedValue] | None = None,
+    key_properties: Sequence[str] | None = None,
 ) -> m.Meltano.SingerSchemaMessage:
     """Build a valid SingerSchemaMessage dict."""
     return m.Meltano.SingerSchemaMessage.model_validate({

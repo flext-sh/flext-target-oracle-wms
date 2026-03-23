@@ -23,7 +23,7 @@ class FlextTargetOracleWmsSettings(m.TargetOracleWms.WmsTargetConfig):
     ) -> r[FlextTargetOracleWmsSettings]:
         """Create settings instance with optional override values."""
         try:
-            data: dict[str, t.ContainerValue] = dict(overrides) if overrides else {}
+            data: Mapping[str, t.ContainerValue] = dict(overrides) if overrides else {}
             settings = FlextTargetOracleWmsSettings.model_validate(data)
         except (
             ValueError,

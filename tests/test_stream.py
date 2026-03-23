@@ -6,6 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
 from unittest.mock import MagicMock
 
 from flext_core import r
@@ -20,8 +21,8 @@ from tests import t
 
 def _schema_msg(
     stream: str = "test_stream",
-    schema: dict[str, t.NormalizedValue] | None = None,
-    key_properties: list[str] | None = None,
+    schema: Mapping[str, t.NormalizedValue] | None = None,
+    key_properties: Sequence[str] | None = None,
 ) -> m.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage.model_validate({
         "type": "SCHEMA",
@@ -32,7 +33,7 @@ def _schema_msg(
 
 
 def _record_msg(
-    stream: str = "test_stream", record: dict[str, t.NormalizedValue] | None = None
+    stream: str = "test_stream", record: Mapping[str, t.NormalizedValue] | None = None
 ) -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage.model_validate({
         "type": "RECORD",

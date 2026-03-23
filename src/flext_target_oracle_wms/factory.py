@@ -16,7 +16,7 @@ logger = FlextLogger(__name__)
 class FlextTargetFactory:
     """Factory for creating configured target instances."""
 
-    PRESETS: ClassVar[dict[str, dict[str, t.Scalar]]] = {
+    PRESETS: ClassVar[Mapping[str, Mapping[str, t.Scalar]]] = {
         "development": {
             "batch_size": 100,
             "timeout": 30,
@@ -70,7 +70,7 @@ class FlextTargetFactory:
         request: m.TargetOracleWms.TargetCreationRequest,
     ) -> r[SingerTargetOracleWMS]:
         """Create target instance from validated request."""
-        config: dict[str, t.ContainerValue] = {
+        config: Mapping[str, t.ContainerValue] = {
             "base_url": request.base_url,
             "username": request.username,
             "password": request.password,

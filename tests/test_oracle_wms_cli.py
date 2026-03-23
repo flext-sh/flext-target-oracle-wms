@@ -6,6 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 from unittest.mock import patch
 
@@ -15,16 +16,16 @@ from pydantic import TypeAdapter, ValidationError
 from flext_target_oracle_wms.cli import OracleWMSTargetCli, main
 
 
-def _write_config_file(config: dict[str, dict[str, str]], tmp_path: Path) -> str:
+def _write_config_file(config: Mapping[str, Mapping[str, str]], tmp_path: Path) -> str:
     config_file = tmp_path / "config.json"
     config_file.write_text(
-        TypeAdapter(dict[str, dict[str, str]]).dump_json(config).decode("utf-8"),
+        TypeAdapter(Mapping[str, Mapping[str, str]]).dump_json(config).decode("utf-8"),
         encoding="utf-8",
     )
     return str(config_file)
 
 
-def _valid_config_dict() -> dict[str, dict[str, str]]:
+def _valid_config_dict() -> Mapping[str, Mapping[str, str]]:
     return {
         "wms_auth": {
             "base_url": "https://test.wms.example.com",
@@ -62,7 +63,7 @@ class TestOracleWMSTargetCliLoadConfig:
         cli = OracleWMSTargetCli()
         bad_file = tmp_path / "bad.json"
         bad_file.write_text(
-            TypeAdapter(list[int]).dump_json([1, 2, 3]).decode("utf-8"),
+            TypeAdapter(Sequence[int]).dump_json([1, 2, 3]).decode("utf-8"),
             encoding="utf-8",
         )
         with pytest.raises(ValidationError):
