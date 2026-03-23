@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import pytest
-from flext_core.typings import t
+from flext_core import t
 from pydantic import TypeAdapter
 
 from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
@@ -29,7 +29,7 @@ def _schema_line(stream: str, props: dict[str, dict[str, str]], keys: list[str])
         .dump_json({
             "type": "SCHEMA",
             "stream": stream,
-            "schema": {"type": "t.NormalizedValue", "properties": props},
+            "schema": {"type": "object", "properties": props},
             "key_properties": keys,
         })
         .decode("utf-8")

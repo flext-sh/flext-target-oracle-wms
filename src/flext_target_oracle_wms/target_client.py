@@ -5,8 +5,7 @@ from __future__ import annotations
 import sys
 from typing import ClassVar
 
-from flext_core import FlextLogger, r
-from flext_core.typings import t
+from flext_core import FlextLogger, r, t
 from pydantic import TypeAdapter, ValidationError
 
 from .models import m

@@ -52,8 +52,7 @@ def _schema_msg(
         "type": "SCHEMA",
         "stream": stream,
         "schema": {
-            "type": "t.NormalizedValue",
-            "properties": properties or {"id": {"type": "string"}},
+            "type": "object",
         },
         "key_properties": key_properties or ["id"],
     })

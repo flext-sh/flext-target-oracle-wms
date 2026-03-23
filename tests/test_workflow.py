@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
-from flext_core.typings import t
+from flext_core import t
 from pydantic import TypeAdapter
 
 from flext_target_oracle_wms.cli import OracleWMSTargetCli

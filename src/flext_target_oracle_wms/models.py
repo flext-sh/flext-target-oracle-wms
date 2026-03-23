@@ -12,7 +12,7 @@ from typing import Annotated, ClassVar, Literal
 from flext_core import r
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_wms import FlextOracleWmsModels
-from flext_oracle_wms.typings import FlextOracleWmsTypes as t
+from flext_oracle_wms.typings import t
 from pydantic import ConfigDict, Field, SecretStr
 
 # Declaration-module-safe: constants.py has no dependency on models.py

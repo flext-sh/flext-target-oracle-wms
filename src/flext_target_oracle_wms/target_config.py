@@ -4,8 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from flext_core import r
-from flext_core.typings import t
+from flext_core import r, t
 
 from .models import m
 

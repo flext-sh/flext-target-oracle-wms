@@ -115,7 +115,7 @@ def sample_task_records() -> list[dict[str, t.NormalizedValue]]:
 def singer_schema() -> dict[str, t.NormalizedValue]:
     """Return a sample Singer schema."""
     return {
-        "type": "t.NormalizedValue",
+        "type": "object",
         "properties": {
             "id": {"type": "string"},
             "name": {"type": "string"},
@@ -133,7 +133,7 @@ def singer_schema_message() -> dict[str, t.NormalizedValue]:
         "type": "SCHEMA",
         "stream": "test_stream",
         "schema": {
-            "type": "t.NormalizedValue",
+            "type": "object",
             "properties": {"id": {"type": "string"}, "name": {"type": "string"}},
         },
         "key_properties": ["id"],

@@ -5,10 +5,9 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import ClassVar
 
-from flext_core import FlextLogger, r
-from flext_core.typings import t
+from flext_core import FlextLogger, r, t
 
-from .models import FlextTargetOracleWmsModels as m
+from .models import m
 from .target_client import SingerTargetOracleWMS
 
 logger = FlextLogger(__name__)

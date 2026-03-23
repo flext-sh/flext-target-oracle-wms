@@ -5,8 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Protocol, runtime_checkable
 
-from flext_core import r
-from flext_core.typings import t
+from flext_core import r, t
 from flext_oracle_wms.protocols import FlextOracleWmsProtocols
 
 

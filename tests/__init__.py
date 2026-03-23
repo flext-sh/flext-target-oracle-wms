@@ -75,8 +75,6 @@ if TYPE_CHECKING:
         TestOracleWMSTargetCliLoadConfig,
     )
     from tests.test_oracle_wms_factory import (
-        MonitoredTargetCreationRequest,
-        TargetCreationRequest,
         TestConvenienceFunctions,
         TestFlextTargetFactory,
         TestFlextTargetMonitoringFactory,
@@ -150,13 +148,8 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
         "tests.utilities",
         "FlextTargetOracleWmsTestUtilities",
     ),
-    "MonitoredTargetCreationRequest": (
-        "tests.test_oracle_wms_factory",
-        "MonitoredTargetCreationRequest",
-    ),
     "PERF_ITERATIONS": ("tests.test_benchmarks", "PERF_ITERATIONS"),
     "PERF_THRESHOLD_SEC": ("tests.test_benchmarks", "PERF_THRESHOLD_SEC"),
-    "TargetCreationRequest": ("tests.test_oracle_wms_factory", "TargetCreationRequest"),
     "TestCatalogAddStream": ("tests.test_catalog", "TestCatalogAddStream"),
     "TestCatalogAndTableIntegration": (
         "tests.test_sinks",
@@ -315,8 +308,6 @@ __all__ = [
     "FlextTargetOracleWmsTestProtocols",
     "FlextTargetOracleWmsTestTypes",
     "FlextTargetOracleWmsTestUtilities",
-    "MonitoredTargetCreationRequest",
-    "TargetCreationRequest",
     "TestCatalogAddStream",
     "TestCatalogAndTableIntegration",
     "TestCatalogBenchmarks",

@@ -5,9 +5,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from flext_core import r
-from flext_core.typings import t
-from flext_core.utilities import u
+from flext_core import r, t, u
 
 from .models import m
 from .target_client import SingerTargetOracleWMS
