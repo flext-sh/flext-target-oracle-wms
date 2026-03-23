@@ -12,9 +12,8 @@ from flext_core import r
 
 from flext_target_oracle_wms import (
     SingerWMSStreamProcessor,
-    WMSDataTransformer,
-    WMSTableManager,
     m,
+    u,
 )
 from tests import t
 
@@ -27,8 +26,7 @@ def _schema_msg(
     return m.Meltano.SingerSchemaMessage.model_validate({
         "type": "SCHEMA",
         "stream": stream,
-        "schema": schema
-        or {"type": "t.NormalizedValue", "properties": {"id": {"type": "string"}}},
+        "schema": schema or {"type": "object"},
         "key_properties": key_properties or ["id"],
     })
 
@@ -47,14 +45,16 @@ class TestStreamProcessorInitialize:
     """Tests for SingerWMSStreamProcessor.initialize_stream."""
 
     def test_initialize_stream_success(self) -> None:
-        proc = SingerWMSStreamProcessor(WMSTableManager(), WMSDataTransformer())
+        proc = SingerWMSStreamProcessor(
+            u.TargetOracleWms.WMSTableManager(), u.TargetOracleWms.WMSDataTransformer()
+        )
         result = proc.initialize_stream(_schema_msg("orders"))
         assert result.is_success
         assert result.value is True
 
     def test_initialize_registers_table(self) -> None:
-        tm = WMSTableManager()
-        proc = SingerWMSStreamProcessor(tm, WMSDataTransformer())
+        tm = u.TargetOracleWms.WMSTableManager()
+        proc = SingerWMSStreamProcessor(tm, u.TargetOracleWms.WMSDataTransformer())
         proc.initialize_stream(_schema_msg("items"))
         table_result = tm.get_table_name("items")
         assert table_result.is_success
@@ -65,14 +65,18 @@ class TestStreamProcessorRecord:
     """Tests for SingerWMSStreamProcessor.process_record."""
 
     def test_process_record_after_init(self) -> None:
-        proc = SingerWMSStreamProcessor(WMSTableManager(), WMSDataTransformer())
+        proc = SingerWMSStreamProcessor(
+            u.TargetOracleWms.WMSTableManager(), u.TargetOracleWms.WMSDataTransformer()
+        )
         schema = _schema_msg("orders")
         proc.initialize_stream(schema)
         result = proc.process_record(_record_msg("orders", {"id": "1"}), schema)
         assert result.is_success
 
     def test_process_record_without_init_fails(self) -> None:
-        proc = SingerWMSStreamProcessor(WMSTableManager(), WMSDataTransformer())
+        proc = SingerWMSStreamProcessor(
+            u.TargetOracleWms.WMSTableManager(), u.TargetOracleWms.WMSDataTransformer()
+        )
         result = proc.process_record(
             _record_msg("orders", {"id": "1"}), _schema_msg("orders")
         )
@@ -83,12 +87,13 @@ class TestStreamProcessorRecord:
         )
 
     def test_process_record_uppercases_keys(self) -> None:
-        proc = SingerWMSStreamProcessor(WMSTableManager(), WMSDataTransformer())
+        proc = SingerWMSStreamProcessor(
+            u.TargetOracleWms.WMSTableManager(), u.TargetOracleWms.WMSDataTransformer()
+        )
         schema = _schema_msg(
             "s",
             schema={
-                "type": "t.NormalizedValue",
-                "properties": {"name": {"type": "string"}},
+                "type": "object",
             },
         )
         proc.initialize_stream(schema)
@@ -99,8 +104,8 @@ class TestStreamProcessorRecord:
         assert "NAME" in transformed.record
 
     def test_process_record_with_transformer_failure(self) -> None:
-        tm = WMSTableManager()
-        dt = MagicMock(spec=WMSDataTransformer)
+        tm = u.TargetOracleWms.WMSTableManager()
+        dt = MagicMock(spec=u.TargetOracleWms.WMSDataTransformer)
         dt.transform_record.return_value = r.fail("transformer error")
         proc = SingerWMSStreamProcessor(tm, dt)
         tm.register_stream("s")
@@ -112,7 +117,9 @@ class TestStreamProcessorMultipleStreams:
     """Tests for processing multiple streams."""
 
     def test_two_independent_streams(self) -> None:
-        proc = SingerWMSStreamProcessor(WMSTableManager(), WMSDataTransformer())
+        proc = SingerWMSStreamProcessor(
+            u.TargetOracleWms.WMSTableManager(), u.TargetOracleWms.WMSDataTransformer()
+        )
         schema_a = _schema_msg("alpha")
         schema_b = _schema_msg("beta")
         proc.initialize_stream(schema_a)

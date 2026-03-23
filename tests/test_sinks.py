@@ -12,9 +12,8 @@ from flext_target_oracle_wms import (
     SingerTargetOracleWMS,
     SingerWMSCatalogManager,
     SingerWMSStreamProcessor,
-    WMSDataTransformer,
-    WMSTableManager,
     m,
+    u,
 )
 from tests import t
 
@@ -29,15 +28,12 @@ def _valid_config() -> dict[str, t.ContainerValue]:
     }
 
 
-def _schema_msg(
-    stream: str = "items", properties: dict[str, dict[str, str]] | None = None
-) -> m.Meltano.SingerSchemaMessage:
+def _schema_msg(stream: str = "items") -> m.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage.model_validate({
         "type": "SCHEMA",
         "stream": stream,
         "schema": {
-            "type": "t.NormalizedValue",
-            "properties": properties or {"id": {"type": "string"}},
+            "type": "object",
         },
         "key_properties": ["id"],
     })
@@ -62,11 +58,11 @@ class TestTargetComponentWiring:
 
     def test_target_has_table_manager(self) -> None:
         target = SingerTargetOracleWMS(_valid_config())
-        assert isinstance(target.table_manager, WMSTableManager)
+        assert isinstance(target.table_manager, u.TargetOracleWms.WMSTableManager)
 
     def test_target_has_data_transformer(self) -> None:
         target = SingerTargetOracleWMS(_valid_config())
-        assert isinstance(target.data_transformer, WMSDataTransformer)
+        assert isinstance(target.data_transformer, u.TargetOracleWms.WMSDataTransformer)
 
     def test_target_has_stream_processor(self) -> None:
         target = SingerTargetOracleWMS(_valid_config())
@@ -106,7 +102,7 @@ class TestTransformationIntegration:
 
     def test_record_keys_uppercased(self) -> None:
         target = SingerTargetOracleWMS(_valid_config())
-        schema = _schema_msg("s", properties={"name": {"type": "string"}})
+        schema = _schema_msg("s")
         target.handle_schema_message(schema)
         record = _record_msg("s", {"name": "test"})
         result = target.handle_record_message(record)

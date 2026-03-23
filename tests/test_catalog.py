@@ -22,8 +22,7 @@ def _make_schema_message(
     return m.Meltano.SingerSchemaMessage.model_validate({
         "type": "SCHEMA",
         "stream": stream_name,
-        "schema": schema
-        or {"type": "t.NormalizedValue", "properties": {"id": {"type": "string"}}},
+        "schema": schema or {"type": "object"},
         "key_properties": key_properties or ["id"],
     })
 

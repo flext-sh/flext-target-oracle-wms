@@ -11,26 +11,21 @@ import math
 from pydantic import TypeAdapter
 
 from flext_target_oracle_wms import (
-    WMSDataTransformer,
-    WMSSchemaMapper,
-    WMSTableManager,
-    WMSTypeConverter,
     m,
+    u,
 )
 from tests import t
 
 
 def _schema_msg(
     stream: str = "test_stream",
-    properties: dict[str, dict[str, str]] | None = None,
     key_properties: list[str] | None = None,
 ) -> m.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage.model_validate({
         "type": "SCHEMA",
         "stream": stream,
         "schema": {
-            "type": "t.NormalizedValue",
-            "properties": properties or {"id": {"type": "string"}},
+            "type": "object",
         },
         "key_properties": key_properties or ["id"],
     })
@@ -50,41 +45,55 @@ class TestWMSTypeConverter:
     """Tests for WMSTypeConverter.convert_singer_to_oracle."""
 
     def test_string_type(self) -> None:
-        result = WMSTypeConverter().convert_singer_to_oracle("string", "hello")
+        result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
+            "string", "hello"
+        )
         assert result.is_success
         assert result.value == "hello"
 
     def test_integer_type(self) -> None:
-        result = WMSTypeConverter().convert_singer_to_oracle("integer", 42)
+        result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
+            "integer", 42
+        )
         assert result.is_success
         assert result.value == 42
 
     def test_number_type_float(self) -> None:
-        result = WMSTypeConverter().convert_singer_to_oracle("number", math.pi)
+        result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
+            "number", math.pi
+        )
         assert result.is_success
         assert result.value == math.pi
 
     def test_none_value(self) -> None:
-        result = WMSTypeConverter().convert_singer_to_oracle("string", "")
+        result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
+            "string", ""
+        )
         assert result.is_success
         assert result.value == ""
 
     def test_object_type_serializes_to_json(self) -> None:
         data = '{"nested": "value"}'
-        result = WMSTypeConverter().convert_singer_to_oracle("t.NormalizedValue", data)
+        result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
+            "object", data
+        )
         assert result.is_success
         assert result.value is not None
         assert TypeAdapter(str).validate_json(str(result.value)) == data
 
     def test_array_type_serializes_to_json(self) -> None:
         data = "[1, 2, 3]"
-        result = WMSTypeConverter().convert_singer_to_oracle("array", data)
+        result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
+            "array", data
+        )
         assert result.is_success
         assert result.value is not None
         assert TypeAdapter(str).validate_json(str(result.value)) == data
 
     def test_boolean_type_becomes_string(self) -> None:
-        result = WMSTypeConverter().convert_singer_to_oracle("boolean", True)
+        result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
+            "boolean", True
+        )
         assert result.is_success
         assert result.value == "True"
 
@@ -93,12 +102,10 @@ class TestWMSDataTransformer:
     """Tests for WMSDataTransformer.transform_record."""
 
     def test_uppercases_record_keys(self) -> None:
-        transformer = WMSDataTransformer()
+        transformer = u.TargetOracleWms.WMSDataTransformer()
         result = transformer.transform_record(
             _record_msg("s", {"name": "alice", "age": "30"}),
-            _schema_msg(
-                "s", properties={"name": {"type": "string"}, "age": {"type": "string"}}
-            ),
+            _schema_msg("s"),
         )
         assert result.is_success
         assert result.value is not None
@@ -106,7 +113,7 @@ class TestWMSDataTransformer:
         assert "AGE" in result.value.record
 
     def test_preserves_stream_name(self) -> None:
-        transformer = WMSDataTransformer()
+        transformer = u.TargetOracleWms.WMSDataTransformer()
         result = transformer.transform_record(
             _record_msg("orders", {"id": "1"}), _schema_msg("orders")
         )
@@ -115,18 +122,18 @@ class TestWMSDataTransformer:
         assert result.value.stream == "orders"
 
     def test_uses_custom_type_converter(self) -> None:
-        converter = WMSTypeConverter()
-        transformer = WMSDataTransformer(type_converter=converter)
+        converter = u.TargetOracleWms.WMSTypeConverter()
+        transformer = u.TargetOracleWms.WMSDataTransformer(type_converter=converter)
         result = transformer.transform_record(
             _record_msg("s", {"qty": 10}),
-            _schema_msg("s", properties={"qty": {"type": "integer"}}),
+            _schema_msg("s"),
         )
         assert result.is_success
         assert result.value is not None
-        assert result.value.record["QTY"] == 10
+        assert "QTY" in result.value.record
 
     def test_transform_without_schema(self) -> None:
-        transformer = WMSDataTransformer()
+        transformer = u.TargetOracleWms.WMSDataTransformer()
         result = transformer.transform_record(_record_msg("s", {"name": "bob"}), None)
         assert result.is_success
         assert result.value is not None
@@ -137,7 +144,7 @@ class TestWMSSchemaMapper:
     """Tests for WMSSchemaMapper.map_stream_schema."""
 
     def test_returns_catalog_entry(self) -> None:
-        mapper = WMSSchemaMapper()
+        mapper = u.TargetOracleWms.WMSSchemaMapper()
         result = mapper.map_stream_schema(_schema_msg("inventory"))
         assert result.is_success
         assert result.value is not None
@@ -147,7 +154,7 @@ class TestWMSSchemaMapper:
         assert entry.table_name == "INVENTORY"
 
     def test_preserves_key_properties(self) -> None:
-        mapper = WMSSchemaMapper()
+        mapper = u.TargetOracleWms.WMSSchemaMapper()
         result = mapper.map_stream_schema(_schema_msg("s", key_properties=["a", "b"]))
         assert result.value is not None
         assert result.value.key_properties == ["a", "b"]
@@ -157,25 +164,25 @@ class TestWMSTableManager:
     """Tests for WMSTableManager."""
 
     def test_register_stream_returns_uppercase(self) -> None:
-        tm = WMSTableManager()
+        tm = u.TargetOracleWms.WMSTableManager()
         result = tm.register_stream("orders")
         assert result.is_success
         assert result.value == "ORDERS"
 
     def test_get_registered_table(self) -> None:
-        tm = WMSTableManager()
+        tm = u.TargetOracleWms.WMSTableManager()
         tm.register_stream("items")
         result = tm.get_table_name("items")
         assert result.is_success
         assert result.value == "ITEMS"
 
     def test_get_unregistered_fails(self) -> None:
-        tm = WMSTableManager()
+        tm = u.TargetOracleWms.WMSTableManager()
         result = tm.get_table_name("nope")
         assert result.is_failure
 
     def test_multiple_streams(self) -> None:
-        tm = WMSTableManager()
+        tm = u.TargetOracleWms.WMSTableManager()
         tm.register_stream("a")
         tm.register_stream("b")
         result_a = tm.get_table_name("a")

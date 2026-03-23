@@ -12,12 +12,9 @@ from flext_target_oracle_wms import (
     OracleWMSTargetCli,
     SingerTargetOracleWMS,
     SingerWMSCatalogManager,
-    WMSDataTransformer,
-    WMSSchemaMapper,
-    WMSTableManager,
-    WMSTypeConverter,
     m,
     p,
+    u,
 )
 from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants, c
 
@@ -105,17 +102,17 @@ class TestClassAttributes:
         assert mgr is not None
 
     def test_table_manager_instantiates(self) -> None:
-        tm = WMSTableManager()
+        tm = u.TargetOracleWms.WMSTableManager()
         assert tm is not None
 
     def test_type_converter_instantiates(self) -> None:
-        tc = WMSTypeConverter()
+        tc = u.TargetOracleWms.WMSTypeConverter()
         assert tc is not None
 
     def test_data_transformer_instantiates(self) -> None:
-        dt = WMSDataTransformer()
+        dt = u.TargetOracleWms.WMSDataTransformer()
         assert dt is not None
 
     def test_schema_mapper_instantiates(self) -> None:
-        sm = WMSSchemaMapper()
+        sm = u.TargetOracleWms.WMSSchemaMapper()
         assert sm is not None

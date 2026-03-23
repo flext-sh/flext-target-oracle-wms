@@ -11,9 +11,8 @@ import math
 from flext_target_oracle_wms import (
     FlextTargetOracleWmsUtilities,
     SingerTargetOracleWMS,
-    WMSDataTransformer,
-    WMSTypeConverter,
     m,
+    u,
 )
 from tests import t
 
@@ -49,13 +48,13 @@ class TestTransformerFeatures:
     """Verify data transformation features."""
 
     def test_type_converter_handles_all_types(self) -> None:
-        converter = WMSTypeConverter()
+        converter = u.TargetOracleWms.WMSTypeConverter()
         types_and_values: list[tuple[str, bool | float | str]] = [
             ("string", "hello"),
             ("integer", 42),
             ("number", math.pi),
             ("boolean", True),
-            ("t.NormalizedValue", '{"key": "val"}'),
+            ("object", '{"key": "val"}'),
             ("array", "[1, 2]"),
         ]
         for singer_type, value in types_and_values:
@@ -63,13 +62,13 @@ class TestTransformerFeatures:
             assert result.is_success, f"Failed for type={singer_type}"
 
     def test_type_converter_null_handling(self) -> None:
-        converter = WMSTypeConverter()
+        converter = u.TargetOracleWms.WMSTypeConverter()
         result = converter.convert_singer_to_oracle("string", "")
         assert result.is_success
         assert result.value == ""
 
     def test_transformer_uppercases_keys(self) -> None:
-        transformer = WMSDataTransformer()
+        transformer = u.TargetOracleWms.WMSDataTransformer()
         record = m.Meltano.SingerRecordMessage.model_validate({
             "type": "RECORD",
             "stream": "s",
@@ -79,8 +78,7 @@ class TestTransformerFeatures:
             "type": "SCHEMA",
             "stream": "s",
             "schema": {
-                "type": "t.NormalizedValue",
-                "properties": {"name": {"type": "string"}},
+                "type": "object",
             },
             "key_properties": ["name"],
         })
@@ -95,7 +93,7 @@ class TestUtilitiesFeatures:
 
     def test_create_schema_message(self) -> None:
         msg = FlextTargetOracleWmsUtilities.TargetOracleWms.create_schema_message(
-            "test", {"type": "t.NormalizedValue", "properties": {}}
+            "test", {"type": "object"}
         )
         assert msg["type"] == "SCHEMA"
         assert msg["stream"] == "test"
@@ -115,7 +113,7 @@ class TestUtilitiesFeatures:
         assert msg["value"] == {"pos": 42}
 
     def test_validate_config_success(self) -> None:
-        result = FlextTargetOracleWmsUtilities.Validation.validate_wms_target_config({
+        result = FlextTargetOracleWmsUtilities.TargetOracleWms.Validation.validate_wms_target_config({
             "base_url": "https://x",
             "username": "u",
             "password": "p",
@@ -123,5 +121,5 @@ class TestUtilitiesFeatures:
         assert result.is_success
 
     def test_validate_config_missing_fields(self) -> None:
-        result = FlextTargetOracleWmsUtilities.Validation.validate_wms_target_config({})
+        result = FlextTargetOracleWmsUtilities.TargetOracleWms.Validation.validate_wms_target_config({})
         assert result.is_failure

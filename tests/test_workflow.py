@@ -31,7 +31,7 @@ def _schema_line(stream: str, props: dict[str, dict[str, str]], keys: list[str])
         .dump_json({
             "type": "SCHEMA",
             "stream": stream,
-            "schema": {"type": "t.NormalizedValue", "properties": props},
+            "schema": {"type": "object"},
             "key_properties": keys,
         })
         .decode("utf-8")

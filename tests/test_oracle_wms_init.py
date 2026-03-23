@@ -33,10 +33,7 @@ class TestModuleInit:
         assert isinstance(flext_target_oracle_wms.__all__, list)
         expected_exports = [
             "SingerTargetOracleWMS",
-            "WMSDataTransformer",
-            "WMSSchemaMapper",
-            "WMSTableManager",
-            "WMSTypeConverter",
+            "FlextTargetOracleWmsUtilities",
         ]
         for export in expected_exports:
             assert export in flext_target_oracle_wms.__all__

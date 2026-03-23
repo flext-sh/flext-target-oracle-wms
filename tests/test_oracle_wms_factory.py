@@ -8,14 +8,16 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
+from flext_target_oracle_wms import m
 from flext_target_oracle_wms.factory import (
     FlextTargetFactory,
     FlextTargetMonitoringFactory,
-    MonitoredTargetCreationRequest,
-    TargetCreationRequest,
     create_monitored_oracle_wms_target,
     create_oracle_wms_target,
 )
+
+TargetCreationRequest = m.TargetOracleWms.TargetCreationRequest
+MonitoredTargetCreationRequest = m.TargetOracleWms.MonitoredTargetCreationRequest
 
 _PATCH_TARGET = "flext_target_oracle_wms.factory.SingerTargetOracleWMS"
 
