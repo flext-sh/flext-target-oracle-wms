@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping, MutableMapping, Sequence
 
 from flext_core import r, t
 from flext_meltano import FlextMeltanoUtilities
@@ -120,8 +120,8 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
                 typed_record = m.Meltano.SingerRecordMessage.model_validate(
                     record_message
                 )
-                transformed: Mapping[str, t.Container] = {}
-                empty_schema: Mapping[str, t.Container] = {}
+                transformed: MutableMapping[str, t.Container] = {}
+                empty_schema: MutableMapping[str, t.Container] = {}
                 schema_definition = (
                     m.Meltano.SingerSchemaMessage.model_validate(
                         schema_message
@@ -182,7 +182,7 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
 
             def __init__(self) -> None:
                 """Initialize table manager map."""
-                self._stream_tables: Mapping[str, str] = {}
+                self._stream_tables: MutableMapping[str, str] = {}
 
             def get_table_name(self, stream_name: str) -> r[str]:
                 """Get registered table name for stream."""

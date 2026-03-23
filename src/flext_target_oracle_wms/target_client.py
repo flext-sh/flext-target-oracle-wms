@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import sys
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping, MutableMapping, Sequence
 from typing import ClassVar
 
 from flext_core import FlextLogger, r, t
@@ -20,7 +20,7 @@ class SingerWMSCatalogManager:
 
     def __init__(self) -> None:
         """Initialize catalog storage for stream metadata."""
-        self._catalog_entries: Mapping[str, m.Meltano.SingerCatalogEntry] = {}
+        self._catalog_entries: MutableMapping[str, m.Meltano.SingerCatalogEntry] = {}
 
     def add_stream(self, schema_message: m.Meltano.SingerSchemaMessage) -> r[bool]:
         """Register one stream schema entry."""
@@ -107,7 +107,7 @@ class SingerTargetOracleWMS:
         self.stream_processor = SingerWMSStreamProcessor(
             self.table_manager, self.data_transformer
         )
-        self._schemas: Mapping[str, m.Meltano.SingerSchemaMessage] = {}
+        self._schemas: MutableMapping[str, m.Meltano.SingerSchemaMessage] = {}
 
     def cleanup(self) -> r[bool]:
         """Release target runtime resources."""
