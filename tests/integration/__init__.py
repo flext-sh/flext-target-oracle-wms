@@ -23,12 +23,12 @@ if TYPE_CHECKING:
         TestTargetLifecycle,
     )
 
-_LAZY_IMPORTS: Mapping[str, tuple[str, str]] = {
-    "TestMultiStreamIntegration": (
+_LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
+    "TestMultiStreamIntegration": [
         "tests.integration.test_oracle",
         "TestMultiStreamIntegration",
-    ),
-    "TestTargetLifecycle": ("tests.integration.test_oracle", "TestTargetLifecycle"),
+    ],
+    "TestTargetLifecycle": ["tests.integration.test_oracle", "TestTargetLifecycle"],
 }
 
 __all__ = [

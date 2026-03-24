@@ -25,20 +25,20 @@ if TYPE_CHECKING:
         TestExamplesStructure,
     )
 
-_LAZY_IMPORTS: Mapping[str, tuple[str, str]] = {
-    "TestExamplesCodeQuality": (
+_LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
+    "TestExamplesCodeQuality": [
         "tests.examples.test_examples",
         "TestExamplesCodeQuality",
-    ),
-    "TestExamplesFlextIntegration": (
+    ],
+    "TestExamplesFlextIntegration": [
         "tests.examples.test_examples",
         "TestExamplesFlextIntegration",
-    ),
-    "TestExamplesImportability": (
+    ],
+    "TestExamplesImportability": [
         "tests.examples.test_examples",
         "TestExamplesImportability",
-    ),
-    "TestExamplesStructure": ("tests.examples.test_examples", "TestExamplesStructure"),
+    ],
+    "TestExamplesStructure": ["tests.examples.test_examples", "TestExamplesStructure"],
 }
 
 __all__ = [
