@@ -13,6 +13,9 @@ from .models import m
 from .utilities import FlextTargetOracleWmsUtilities
 
 logger = FlextLogger(__name__)
+_CONTAINER_MAP_ADAPTER: TypeAdapter[t.ContainerMapping] = TypeAdapter(
+    t.ContainerMapping,
+)
 
 
 class FlextTargetOracleWmsCatalogManager:
@@ -153,11 +156,8 @@ class FlextTargetOracleWms:
             line = raw_line.strip()
             if not line:
                 continue
-            message_adapter: TypeAdapter[t.ContainerMapping] = TypeAdapter(
-                t.ContainerMapping,
-            )
             try:
-                message = message_adapter.validate_json(line)
+                message = _CONTAINER_MAP_ADAPTER.validate_json(line)
             except ValidationError as exc:
                 return r[bool].fail(f"Invalid JSON message: {exc}")
             message_type = str(message.get("type", ""))
