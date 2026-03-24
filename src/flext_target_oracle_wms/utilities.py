@@ -23,7 +23,7 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
         def create_record_message(
             stream_name: str,
             record: Mapping[str, t.ContainerValue],
-        ) -> Mapping[str, t.ContainerValue | Mapping[str, t.ContainerValue]]:
+        ) -> Mapping[str, t.ContainerValue | t.ContainerValueMapping]:
             """Create a Singer RECORD message payload."""
             return {"type": "RECORD", "stream": stream_name, "record": record}
 
@@ -34,7 +34,7 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
             key_properties: Sequence[str] | None = None,
         ) -> Mapping[
             str,
-            t.ContainerValue | Mapping[str, t.ContainerValue] | Sequence[str],
+            t.ContainerValue | t.ContainerValueMapping | Sequence[str],
         ]:
             """Create a Singer SCHEMA message payload."""
             return {
@@ -47,7 +47,7 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
         @staticmethod
         def create_state_message(
             state: Mapping[str, t.ContainerValue],
-        ) -> Mapping[str, t.ContainerValue | Mapping[str, t.ContainerValue]]:
+        ) -> Mapping[str, t.ContainerValue | t.ContainerValueMapping]:
             """Create a Singer STATE message payload."""
             return {"type": "STATE", "value": state}
 
@@ -110,10 +110,9 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
 
             def transform_record(
                 self,
-                record_message: m.Meltano.SingerRecordMessage
-                | Mapping[str, t.ContainerValue],
+                record_message: m.Meltano.SingerRecordMessage | t.ContainerValueMapping,
                 schema_message: m.Meltano.SingerSchemaMessage
-                | Mapping[str, t.ContainerValue]
+                | t.ContainerValueMapping
                 | None = None,
             ) -> r[m.Meltano.SingerRecordMessage]:
                 """Transform one typed Singer RECORD payload with optional typed schema."""
@@ -160,8 +159,7 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
 
             def map_stream_schema(
                 self,
-                schema_message: m.Meltano.SingerSchemaMessage
-                | Mapping[str, t.ContainerValue],
+                schema_message: m.Meltano.SingerSchemaMessage | t.ContainerValueMapping,
             ) -> r[m.Meltano.SingerCatalogEntry]:
                 """Build normalized schema map for table creation."""
                 typed_schema = m.Meltano.SingerSchemaMessage.model_validate(

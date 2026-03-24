@@ -71,7 +71,7 @@ class SingerWMSStreamProcessor:
     def process_record(
         self,
         record_message: m.Meltano.SingerRecordMessage,
-        schema_message: m.Meltano.SingerSchemaMessage | Mapping[str, t.ContainerValue],
+        schema_message: m.Meltano.SingerSchemaMessage | t.ContainerValueMapping,
     ) -> r[m.Meltano.SingerRecordMessage]:
         """Transform one typed Singer record."""
         typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
