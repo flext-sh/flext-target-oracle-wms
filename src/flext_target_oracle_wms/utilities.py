@@ -12,6 +12,8 @@ from pydantic import TypeAdapter
 from .constants import c
 from .models import m
 
+_nv_adapter: TypeAdapter[t.NormalizedValue] = TypeAdapter(t.NormalizedValue)
+
 
 class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtilities):
     """Namespace with Singer-target utility helpers."""
@@ -84,7 +86,7 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
                 """Convert a single source value according to Singer type."""
                 if singer_type in {"object", "array"}:
                     return r[t.Container].ok(
-                        TypeAdapter(t.NormalizedValue).dump_json(value).decode("utf-8"),
+                        _nv_adapter.dump_json(value).decode("utf-8"),
                     )
                 if singer_type in {"integer", "number"}:
                     try:
