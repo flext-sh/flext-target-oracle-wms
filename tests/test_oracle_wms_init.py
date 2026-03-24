@@ -17,14 +17,14 @@ class TestModuleInit:
         """Test successful version import from importlib.metadata."""
         assert hasattr(flext_target_oracle_wms, "__version__")
         assert isinstance(flext_target_oracle_wms.__version__, str)
-        assert len(flext_target_oracle_wms.__version__) > 0
+        assert flext_target_oracle_wms.__version__
 
     def test_version_import_fallback(self) -> None:
         """Test fallback version logic - simplified approach."""
         assert hasattr(flext_target_oracle_wms, "__version__")
         assert isinstance(flext_target_oracle_wms.__version__, str)
         version = flext_target_oracle_wms.__version__
-        assert len(version) > 0
+        assert version
         assert version.count(".") >= 2
 
     def test_module_exports(self) -> None:
