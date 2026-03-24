@@ -8,8 +8,8 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
+import orjson
 import pytest
-from pydantic import TypeAdapter
 
 from flext_target_oracle_wms.target_client import FlextTargetOracleWms
 from tests import t
@@ -30,32 +30,22 @@ def _schema_line(
     props: Mapping[str, t.StrMapping],
     keys: t.StrSequence,
 ) -> str:
-    return (
-        TypeAdapter(t.NormalizedValue)
-        .dump_json({
-            "type": "SCHEMA",
-            "stream": stream,
-            "schema": {"type": "object", "properties": props},
-            "key_properties": keys,
-        })
-        .decode("utf-8")
-    )
+    return orjson.dumps({
+        "type": "SCHEMA",
+        "stream": stream,
+        "schema": {"type": "object", "properties": props},
+        "key_properties": keys,
+    }).decode("utf-8")
 
 
 def _record_line(stream: str, record: t.ContainerMapping) -> str:
-    return (
-        TypeAdapter(t.NormalizedValue)
-        .dump_json({"type": "RECORD", "stream": stream, "record": record})
-        .decode("utf-8")
+    return orjson.dumps({"type": "RECORD", "stream": stream, "record": record}).decode(
+        "utf-8"
     )
 
 
 def _state_line(value: t.ContainerMapping) -> str:
-    return (
-        TypeAdapter(t.NormalizedValue)
-        .dump_json({"type": "STATE", "value": value})
-        .decode("utf-8")
-    )
+    return orjson.dumps({"type": "STATE", "value": value}).decode("utf-8")
 
 
 @pytest.mark.integration

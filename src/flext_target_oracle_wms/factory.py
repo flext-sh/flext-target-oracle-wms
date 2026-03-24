@@ -136,7 +136,35 @@ class FlextTargetMonitoringFactory:
         return factory.create_monitored_target(request)
 
 
+def create_oracle_wms_target(
+    base_url: str,
+    username: str,
+    password: str,
+    environment: str = "development",
+    preset: str | None = None,
+    **config: t.Scalar,
+) -> r[FlextTargetOracleWms]:
+    """Module-level convenience function to create base target instance."""
+    return FlextTargetMonitoringFactory.create_oracle_wms_target(
+        base_url=base_url,
+        username=username,
+        password=password,
+        environment=environment,
+        preset=preset,
+        **config,
+    )
+
+
+def create_monitored_oracle_wms_target(
+    request: m.TargetOracleWms.MonitoredTargetCreationRequest,
+) -> r[FlextTargetOracleWms]:
+    """Module-level convenience function to create monitored target instance."""
+    return FlextTargetMonitoringFactory.create_monitored_oracle_wms_target(request)
+
+
 __all__ = [
     "FlextTargetFactory",
     "FlextTargetMonitoringFactory",
+    "create_monitored_oracle_wms_target",
+    "create_oracle_wms_target",
 ]
