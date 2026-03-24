@@ -13,19 +13,20 @@ from unittest.mock import patch
 import pytest
 from pydantic import TypeAdapter, ValidationError
 
+from flext_target_oracle_wms import t
 from flext_target_oracle_wms.cli import OracleWMSTargetCli, main
 
 
-def _write_config_file(config: Mapping[str, Mapping[str, str]], tmp_path: Path) -> str:
+def _write_config_file(config: Mapping[str, t.StrMapping], tmp_path: Path) -> str:
     config_file = tmp_path / "config.json"
     config_file.write_text(
-        TypeAdapter(Mapping[str, Mapping[str, str]]).dump_json(config).decode("utf-8"),
+        TypeAdapter(Mapping[str, t.StrMapping]).dump_json(config).decode("utf-8"),
         encoding="utf-8",
     )
     return str(config_file)
 
 
-def _valid_config_dict() -> Mapping[str, Mapping[str, str]]:
+def _valid_config_dict() -> Mapping[str, t.StrMapping]:
     return {
         "wms_auth": {
             "base_url": "https://test.wms.example.com",
