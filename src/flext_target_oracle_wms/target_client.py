@@ -150,8 +150,8 @@ class SingerTargetOracleWMS:
             line = raw_line.strip()
             if not line:
                 continue
-            message_adapter: TypeAdapter[Mapping[str, t.NormalizedValue]] = TypeAdapter(
-                Mapping[str, t.NormalizedValue]
+            message_adapter: TypeAdapter[t.ContainerMapping] = TypeAdapter(
+                t.ContainerMapping
             )
             try:
                 message = message_adapter.validate_json(line)

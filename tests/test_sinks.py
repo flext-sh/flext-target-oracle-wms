@@ -42,7 +42,7 @@ def _schema_msg(stream: str = "items") -> m.Meltano.SingerSchemaMessage:
 
 
 def _record_msg(
-    stream: str = "items", record: Mapping[str, t.NormalizedValue] | None = None
+    stream: str = "items", record: t.ContainerMapping | None = None
 ) -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage.model_validate({
         "type": "RECORD",

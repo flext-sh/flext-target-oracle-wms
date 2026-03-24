@@ -41,7 +41,7 @@ def _schema_line(
     )
 
 
-def _record_line(stream: str, record: Mapping[str, t.NormalizedValue]) -> str:
+def _record_line(stream: str, record: t.ContainerMapping) -> str:
     return (
         TypeAdapter(t.NormalizedValue)
         .dump_json({"type": "RECORD", "stream": stream, "record": record})
@@ -49,7 +49,7 @@ def _record_line(stream: str, record: Mapping[str, t.NormalizedValue]) -> str:
     )
 
 
-def _state_line(value: Mapping[str, t.NormalizedValue]) -> str:
+def _state_line(value: t.ContainerMapping) -> str:
     return (
         TypeAdapter(t.NormalizedValue)
         .dump_json({"type": "STATE", "value": value})

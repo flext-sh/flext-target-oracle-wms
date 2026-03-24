@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import math
-from collections.abc import Mapping, Sequence
+from collections.abc import Sequence
 
 from pydantic import TypeAdapter
 
@@ -33,7 +33,7 @@ def _schema_msg(
 
 
 def _record_msg(
-    stream: str = "test_stream", record: Mapping[str, t.NormalizedValue] | None = None
+    stream: str = "test_stream", record: t.ContainerMapping | None = None
 ) -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage.model_validate({
         "type": "RECORD",
