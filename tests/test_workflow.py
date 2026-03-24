@@ -41,7 +41,7 @@ def _schema_line(
 
 def _record_line(stream: str, record: t.ContainerMapping) -> str:
     return orjson.dumps({"type": "RECORD", "stream": stream, "record": record}).decode(
-        "utf-8"
+        "utf-8",
     )
 
 
