@@ -9,7 +9,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 
 import pytest
-from flext_core import t
+from tests import t
 from pydantic import TypeAdapter
 
 from flext_target_oracle_wms.target_client import FlextTargetOracleWms

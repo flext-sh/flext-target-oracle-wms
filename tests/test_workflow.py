@@ -9,7 +9,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from unittest.mock import MagicMock, patch
 
-from flext_core import t
+from tests import t
 from pydantic import TypeAdapter
 
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli

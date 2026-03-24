@@ -67,50 +67,17 @@ if TYPE_CHECKING:
 
 _LAZY_IMPORTS: Mapping[str, tuple[str, str]] = {
     "FlextTargetFactory": ("flext_target_oracle_wms.factory", "FlextTargetFactory"),
-    "FlextTargetMonitoringFactory": (
-        "flext_target_oracle_wms.factory",
-        "FlextTargetMonitoringFactory",
-    ),
-    "FlextTargetOracleWms": (
-        "flext_target_oracle_wms.target_client",
-        "FlextTargetOracleWms",
-    ),
-    "FlextTargetOracleWmsCatalogManager": (
-        "flext_target_oracle_wms.target_client",
-        "FlextTargetOracleWmsCatalogManager",
-    ),
-    "FlextTargetOracleWmsCli": (
-        "flext_target_oracle_wms.cli",
-        "FlextTargetOracleWmsCli",
-    ),
-    "FlextTargetOracleWmsConstants": (
-        "flext_target_oracle_wms.constants",
-        "FlextTargetOracleWmsConstants",
-    ),
-    "FlextTargetOracleWmsModels": (
-        "flext_target_oracle_wms.models",
-        "FlextTargetOracleWmsModels",
-    ),
-    "FlextTargetOracleWmsProtocols": (
-        "flext_target_oracle_wms.protocols",
-        "FlextTargetOracleWmsProtocols",
-    ),
-    "FlextTargetOracleWmsSettings": (
-        "flext_target_oracle_wms.target_config",
-        "FlextTargetOracleWmsSettings",
-    ),
-    "FlextTargetOracleWmsStreamProcessor": (
-        "flext_target_oracle_wms.target_client",
-        "FlextTargetOracleWmsStreamProcessor",
-    ),
-    "FlextTargetOracleWmsTypes": (
-        "flext_target_oracle_wms.typings",
-        "FlextTargetOracleWmsTypes",
-    ),
-    "FlextTargetOracleWmsUtilities": (
-        "flext_target_oracle_wms.utilities",
-        "FlextTargetOracleWmsUtilities",
-    ),
+    "FlextTargetMonitoringFactory": ("flext_target_oracle_wms.factory", "FlextTargetMonitoringFactory"),
+    "FlextTargetOracleWms": ("flext_target_oracle_wms.target_client", "FlextTargetOracleWms"),
+    "FlextTargetOracleWmsCatalogManager": ("flext_target_oracle_wms.target_client", "FlextTargetOracleWmsCatalogManager"),
+    "FlextTargetOracleWmsCli": ("flext_target_oracle_wms.cli", "FlextTargetOracleWmsCli"),
+    "FlextTargetOracleWmsConstants": ("flext_target_oracle_wms.constants", "FlextTargetOracleWmsConstants"),
+    "FlextTargetOracleWmsModels": ("flext_target_oracle_wms.models", "FlextTargetOracleWmsModels"),
+    "FlextTargetOracleWmsProtocols": ("flext_target_oracle_wms.protocols", "FlextTargetOracleWmsProtocols"),
+    "FlextTargetOracleWmsSettings": ("flext_target_oracle_wms.target_config", "FlextTargetOracleWmsSettings"),
+    "FlextTargetOracleWmsStreamProcessor": ("flext_target_oracle_wms.target_client", "FlextTargetOracleWmsStreamProcessor"),
+    "FlextTargetOracleWmsTypes": ("flext_target_oracle_wms.typings", "FlextTargetOracleWmsTypes"),
+    "FlextTargetOracleWmsUtilities": ("flext_target_oracle_wms.utilities", "FlextTargetOracleWmsUtilities"),
     "MIN_CONFIG_ARG_COUNT": ("flext_target_oracle_wms.cli", "MIN_CONFIG_ARG_COUNT"),
     "__all__": ("flext_target_oracle_wms.__version__", "__all__"),
     "__author__": ("flext_target_oracle_wms.__version__", "__author__"),
