@@ -34,7 +34,7 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
         """Singer target protocol complex types."""
 
         type TargetConfiguration = Mapping[
-            str, str | int | bool | Mapping[str, FlextMeltanoTypes.Container]
+            str, t.Scalar | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type StreamConfiguration = Mapping[
             str, str | bool | Mapping[str, FlextMeltanoTypes.Container]
@@ -56,7 +56,7 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
         """Oracle WMS warehouse management complex types."""
 
         type WarehouseConfiguration = Mapping[
-            str, str | int | bool | Mapping[str, FlextMeltanoTypes.Container]
+            str, t.Scalar | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type FacilityDefinition = Mapping[
             str, str | Sequence[str] | Mapping[str, FlextMeltanoTypes.Container]
@@ -78,7 +78,7 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
         """Oracle WMS inventory management complex types."""
 
         type InventoryConfiguration = Mapping[
-            str, str | int | bool | Mapping[str, FlextMeltanoTypes.Container]
+            str, t.Scalar | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type ItemMasterData = Mapping[
             str, str | Mapping[str, FlextMeltanoTypes.Container]
@@ -144,7 +144,7 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
         """Oracle WMS transportation management complex types."""
 
         type TransportConfiguration = Mapping[
-            str, str | int | bool | Mapping[str, FlextMeltanoTypes.Container]
+            str, t.Scalar | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type CarrierManagement = Mapping[
             str, str | Mapping[str, FlextMeltanoTypes.Container]
@@ -242,7 +242,7 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
         type SingerTargetOracleWmsProjectConfig = Mapping[
             str, FlextMeltanoTypes.Container
         ]
-        type WmsLoaderConfig = Mapping[str, str | int | bool | Sequence[str]]
+        type WmsLoaderConfig = Mapping[str, t.Scalar | Sequence[str]]
         type SingerProtocolConfig = Mapping[
             str, bool | str | Mapping[str, FlextMeltanoTypes.Container]
         ]
