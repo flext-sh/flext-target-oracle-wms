@@ -144,7 +144,7 @@ def create_oracle_wms_target(
     **config: t.Scalar,
 ) -> r[FlextTargetOracleWms]:
     """Convenience function to create base target instance."""
-    return FlextTargetFactory.create_oracle_wms_target(
+    return FlextTargetMonitoringFactory.create_oracle_wms_target(
         base_url, username, password, environment, preset, **config
     )
 
@@ -153,7 +153,7 @@ def create_monitored_oracle_wms_target(
     request: m.TargetOracleWms.MonitoredTargetCreationRequest,
 ) -> r[FlextTargetOracleWms]:
     """Convenience function to create monitored target instance."""
-    return FlextTargetFactory.create_monitored_oracle_wms_target(request)
+    return FlextTargetMonitoringFactory.create_monitored_oracle_wms_target(request)
 
 
 __all__ = [

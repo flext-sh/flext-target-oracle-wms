@@ -7,11 +7,11 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_target_oracle_wms import (
-    FlextTargetOracleWmsModels,
-    FlextTargetOracleWmsProtocols,
-    FlextTargetOracleWmsCli,
     FlextTargetOracleWms,
     FlextTargetOracleWmsCatalogManager,
+    FlextTargetOracleWmsCli,
+    FlextTargetOracleWmsModels,
+    FlextTargetOracleWmsProtocols,
     m,
     p,
     u,

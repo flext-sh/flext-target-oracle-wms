@@ -54,7 +54,9 @@ class TestStreamProcessorInitialize:
 
     def test_initialize_registers_table(self) -> None:
         tm = u.TargetOracleWms.WMSTableManager()
-        proc = FlextTargetOracleWmsStreamProcessor(tm, u.TargetOracleWms.WMSDataTransformer())
+        proc = FlextTargetOracleWmsStreamProcessor(
+            tm, u.TargetOracleWms.WMSDataTransformer()
+        )
         proc.initialize_stream(_schema_msg("items"))
         table_result = tm.get_table_name("items")
         assert table_result.is_success

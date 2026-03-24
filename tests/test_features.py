@@ -10,8 +10,8 @@ import math
 from collections.abc import Mapping, Sequence
 
 from flext_target_oracle_wms import (
-    FlextTargetOracleWmsUtilities,
     FlextTargetOracleWms,
+    FlextTargetOracleWmsUtilities,
     m,
     u,
 )
