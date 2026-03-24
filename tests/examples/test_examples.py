@@ -181,7 +181,7 @@ class TestExamplesCodeQuality:
                 assert has_config, (
                     f"{example_file.name} mentions config but has no realistic configuration"
                 )
-            oracle_patterns = ["oracle", "wms", "SingerTargetOracleWMS"]
+            oracle_patterns = ["oracle", "wms", "FlextTargetOracleWms"]
             has_oracle_pattern = False
             for pattern in oracle_patterns:
                 if pattern in content:

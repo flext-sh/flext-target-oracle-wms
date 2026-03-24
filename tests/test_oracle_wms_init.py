@@ -32,7 +32,7 @@ class TestModuleInit:
         assert hasattr(flext_target_oracle_wms, "__all__")
         assert isinstance(flext_target_oracle_wms.__all__, list)
         expected_exports = [
-            "SingerTargetOracleWMS",
+            "FlextTargetOracleWms",
             "FlextTargetOracleWmsUtilities",
         ]
         for export in expected_exports:

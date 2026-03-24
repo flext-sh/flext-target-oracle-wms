@@ -11,7 +11,7 @@ from collections.abc import Mapping, Sequence
 
 from flext_target_oracle_wms import (
     FlextTargetOracleWmsUtilities,
-    SingerTargetOracleWMS,
+    FlextTargetOracleWms,
     m,
     u,
 )
@@ -32,16 +32,16 @@ class TestTargetFeatures:
     """Verify core target features."""
 
     def test_target_initialization(self) -> None:
-        target = SingerTargetOracleWMS(_valid_config())
+        target = FlextTargetOracleWms(_valid_config())
         assert target.name == "target-oracle-wms"
 
     def test_target_setup_cleanup_lifecycle(self) -> None:
-        target = SingerTargetOracleWMS(_valid_config())
+        target = FlextTargetOracleWms(_valid_config())
         assert target.setup().is_success
         assert target.cleanup().is_success
 
     def test_target_process_empty_lines(self) -> None:
-        target = SingerTargetOracleWMS(_valid_config())
+        target = FlextTargetOracleWms(_valid_config())
         assert target.process_lines([]).is_success
 
 

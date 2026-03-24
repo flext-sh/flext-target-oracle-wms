@@ -9,14 +9,14 @@ from __future__ import annotations
 
 import importlib.util
 
-from flext_target_oracle_wms import SingerTargetOracleWMS
+from flext_target_oracle_wms import FlextTargetOracleWms
 
 
 def test_import_from_correct_module() -> None:
     """Test that we can import from the correct module."""
-    assert SingerTargetOracleWMS is not None
-    if SingerTargetOracleWMS.name != "target-oracle-wms":
-        msg: str = f"Expected {'target-oracle-wms'}, got {SingerTargetOracleWMS.name}"
+    assert FlextTargetOracleWms is not None
+    if FlextTargetOracleWms.name != "target-oracle-wms":
+        msg: str = f"Expected {'target-oracle-wms'}, got {FlextTargetOracleWms.name}"
         raise AssertionError(msg)
 
 

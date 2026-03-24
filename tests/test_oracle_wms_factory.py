@@ -16,7 +16,7 @@ from flext_target_oracle_wms.factory import (
     create_oracle_wms_target,
 )
 
-_PATCH_TARGET = "flext_target_oracle_wms.factory.SingerTargetOracleWMS"
+_PATCH_TARGET = "flext_target_oracle_wms.factory.FlextTargetOracleWms"
 
 
 class TestTargetCreationRequest:

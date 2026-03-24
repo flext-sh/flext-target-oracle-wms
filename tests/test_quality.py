@@ -9,9 +9,9 @@ from __future__ import annotations
 from flext_target_oracle_wms import (
     FlextTargetOracleWmsModels,
     FlextTargetOracleWmsProtocols,
-    OracleWMSTargetCli,
-    SingerTargetOracleWMS,
-    SingerWMSCatalogManager,
+    FlextTargetOracleWmsCli,
+    FlextTargetOracleWms,
+    FlextTargetOracleWmsCatalogManager,
     m,
     p,
     u,
@@ -90,15 +90,15 @@ class TestClassAttributes:
     """Verify class attributes and defaults."""
 
     def test_target_name(self) -> None:
-        assert SingerTargetOracleWMS.name == "target-oracle-wms"
+        assert FlextTargetOracleWms.name == "target-oracle-wms"
 
     def test_cli_defaults(self) -> None:
-        cli = OracleWMSTargetCli()
+        cli = FlextTargetOracleWmsCli()
         assert cli.name == "target-oracle-wms"
         assert cli.version == "0.9.0"
 
     def test_catalog_manager_instantiates(self) -> None:
-        mgr = SingerWMSCatalogManager()
+        mgr = FlextTargetOracleWmsCatalogManager()
         assert mgr is not None
 
     def test_table_manager_instantiates(self) -> None:

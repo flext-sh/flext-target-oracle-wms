@@ -8,7 +8,7 @@ from typing import ClassVar
 from flext_core import FlextLogger, r, t
 
 from .models import m
-from .target_client import SingerTargetOracleWMS
+from .target_client import FlextTargetOracleWms
 
 logger = FlextLogger(__name__)
 
@@ -43,7 +43,7 @@ class FlextTargetFactory:
     @classmethod
     def create_from_config_dict(
         cls, config: t.ConfigurationMapping
-    ) -> r[SingerTargetOracleWMS]:
+    ) -> r[FlextTargetOracleWms]:
         """Create target from plain dictionary config via Pydantic validation."""
         known_keys = {"base_url", "username", "password", "environment", "preset"}
         additional = {k: v for k, v in config.items() if k not in known_keys}
@@ -61,14 +61,14 @@ class FlextTargetFactory:
             RuntimeError,
             ImportError,
         ) as exc:
-            return r[SingerTargetOracleWMS].fail(str(exc))
+            return r[FlextTargetOracleWms].fail(str(exc))
         return cls.create_target(request)
 
     @classmethod
     def create_target(
         cls,
         request: m.TargetOracleWms.TargetCreationRequest,
-    ) -> r[SingerTargetOracleWMS]:
+    ) -> r[FlextTargetOracleWms]:
         """Create target instance from validated request."""
         config: MutableMapping[str, t.ContainerValue] = {
             "base_url": request.base_url,
@@ -81,7 +81,7 @@ class FlextTargetFactory:
         if request.additional_config is not None:
             config.update(request.additional_config)
         logger.info("Created Oracle WMS target", environment=request.environment)
-        return r[SingerTargetOracleWMS].ok(SingerTargetOracleWMS(config))
+        return r[FlextTargetOracleWms].ok(FlextTargetOracleWms(config))
 
 
 class FlextTargetMonitoringFactory:
@@ -93,7 +93,7 @@ class FlextTargetMonitoringFactory:
 
     def create_monitored_target(
         self, request: m.TargetOracleWms.MonitoredTargetCreationRequest
-    ) -> r[SingerTargetOracleWMS]:
+    ) -> r[FlextTargetOracleWms]:
         """Create monitored target using base factory."""
         base_request = m.TargetOracleWms.TargetCreationRequest.model_validate({
             "base_url": request.base_url,
@@ -105,7 +105,36 @@ class FlextTargetMonitoringFactory:
         })
         return FlextTargetFactory.create_target(base_request)
 
+    @staticmethod
+    def create_oracle_wms_target(
+        base_url: str,
+        username: str,
+        password: str,
+        environment: str = "development",
+        preset: str | None = None,
+        **config: t.Scalar,
+    ) -> r[FlextTargetOracleWms]:
+        """Convenience method to create base target instance."""
+        request = m.TargetOracleWms.TargetCreationRequest.model_validate({
+            "base_url": base_url,
+            "username": username,
+            "password": password,
+            "environment": environment,
+            "preset": preset,
+            "additional_config": config,
+        })
+        return FlextTargetFactory.create_target(request)
 
+    @staticmethod
+    def create_monitored_oracle_wms_target(
+        request: m.TargetOracleWms.MonitoredTargetCreationRequest,
+    ) -> r[FlextTargetOracleWms]:
+        """Convenience method to create monitored target instance."""
+        factory = FlextTargetMonitoringFactory(request.monitor_name)
+        return factory.create_monitored_target(request)
+
+
+# Module-level aliases for backward compatibility
 def create_oracle_wms_target(
     base_url: str,
     username: str,
@@ -113,25 +142,18 @@ def create_oracle_wms_target(
     environment: str = "development",
     preset: str | None = None,
     **config: t.Scalar,
-) -> r[SingerTargetOracleWMS]:
+) -> r[FlextTargetOracleWms]:
     """Convenience function to create base target instance."""
-    request = m.TargetOracleWms.TargetCreationRequest.model_validate({
-        "base_url": base_url,
-        "username": username,
-        "password": password,
-        "environment": environment,
-        "preset": preset,
-        "additional_config": config,
-    })
-    return FlextTargetFactory.create_target(request)
+    return FlextTargetFactory.create_oracle_wms_target(
+        base_url, username, password, environment, preset, **config
+    )
 
 
 def create_monitored_oracle_wms_target(
     request: m.TargetOracleWms.MonitoredTargetCreationRequest,
-) -> r[SingerTargetOracleWMS]:
+) -> r[FlextTargetOracleWms]:
     """Convenience function to create monitored target instance."""
-    factory = FlextTargetMonitoringFactory(request.monitor_name)
-    return factory.create_monitored_target(request)
+    return FlextTargetFactory.create_monitored_oracle_wms_target(request)
 
 
 __all__ = [

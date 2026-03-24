@@ -12,7 +12,7 @@ import pytest
 from flext_core import t
 from pydantic import TypeAdapter
 
-from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
+from flext_target_oracle_wms.target_client import FlextTargetOracleWms
 
 
 def _valid_config() -> Mapping[str, t.ContainerValue]:
@@ -61,7 +61,7 @@ class TestTargetLifecycle:
     """Integration tests for full target lifecycle."""
 
     def test_setup_process_cleanup(self) -> None:
-        target = SingerTargetOracleWMS(_valid_config())
+        target = FlextTargetOracleWms(_valid_config())
         assert target.setup().is_success
         lines = [
             _schema_line(
@@ -74,7 +74,7 @@ class TestTargetLifecycle:
         assert target.cleanup().is_success
 
     def test_multiple_batches(self) -> None:
-        target = SingerTargetOracleWMS(_valid_config())
+        target = FlextTargetOracleWms(_valid_config())
         target.setup()
         batch1 = [
             _schema_line("orders", {"order_id": {"type": "string"}}, ["order_id"]),
@@ -95,7 +95,7 @@ class TestMultiStreamIntegration:
     """Integration tests for multi-stream scenarios."""
 
     def test_three_streams_interleaved(self) -> None:
-        target = SingerTargetOracleWMS(_valid_config())
+        target = FlextTargetOracleWms(_valid_config())
         target.setup()
         lines = [
             _schema_line("orders", {"id": {"type": "string"}}, ["id"]),

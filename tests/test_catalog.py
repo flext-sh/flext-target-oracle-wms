@@ -1,4 +1,4 @@
-"""Tests for SingerWMSCatalogManager.
+"""Tests for FlextTargetOracleWmsCatalogManager.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -9,7 +9,7 @@ from __future__ import annotations
 import pytest
 
 from flext_target_oracle_wms import m
-from flext_target_oracle_wms.target_client import SingerWMSCatalogManager
+from flext_target_oracle_wms.target_client import FlextTargetOracleWmsCatalogManager
 from tests import t
 
 
@@ -28,22 +28,22 @@ def _make_schema_message(
 
 
 class TestCatalogAddStream:
-    """Tests for SingerWMSCatalogManager.add_stream."""
+    """Tests for FlextTargetOracleWmsCatalogManager.add_stream."""
 
     def test_add_stream_returns_success(self) -> None:
-        mgr = SingerWMSCatalogManager()
+        mgr = FlextTargetOracleWmsCatalogManager()
         result = mgr.add_stream(_make_schema_message())
         assert result.is_success
         assert result.value is True
 
     def test_add_stream_makes_stream_retrievable(self) -> None:
-        mgr = SingerWMSCatalogManager()
+        mgr = FlextTargetOracleWmsCatalogManager()
         mgr.add_stream(_make_schema_message("inventory"))
         result = mgr.get_stream("inventory")
         assert result.is_success
 
     def test_add_stream_overwrites_existing(self) -> None:
-        mgr = SingerWMSCatalogManager()
+        mgr = FlextTargetOracleWmsCatalogManager()
         schema_v1 = _make_schema_message("s", key_properties=["id"])
         schema_v2 = _make_schema_message("s", key_properties=["id", "name"])
         mgr.add_stream(schema_v1)
@@ -56,17 +56,17 @@ class TestCatalogAddStream:
 
 
 class TestCatalogGetStream:
-    """Tests for SingerWMSCatalogManager.get_stream."""
+    """Tests for FlextTargetOracleWmsCatalogManager.get_stream."""
 
     def test_get_nonexistent_stream_fails(self) -> None:
-        mgr = SingerWMSCatalogManager()
+        mgr = FlextTargetOracleWmsCatalogManager()
         result = mgr.get_stream("nope")
         assert result.is_failure
         assert result.error is not None
         assert "nope" in result.error
 
     def test_get_existing_stream_returns_catalog_entry(self) -> None:
-        mgr = SingerWMSCatalogManager()
+        mgr = FlextTargetOracleWmsCatalogManager()
         mgr.add_stream(_make_schema_message("orders"))
         result = mgr.get_stream("orders")
         assert result.is_success
@@ -76,7 +76,7 @@ class TestCatalogGetStream:
         assert entry.tap_stream_id == "orders"
 
     def test_entry_has_correct_key_properties(self) -> None:
-        mgr = SingerWMSCatalogManager()
+        mgr = FlextTargetOracleWmsCatalogManager()
         mgr.add_stream(_make_schema_message("items", key_properties=["item_id", "lot"]))
         stream_result = mgr.get_stream("items")
         assert stream_result.is_success
@@ -89,7 +89,7 @@ class TestCatalogMultipleStreams:
     """Tests for managing multiple streams."""
 
     def test_multiple_independent_streams(self) -> None:
-        mgr = SingerWMSCatalogManager()
+        mgr = FlextTargetOracleWmsCatalogManager()
         for name in ("alpha", "beta", "gamma"):
             mgr.add_stream(_make_schema_message(name))
         for name in ("alpha", "beta", "gamma"):
@@ -100,6 +100,6 @@ class TestCatalogMultipleStreams:
         ["simple", "with-dashes", "with_underscores", "CamelCase", "stream.dotted"],
     )
     def test_various_stream_names(self, stream_name: str) -> None:
-        mgr = SingerWMSCatalogManager()
+        mgr = FlextTargetOracleWmsCatalogManager()
         mgr.add_stream(_make_schema_message(stream_name))
         assert mgr.get_stream(stream_name).is_success

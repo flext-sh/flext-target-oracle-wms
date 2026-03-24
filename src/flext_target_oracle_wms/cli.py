@@ -8,12 +8,12 @@ from pathlib import Path
 from flext_core import r, t, u
 
 from .models import m
-from .target_client import SingerTargetOracleWMS
+from .target_client import FlextTargetOracleWms
 
 MIN_CONFIG_ARG_COUNT = 3
 
 
-class OracleWMSTargetCli:
+class FlextTargetOracleWmsCli:
     """Minimal CLI wrapper for Singer target execution."""
 
     def __init__(self) -> None:
@@ -37,7 +37,7 @@ class OracleWMSTargetCli:
         self, config: m.TargetOracleWms.WmsTargetConfig
     ) -> r[bool]:
         """Setup, process stdin, and cleanup target runtime."""
-        target = SingerTargetOracleWMS(config)
+        target = FlextTargetOracleWms(config)
         setup_result = target.setup().map_error(lambda e: e or "Setup failed")
         return u.flow_result(
             setup_result,
@@ -45,7 +45,7 @@ class OracleWMSTargetCli:
             lambda _: self._finalize_target(target),
         )
 
-    def _finalize_target(self, target: SingerTargetOracleWMS) -> r[bool]:
+    def _finalize_target(self, target: FlextTargetOracleWms) -> r[bool]:
         """Finalize target processing."""
         return target.cleanup()
 
@@ -77,14 +77,14 @@ class OracleWMSTargetCli:
             })
         )
 
-    def _process_stdin_messages(self, target: SingerTargetOracleWMS) -> r[bool]:
+    def _process_stdin_messages(self, target: FlextTargetOracleWms) -> r[bool]:
         """Read and process stdin message lines."""
         return target.process_lines(list(sys.stdin))
 
 
 def main() -> None:
     """Run CLI command from process arguments."""
-    cli_instance = OracleWMSTargetCli()
+    cli_instance = FlextTargetOracleWmsCli()
     config_path: str | None = None
     if len(sys.argv) >= MIN_CONFIG_ARG_COUNT and sys.argv[1] == "--config":
         config_path = sys.argv[2]

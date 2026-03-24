@@ -12,8 +12,8 @@ from unittest.mock import MagicMock, patch
 from flext_core import t
 from pydantic import TypeAdapter
 
-from flext_target_oracle_wms.cli import OracleWMSTargetCli
-from flext_target_oracle_wms.target_client import SingerTargetOracleWMS
+from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
+from flext_target_oracle_wms.target_client import FlextTargetOracleWms
 
 
 def _valid_config() -> Mapping[str, t.ContainerValue]:
@@ -61,7 +61,7 @@ class TestFullSingerWorkflow:
     """End-to-end Singer SCHEMA → RECORD → STATE workflow."""
 
     def test_single_stream_workflow(self) -> None:
-        target = SingerTargetOracleWMS(_valid_config())
+        target = FlextTargetOracleWms(_valid_config())
         lines = [
             _schema_line(
                 "inventory",
@@ -76,7 +76,7 @@ class TestFullSingerWorkflow:
         assert result.is_success
 
     def test_multiple_stream_workflow(self) -> None:
-        target = SingerTargetOracleWMS(_valid_config())
+        target = FlextTargetOracleWms(_valid_config())
         lines = [
             _schema_line("orders", {"order_id": {"type": "string"}}, ["order_id"]),
             _schema_line("items", {"item_id": {"type": "string"}}, ["item_id"]),
@@ -88,7 +88,7 @@ class TestFullSingerWorkflow:
         assert result.is_success
 
     def test_schema_update_mid_stream(self) -> None:
-        target = SingerTargetOracleWMS(_valid_config())
+        target = FlextTargetOracleWms(_valid_config())
         lines = [
             _schema_line("s", {"id": {"type": "string"}}, ["id"]),
             _record_line("s", {"id": "1"}),
@@ -101,7 +101,7 @@ class TestFullSingerWorkflow:
         assert result.is_success
 
     def test_state_only_workflow(self) -> None:
-        target = SingerTargetOracleWMS(_valid_config())
+        target = FlextTargetOracleWms(_valid_config())
         lines = [_state_line({"bookmarks": {}})]
         result = target.process_lines(lines)
         assert result.is_success
@@ -112,7 +112,7 @@ class TestCliWorkflow:
 
     @patch("flext_target_oracle_wms.cli.sys.stdin", [])
     def test_cli_execute_empty_stdin(self) -> None:
-        cli = OracleWMSTargetCli()
+        cli = FlextTargetOracleWmsCli()
         result = cli.execute()
         assert result.is_success
 
@@ -125,7 +125,7 @@ class TestCliWorkflow:
         ]
         mock_stdin.__iter__ = MagicMock(return_value=iter(lines))
         mock_stdin.__next__ = MagicMock(side_effect=lines)
-        cli = OracleWMSTargetCli()
+        cli = FlextTargetOracleWmsCli()
         result = cli.execute()
         assert result.is_success
 
@@ -134,7 +134,7 @@ class TestErrorWorkflows:
     """Tests for error handling in workflows."""
 
     def test_malformed_json_stops_processing(self) -> None:
-        target = SingerTargetOracleWMS(_valid_config())
+        target = FlextTargetOracleWms(_valid_config())
         lines = [
             _schema_line("s", {"id": {"type": "string"}}, ["id"]),
             "NOT VALID JSON",
@@ -143,7 +143,7 @@ class TestErrorWorkflows:
         assert result.is_failure
 
     def test_record_for_unknown_stream_fails(self) -> None:
-        target = SingerTargetOracleWMS(_valid_config())
+        target = FlextTargetOracleWms(_valid_config())
         lines = [_record_line("unknown_stream", {"id": "1"})]
         result = target.process_lines(lines)
         assert result.is_failure

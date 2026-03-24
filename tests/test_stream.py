@@ -1,4 +1,4 @@
-"""Tests for SingerWMSStreamProcessor.
+"""Tests for FlextTargetOracleWmsStreamProcessor.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -11,7 +11,7 @@ from unittest.mock import MagicMock
 from flext_core import r
 
 from flext_target_oracle_wms import (
-    SingerWMSStreamProcessor,
+    FlextTargetOracleWmsStreamProcessor,
     m,
     u,
 )
@@ -42,10 +42,10 @@ def _record_msg(
 
 
 class TestStreamProcessorInitialize:
-    """Tests for SingerWMSStreamProcessor.initialize_stream."""
+    """Tests for FlextTargetOracleWmsStreamProcessor.initialize_stream."""
 
     def test_initialize_stream_success(self) -> None:
-        proc = SingerWMSStreamProcessor(
+        proc = FlextTargetOracleWmsStreamProcessor(
             u.TargetOracleWms.WMSTableManager(), u.TargetOracleWms.WMSDataTransformer()
         )
         result = proc.initialize_stream(_schema_msg("orders"))
@@ -54,7 +54,7 @@ class TestStreamProcessorInitialize:
 
     def test_initialize_registers_table(self) -> None:
         tm = u.TargetOracleWms.WMSTableManager()
-        proc = SingerWMSStreamProcessor(tm, u.TargetOracleWms.WMSDataTransformer())
+        proc = FlextTargetOracleWmsStreamProcessor(tm, u.TargetOracleWms.WMSDataTransformer())
         proc.initialize_stream(_schema_msg("items"))
         table_result = tm.get_table_name("items")
         assert table_result.is_success
@@ -62,10 +62,10 @@ class TestStreamProcessorInitialize:
 
 
 class TestStreamProcessorRecord:
-    """Tests for SingerWMSStreamProcessor.process_record."""
+    """Tests for FlextTargetOracleWmsStreamProcessor.process_record."""
 
     def test_process_record_after_init(self) -> None:
-        proc = SingerWMSStreamProcessor(
+        proc = FlextTargetOracleWmsStreamProcessor(
             u.TargetOracleWms.WMSTableManager(), u.TargetOracleWms.WMSDataTransformer()
         )
         schema = _schema_msg("orders")
@@ -74,7 +74,7 @@ class TestStreamProcessorRecord:
         assert result.is_success
 
     def test_process_record_without_init_fails(self) -> None:
-        proc = SingerWMSStreamProcessor(
+        proc = FlextTargetOracleWmsStreamProcessor(
             u.TargetOracleWms.WMSTableManager(), u.TargetOracleWms.WMSDataTransformer()
         )
         result = proc.process_record(
@@ -87,7 +87,7 @@ class TestStreamProcessorRecord:
         )
 
     def test_process_record_uppercases_keys(self) -> None:
-        proc = SingerWMSStreamProcessor(
+        proc = FlextTargetOracleWmsStreamProcessor(
             u.TargetOracleWms.WMSTableManager(), u.TargetOracleWms.WMSDataTransformer()
         )
         schema = _schema_msg(
@@ -107,7 +107,7 @@ class TestStreamProcessorRecord:
         tm = u.TargetOracleWms.WMSTableManager()
         dt = MagicMock(spec=u.TargetOracleWms.WMSDataTransformer)
         dt.transform_record.return_value = r.fail("transformer error")
-        proc = SingerWMSStreamProcessor(tm, dt)
+        proc = FlextTargetOracleWmsStreamProcessor(tm, dt)
         tm.register_stream("s")
         result = proc.process_record(_record_msg("s"), _schema_msg("s"))
         assert result.is_failure
@@ -117,7 +117,7 @@ class TestStreamProcessorMultipleStreams:
     """Tests for processing multiple streams."""
 
     def test_two_independent_streams(self) -> None:
-        proc = SingerWMSStreamProcessor(
+        proc = FlextTargetOracleWmsStreamProcessor(
             u.TargetOracleWms.WMSTableManager(), u.TargetOracleWms.WMSDataTransformer()
         )
         schema_a = _schema_msg("alpha")

@@ -13,7 +13,7 @@ from unittest.mock import MagicMock, patch
 
 from flext_target_oracle_wms import (
     FlextTargetFactory,
-    SingerWMSCatalogManager,
+    FlextTargetOracleWmsCatalogManager,
     create_oracle_wms_target,
     m,
     u,
@@ -90,10 +90,10 @@ class TestSchemaMapperBenchmarks:
 
 
 class TestCatalogBenchmarks:
-    """Performance tests for SingerWMSCatalogManager."""
+    """Performance tests for FlextTargetOracleWmsCatalogManager."""
 
     def test_add_and_get_stream_performance(self) -> None:
-        mgr = SingerWMSCatalogManager()
+        mgr = FlextTargetOracleWmsCatalogManager()
         start = time.time()
         for i in range(PERF_ITERATIONS):
             name = f"stream_{i}"
@@ -106,7 +106,7 @@ class TestCatalogBenchmarks:
 class TestFactoryBenchmarks:
     """Performance tests for FlextTargetFactory."""
 
-    @patch("flext_target_oracle_wms.factory.SingerTargetOracleWMS")
+    @patch("flext_target_oracle_wms.factory.FlextTargetOracleWms")
     def test_create_target_performance(self, mock_target: MagicMock) -> None:
         start = time.time()
         for _ in range(PERF_ITERATIONS):
@@ -120,7 +120,7 @@ class TestFactoryBenchmarks:
         elapsed = time.time() - start
         assert elapsed < PERF_THRESHOLD_SEC
 
-    @patch("flext_target_oracle_wms.factory.SingerTargetOracleWMS")
+    @patch("flext_target_oracle_wms.factory.FlextTargetOracleWms")
     def test_convenience_function_performance(self, mock_target: MagicMock) -> None:
         start = time.time()
         for _ in range(PERF_ITERATIONS):

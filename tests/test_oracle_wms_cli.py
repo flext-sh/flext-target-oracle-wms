@@ -1,4 +1,4 @@
-"""Tests for OracleWMSTargetCli and main().
+"""Tests for FlextTargetOracleWmsCli and main().
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -14,7 +14,7 @@ import pytest
 from pydantic import TypeAdapter, ValidationError
 
 from flext_target_oracle_wms import t
-from flext_target_oracle_wms.cli import OracleWMSTargetCli, main
+from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli, main
 
 
 def _write_config_file(config: Mapping[str, t.StrMapping], tmp_path: Path) -> str:
@@ -40,7 +40,7 @@ class TestOracleWMSTargetCliInit:
     """Tests for CLI initialization."""
 
     def test_default_attributes(self) -> None:
-        cli = OracleWMSTargetCli()
+        cli = FlextTargetOracleWmsCli()
         assert cli.name == "target-oracle-wms"
         assert cli.description == "Oracle WMS Singer Target"
         assert cli.version == "0.9.0"
@@ -50,18 +50,18 @@ class TestOracleWMSTargetCliLoadConfig:
     """Tests for _load_config."""
 
     def test_load_valid_config(self, tmp_path: Path) -> None:
-        cli = OracleWMSTargetCli()
+        cli = FlextTargetOracleWmsCli()
         config_path = _write_config_file(_valid_config_dict(), tmp_path)
         loaded = cli._load_config(config_path)
         assert "wms_auth" in loaded
 
     def test_load_nonexistent_file_raises(self) -> None:
-        cli = OracleWMSTargetCli()
+        cli = FlextTargetOracleWmsCli()
         with pytest.raises(FileNotFoundError):
             cli._load_config("/nonexistent/path/config.json")
 
     def test_load_non_object_json_raises(self, tmp_path: Path) -> None:
-        cli = OracleWMSTargetCli()
+        cli = FlextTargetOracleWmsCli()
         bad_file = tmp_path / "bad.json"
         bad_file.write_text(
             TypeAdapter(Sequence[int]).dump_json([1, 2, 3]).decode("utf-8"),
@@ -76,20 +76,20 @@ class TestOracleWMSTargetCliExecute:
 
     @patch("flext_target_oracle_wms.cli.sys.stdin", [])
     def test_execute_with_config_file(self, tmp_path: Path) -> None:
-        cli = OracleWMSTargetCli()
+        cli = FlextTargetOracleWmsCli()
         config_path = _write_config_file(_valid_config_dict(), tmp_path)
         result = cli.execute(config=config_path)
         assert result.is_success
 
     @patch("flext_target_oracle_wms.cli.sys.stdin", [])
     def test_execute_without_config_uses_defaults(self) -> None:
-        cli = OracleWMSTargetCli()
+        cli = FlextTargetOracleWmsCli()
         result = cli.execute()
         assert result.is_success
 
     @patch("flext_target_oracle_wms.cli.sys.stdin", [])
     def test_execute_with_none_config(self) -> None:
-        cli = OracleWMSTargetCli()
+        cli = FlextTargetOracleWmsCli()
         result = cli.execute()
         assert result.is_success
 

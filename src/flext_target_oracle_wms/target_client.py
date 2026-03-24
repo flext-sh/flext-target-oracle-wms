@@ -15,7 +15,7 @@ from .utilities import FlextTargetOracleWmsUtilities
 logger = FlextLogger(__name__)
 
 
-class SingerWMSCatalogManager:
+class FlextTargetOracleWmsCatalogManager:
     """In-memory Singer catalog manager."""
 
     def __init__(self) -> None:
@@ -46,7 +46,7 @@ class SingerWMSCatalogManager:
         return r[m.Meltano.SingerCatalogEntry].ok(entry)
 
 
-class SingerWMSStreamProcessor:
+class FlextTargetOracleWmsStreamProcessor:
     """Process Singer records using table and transform helpers."""
 
     def __init__(
@@ -83,7 +83,7 @@ class SingerWMSStreamProcessor:
         return self.data_transformer.transform_record(typed_record, schema_message)
 
 
-class SingerTargetOracleWMS:
+class FlextTargetOracleWms:
     """Singer target runtime with schema/record/state handlers."""
 
     name = "target-oracle-wms"
@@ -97,14 +97,14 @@ class SingerTargetOracleWMS:
     ) -> None:
         """Initialize target runtime with validated config."""
         self.config = m.TargetOracleWms.WmsTargetConfig.model_validate(config)
-        self.catalog_manager = SingerWMSCatalogManager()
+        self.catalog_manager = FlextTargetOracleWmsCatalogManager()
         self.table_manager = (
             FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTableManager()
         )
         self.data_transformer = (
             FlextTargetOracleWmsUtilities.TargetOracleWms.WMSDataTransformer()
         )
-        self.stream_processor = SingerWMSStreamProcessor(
+        self.stream_processor = FlextTargetOracleWmsStreamProcessor(
             self.table_manager, self.data_transformer
         )
         self._schemas: MutableMapping[str, m.Meltano.SingerSchemaMessage] = {}
@@ -192,7 +192,7 @@ class SingerTargetOracleWMS:
 
 
 __all__ = [
-    "SingerTargetOracleWMS",
-    "SingerWMSCatalogManager",
-    "SingerWMSStreamProcessor",
+    "FlextTargetOracleWms",
+    "FlextTargetOracleWmsCatalogManager",
+    "FlextTargetOracleWmsStreamProcessor",
 ]
