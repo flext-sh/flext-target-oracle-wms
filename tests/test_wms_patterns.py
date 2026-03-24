@@ -7,6 +7,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import math
+from collections.abc import Sequence
 
 from pydantic import TypeAdapter
 
@@ -19,7 +20,7 @@ from tests import t
 
 def _schema_msg(
     stream: str = "test_stream",
-    key_properties: t.StrSequence | None = None,
+    key_properties: Sequence[str] | None = None,
 ) -> m.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage.model_validate({
         "type": "SCHEMA",

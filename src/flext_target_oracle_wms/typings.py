@@ -59,7 +59,7 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
             str, t.Scalar | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type FacilityDefinition = Mapping[
-            str, str | t.StrSequence | Mapping[str, FlextMeltanoTypes.Container]
+            str, str | Sequence[str] | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type LocationManagement = Mapping[
             str, str | Mapping[str, FlextMeltanoTypes.Container]
@@ -159,7 +159,7 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
             str, int | float | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type RouteOptimization = Mapping[
-            str, str | t.StrSequence | Mapping[str, FlextMeltanoTypes.Container]
+            str, str | Sequence[str] | Mapping[str, FlextMeltanoTypes.Container]
         ]
 
     class DataTransformation:
@@ -169,7 +169,7 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
             str, str | bool | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type FieldMapping = Mapping[
-            str, str | t.StrSequence | Mapping[str, FlextMeltanoTypes.Container]
+            str, str | Sequence[str] | Mapping[str, FlextMeltanoTypes.Container]
         ]
         type DataValidation = Mapping[
             str, str | Mapping[str, FlextMeltanoTypes.Container]
@@ -242,7 +242,7 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
         type SingerTargetOracleWmsProjectConfig = Mapping[
             str, FlextMeltanoTypes.Container
         ]
-        type WmsLoaderConfig = Mapping[str, t.Scalar | t.StrSequence]
+        type WmsLoaderConfig = Mapping[str, t.Scalar | Sequence[str]]
         type SingerProtocolConfig = Mapping[
             str, bool | str | Mapping[str, FlextMeltanoTypes.Container]
         ]

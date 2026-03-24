@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 
 import pytest
 from flext_core import t
@@ -27,8 +27,8 @@ def _valid_config() -> Mapping[str, t.ContainerValue]:
 
 def _schema_line(
     stream: str = "test_stream",
-    properties: Mapping[str, t.StrMapping] | None = None,
-    key_properties: t.StrSequence | None = None,
+    properties: Mapping[str, Mapping[str, str]] | None = None,
+    key_properties: Sequence[str] | None = None,
 ) -> str:
     return _schema_msg(stream, properties, key_properties).model_dump_json(
         by_alias=True
@@ -47,8 +47,8 @@ def _state_line(state: t.ContainerMapping | None = None) -> str:
 
 def _schema_msg(
     stream: str = "test_stream",
-    properties: Mapping[str, t.StrMapping] | None = None,
-    key_properties: t.StrSequence | None = None,
+    properties: Mapping[str, Mapping[str, str]] | None = None,
+    key_properties: Sequence[str] | None = None,
 ) -> m.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage.model_validate({
         "type": "SCHEMA",

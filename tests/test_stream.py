@@ -6,6 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from unittest.mock import MagicMock
 
 from flext_core import r
@@ -21,7 +22,7 @@ from tests import t
 def _schema_msg(
     stream: str = "test_stream",
     schema: t.ContainerMapping | None = None,
-    key_properties: t.StrSequence | None = None,
+    key_properties: Sequence[str] | None = None,
 ) -> m.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage.model_validate({
         "type": "SCHEMA",

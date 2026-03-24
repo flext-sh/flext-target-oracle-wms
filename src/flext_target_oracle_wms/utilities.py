@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping, MutableMapping
+from collections.abc import Mapping, MutableMapping, Sequence
 
 from flext_core import r, t
 from flext_meltano import FlextMeltanoUtilities
@@ -31,10 +31,10 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
         def create_schema_message(
             stream_name: str,
             schema: Mapping[str, t.ContainerValue],
-            key_properties: t.StrSequence | None = None,
+            key_properties: Sequence[str] | None = None,
         ) -> Mapping[
             str,
-            t.ContainerValue | t.ContainerValueMapping | t.StrSequence,
+            t.ContainerValue | t.ContainerValueMapping | Sequence[str],
         ]:
             """Create a Singer SCHEMA message payload."""
             return {

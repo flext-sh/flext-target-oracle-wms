@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from unittest.mock import MagicMock, patch
 
 from flext_core import t
@@ -27,7 +27,7 @@ def _valid_config() -> Mapping[str, t.ContainerValue]:
 
 
 def _schema_line(
-    stream: str, props: Mapping[str, t.StrMapping], keys: t.StrSequence
+    stream: str, props: Mapping[str, Mapping[str, str]], keys: Sequence[str]
 ) -> str:
     return (
         TypeAdapter(t.NormalizedValue)
