@@ -4,8 +4,11 @@
 # Sections with [CUSTOM] are project-specific extension points.
 # [MANAGED] build system
 [build-system]
-build-backend = "poetry.core.masonry.api"
-requires = [ "poetry-core>=2" ]
+build-backend = "hatchling.build"
+requires = [ "hatchling" ]
+
+[tool.hatch.build.targets.wheel]
+packages = [ "src/flext_target_oracle_wms" ]
 
 # [CUSTOM] project metadata
 [project]
@@ -24,12 +27,12 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "flext-cli @ file:../flext-cli",
-  "flext-core @ file:../flext-core",
-  "flext-db-oracle @ file:../flext-db-oracle",
-  "flext-meltano @ file:../flext-meltano",
-  "flext-observability @ file:../flext-observability",
-  "flext-oracle-wms @ file:../flext-oracle-wms",
+  "flext-cli",
+  "flext-core",
+  "flext-db-oracle",
+  "flext-meltano",
+  "flext-observability",
+  "flext-oracle-wms",
   "pydantic-core>=2.41.4",
   "pydantic-settings>=2.10.1",
   "pydantic>=2.12.3",
@@ -138,7 +141,6 @@ plugins = [
 ]
 python_version = "3.13"
 
-[tool.poetry]
 
 # [MANAGED] pydantic-mypy
 [tool.pydantic-mypy]
