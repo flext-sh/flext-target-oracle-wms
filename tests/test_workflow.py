@@ -9,11 +9,11 @@ from __future__ import annotations
 from collections.abc import Mapping
 from unittest.mock import MagicMock, patch
 
-from tests import t
 from pydantic import TypeAdapter
 
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
 from flext_target_oracle_wms.target_client import FlextTargetOracleWms
+from tests import t
 
 
 def _valid_config() -> Mapping[str, t.ContainerValue]:
