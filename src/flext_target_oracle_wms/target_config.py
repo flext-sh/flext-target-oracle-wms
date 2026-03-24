@@ -35,12 +35,12 @@ class FlextTargetOracleWmsSettings(m.TargetOracleWms.WmsTargetConfig):
             ImportError,
         ) as exc:
             return r[FlextTargetOracleWmsSettings].fail(
-                f"Invalid settings overrides: {exc}"
+                f"Invalid settings overrides: {exc}",
             )
         validation = settings.validate_runtime()
         if validation.is_failure:
             return r[FlextTargetOracleWmsSettings].fail(
-                validation.error or "Runtime validation failed"
+                validation.error or "Runtime validation failed",
             )
         return r[FlextTargetOracleWmsSettings].ok(settings)
 

@@ -22,12 +22,14 @@ def _valid_config() -> Mapping[str, t.ContainerValue]:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        }
+        },
     }
 
 
 def _schema_line(
-    stream: str, props: Mapping[str, t.StrMapping], keys: t.StrSequence
+    stream: str,
+    props: Mapping[str, t.StrMapping],
+    keys: t.StrSequence,
 ) -> str:
     return (
         TypeAdapter(t.NormalizedValue)
@@ -93,7 +95,9 @@ class TestFullSingerWorkflow:
             _schema_line("s", {"id": {"type": "string"}}, ["id"]),
             _record_line("s", {"id": "1"}),
             _schema_line(
-                "s", {"id": {"type": "string"}, "name": {"type": "string"}}, ["id"]
+                "s",
+                {"id": {"type": "string"}, "name": {"type": "string"}},
+                ["id"],
             ),
             _record_line("s", {"id": "2", "name": "updated"}),
         ]

@@ -125,7 +125,9 @@ class TestFactoryBenchmarks:
         start = time.time()
         for _ in range(PERF_ITERATIONS):
             create_oracle_wms_target(
-                base_url="https://bench.example.com", username="u", password="p"
+                base_url="https://bench.example.com",
+                username="u",
+                password="p",
             )
         elapsed = time.time() - start
         assert elapsed < PERF_THRESHOLD_SEC

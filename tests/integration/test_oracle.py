@@ -21,12 +21,14 @@ def _valid_config() -> Mapping[str, t.ContainerValue]:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        }
+        },
     }
 
 
 def _schema_line(
-    stream: str, props: Mapping[str, t.StrMapping], keys: t.StrSequence
+    stream: str,
+    props: Mapping[str, t.StrMapping],
+    keys: t.StrSequence,
 ) -> str:
     return (
         TypeAdapter(t.NormalizedValue)
@@ -65,7 +67,9 @@ class TestTargetLifecycle:
         assert target.setup().is_success
         lines = [
             _schema_line(
-                "items", {"id": {"type": "string"}, "name": {"type": "string"}}, ["id"]
+                "items",
+                {"id": {"type": "string"}, "name": {"type": "string"}},
+                ["id"],
             ),
             _record_line("items", {"id": "1", "name": "Widget"}),
             _state_line({"bookmarks": {"items": "1"}}),

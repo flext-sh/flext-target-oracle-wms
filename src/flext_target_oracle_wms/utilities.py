@@ -63,10 +63,11 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
                 missing = sorted(key for key in required if key not in config)
                 if missing:
                     return r[bool].fail(
-                        f"Missing required configuration fields: {missing}"
+                        f"Missing required configuration fields: {missing}",
                     )
                 load_method = config.get(
-                    "load_method", c.TargetOracleWms.LoadMethods.APPEND_ONLY
+                    "load_method",
+                    c.TargetOracleWms.LoadMethods.APPEND_ONLY,
                 )
                 if load_method not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS:
                     return r[bool].fail("Invalid load_method")
@@ -76,12 +77,14 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
             """Convert source scalar values to Oracle-friendly payload values."""
 
             def convert_singer_to_oracle(
-                self, singer_type: str, value: t.Container | t.ContainerValue
+                self,
+                singer_type: str,
+                value: t.Container | t.ContainerValue,
             ) -> r[t.Container]:
                 """Convert a single source value according to Singer type."""
                 if singer_type in {"object", "array"}:
                     return r[t.Container].ok(
-                        TypeAdapter(t.NormalizedValue).dump_json(value).decode("utf-8")
+                        TypeAdapter(t.NormalizedValue).dump_json(value).decode("utf-8"),
                     )
                 if singer_type in {"integer", "number"}:
                     try:
@@ -117,19 +120,19 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
             ) -> r[m.Meltano.SingerRecordMessage]:
                 """Transform one typed Singer RECORD payload with optional typed schema."""
                 typed_record = m.Meltano.SingerRecordMessage.model_validate(
-                    record_message
+                    record_message,
                 )
                 transformed: t.MutableFlatContainerMapping = {}
                 empty_schema: t.MutableFlatContainerMapping = {}
                 schema_definition = (
                     m.Meltano.SingerSchemaMessage.model_validate(
-                        schema_message
+                        schema_message,
                     ).schema_definition
                     if schema_message is not None
                     else empty_schema
                 )
                 schema_props = m.TargetOracleWms.SingerSchemaProperties.model_validate(
-                    schema_definition
+                    schema_definition,
                 )
                 for key, value in typed_record.record.items():
                     prop_schema = schema_props.properties.get(key)
@@ -137,11 +140,12 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
                         prop_schema.type if prop_schema is not None else "string"
                     )
                     converted = self.type_converter.convert_singer_to_oracle(
-                        resolved_type, value
+                        resolved_type,
+                        value,
                     )
                     if converted.is_failure:
                         return r[m.Meltano.SingerRecordMessage].fail(
-                            converted.error or "Conversion failed"
+                            converted.error or "Conversion failed",
                         )
                     transformed[str(key).upper()] = converted.value
                 return r[m.Meltano.SingerRecordMessage].ok(
@@ -151,7 +155,7 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
                         "record": transformed,
                         "time_extracted": typed_record.time_extracted,
                         "version": typed_record.version,
-                    })
+                    }),
                 )
 
         class WMSSchemaMapper:
@@ -163,7 +167,7 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
             ) -> r[m.Meltano.SingerCatalogEntry]:
                 """Build normalized schema map for table creation."""
                 typed_schema = m.Meltano.SingerSchemaMessage.model_validate(
-                    schema_message
+                    schema_message,
                 )
                 return r[m.Meltano.SingerCatalogEntry].ok(
                     m.Meltano.SingerCatalogEntry.model_validate({
@@ -172,7 +176,7 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
                         "schema": typed_schema.schema_definition,
                         "key_properties": typed_schema.key_properties,
                         "table_name": typed_schema.stream.upper(),
-                    })
+                    }),
                 )
 
         class WMSTableManager:

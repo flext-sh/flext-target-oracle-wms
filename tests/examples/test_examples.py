@@ -60,7 +60,7 @@ class TestExamplesCodeQuality:
                     elif node.module == "flext_observability":
                         pass
                     elif node.module and node.module.startswith(
-                        "flext_target_oracle_wms"
+                        "flext_target_oracle_wms",
                     ):
                         has_target_import = True
                 elif isinstance(node, ast.Import):
@@ -87,7 +87,8 @@ class TestExamplesCodeQuality:
                 )
 
     def test_examples_have_comprehensive_docstrings(
-        self, example_files: Sequence[Path]
+        self,
+        example_files: Sequence[Path],
     ) -> None:
         """Test that examples have comprehensive docstrings."""
         for example_file in example_files:
@@ -136,7 +137,8 @@ class TestExamplesCodeQuality:
                 )
 
     def test_examples_implement_error_handling(
-        self, example_files: Sequence[Path]
+        self,
+        example_files: Sequence[Path],
     ) -> None:
         """Test that examples implement proper error handling."""
         for example_file in example_files:
@@ -192,7 +194,8 @@ class TestExamplesCodeQuality:
             )
 
     def test_examples_have_main_execution_blocks(
-        self, example_files: Sequence[Path]
+        self,
+        example_files: Sequence[Path],
     ) -> None:
         """Test that examples have proper main execution blocks."""
         for example_file in example_files:

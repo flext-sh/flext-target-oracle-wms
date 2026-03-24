@@ -24,7 +24,7 @@ def _valid_config() -> Mapping[str, t.ContainerValue]:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        }
+        },
     }
 
 
@@ -94,21 +94,23 @@ class TestUtilitiesFeatures:
 
     def test_create_schema_message(self) -> None:
         msg = FlextTargetOracleWmsUtilities.TargetOracleWms.create_schema_message(
-            "test", {"type": "object"}
+            "test",
+            {"type": "object"},
         )
         assert msg["type"] == "SCHEMA"
         assert msg["stream"] == "test"
 
     def test_create_record_message(self) -> None:
         msg = FlextTargetOracleWmsUtilities.TargetOracleWms.create_record_message(
-            "test", {"id": "1"}
+            "test",
+            {"id": "1"},
         )
         assert msg["type"] == "RECORD"
         assert msg["stream"] == "test"
 
     def test_create_state_message(self) -> None:
         msg = FlextTargetOracleWmsUtilities.TargetOracleWms.create_state_message({
-            "pos": 42
+            "pos": 42,
         })
         assert msg["type"] == "STATE"
         assert msg["value"] == {"pos": 42}

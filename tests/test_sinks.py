@@ -26,7 +26,7 @@ def _valid_config() -> Mapping[str, t.ContainerValue]:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        }
+        },
     }
 
 
@@ -42,7 +42,8 @@ def _schema_msg(stream: str = "items") -> m.Meltano.SingerSchemaMessage:
 
 
 def _record_msg(
-    stream: str = "items", record: t.ContainerMapping | None = None
+    stream: str = "items",
+    record: t.ContainerMapping | None = None,
 ) -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage.model_validate({
         "type": "RECORD",

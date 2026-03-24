@@ -179,14 +179,19 @@ class TestConvenienceFunctions:
     @patch(_PATCH_TARGET)
     def test_create_oracle_wms_target(self, _mock_cls: MagicMock) -> None:
         result = create_oracle_wms_target(
-            base_url="https://x", username="u", password="p"
+            base_url="https://x",
+            username="u",
+            password="p",
         )
         assert result.is_success
 
     @patch(_PATCH_TARGET)
     def test_create_oracle_wms_target_with_preset(self, _mock_cls: MagicMock) -> None:
         result = create_oracle_wms_target(
-            base_url="https://x", username="u", password="p", preset="production"
+            base_url="https://x",
+            username="u",
+            password="p",
+            preset="production",
         )
         assert result.is_success
 

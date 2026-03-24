@@ -42,7 +42,8 @@ class FlextTargetFactory:
 
     @classmethod
     def create_from_config_dict(
-        cls, config: t.ConfigurationMapping
+        cls,
+        config: t.ConfigurationMapping,
     ) -> r[FlextTargetOracleWms]:
         """Create target from plain dictionary config via Pydantic validation."""
         known_keys = {"base_url", "username", "password", "environment", "preset"}
@@ -92,7 +93,8 @@ class FlextTargetMonitoringFactory:
         self.monitor_name = monitor_name
 
     def create_monitored_target(
-        self, request: m.TargetOracleWms.MonitoredTargetCreationRequest
+        self,
+        request: m.TargetOracleWms.MonitoredTargetCreationRequest,
     ) -> r[FlextTargetOracleWms]:
         """Create monitored target using base factory."""
         base_request = m.TargetOracleWms.TargetCreationRequest.model_validate({
@@ -134,31 +136,7 @@ class FlextTargetMonitoringFactory:
         return factory.create_monitored_target(request)
 
 
-# Module-level aliases for backward compatibility
-def create_oracle_wms_target(
-    base_url: str,
-    username: str,
-    password: str,
-    environment: str = "development",
-    preset: str | None = None,
-    **config: t.Scalar,
-) -> r[FlextTargetOracleWms]:
-    """Convenience function to create base target instance."""
-    return FlextTargetMonitoringFactory.create_oracle_wms_target(
-        base_url, username, password, environment, preset, **config
-    )
-
-
-def create_monitored_oracle_wms_target(
-    request: m.TargetOracleWms.MonitoredTargetCreationRequest,
-) -> r[FlextTargetOracleWms]:
-    """Convenience function to create monitored target instance."""
-    return FlextTargetMonitoringFactory.create_monitored_oracle_wms_target(request)
-
-
 __all__ = [
     "FlextTargetFactory",
     "FlextTargetMonitoringFactory",
-    "create_monitored_oracle_wms_target",
-    "create_oracle_wms_target",
 ]

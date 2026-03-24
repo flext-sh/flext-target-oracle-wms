@@ -41,8 +41,6 @@ if TYPE_CHECKING:
     from flext_target_oracle_wms.factory import (
         FlextTargetFactory,
         FlextTargetMonitoringFactory,
-        create_monitored_oracle_wms_target,
-        create_oracle_wms_target,
     )
     from flext_target_oracle_wms.models import (
         FlextTargetOracleWmsModels,
@@ -124,14 +122,6 @@ _LAZY_IMPORTS: Mapping[str, tuple[str, str]] = {
     "__version__": ("flext_target_oracle_wms.__version__", "__version__"),
     "__version_info__": ("flext_target_oracle_wms.__version__", "__version_info__"),
     "c": ("flext_target_oracle_wms.constants", "FlextTargetOracleWmsConstants"),
-    "create_monitored_oracle_wms_target": (
-        "flext_target_oracle_wms.factory",
-        "create_monitored_oracle_wms_target",
-    ),
-    "create_oracle_wms_target": (
-        "flext_target_oracle_wms.factory",
-        "create_oracle_wms_target",
-    ),
     "d": ("flext_meltano", "d"),
     "e": ("flext_meltano", "e"),
     "h": ("flext_meltano", "h"),
@@ -169,8 +159,6 @@ __all__ = [
     "__version__",
     "__version_info__",
     "c",
-    "create_monitored_oracle_wms_target",
-    "create_oracle_wms_target",
     "d",
     "e",
     "h",

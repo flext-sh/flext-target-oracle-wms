@@ -34,7 +34,8 @@ class FlextTargetOracleWmsCli:
         )
 
     def _execute_target_pipeline(
-        self, config: m.TargetOracleWms.WmsTargetConfig
+        self,
+        config: m.TargetOracleWms.WmsTargetConfig,
     ) -> r[bool]:
         """Setup, process stdin, and cleanup target runtime."""
         target = FlextTargetOracleWms(config)
@@ -58,14 +59,15 @@ class FlextTargetOracleWmsCli:
         return config_file.read_text(encoding="utf-8")
 
     def _prepare_config(
-        self, config_path: str | None
+        self,
+        config_path: str | None,
     ) -> r[m.TargetOracleWms.WmsTargetConfig]:
         """Load config from file or build defaults."""
         if config_path is not None:
             return r[m.TargetOracleWms.WmsTargetConfig].ok(
                 m.TargetOracleWms.WmsTargetConfig.model_validate_json(
-                    self._load_config(config_path)
-                )
+                    self._load_config(config_path),
+                ),
             )
         return r[m.TargetOracleWms.WmsTargetConfig].ok(
             m.TargetOracleWms.WmsTargetConfig.model_validate({
@@ -73,8 +75,8 @@ class FlextTargetOracleWmsCli:
                     "base_url": "https://invalid.wms.ocs.oraclecloud.com",
                     "username": "oracle",
                     "password": "oracle",
-                }
-            })
+                },
+            }),
         )
 
     def _process_stdin_messages(self, target: FlextTargetOracleWms) -> r[bool]:

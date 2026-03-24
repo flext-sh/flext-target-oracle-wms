@@ -32,7 +32,8 @@ def _schema_msg(
 
 
 def _record_msg(
-    stream: str = "test_stream", record: t.ContainerMapping | None = None
+    stream: str = "test_stream",
+    record: t.ContainerMapping | None = None,
 ) -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage.model_validate({
         "type": "RECORD",
@@ -46,28 +47,32 @@ class TestWMSTypeConverter:
 
     def test_string_type(self) -> None:
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "string", "hello"
+            "string",
+            "hello",
         )
         assert result.is_success
         assert result.value == "hello"
 
     def test_integer_type(self) -> None:
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "integer", 42
+            "integer",
+            42,
         )
         assert result.is_success
         assert result.value == 42
 
     def test_number_type_float(self) -> None:
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "number", math.pi
+            "number",
+            math.pi,
         )
         assert result.is_success
         assert result.value == math.pi
 
     def test_none_value(self) -> None:
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "string", ""
+            "string",
+            "",
         )
         assert result.is_success
         assert result.value == ""
@@ -75,7 +80,8 @@ class TestWMSTypeConverter:
     def test_object_type_serializes_to_json(self) -> None:
         data = '{"nested": "value"}'
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "object", data
+            "object",
+            data,
         )
         assert result.is_success
         assert result.value is not None
@@ -84,7 +90,8 @@ class TestWMSTypeConverter:
     def test_array_type_serializes_to_json(self) -> None:
         data = "[1, 2, 3]"
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "array", data
+            "array",
+            data,
         )
         assert result.is_success
         assert result.value is not None
@@ -92,7 +99,8 @@ class TestWMSTypeConverter:
 
     def test_boolean_type_becomes_string(self) -> None:
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "boolean", True
+            "boolean",
+            True,
         )
         assert result.is_success
         assert result.value == "True"
@@ -115,7 +123,8 @@ class TestWMSDataTransformer:
     def test_preserves_stream_name(self) -> None:
         transformer = u.TargetOracleWms.WMSDataTransformer()
         result = transformer.transform_record(
-            _record_msg("orders", {"id": "1"}), _schema_msg("orders")
+            _record_msg("orders", {"id": "1"}),
+            _schema_msg("orders"),
         )
         assert result.is_success
         assert result.value is not None

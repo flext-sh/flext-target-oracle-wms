@@ -21,7 +21,7 @@ def _valid_config() -> Mapping[str, t.ContainerValue]:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        }
+        },
     }
 
 
@@ -31,12 +31,13 @@ def _schema_line(
     key_properties: t.StrSequence | None = None,
 ) -> str:
     return _schema_msg(stream, properties, key_properties).model_dump_json(
-        by_alias=True
+        by_alias=True,
     )
 
 
 def _record_line(
-    stream: str = "test_stream", record: t.ContainerMapping | None = None
+    stream: str = "test_stream",
+    record: t.ContainerMapping | None = None,
 ) -> str:
     return _record_msg(stream, record).model_dump_json()
 
@@ -61,7 +62,8 @@ def _schema_msg(
 
 
 def _record_msg(
-    stream: str = "test_stream", record: t.ContainerMapping | None = None
+    stream: str = "test_stream",
+    record: t.ContainerMapping | None = None,
 ) -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage.model_validate({
         "type": "RECORD",
@@ -186,7 +188,8 @@ class TestTargetProcessLines:
         target = FlextTargetOracleWms(_valid_config())
         lines = [
             _schema_line(
-                "orders", {"id": {"type": "string"}, "name": {"type": "string"}}
+                "orders",
+                {"id": {"type": "string"}, "name": {"type": "string"}},
             ),
             _record_line("orders", {"id": "1", "name": "test"}),
             _state_line({"bookmarks": {"orders": "1"}}),

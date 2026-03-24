@@ -49,7 +49,8 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
 
             wms_auth: FlextTargetOracleWmsModels.TargetOracleWms.WmsAuthenticationConfig
             stream_maps: Annotated[
-                Mapping[str, t.StrMapping], Field(default_factory=dict)
+                Mapping[str, t.StrMapping],
+                Field(default_factory=dict),
             ]
             batch_size: t.BatchSize = _c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
             load_method: str = _c.TargetOracleWms.LoadMethods.APPEND_ONLY
@@ -111,7 +112,8 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             environment: str = "development"
             preset: str | None = None
             additional_config: Annotated[
-                t.ConfigurationMapping | None, Field(default=None)
+                t.ConfigurationMapping | None,
+                Field(default=None),
             ]
 
         class MonitoredTargetCreationRequest(TargetCreationRequest):

@@ -32,7 +32,7 @@ def _valid_config_dict() -> Mapping[str, t.StrMapping]:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        }
+        },
     }
 
 

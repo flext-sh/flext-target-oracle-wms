@@ -17,7 +17,8 @@ from flext_target_oracle_wms.protocols import FlextTargetOracleWmsProtocols
 
 
 class FlextTargetOracleWmsTestProtocols(
-    FlextTestsProtocols, FlextTargetOracleWmsProtocols
+    FlextTestsProtocols,
+    FlextTargetOracleWmsProtocols,
 ):
     """Test protocols combining FlextTestsProtocols and project-specific protocols."""
 
