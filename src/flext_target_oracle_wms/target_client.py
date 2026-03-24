@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import sys
-from collections.abc import Mapping, MutableMapping, Sequence
+from collections.abc import Mapping, MutableMapping
 from typing import ClassVar
 
 from flext_core import FlextLogger, r, t
@@ -144,7 +144,7 @@ class SingerTargetOracleWMS:
         logger.debug("Received state", state=str(typed_state.value))
         return r[bool].ok(value=True)
 
-    def process_lines(self, input_lines: Sequence[str]) -> r[bool]:
+    def process_lines(self, input_lines: t.StrSequence) -> r[bool]:
         """Parse and process Singer JSON lines."""
         for raw_line in input_lines:
             line = raw_line.strip()

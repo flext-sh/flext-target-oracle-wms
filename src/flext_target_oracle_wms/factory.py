@@ -16,7 +16,7 @@ logger = FlextLogger(__name__)
 class FlextTargetFactory:
     """Factory for creating configured target instances."""
 
-    PRESETS: ClassVar[Mapping[str, Mapping[str, t.Scalar]]] = {
+    PRESETS: ClassVar[Mapping[str, t.ConfigurationMapping]] = {
         "development": {
             "batch_size": 100,
             "timeout": 30,
@@ -42,7 +42,7 @@ class FlextTargetFactory:
 
     @classmethod
     def create_from_config_dict(
-        cls, config: Mapping[str, t.Scalar]
+        cls, config: t.ConfigurationMapping
     ) -> r[SingerTargetOracleWMS]:
         """Create target from plain dictionary config via Pydantic validation."""
         known_keys = {"base_url", "username", "password", "environment", "preset"}

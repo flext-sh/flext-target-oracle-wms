@@ -6,7 +6,7 @@ Defines local TargetOracleWms namespace for target-specific models.
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping
 from typing import Annotated, ClassVar, Literal
 
 from flext_core import r
@@ -49,7 +49,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
 
             wms_auth: FlextTargetOracleWmsModels.TargetOracleWms.WmsAuthenticationConfig
             stream_maps: Annotated[
-                Mapping[str, Mapping[str, str]], Field(default_factory=dict)
+                Mapping[str, t.StrMapping], Field(default_factory=dict)
             ]
             batch_size: t.BatchSize = _c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
             load_method: str = _c.TargetOracleWms.LoadMethods.APPEND_ONLY
@@ -72,8 +72,8 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             total_records_processed: t.NonNegativeInt = 0
             successful_records: t.NonNegativeInt = 0
             failed_records: t.NonNegativeInt = 0
-            error_messages: Annotated[Sequence[str], Field(default_factory=list)]
-            metrics: Annotated[Mapping[str, t.Scalar], Field(default_factory=dict)]
+            error_messages: Annotated[t.StrSequence, Field(default_factory=list)]
+            metrics: Annotated[t.ConfigurationMapping, Field(default_factory=dict)]
 
             @property
             def success_rate(self) -> float:
@@ -111,7 +111,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             environment: str = "development"
             preset: str | None = None
             additional_config: Annotated[
-                Mapping[str, t.Scalar] | None, Field(default=None)
+                t.ConfigurationMapping | None, Field(default=None)
             ]
 
         class MonitoredTargetCreationRequest(TargetCreationRequest):
@@ -124,7 +124,6 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
 
             model_config: ClassVar[ConfigDict] = ConfigDict(
                 populate_by_name=True,
-                arbitrary_types_allowed=True,
             )
 
             type: Annotated[
@@ -145,14 +144,14 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                 ),
             ]
             key_properties: Annotated[
-                Sequence[str],
+                t.StrSequence,
                 Field(
                     default_factory=list,
                     description="Singer stream key properties",
                 ),
             ]
             bookmark_properties: Annotated[
-                Sequence[str],
+                t.StrSequence,
                 Field(
                     default_factory=list,
                     description="Singer bookmark columns for incremental replication",
@@ -194,7 +193,6 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
 
             model_config: ClassVar[ConfigDict] = ConfigDict(
                 populate_by_name=True,
-                arbitrary_types_allowed=True,
             )
 
             tap_stream_id: Annotated[
@@ -215,7 +213,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                 ),
             ]
             key_properties: Annotated[
-                Sequence[str],
+                t.StrSequence,
                 Field(
                     default_factory=list,
                     description="Singer stream key properties",

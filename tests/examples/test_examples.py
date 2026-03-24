@@ -59,7 +59,9 @@ class TestExamplesCodeQuality:
                         has_flext_core = True
                     elif node.module == "flext_observability":
                         pass
-                    elif node.module == "flext_target_oracle_wms":
+                    elif node.module and node.module.startswith(
+                        "flext_target_oracle_wms"
+                    ):
                         has_target_import = True
                 elif isinstance(node, ast.Import):
                     for alias in node.names:
