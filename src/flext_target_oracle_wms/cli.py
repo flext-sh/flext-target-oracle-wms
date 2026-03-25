@@ -5,9 +5,10 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from flext_core import r, t, u
+from flext_core import r, u
 
 from .models import m
+from .typings import t
 from .target_client import FlextTargetOracleWms
 
 MIN_CONFIG_ARG_COUNT = 3

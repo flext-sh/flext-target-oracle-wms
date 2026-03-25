@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from flext_core import r, t
+from flext_core import r
 
 from .models import m
+from .typings import t
 
 
 class FlextTargetOracleWmsSettings(m.TargetOracleWms.WmsTargetConfig):
