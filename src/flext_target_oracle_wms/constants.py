@@ -6,9 +6,10 @@ from enum import StrEnum, unique
 from typing import Final
 
 from flext_meltano import FlextMeltanoConstants
+from flext_oracle_wms import FlextOracleWmsConstants
 
 
-class FlextTargetOracleWmsConstants(FlextMeltanoConstants):
+class FlextTargetOracleWmsConstants(FlextMeltanoConstants, FlextOracleWmsConstants):
     """Typed constant namespace used by target Oracle WMS modules."""
 
     class TargetOracleWms:

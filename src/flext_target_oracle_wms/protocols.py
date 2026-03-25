@@ -6,12 +6,13 @@ from collections.abc import Mapping, Sequence
 from typing import Protocol, runtime_checkable
 
 from flext_core import r
+from flext_meltano import FlextMeltanoProtocols
 from flext_oracle_wms.protocols import FlextOracleWmsProtocols
 
 from flext_target_oracle_wms import t
 
 
-class FlextTargetOracleWmsProtocols(FlextOracleWmsProtocols):
+class FlextTargetOracleWmsProtocols(FlextMeltanoProtocols, FlextOracleWmsProtocols):
     """Namespace for target Oracle WMS protocol contracts."""
 
     class TargetOracleWms:
