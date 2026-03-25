@@ -1,5 +1,5 @@
 # AUTO-GENERATED FILE — DO NOT EDIT MANUALLY.
-# Regenerate with: make codegen
+# Regenerate with: make gen
 #
 """Integration tests for FLEXT Target Oracle WMS.
 
@@ -24,10 +24,7 @@ if TYPE_CHECKING:
     )
 
 _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
-    "TestMultiStreamIntegration": [
-        "tests.integration.test_oracle",
-        "TestMultiStreamIntegration",
-    ],
+    "TestMultiStreamIntegration": ["tests.integration.test_oracle", "TestMultiStreamIntegration"],
     "TestTargetLifecycle": ["tests.integration.test_oracle", "TestTargetLifecycle"],
 }
 
