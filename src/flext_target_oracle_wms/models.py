@@ -48,7 +48,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             """Top-level target configuration model."""
 
             wms_auth: FlextTargetOracleWmsModels.TargetOracleWms.WmsAuthenticationConfig
-            stream_maps: Annotated[Mapping[str, t.StrMapping]] = Field(
+            stream_maps: Mapping[str, t.StrMapping] = Field(
                 default_factory=dict
             )
             batch_size: t.BatchSize = _c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
@@ -94,11 +94,9 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
 
             model_config: ClassVar[ConfigDict] = ConfigDict(extra="ignore")
 
-            properties: Annotated[
-                Mapping[
-                    str,
-                    FlextTargetOracleWmsModels.TargetOracleWms.SingerFieldSchema,
-                ]
+            properties: Mapping[
+                str,
+                FlextTargetOracleWmsModels.TargetOracleWms.SingerFieldSchema,
             ] = Field(default_factory=dict)
 
         class TargetCreationRequest(FlextMeltanoModels.ArbitraryTypesModel):
