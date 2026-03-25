@@ -10,8 +10,12 @@ from __future__ import annotations
 
 from flext_tests import FlextTestsConstants
 
+from flext_target_oracle_wms import FlextTargetOracleWmsConstants
 
-class FlextTargetOracleWmsTestConstants(FlextTestsConstants):
+
+class FlextTargetOracleWmsTestConstants(
+    FlextTestsConstants, FlextTargetOracleWmsConstants
+):
     """Test constants for flext-target-oracle-wms."""
 
 
