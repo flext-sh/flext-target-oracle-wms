@@ -48,9 +48,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             """Top-level target configuration model."""
 
             wms_auth: FlextTargetOracleWmsModels.TargetOracleWms.WmsAuthenticationConfig
-            stream_maps: Mapping[str, t.StrMapping] = Field(
-                default_factory=dict
-            )
+            stream_maps: Mapping[str, t.StrMapping] = Field(default_factory=dict)
             batch_size: t.BatchSize = _c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
             load_method: str = _c.TargetOracleWms.LoadMethods.APPEND_ONLY
             validate_records: bool = True
