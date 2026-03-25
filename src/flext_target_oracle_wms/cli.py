@@ -8,8 +8,8 @@ from pathlib import Path
 from flext_core import r, u
 
 from .models import m
-from .typings import t
 from .target_client import FlextTargetOracleWms
+from .typings import t
 
 MIN_CONFIG_ARG_COUNT = 3
 

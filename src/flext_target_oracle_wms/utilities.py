@@ -11,6 +11,7 @@ from pydantic import TypeAdapter
 
 from .constants import c
 from .models import m
+from .typings import t
 
 _nv_adapter: TypeAdapter[t.NormalizedValue] = TypeAdapter(t.NormalizedValue)
 
