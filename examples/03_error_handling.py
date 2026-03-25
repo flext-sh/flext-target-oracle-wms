@@ -29,7 +29,7 @@ def run_error_handling_example() -> t.Scalar:
         if result.is_failure:
             logger.info("Expected failure handled: %s", result.error)
         logger.info("Error handling example completed successfully")
-    except Exception:
+    except (RuntimeError, OSError, ValueError):
         logger.exception("Unexpected error during processing")
         return False
     return True
