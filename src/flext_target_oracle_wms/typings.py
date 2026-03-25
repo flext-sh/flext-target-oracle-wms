@@ -295,8 +295,8 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
         Singer target Oracle WMS domain owns WMS loading and Singer protocol-specific types.
         """
 
-        type ProjectType = _c.ProjectType
-        type ErrorTypeLiteral = _c.ErrorTypeLiteral
+        type ProjectType = _c.TargetOracleWms.ProjectType
+        type ErrorTypeLiteral = _c.TargetOracleWms.ErrorTypeLiteral
         type SingerTargetOracleWmsProjectConfig = Mapping[
             str,
             FlextOracleWmsTypes.Container,

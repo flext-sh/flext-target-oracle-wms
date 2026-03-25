@@ -79,8 +79,5 @@ class FlextTargetOracleWmsConstants(FlextMeltanoConstants, FlextOracleWmsConstan
             CONFIGURATION = "CONFIGURATION"
 
 
-ProjectType = FlextTargetOracleWmsConstants.TargetOracleWms.ProjectType
-ErrorTypeLiteral = FlextTargetOracleWmsConstants.TargetOracleWms.ErrorTypeLiteral
-
 c = FlextTargetOracleWmsConstants
 __all__ = ["FlextTargetOracleWmsConstants", "c"]
