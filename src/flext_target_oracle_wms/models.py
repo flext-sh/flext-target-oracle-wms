@@ -48,10 +48,9 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             """Top-level target configuration model."""
 
             wms_auth: FlextTargetOracleWmsModels.TargetOracleWms.WmsAuthenticationConfig
-            stream_maps: Annotated[
-                Mapping[str, t.StrMapping],
-                Field(default_factory=dict),
-            ]
+            stream_maps: Annotated[Mapping[str, t.StrMapping]] = Field(
+                default_factory=dict
+            )
             batch_size: t.BatchSize = _c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
             load_method: str = _c.TargetOracleWms.LoadMethods.APPEND_ONLY
             validate_records: bool = True
@@ -73,8 +72,8 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             total_records_processed: t.NonNegativeInt = 0
             successful_records: t.NonNegativeInt = 0
             failed_records: t.NonNegativeInt = 0
-            error_messages: Annotated[t.StrSequence, Field(default_factory=list)]
-            metrics: Annotated[t.ConfigurationMapping, Field(default_factory=dict)]
+            error_messages: t.StrSequence = Field(default_factory=list)
+            metrics: t.ConfigurationMapping = Field(default_factory=dict)
 
             @property
             def success_rate(self) -> float:
@@ -99,9 +98,8 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                 Mapping[
                     str,
                     FlextTargetOracleWmsModels.TargetOracleWms.SingerFieldSchema,
-                ],
-                Field(default_factory=dict),
-            ]
+                ]
+            ] = Field(default_factory=dict)
 
         class TargetCreationRequest(FlextMeltanoModels.ArbitraryTypesModel):
             """Input object for target construction."""
@@ -148,17 +146,15 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             key_properties: Annotated[
                 t.StrSequence,
                 Field(
-                    default_factory=list,
                     description="Singer stream key properties",
                 ),
-            ]
+            ] = Field(default_factory=list)
             bookmark_properties: Annotated[
                 t.StrSequence,
                 Field(
-                    default_factory=list,
                     description="Singer bookmark columns for incremental replication",
                 ),
-            ]
+            ] = Field(default_factory=list)
 
         class SingerRecordMessage(FlextMeltanoModels.ArbitraryTypesModel):
             """Singer RECORD message with ContainerValue record support."""
@@ -217,10 +213,9 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             key_properties: Annotated[
                 t.StrSequence,
                 Field(
-                    default_factory=list,
                     description="Singer stream key properties",
                 ),
-            ]
+            ] = Field(default_factory=list)
             table_name: str | None = None
 
 
