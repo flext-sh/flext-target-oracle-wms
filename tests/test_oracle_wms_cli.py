@@ -16,11 +16,16 @@ from pydantic import TypeAdapter, ValidationError
 from flext_target_oracle_wms import t
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli, main
 
+_config_adapter: TypeAdapter[Mapping[str, t.StrMapping]] = TypeAdapter(
+    Mapping[str, t.StrMapping],
+)
+_list_int_adapter: TypeAdapter[Sequence[int]] = TypeAdapter(Sequence[int])
+
 
 def _write_config_file(config: Mapping[str, t.StrMapping], tmp_path: Path) -> str:
     config_file = tmp_path / "config.json"
     config_file.write_text(
-        TypeAdapter(Mapping[str, t.StrMapping]).dump_json(config).decode("utf-8"),
+        _config_adapter.dump_json(config).decode("utf-8"),
         encoding="utf-8",
     )
     return str(config_file)
@@ -64,7 +69,7 @@ class TestOracleWMSTargetCliLoadConfig:
         cli = FlextTargetOracleWmsCli()
         bad_file = tmp_path / "bad.json"
         bad_file.write_text(
-            TypeAdapter(Sequence[int]).dump_json([1, 2, 3]).decode("utf-8"),
+            _list_int_adapter.dump_json([1, 2, 3]).decode("utf-8"),
             encoding="utf-8",
         )
         with pytest.raises(ValidationError):
