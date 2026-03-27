@@ -65,8 +65,7 @@ class TestExamplesCodeQuality:
                         has_target_import = True
                 elif isinstance(node, ast.Import):
                     for alias in node.names:
-                        if alias.name.startswith("flext_"):
-                            pass
+                        alias.name.startswith("flext_")
             assert has_flext_core, f"{example_file.name} must import from flext_core"
             assert has_target_import, (
                 f"{example_file.name} must import from flext_target_oracle_wms"
