@@ -27,9 +27,7 @@ class CatalogManager:
 
     def __init__(self) -> None:
         """Initialize catalog storage for stream metadata."""
-        self._catalog_entries: MutableMapping[
-            str, m.Meltano.SingerCatalogEntry
-        ] = {}
+        self._catalog_entries: MutableMapping[str, m.Meltano.SingerCatalogEntry] = {}
 
     def add_stream(
         self,
@@ -115,8 +113,7 @@ class Target:
 
     def __init__(
         self,
-        config: Mapping[str, t.ContainerValue]
-        | m.TargetOracleWms.WmsTargetConfig,
+        config: Mapping[str, t.ContainerValue] | m.TargetOracleWms.WmsTargetConfig,
     ) -> None:
         """Initialize target runtime with validated config."""
         self.config = m.TargetOracleWms.WmsTargetConfig.model_validate(config)

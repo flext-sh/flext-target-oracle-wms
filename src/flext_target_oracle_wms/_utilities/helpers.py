@@ -97,9 +97,7 @@ class WMSDataTransformer:
         )
         for key, value in typed_record.record.items():
             prop_schema = schema_props.properties.get(key)
-            resolved_type = (
-                prop_schema.type if prop_schema is not None else "string"
-            )
+            resolved_type = prop_schema.type if prop_schema is not None else "string"
             converted = self.type_converter.convert_singer_to_oracle(
                 resolved_type,
                 value,
