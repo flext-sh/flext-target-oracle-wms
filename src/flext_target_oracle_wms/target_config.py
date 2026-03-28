@@ -6,8 +6,7 @@ from collections.abc import Mapping
 
 from flext_core import r
 
-from .models import m
-from .typings import t
+from flext_target_oracle_wms import m, t
 
 
 class FlextTargetOracleWmsSettings(m.TargetOracleWms.WmsTargetConfig):

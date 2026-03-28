@@ -8,9 +8,9 @@ from __future__ import annotations
 
 import pytest
 
-from flext_target_oracle_wms import m
-from flext_target_oracle_wms._utilities.client import (
+from flext_target_oracle_wms import (
     CatalogManager as FlextTargetOracleWmsCatalogManager,
+    m,
 )
 from tests import t
 

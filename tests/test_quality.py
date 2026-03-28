@@ -6,17 +6,15 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_target_oracle_wms import (
-    FlextTargetOracleWms,
-    FlextTargetOracleWmsCatalogManager,
-    FlextTargetOracleWmsCli,
-    FlextTargetOracleWmsModels,
-    FlextTargetOracleWmsProtocols,
-    m,
-    p,
-    u,
+from flext_target_oracle_wms import m, p, u
+from flext_target_oracle_wms._utilities.client import (
+    CatalogManager as FlextTargetOracleWmsCatalogManager,
+    Target as FlextTargetOracleWms,
 )
+from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
 from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants, c
+from flext_target_oracle_wms.models import FlextTargetOracleWmsModels
+from flext_target_oracle_wms.protocols import FlextTargetOracleWmsProtocols
 
 
 class TestModelsNamespace:

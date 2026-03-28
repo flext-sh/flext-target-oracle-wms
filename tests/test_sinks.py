@@ -10,12 +10,11 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from flext_target_oracle_wms import (
-    FlextTargetOracleWms,
-    FlextTargetOracleWmsCatalogManager,
-    FlextTargetOracleWmsStreamProcessor,
-    m,
-    u,
+from flext_target_oracle_wms import m, u
+from flext_target_oracle_wms._utilities.client import (
+    CatalogManager as FlextTargetOracleWmsCatalogManager,
+    StreamProcessor as FlextTargetOracleWmsStreamProcessor,
+    Target as FlextTargetOracleWms,
 )
 from tests import t
 

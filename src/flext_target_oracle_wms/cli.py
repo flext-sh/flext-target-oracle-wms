@@ -7,10 +7,7 @@ from pathlib import Path
 
 from flext_core import r
 
-from flext_target_oracle_wms._utilities.client import Target as FlextTargetOracleWms
-from flext_target_oracle_wms.models import FlextTargetOracleWmsModels as m
-from flext_target_oracle_wms.typings import FlextTargetOracleWmsTypes as t
-from flext_target_oracle_wms.utilities import FlextTargetOracleWmsUtilities as u
+from flext_target_oracle_wms import Target as FlextTargetOracleWms, m, t, u
 
 MIN_CONFIG_ARG_COUNT = 3
 

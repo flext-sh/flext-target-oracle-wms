@@ -7,9 +7,7 @@ from typing import ClassVar
 
 from flext_core import FlextLogger, r
 
-from flext_target_oracle_wms._utilities.client import Target as FlextTargetOracleWms
-from flext_target_oracle_wms.models import m
-from flext_target_oracle_wms.typings import t
+from flext_target_oracle_wms import Target as FlextTargetOracleWms, m, t
 
 logger = FlextLogger(__name__)
 

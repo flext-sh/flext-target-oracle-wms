@@ -9,12 +9,9 @@ from __future__ import annotations
 import math
 from collections.abc import Mapping, Sequence
 
-from flext_target_oracle_wms import (
-    FlextTargetOracleWms,
-    FlextTargetOracleWmsUtilities,
-    m,
-    u,
-)
+from flext_target_oracle_wms import m, u
+from flext_target_oracle_wms._utilities.client import Target as FlextTargetOracleWms
+from flext_target_oracle_wms.utilities import FlextTargetOracleWmsUtilities
 from tests import t
 
 

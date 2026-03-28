@@ -8,8 +8,10 @@ from __future__ import annotations
 from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_wms import FlextOracleWmsUtilities
 
-from ._utilities.client import CatalogManager, StreamProcessor, Target
-from ._utilities.helpers import (
+from flext_target_oracle_wms import (
+    CatalogManager,
+    StreamProcessor,
+    Target,
     Validation,
     WMSDataTransformer,
     WMSSchemaMapper,
