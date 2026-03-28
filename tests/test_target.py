@@ -11,7 +11,7 @@ from collections.abc import Mapping
 import pytest
 
 from flext_target_oracle_wms import m
-from flext_target_oracle_wms.target_client import FlextTargetOracleWms
+from flext_target_oracle_wms._utilities.client import Target as FlextTargetOracleWms
 from tests import t
 
 

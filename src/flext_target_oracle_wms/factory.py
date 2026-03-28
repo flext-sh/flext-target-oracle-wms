@@ -7,8 +7,8 @@ from typing import ClassVar
 
 from flext_core import FlextLogger, r
 
+from ._utilities.client import Target as FlextTargetOracleWms
 from .models import m
-from .target_client import FlextTargetOracleWms
 from .typings import t
 
 logger = FlextLogger(__name__)

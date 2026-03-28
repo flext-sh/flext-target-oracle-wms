@@ -29,6 +29,11 @@ if TYPE_CHECKING:
         __version__,
         __version_info__,
     )
+    from flext_target_oracle_wms._utilities.client import (
+        CatalogManager as FlextTargetOracleWmsCatalogManager,
+        StreamProcessor as FlextTargetOracleWmsStreamProcessor,
+        Target as FlextTargetOracleWms,
+    )
     from flext_target_oracle_wms.cli import (
         MIN_CONFIG_ARG_COUNT,
         FlextTargetOracleWmsCli,
@@ -52,11 +57,6 @@ if TYPE_CHECKING:
         FlextTargetOracleWmsProtocols,
         FlextTargetOracleWmsProtocols as p,
     )
-    from flext_target_oracle_wms.target_client import (
-        FlextTargetOracleWms,
-        FlextTargetOracleWmsCatalogManager,
-        FlextTargetOracleWmsStreamProcessor,
-    )
     from flext_target_oracle_wms.target_config import FlextTargetOracleWmsSettings
     from flext_target_oracle_wms.typings import (
         FlextTargetOracleWmsTypes,
@@ -74,12 +74,12 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
         "FlextTargetMonitoringFactory",
     ],
     "FlextTargetOracleWms": [
-        "flext_target_oracle_wms.target_client",
-        "FlextTargetOracleWms",
+        "flext_target_oracle_wms._utilities.client",
+        "Target",
     ],
     "FlextTargetOracleWmsCatalogManager": [
-        "flext_target_oracle_wms.target_client",
-        "FlextTargetOracleWmsCatalogManager",
+        "flext_target_oracle_wms._utilities.client",
+        "CatalogManager",
     ],
     "FlextTargetOracleWmsCli": [
         "flext_target_oracle_wms.cli",
@@ -102,8 +102,8 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
         "FlextTargetOracleWmsSettings",
     ],
     "FlextTargetOracleWmsStreamProcessor": [
-        "flext_target_oracle_wms.target_client",
-        "FlextTargetOracleWmsStreamProcessor",
+        "flext_target_oracle_wms._utilities.client",
+        "StreamProcessor",
     ],
     "FlextTargetOracleWmsTypes": [
         "flext_target_oracle_wms.typings",

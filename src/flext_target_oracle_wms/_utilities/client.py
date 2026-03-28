@@ -1,4 +1,4 @@
-"""Singer target client primitives for Oracle WMS."""
+"""Singer target client classes for Oracle WMS — u.TargetOracleWms.Client.*."""
 
 from __future__ import annotations
 
@@ -9,9 +9,12 @@ from typing import ClassVar
 from flext_core import FlextLogger, r
 from pydantic import TypeAdapter, ValidationError
 
-from .models import m
-from .typings import t
-from .utilities import FlextTargetOracleWmsUtilities
+from flext_target_oracle_wms._utilities.helpers import (
+    WMSDataTransformer,
+    WMSTableManager,
+)
+from flext_target_oracle_wms.models import FlextTargetOracleWmsModels as m
+from flext_target_oracle_wms.typings import FlextTargetOracleWmsTypes as t
 
 logger = FlextLogger(__name__)
 _CONTAINER_MAP_ADAPTER: TypeAdapter[t.ContainerMapping] = TypeAdapter(
@@ -19,14 +22,19 @@ _CONTAINER_MAP_ADAPTER: TypeAdapter[t.ContainerMapping] = TypeAdapter(
 )
 
 
-class FlextTargetOracleWmsCatalogManager:
-    """In-memory Singer catalog manager."""
+class CatalogManager:
+    """In-memory Singer catalog manager — u.TargetOracleWms.Client.CatalogManager."""
 
     def __init__(self) -> None:
         """Initialize catalog storage for stream metadata."""
-        self._catalog_entries: MutableMapping[str, m.Meltano.SingerCatalogEntry] = {}
+        self._catalog_entries: MutableMapping[
+            str, m.Meltano.SingerCatalogEntry
+        ] = {}
 
-    def add_stream(self, schema_message: m.Meltano.SingerSchemaMessage) -> r[bool]:
+    def add_stream(
+        self,
+        schema_message: m.Meltano.SingerSchemaMessage,
+    ) -> r[bool]:
         """Register one stream schema entry."""
         typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
         stream_name = typed_schema.stream
@@ -40,7 +48,10 @@ class FlextTargetOracleWmsCatalogManager:
         )
         return r[bool].ok(value=True)
 
-    def get_stream(self, stream_name: str) -> r[m.Meltano.SingerCatalogEntry]:
+    def get_stream(
+        self,
+        stream_name: str,
+    ) -> r[m.Meltano.SingerCatalogEntry]:
         """Return catalog entry for a stream or a failure."""
         entry = self._catalog_entries.get(stream_name)
         if entry is None:
@@ -50,13 +61,16 @@ class FlextTargetOracleWmsCatalogManager:
         return r[m.Meltano.SingerCatalogEntry].ok(entry)
 
 
-class FlextTargetOracleWmsStreamProcessor:
-    """Process Singer records using table and transform helpers."""
+class StreamProcessor:
+    """Process Singer records using table and transform helpers.
+
+    Accessible as u.TargetOracleWms.Client.StreamProcessor.
+    """
 
     def __init__(
         self,
-        table_manager: FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTableManager,
-        data_transformer: FlextTargetOracleWmsUtilities.TargetOracleWms.WMSDataTransformer,
+        table_manager: WMSTableManager,
+        data_transformer: WMSDataTransformer,
     ) -> None:
         """Initialize processing dependencies."""
         self.table_manager = table_manager
@@ -88,8 +102,11 @@ class FlextTargetOracleWmsStreamProcessor:
         return self.data_transformer.transform_record(typed_record, schema_message)
 
 
-class FlextTargetOracleWms:
-    """Singer target runtime with schema/record/state handlers."""
+class Target:
+    """Singer target runtime with schema/record/state handlers.
+
+    Accessible as u.TargetOracleWms.Client.Target.
+    """
 
     name = "target-oracle-wms"
     _state_type: ClassVar[str] = "STATE"
@@ -98,18 +115,15 @@ class FlextTargetOracleWms:
 
     def __init__(
         self,
-        config: Mapping[str, t.ContainerValue] | m.TargetOracleWms.WmsTargetConfig,
+        config: Mapping[str, t.ContainerValue]
+        | m.TargetOracleWms.WmsTargetConfig,
     ) -> None:
         """Initialize target runtime with validated config."""
         self.config = m.TargetOracleWms.WmsTargetConfig.model_validate(config)
-        self.catalog_manager = FlextTargetOracleWmsCatalogManager()
-        self.table_manager = (
-            FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTableManager()
-        )
-        self.data_transformer = (
-            FlextTargetOracleWmsUtilities.TargetOracleWms.WMSDataTransformer()
-        )
-        self.stream_processor = FlextTargetOracleWmsStreamProcessor(
+        self.catalog_manager = CatalogManager()
+        self.table_manager = WMSTableManager()
+        self.data_transformer = WMSDataTransformer()
+        self.stream_processor = StreamProcessor(
             self.table_manager,
             self.data_transformer,
         )
@@ -119,7 +133,10 @@ class FlextTargetOracleWms:
         """Release target runtime resources."""
         return r[bool].ok(value=True)
 
-    def handle_record_message(self, message: m.Meltano.SingerRecordMessage) -> r[bool]:
+    def handle_record_message(
+        self,
+        message: m.Meltano.SingerRecordMessage,
+    ) -> r[bool]:
         """Handle one RECORD message."""
         typed_record = m.Meltano.SingerRecordMessage.model_validate(message)
         schema_message = self._schemas.get(typed_record.stream)
@@ -135,7 +152,10 @@ class FlextTargetOracleWms:
             return r[bool].fail(process_result.error or "Record processing failed")
         return r[bool].ok(value=True)
 
-    def handle_schema_message(self, message: m.Meltano.SingerSchemaMessage) -> r[bool]:
+    def handle_schema_message(
+        self,
+        message: m.Meltano.SingerSchemaMessage,
+    ) -> r[bool]:
         """Handle one SCHEMA message."""
         typed_schema = m.Meltano.SingerSchemaMessage.model_validate(message)
         add_result = self.catalog_manager.add_stream(typed_schema)
@@ -146,7 +166,10 @@ class FlextTargetOracleWms:
             self._schemas[typed_schema.stream] = typed_schema
         return init_result
 
-    def handle_state_message(self, message: m.Meltano.SingerStateMessage) -> r[bool]:
+    def handle_state_message(
+        self,
+        message: m.Meltano.SingerStateMessage,
+    ) -> r[bool]:
         """Handle one STATE message."""
         typed_state = m.Meltano.SingerStateMessage.model_validate(message)
         logger.debug("Received state", state=str(typed_state.value))
@@ -179,7 +202,9 @@ class FlextTargetOracleWms:
                     if record_result.is_failure:
                         return record_result
                 elif message_type == self._state_type:
-                    parsed_state = m.Meltano.SingerStateMessage.model_validate(message)
+                    parsed_state = m.Meltano.SingerStateMessage.model_validate(
+                        message,
+                    )
                     state_result = self.handle_state_message(parsed_state)
                     if state_result.is_failure:
                         return state_result
@@ -197,7 +222,7 @@ class FlextTargetOracleWms:
 
 
 __all__ = [
-    "FlextTargetOracleWms",
-    "FlextTargetOracleWmsCatalogManager",
-    "FlextTargetOracleWmsStreamProcessor",
+    "CatalogManager",
+    "StreamProcessor",
+    "Target",
 ]
