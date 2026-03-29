@@ -55,7 +55,7 @@ class WMSTypeConverter:
                     float(as_text) if "." in as_text else int(as_text)
                 )
                 return r[t.Container].ok(converted)
-            except (TypeError, ValueError):
+            except c.Meltano.Singer.SAFE_EXCEPTIONS:
                 return r[t.Container].ok(str(value))
         return r[t.Container].ok(str(value))
 
