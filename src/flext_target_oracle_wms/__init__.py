@@ -81,22 +81,58 @@ if TYPE_CHECKING:
 _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "CatalogManager": ["flext_target_oracle_wms._utilities.client", "CatalogManager"],
     "FlextTargetFactory": ["flext_target_oracle_wms.factory", "FlextTargetFactory"],
-    "FlextTargetMonitoringFactory": ["flext_target_oracle_wms.factory", "FlextTargetMonitoringFactory"],
-    "FlextTargetOracleWmsCli": ["flext_target_oracle_wms.cli", "FlextTargetOracleWmsCli"],
-    "FlextTargetOracleWmsConstants": ["flext_target_oracle_wms.constants", "FlextTargetOracleWmsConstants"],
-    "FlextTargetOracleWmsModels": ["flext_target_oracle_wms.models", "FlextTargetOracleWmsModels"],
-    "FlextTargetOracleWmsProtocols": ["flext_target_oracle_wms.protocols", "FlextTargetOracleWmsProtocols"],
-    "FlextTargetOracleWmsSettings": ["flext_target_oracle_wms.target_config", "FlextTargetOracleWmsSettings"],
-    "FlextTargetOracleWmsTypes": ["flext_target_oracle_wms.typings", "FlextTargetOracleWmsTypes"],
-    "FlextTargetOracleWmsUtilities": ["flext_target_oracle_wms.utilities", "FlextTargetOracleWmsUtilities"],
+    "FlextTargetMonitoringFactory": [
+        "flext_target_oracle_wms.factory",
+        "FlextTargetMonitoringFactory",
+    ],
+    "FlextTargetOracleWmsCli": [
+        "flext_target_oracle_wms.cli",
+        "FlextTargetOracleWmsCli",
+    ],
+    "FlextTargetOracleWmsConstants": [
+        "flext_target_oracle_wms.constants",
+        "FlextTargetOracleWmsConstants",
+    ],
+    "FlextTargetOracleWmsModels": [
+        "flext_target_oracle_wms.models",
+        "FlextTargetOracleWmsModels",
+    ],
+    "FlextTargetOracleWmsProtocols": [
+        "flext_target_oracle_wms.protocols",
+        "FlextTargetOracleWmsProtocols",
+    ],
+    "FlextTargetOracleWmsSettings": [
+        "flext_target_oracle_wms.target_config",
+        "FlextTargetOracleWmsSettings",
+    ],
+    "FlextTargetOracleWmsTypes": [
+        "flext_target_oracle_wms.typings",
+        "FlextTargetOracleWmsTypes",
+    ],
+    "FlextTargetOracleWmsUtilities": [
+        "flext_target_oracle_wms.utilities",
+        "FlextTargetOracleWmsUtilities",
+    ],
     "MIN_CONFIG_ARG_COUNT": ["flext_target_oracle_wms.cli", "MIN_CONFIG_ARG_COUNT"],
     "StreamProcessor": ["flext_target_oracle_wms._utilities.client", "StreamProcessor"],
     "Target": ["flext_target_oracle_wms._utilities.client", "Target"],
     "Validation": ["flext_target_oracle_wms._utilities.helpers", "Validation"],
-    "WMSDataTransformer": ["flext_target_oracle_wms._utilities.helpers", "WMSDataTransformer"],
-    "WMSSchemaMapper": ["flext_target_oracle_wms._utilities.helpers", "WMSSchemaMapper"],
-    "WMSTableManager": ["flext_target_oracle_wms._utilities.helpers", "WMSTableManager"],
-    "WMSTypeConverter": ["flext_target_oracle_wms._utilities.helpers", "WMSTypeConverter"],
+    "WMSDataTransformer": [
+        "flext_target_oracle_wms._utilities.helpers",
+        "WMSDataTransformer",
+    ],
+    "WMSSchemaMapper": [
+        "flext_target_oracle_wms._utilities.helpers",
+        "WMSSchemaMapper",
+    ],
+    "WMSTableManager": [
+        "flext_target_oracle_wms._utilities.helpers",
+        "WMSTableManager",
+    ],
+    "WMSTypeConverter": [
+        "flext_target_oracle_wms._utilities.helpers",
+        "WMSTypeConverter",
+    ],
     "__all__": ["flext_target_oracle_wms.__version__", "__all__"],
     "__author__": ["flext_target_oracle_wms.__version__", "__author__"],
     "__author_email__": ["flext_target_oracle_wms.__version__", "__author_email__"],
@@ -108,11 +144,26 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "__version_info__": ["flext_target_oracle_wms.__version__", "__version_info__"],
     "_utilities": ["flext_target_oracle_wms._utilities", ""],
     "c": ["flext_target_oracle_wms.constants", "FlextTargetOracleWmsConstants"],
-    "create_monitored_oracle_wms_target": ["flext_target_oracle_wms.factory", "create_monitored_oracle_wms_target"],
-    "create_oracle_wms_target": ["flext_target_oracle_wms.factory", "create_oracle_wms_target"],
-    "create_record_message": ["flext_target_oracle_wms._utilities.helpers", "create_record_message"],
-    "create_schema_message": ["flext_target_oracle_wms._utilities.helpers", "create_schema_message"],
-    "create_state_message": ["flext_target_oracle_wms._utilities.helpers", "create_state_message"],
+    "create_monitored_oracle_wms_target": [
+        "flext_target_oracle_wms.factory",
+        "create_monitored_oracle_wms_target",
+    ],
+    "create_oracle_wms_target": [
+        "flext_target_oracle_wms.factory",
+        "create_oracle_wms_target",
+    ],
+    "create_record_message": [
+        "flext_target_oracle_wms._utilities.helpers",
+        "create_record_message",
+    ],
+    "create_schema_message": [
+        "flext_target_oracle_wms._utilities.helpers",
+        "create_schema_message",
+    ],
+    "create_state_message": [
+        "flext_target_oracle_wms._utilities.helpers",
+        "create_state_message",
+    ],
     "d": ["flext_meltano", "d"],
     "e": ["flext_meltano", "e"],
     "h": ["flext_meltano", "h"],

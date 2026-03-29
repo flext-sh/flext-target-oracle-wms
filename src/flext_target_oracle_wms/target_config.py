@@ -6,7 +6,7 @@ from collections.abc import Mapping
 
 from flext_core import r
 
-from flext_target_oracle_wms import m, t
+from flext_target_oracle_wms import c, m, t
 
 
 class FlextTargetOracleWmsSettings(m.TargetOracleWms.WmsTargetConfig):
@@ -25,15 +25,7 @@ class FlextTargetOracleWmsSettings(m.TargetOracleWms.WmsTargetConfig):
         try:
             data: Mapping[str, t.ContainerValue] = dict(overrides) if overrides else {}
             settings = FlextTargetOracleWmsSettings.model_validate(data)
-        except (
-            ValueError,
-            TypeError,
-            KeyError,
-            AttributeError,
-            OSError,
-            RuntimeError,
-            ImportError,
-        ) as exc:
+        except c.Meltano.Singer.SAFE_EXCEPTIONS as exc:
             return r[FlextTargetOracleWmsSettings].fail(
                 f"Invalid settings overrides: {exc}",
             )

@@ -7,7 +7,7 @@ from typing import ClassVar
 
 from flext_core import FlextLogger, r
 
-from flext_target_oracle_wms import Target as FlextTargetOracleWms, m, t
+from flext_target_oracle_wms import Target as FlextTargetOracleWms, c, m, t
 
 logger = FlextLogger(__name__)
 
@@ -52,15 +52,7 @@ class FlextTargetFactory:
                 **config,
                 "additional_config": additional or None,
             })
-        except (
-            ValueError,
-            TypeError,
-            KeyError,
-            AttributeError,
-            OSError,
-            RuntimeError,
-            ImportError,
-        ) as exc:
+        except c.Meltano.Singer.SAFE_EXCEPTIONS as exc:
             return r[FlextTargetOracleWms].fail(str(exc))
         return cls.create_target(request)
 

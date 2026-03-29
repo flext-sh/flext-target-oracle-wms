@@ -34,13 +34,34 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "StreamProcessor": ["flext_target_oracle_wms._utilities.client", "StreamProcessor"],
     "Target": ["flext_target_oracle_wms._utilities.client", "Target"],
     "Validation": ["flext_target_oracle_wms._utilities.helpers", "Validation"],
-    "WMSDataTransformer": ["flext_target_oracle_wms._utilities.helpers", "WMSDataTransformer"],
-    "WMSSchemaMapper": ["flext_target_oracle_wms._utilities.helpers", "WMSSchemaMapper"],
-    "WMSTableManager": ["flext_target_oracle_wms._utilities.helpers", "WMSTableManager"],
-    "WMSTypeConverter": ["flext_target_oracle_wms._utilities.helpers", "WMSTypeConverter"],
-    "create_record_message": ["flext_target_oracle_wms._utilities.helpers", "create_record_message"],
-    "create_schema_message": ["flext_target_oracle_wms._utilities.helpers", "create_schema_message"],
-    "create_state_message": ["flext_target_oracle_wms._utilities.helpers", "create_state_message"],
+    "WMSDataTransformer": [
+        "flext_target_oracle_wms._utilities.helpers",
+        "WMSDataTransformer",
+    ],
+    "WMSSchemaMapper": [
+        "flext_target_oracle_wms._utilities.helpers",
+        "WMSSchemaMapper",
+    ],
+    "WMSTableManager": [
+        "flext_target_oracle_wms._utilities.helpers",
+        "WMSTableManager",
+    ],
+    "WMSTypeConverter": [
+        "flext_target_oracle_wms._utilities.helpers",
+        "WMSTypeConverter",
+    ],
+    "create_record_message": [
+        "flext_target_oracle_wms._utilities.helpers",
+        "create_record_message",
+    ],
+    "create_schema_message": [
+        "flext_target_oracle_wms._utilities.helpers",
+        "create_schema_message",
+    ],
+    "create_state_message": [
+        "flext_target_oracle_wms._utilities.helpers",
+        "create_state_message",
+    ],
 }
 
 __all__ = [
