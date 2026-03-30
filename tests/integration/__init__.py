@@ -16,26 +16,14 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import install_lazy_exports
 
 if TYPE_CHECKING:
-    from tests.integration import test_oracle as test_oracle
-    from tests.integration.test_oracle import (
-        TestMultiStreamIntegration as TestMultiStreamIntegration,
-        TestTargetLifecycle as TestTargetLifecycle,
-    )
+    from tests.integration import test_oracle
+    from tests.integration.test_oracle import *
 
-_LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
-    "TestMultiStreamIntegration": [
-        "tests.integration.test_oracle",
-        "TestMultiStreamIntegration",
-    ],
-    "TestTargetLifecycle": ["tests.integration.test_oracle", "TestTargetLifecycle"],
-    "test_oracle": ["tests.integration.test_oracle", ""],
+_LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
+    "TestMultiStreamIntegration": "tests.integration.test_oracle",
+    "TestTargetLifecycle": "tests.integration.test_oracle",
+    "test_oracle": "tests.integration.test_oracle",
 }
 
-_EXPORTS: Sequence[str] = [
-    "TestMultiStreamIntegration",
-    "TestTargetLifecycle",
-    "test_oracle",
-]
 
-
-install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, _EXPORTS)
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, sorted(_LAZY_IMPORTS))
