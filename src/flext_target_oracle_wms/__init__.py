@@ -9,166 +9,116 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from collections.abc import Mapping, MutableMapping, Sequence
+from collections.abc import Mapping, Sequence
 from typing import TYPE_CHECKING
 
-from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
+from flext_core.lazy import install_lazy_exports
 
 from flext_target_oracle_wms.__version__ import (
-    __author__,
-    __author_email__,
-    __description__,
-    __license__,
-    __title__,
-    __url__,
-    __version__,
-    __version_info__,
+    __author__ as __author__,
+    __author_email__ as __author_email__,
+    __description__ as __description__,
+    __license__ as __license__,
+    __title__ as __title__,
+    __url__ as __url__,
+    __version__ as __version__,
+    __version_info__ as __version_info__,
 )
 
 if TYPE_CHECKING:
-    from flext_core import FlextTypes
     from flext_meltano import d, e, h, r, s, x
 
     from flext_target_oracle_wms import (
-        _utilities,
-        cli,
-        constants,
-        factory,
-        models,
-        protocols,
-        target_config,
-        typings,
-        utilities,
+        _utilities as _utilities,
+        cli as cli,
+        constants as constants,
+        factory as factory,
+        models as models,
+        protocols as protocols,
+        target_config as target_config,
+        typings as typings,
+        utilities as utilities,
     )
-    from flext_target_oracle_wms._utilities import client, helpers
+    from flext_target_oracle_wms._utilities import client as client, helpers as helpers
     from flext_target_oracle_wms._utilities.client import (
-        CatalogManager,
-        StreamProcessor,
-        Target,
+        CatalogManager as CatalogManager,
+        StreamProcessor as StreamProcessor,
+        Target as Target,
     )
     from flext_target_oracle_wms._utilities.helpers import (
-        Validation,
-        WMSDataTransformer,
-        WMSSchemaMapper,
-        WMSTableManager,
-        WMSTypeConverter,
-        create_record_message,
-        create_schema_message,
-        create_state_message,
+        Validation as Validation,
+        WMSDataTransformer as WMSDataTransformer,
+        WMSSchemaMapper as WMSSchemaMapper,
+        WMSTableManager as WMSTableManager,
+        WMSTypeConverter as WMSTypeConverter,
+        create_record_message as create_record_message,
+        create_schema_message as create_schema_message,
+        create_state_message as create_state_message,
     )
     from flext_target_oracle_wms.cli import (
-        MIN_CONFIG_ARG_COUNT,
-        FlextTargetOracleWmsCli,
-        main,
+        MIN_CONFIG_ARG_COUNT as MIN_CONFIG_ARG_COUNT,
+        FlextTargetOracleWmsCli as FlextTargetOracleWmsCli,
+        main as main,
     )
     from flext_target_oracle_wms.constants import (
-        FlextTargetOracleWmsConstants,
+        FlextTargetOracleWmsConstants as FlextTargetOracleWmsConstants,
         FlextTargetOracleWmsConstants as c,
     )
     from flext_target_oracle_wms.factory import (
-        FlextTargetFactory,
-        FlextTargetMonitoringFactory,
-        create_monitored_oracle_wms_target,
-        create_oracle_wms_target,
+        FlextTargetFactory as FlextTargetFactory,
+        FlextTargetMonitoringFactory as FlextTargetMonitoringFactory,
+        create_monitored_oracle_wms_target as create_monitored_oracle_wms_target,
+        create_oracle_wms_target as create_oracle_wms_target,
     )
     from flext_target_oracle_wms.models import (
-        FlextTargetOracleWmsModels,
+        FlextTargetOracleWmsModels as FlextTargetOracleWmsModels,
         FlextTargetOracleWmsModels as m,
     )
     from flext_target_oracle_wms.protocols import (
-        FlextTargetOracleWmsProtocols,
+        FlextTargetOracleWmsProtocols as FlextTargetOracleWmsProtocols,
         FlextTargetOracleWmsProtocols as p,
     )
-    from flext_target_oracle_wms.target_config import FlextTargetOracleWmsSettings
+    from flext_target_oracle_wms.target_config import (
+        FlextTargetOracleWmsSettings as FlextTargetOracleWmsSettings,
+    )
     from flext_target_oracle_wms.typings import (
-        FlextTargetOracleWmsTypes,
+        FlextTargetOracleWmsTypes as FlextTargetOracleWmsTypes,
         FlextTargetOracleWmsTypes as t,
     )
     from flext_target_oracle_wms.utilities import (
-        FlextTargetOracleWmsUtilities,
+        FlextTargetOracleWmsUtilities as FlextTargetOracleWmsUtilities,
         FlextTargetOracleWmsUtilities as u,
     )
 
 _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "CatalogManager": ["flext_target_oracle_wms._utilities.client", "CatalogManager"],
     "FlextTargetFactory": ["flext_target_oracle_wms.factory", "FlextTargetFactory"],
-    "FlextTargetMonitoringFactory": [
-        "flext_target_oracle_wms.factory",
-        "FlextTargetMonitoringFactory",
-    ],
-    "FlextTargetOracleWmsCli": [
-        "flext_target_oracle_wms.cli",
-        "FlextTargetOracleWmsCli",
-    ],
-    "FlextTargetOracleWmsConstants": [
-        "flext_target_oracle_wms.constants",
-        "FlextTargetOracleWmsConstants",
-    ],
-    "FlextTargetOracleWmsModels": [
-        "flext_target_oracle_wms.models",
-        "FlextTargetOracleWmsModels",
-    ],
-    "FlextTargetOracleWmsProtocols": [
-        "flext_target_oracle_wms.protocols",
-        "FlextTargetOracleWmsProtocols",
-    ],
-    "FlextTargetOracleWmsSettings": [
-        "flext_target_oracle_wms.target_config",
-        "FlextTargetOracleWmsSettings",
-    ],
-    "FlextTargetOracleWmsTypes": [
-        "flext_target_oracle_wms.typings",
-        "FlextTargetOracleWmsTypes",
-    ],
-    "FlextTargetOracleWmsUtilities": [
-        "flext_target_oracle_wms.utilities",
-        "FlextTargetOracleWmsUtilities",
-    ],
+    "FlextTargetMonitoringFactory": ["flext_target_oracle_wms.factory", "FlextTargetMonitoringFactory"],
+    "FlextTargetOracleWmsCli": ["flext_target_oracle_wms.cli", "FlextTargetOracleWmsCli"],
+    "FlextTargetOracleWmsConstants": ["flext_target_oracle_wms.constants", "FlextTargetOracleWmsConstants"],
+    "FlextTargetOracleWmsModels": ["flext_target_oracle_wms.models", "FlextTargetOracleWmsModels"],
+    "FlextTargetOracleWmsProtocols": ["flext_target_oracle_wms.protocols", "FlextTargetOracleWmsProtocols"],
+    "FlextTargetOracleWmsSettings": ["flext_target_oracle_wms.target_config", "FlextTargetOracleWmsSettings"],
+    "FlextTargetOracleWmsTypes": ["flext_target_oracle_wms.typings", "FlextTargetOracleWmsTypes"],
+    "FlextTargetOracleWmsUtilities": ["flext_target_oracle_wms.utilities", "FlextTargetOracleWmsUtilities"],
     "MIN_CONFIG_ARG_COUNT": ["flext_target_oracle_wms.cli", "MIN_CONFIG_ARG_COUNT"],
     "StreamProcessor": ["flext_target_oracle_wms._utilities.client", "StreamProcessor"],
     "Target": ["flext_target_oracle_wms._utilities.client", "Target"],
     "Validation": ["flext_target_oracle_wms._utilities.helpers", "Validation"],
-    "WMSDataTransformer": [
-        "flext_target_oracle_wms._utilities.helpers",
-        "WMSDataTransformer",
-    ],
-    "WMSSchemaMapper": [
-        "flext_target_oracle_wms._utilities.helpers",
-        "WMSSchemaMapper",
-    ],
-    "WMSTableManager": [
-        "flext_target_oracle_wms._utilities.helpers",
-        "WMSTableManager",
-    ],
-    "WMSTypeConverter": [
-        "flext_target_oracle_wms._utilities.helpers",
-        "WMSTypeConverter",
-    ],
+    "WMSDataTransformer": ["flext_target_oracle_wms._utilities.helpers", "WMSDataTransformer"],
+    "WMSSchemaMapper": ["flext_target_oracle_wms._utilities.helpers", "WMSSchemaMapper"],
+    "WMSTableManager": ["flext_target_oracle_wms._utilities.helpers", "WMSTableManager"],
+    "WMSTypeConverter": ["flext_target_oracle_wms._utilities.helpers", "WMSTypeConverter"],
     "_utilities": ["flext_target_oracle_wms._utilities", ""],
     "c": ["flext_target_oracle_wms.constants", "FlextTargetOracleWmsConstants"],
     "cli": ["flext_target_oracle_wms.cli", ""],
     "client": ["flext_target_oracle_wms._utilities.client", ""],
     "constants": ["flext_target_oracle_wms.constants", ""],
-    "create_monitored_oracle_wms_target": [
-        "flext_target_oracle_wms.factory",
-        "create_monitored_oracle_wms_target",
-    ],
-    "create_oracle_wms_target": [
-        "flext_target_oracle_wms.factory",
-        "create_oracle_wms_target",
-    ],
-    "create_record_message": [
-        "flext_target_oracle_wms._utilities.helpers",
-        "create_record_message",
-    ],
-    "create_schema_message": [
-        "flext_target_oracle_wms._utilities.helpers",
-        "create_schema_message",
-    ],
-    "create_state_message": [
-        "flext_target_oracle_wms._utilities.helpers",
-        "create_state_message",
-    ],
+    "create_monitored_oracle_wms_target": ["flext_target_oracle_wms.factory", "create_monitored_oracle_wms_target"],
+    "create_oracle_wms_target": ["flext_target_oracle_wms.factory", "create_oracle_wms_target"],
+    "create_record_message": ["flext_target_oracle_wms._utilities.helpers", "create_record_message"],
+    "create_schema_message": ["flext_target_oracle_wms._utilities.helpers", "create_schema_message"],
+    "create_state_message": ["flext_target_oracle_wms._utilities.helpers", "create_state_message"],
     "d": ["flext_meltano", "d"],
     "e": ["flext_meltano", "e"],
     "factory": ["flext_target_oracle_wms.factory", ""],
@@ -189,8 +139,7 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "x": ["flext_meltano", "x"],
 }
 
-__all__ = [
-    "MIN_CONFIG_ARG_COUNT",
+_EXPORTS: Sequence[str] = [
     "CatalogManager",
     "FlextTargetFactory",
     "FlextTargetMonitoringFactory",
@@ -201,6 +150,7 @@ __all__ = [
     "FlextTargetOracleWmsSettings",
     "FlextTargetOracleWmsTypes",
     "FlextTargetOracleWmsUtilities",
+    "MIN_CONFIG_ARG_COUNT",
     "StreamProcessor",
     "Target",
     "Validation",
@@ -247,41 +197,4 @@ __all__ = [
 ]
 
 
-_LAZY_CACHE: MutableMapping[str, FlextTypes.ModuleExport] = {}
-
-
-def __getattr__(name: str) -> FlextTypes.ModuleExport:
-    """Lazy-load module attributes on first access (PEP 562).
-
-    A local cache ``_LAZY_CACHE`` persists resolved objects across repeated
-    accesses during process lifetime.
-
-    Args:
-        name: Attribute name requested by dir()/import.
-
-    Returns:
-        Lazy-loaded module export type.
-
-    Raises:
-        AttributeError: If attribute not registered.
-
-    """
-    if name in _LAZY_CACHE:
-        return _LAZY_CACHE[name]
-
-    value = lazy_getattr(name, _LAZY_IMPORTS, globals(), __name__)
-    _LAZY_CACHE[name] = value
-    return value
-
-
-def __dir__() -> Sequence[str]:
-    """Return list of available attributes for dir() and autocomplete.
-
-    Returns:
-        List of public names from module exports.
-
-    """
-    return sorted(__all__)
-
-
-cleanup_submodule_namespace(__name__, _LAZY_IMPORTS)
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, _EXPORTS)

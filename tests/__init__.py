@@ -5,291 +5,209 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping, MutableMapping, Sequence
+from collections.abc import Mapping, Sequence
 from typing import TYPE_CHECKING
 
-from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
+from flext_core.lazy import install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_core import FlextTypes
     from flext_tests import d, e, h, r, s, x
 
     from tests import (
-        conftest,
-        constants,
-        examples,
-        integration,
-        models,
-        protocols,
-        test_benchmarks,
-        test_catalog,
-        test_features,
-        test_oracle_wms_cli,
-        test_oracle_wms_factory,
-        test_oracle_wms_init,
-        test_quality,
-        test_sinks,
-        test_stream,
-        test_structure,
-        test_target,
-        test_wms_patterns,
-        test_workflow,
-        typings,
-        utilities,
+        conftest as conftest,
+        constants as constants,
+        examples as examples,
+        integration as integration,
+        models as models,
+        protocols as protocols,
+        test_benchmarks as test_benchmarks,
+        test_catalog as test_catalog,
+        test_features as test_features,
+        test_oracle_wms_cli as test_oracle_wms_cli,
+        test_oracle_wms_factory as test_oracle_wms_factory,
+        test_oracle_wms_init as test_oracle_wms_init,
+        test_quality as test_quality,
+        test_sinks as test_sinks,
+        test_stream as test_stream,
+        test_structure as test_structure,
+        test_target as test_target,
+        test_wms_patterns as test_wms_patterns,
+        test_workflow as test_workflow,
+        typings as typings,
+        utilities as utilities,
     )
     from tests.conftest import (
-        config,
-        sample_inventory_records,
-        sample_order_records,
-        sample_task_records,
-        singer_record_message,
-        singer_schema,
-        singer_schema_message,
-        singer_state_message,
-        temp_output_dir,
+        config as config,
+        sample_inventory_records as sample_inventory_records,
+        sample_order_records as sample_order_records,
+        sample_task_records as sample_task_records,
+        singer_record_message as singer_record_message,
+        singer_schema as singer_schema,
+        singer_schema_message as singer_schema_message,
+        singer_state_message as singer_state_message,
+        temp_output_dir as temp_output_dir,
     )
     from tests.constants import (
-        FlextTargetOracleWmsTestConstants,
+        FlextTargetOracleWmsTestConstants as FlextTargetOracleWmsTestConstants,
         FlextTargetOracleWmsTestConstants as c,
     )
-    from tests.examples import test_examples
+    from tests.examples import test_examples as test_examples
     from tests.examples.test_examples import (
-        TestExamplesCodeQuality,
-        TestExamplesFlextIntegration,
-        TestExamplesImportability,
-        TestExamplesStructure,
+        TestExamplesCodeQuality as TestExamplesCodeQuality,
+        TestExamplesFlextIntegration as TestExamplesFlextIntegration,
+        TestExamplesImportability as TestExamplesImportability,
+        TestExamplesStructure as TestExamplesStructure,
     )
-    from tests.integration import test_oracle
+    from tests.integration import test_oracle as test_oracle
     from tests.integration.test_oracle import (
-        TestMultiStreamIntegration,
-        TestTargetLifecycle,
+        TestMultiStreamIntegration as TestMultiStreamIntegration,
+        TestTargetLifecycle as TestTargetLifecycle,
     )
     from tests.models import (
-        FlextTargetOracleWmsTestModels,
+        FlextTargetOracleWmsTestModels as FlextTargetOracleWmsTestModels,
         FlextTargetOracleWmsTestModels as m,
-        tm,
+        tm as tm,
     )
     from tests.protocols import (
-        FlextTargetOracleWmsTestProtocols,
+        FlextTargetOracleWmsTestProtocols as FlextTargetOracleWmsTestProtocols,
         FlextTargetOracleWmsTestProtocols as p,
     )
     from tests.test_benchmarks import (
-        PERF_ITERATIONS,
-        PERF_THRESHOLD_SEC,
-        TestCatalogBenchmarks,
-        TestDataTransformerBenchmarks,
-        TestFactoryBenchmarks,
-        TestSchemaMapperBenchmarks,
-        TestTableManagerBenchmarks,
-        TestTypeConverterBenchmarks,
+        PERF_ITERATIONS as PERF_ITERATIONS,
+        PERF_THRESHOLD_SEC as PERF_THRESHOLD_SEC,
+        TestCatalogBenchmarks as TestCatalogBenchmarks,
+        TestDataTransformerBenchmarks as TestDataTransformerBenchmarks,
+        TestFactoryBenchmarks as TestFactoryBenchmarks,
+        TestSchemaMapperBenchmarks as TestSchemaMapperBenchmarks,
+        TestTableManagerBenchmarks as TestTableManagerBenchmarks,
+        TestTypeConverterBenchmarks as TestTypeConverterBenchmarks,
     )
     from tests.test_catalog import (
-        TestCatalogAddStream,
-        TestCatalogGetStream,
-        TestCatalogMultipleStreams,
+        TestCatalogAddStream as TestCatalogAddStream,
+        TestCatalogGetStream as TestCatalogGetStream,
+        TestCatalogMultipleStreams as TestCatalogMultipleStreams,
     )
     from tests.test_features import (
-        TestTargetFeatures,
-        TestTransformerFeatures,
-        TestUtilitiesFeatures,
+        TestTargetFeatures as TestTargetFeatures,
+        TestTransformerFeatures as TestTransformerFeatures,
+        TestUtilitiesFeatures as TestUtilitiesFeatures,
     )
     from tests.test_oracle_wms_cli import (
-        TestMain,
-        TestOracleWMSTargetCliExecute,
-        TestOracleWMSTargetCliInit,
-        TestOracleWMSTargetCliLoadConfig,
+        TestMain as TestMain,
+        TestOracleWMSTargetCliExecute as TestOracleWMSTargetCliExecute,
+        TestOracleWMSTargetCliInit as TestOracleWMSTargetCliInit,
+        TestOracleWMSTargetCliLoadConfig as TestOracleWMSTargetCliLoadConfig,
     )
     from tests.test_oracle_wms_factory import (
-        TestConvenienceFunctions,
-        TestFlextTargetFactory,
-        TestFlextTargetMonitoringFactory,
-        TestMonitoredTargetCreationRequest,
-        TestTargetCreationRequest,
+        TestConvenienceFunctions as TestConvenienceFunctions,
+        TestFlextTargetFactory as TestFlextTargetFactory,
+        TestFlextTargetMonitoringFactory as TestFlextTargetMonitoringFactory,
+        TestMonitoredTargetCreationRequest as TestMonitoredTargetCreationRequest,
+        TestTargetCreationRequest as TestTargetCreationRequest,
     )
-    from tests.test_oracle_wms_init import TestModuleInit
+    from tests.test_oracle_wms_init import TestModuleInit as TestModuleInit
     from tests.test_quality import (
-        TestClassAttributes,
-        TestConstantsNamespace,
-        TestModelsNamespace,
-        TestProtocolsNamespace,
+        TestClassAttributes as TestClassAttributes,
+        TestConstantsNamespace as TestConstantsNamespace,
+        TestModelsNamespace as TestModelsNamespace,
+        TestProtocolsNamespace as TestProtocolsNamespace,
     )
     from tests.test_sinks import (
-        TestCatalogAndTableIntegration,
-        TestTargetComponentWiring,
-        TestTransformationIntegration,
+        TestCatalogAndTableIntegration as TestCatalogAndTableIntegration,
+        TestTargetComponentWiring as TestTargetComponentWiring,
+        TestTransformationIntegration as TestTransformationIntegration,
     )
     from tests.test_stream import (
-        TestStreamProcessorInitialize,
-        TestStreamProcessorMultipleStreams,
-        TestStreamProcessorRecord,
+        TestStreamProcessorInitialize as TestStreamProcessorInitialize,
+        TestStreamProcessorMultipleStreams as TestStreamProcessorMultipleStreams,
+        TestStreamProcessorRecord as TestStreamProcessorRecord,
     )
     from tests.test_structure import (
-        test_import_from_correct_module,
-        test_no_dual_structure,
+        test_import_from_correct_module as test_import_from_correct_module,
+        test_no_dual_structure as test_no_dual_structure,
     )
     from tests.test_target import (
-        TestTargetHandleRecordMessage,
-        TestTargetHandleSchemaMessage,
-        TestTargetHandleStateMessage,
-        TestTargetInit,
-        TestTargetProcessLines,
-        TestTargetSetupCleanup,
+        TestTargetHandleRecordMessage as TestTargetHandleRecordMessage,
+        TestTargetHandleSchemaMessage as TestTargetHandleSchemaMessage,
+        TestTargetHandleStateMessage as TestTargetHandleStateMessage,
+        TestTargetInit as TestTargetInit,
+        TestTargetProcessLines as TestTargetProcessLines,
+        TestTargetSetupCleanup as TestTargetSetupCleanup,
     )
     from tests.test_wms_patterns import (
-        TestWMSDataTransformer,
-        TestWMSSchemaMapper,
-        TestWMSTableManager,
-        TestWMSTypeConverter,
+        TestWMSDataTransformer as TestWMSDataTransformer,
+        TestWMSSchemaMapper as TestWMSSchemaMapper,
+        TestWMSTableManager as TestWMSTableManager,
+        TestWMSTypeConverter as TestWMSTypeConverter,
     )
     from tests.test_workflow import (
-        TestCliWorkflow,
-        TestErrorWorkflows,
-        TestFullSingerWorkflow,
+        TestCliWorkflow as TestCliWorkflow,
+        TestErrorWorkflows as TestErrorWorkflows,
+        TestFullSingerWorkflow as TestFullSingerWorkflow,
     )
     from tests.typings import (
-        FlextTargetOracleWmsTestTypes,
+        FlextTargetOracleWmsTestTypes as FlextTargetOracleWmsTestTypes,
         FlextTargetOracleWmsTestTypes as t,
     )
     from tests.utilities import (
-        FlextTargetOracleWmsTestUtilities,
+        FlextTargetOracleWmsTestUtilities as FlextTargetOracleWmsTestUtilities,
         FlextTargetOracleWmsTestUtilities as u,
     )
 
 _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
-    "FlextTargetOracleWmsTestConstants": [
-        "tests.constants",
-        "FlextTargetOracleWmsTestConstants",
-    ],
-    "FlextTargetOracleWmsTestModels": [
-        "tests.models",
-        "FlextTargetOracleWmsTestModels",
-    ],
-    "FlextTargetOracleWmsTestProtocols": [
-        "tests.protocols",
-        "FlextTargetOracleWmsTestProtocols",
-    ],
+    "FlextTargetOracleWmsTestConstants": ["tests.constants", "FlextTargetOracleWmsTestConstants"],
+    "FlextTargetOracleWmsTestModels": ["tests.models", "FlextTargetOracleWmsTestModels"],
+    "FlextTargetOracleWmsTestProtocols": ["tests.protocols", "FlextTargetOracleWmsTestProtocols"],
     "FlextTargetOracleWmsTestTypes": ["tests.typings", "FlextTargetOracleWmsTestTypes"],
-    "FlextTargetOracleWmsTestUtilities": [
-        "tests.utilities",
-        "FlextTargetOracleWmsTestUtilities",
-    ],
+    "FlextTargetOracleWmsTestUtilities": ["tests.utilities", "FlextTargetOracleWmsTestUtilities"],
     "PERF_ITERATIONS": ["tests.test_benchmarks", "PERF_ITERATIONS"],
     "PERF_THRESHOLD_SEC": ["tests.test_benchmarks", "PERF_THRESHOLD_SEC"],
     "TestCatalogAddStream": ["tests.test_catalog", "TestCatalogAddStream"],
-    "TestCatalogAndTableIntegration": [
-        "tests.test_sinks",
-        "TestCatalogAndTableIntegration",
-    ],
+    "TestCatalogAndTableIntegration": ["tests.test_sinks", "TestCatalogAndTableIntegration"],
     "TestCatalogBenchmarks": ["tests.test_benchmarks", "TestCatalogBenchmarks"],
     "TestCatalogGetStream": ["tests.test_catalog", "TestCatalogGetStream"],
     "TestCatalogMultipleStreams": ["tests.test_catalog", "TestCatalogMultipleStreams"],
     "TestClassAttributes": ["tests.test_quality", "TestClassAttributes"],
     "TestCliWorkflow": ["tests.test_workflow", "TestCliWorkflow"],
     "TestConstantsNamespace": ["tests.test_quality", "TestConstantsNamespace"],
-    "TestConvenienceFunctions": [
-        "tests.test_oracle_wms_factory",
-        "TestConvenienceFunctions",
-    ],
-    "TestDataTransformerBenchmarks": [
-        "tests.test_benchmarks",
-        "TestDataTransformerBenchmarks",
-    ],
+    "TestConvenienceFunctions": ["tests.test_oracle_wms_factory", "TestConvenienceFunctions"],
+    "TestDataTransformerBenchmarks": ["tests.test_benchmarks", "TestDataTransformerBenchmarks"],
     "TestErrorWorkflows": ["tests.test_workflow", "TestErrorWorkflows"],
-    "TestExamplesCodeQuality": [
-        "tests.examples.test_examples",
-        "TestExamplesCodeQuality",
-    ],
-    "TestExamplesFlextIntegration": [
-        "tests.examples.test_examples",
-        "TestExamplesFlextIntegration",
-    ],
-    "TestExamplesImportability": [
-        "tests.examples.test_examples",
-        "TestExamplesImportability",
-    ],
+    "TestExamplesCodeQuality": ["tests.examples.test_examples", "TestExamplesCodeQuality"],
+    "TestExamplesFlextIntegration": ["tests.examples.test_examples", "TestExamplesFlextIntegration"],
+    "TestExamplesImportability": ["tests.examples.test_examples", "TestExamplesImportability"],
     "TestExamplesStructure": ["tests.examples.test_examples", "TestExamplesStructure"],
     "TestFactoryBenchmarks": ["tests.test_benchmarks", "TestFactoryBenchmarks"],
-    "TestFlextTargetFactory": [
-        "tests.test_oracle_wms_factory",
-        "TestFlextTargetFactory",
-    ],
-    "TestFlextTargetMonitoringFactory": [
-        "tests.test_oracle_wms_factory",
-        "TestFlextTargetMonitoringFactory",
-    ],
+    "TestFlextTargetFactory": ["tests.test_oracle_wms_factory", "TestFlextTargetFactory"],
+    "TestFlextTargetMonitoringFactory": ["tests.test_oracle_wms_factory", "TestFlextTargetMonitoringFactory"],
     "TestFullSingerWorkflow": ["tests.test_workflow", "TestFullSingerWorkflow"],
     "TestMain": ["tests.test_oracle_wms_cli", "TestMain"],
     "TestModelsNamespace": ["tests.test_quality", "TestModelsNamespace"],
     "TestModuleInit": ["tests.test_oracle_wms_init", "TestModuleInit"],
-    "TestMonitoredTargetCreationRequest": [
-        "tests.test_oracle_wms_factory",
-        "TestMonitoredTargetCreationRequest",
-    ],
-    "TestMultiStreamIntegration": [
-        "tests.integration.test_oracle",
-        "TestMultiStreamIntegration",
-    ],
-    "TestOracleWMSTargetCliExecute": [
-        "tests.test_oracle_wms_cli",
-        "TestOracleWMSTargetCliExecute",
-    ],
-    "TestOracleWMSTargetCliInit": [
-        "tests.test_oracle_wms_cli",
-        "TestOracleWMSTargetCliInit",
-    ],
-    "TestOracleWMSTargetCliLoadConfig": [
-        "tests.test_oracle_wms_cli",
-        "TestOracleWMSTargetCliLoadConfig",
-    ],
+    "TestMonitoredTargetCreationRequest": ["tests.test_oracle_wms_factory", "TestMonitoredTargetCreationRequest"],
+    "TestMultiStreamIntegration": ["tests.integration.test_oracle", "TestMultiStreamIntegration"],
+    "TestOracleWMSTargetCliExecute": ["tests.test_oracle_wms_cli", "TestOracleWMSTargetCliExecute"],
+    "TestOracleWMSTargetCliInit": ["tests.test_oracle_wms_cli", "TestOracleWMSTargetCliInit"],
+    "TestOracleWMSTargetCliLoadConfig": ["tests.test_oracle_wms_cli", "TestOracleWMSTargetCliLoadConfig"],
     "TestProtocolsNamespace": ["tests.test_quality", "TestProtocolsNamespace"],
-    "TestSchemaMapperBenchmarks": [
-        "tests.test_benchmarks",
-        "TestSchemaMapperBenchmarks",
-    ],
-    "TestStreamProcessorInitialize": [
-        "tests.test_stream",
-        "TestStreamProcessorInitialize",
-    ],
-    "TestStreamProcessorMultipleStreams": [
-        "tests.test_stream",
-        "TestStreamProcessorMultipleStreams",
-    ],
+    "TestSchemaMapperBenchmarks": ["tests.test_benchmarks", "TestSchemaMapperBenchmarks"],
+    "TestStreamProcessorInitialize": ["tests.test_stream", "TestStreamProcessorInitialize"],
+    "TestStreamProcessorMultipleStreams": ["tests.test_stream", "TestStreamProcessorMultipleStreams"],
     "TestStreamProcessorRecord": ["tests.test_stream", "TestStreamProcessorRecord"],
-    "TestTableManagerBenchmarks": [
-        "tests.test_benchmarks",
-        "TestTableManagerBenchmarks",
-    ],
+    "TestTableManagerBenchmarks": ["tests.test_benchmarks", "TestTableManagerBenchmarks"],
     "TestTargetComponentWiring": ["tests.test_sinks", "TestTargetComponentWiring"],
-    "TestTargetCreationRequest": [
-        "tests.test_oracle_wms_factory",
-        "TestTargetCreationRequest",
-    ],
+    "TestTargetCreationRequest": ["tests.test_oracle_wms_factory", "TestTargetCreationRequest"],
     "TestTargetFeatures": ["tests.test_features", "TestTargetFeatures"],
-    "TestTargetHandleRecordMessage": [
-        "tests.test_target",
-        "TestTargetHandleRecordMessage",
-    ],
-    "TestTargetHandleSchemaMessage": [
-        "tests.test_target",
-        "TestTargetHandleSchemaMessage",
-    ],
-    "TestTargetHandleStateMessage": [
-        "tests.test_target",
-        "TestTargetHandleStateMessage",
-    ],
+    "TestTargetHandleRecordMessage": ["tests.test_target", "TestTargetHandleRecordMessage"],
+    "TestTargetHandleSchemaMessage": ["tests.test_target", "TestTargetHandleSchemaMessage"],
+    "TestTargetHandleStateMessage": ["tests.test_target", "TestTargetHandleStateMessage"],
     "TestTargetInit": ["tests.test_target", "TestTargetInit"],
     "TestTargetLifecycle": ["tests.integration.test_oracle", "TestTargetLifecycle"],
     "TestTargetProcessLines": ["tests.test_target", "TestTargetProcessLines"],
     "TestTargetSetupCleanup": ["tests.test_target", "TestTargetSetupCleanup"],
-    "TestTransformationIntegration": [
-        "tests.test_sinks",
-        "TestTransformationIntegration",
-    ],
+    "TestTransformationIntegration": ["tests.test_sinks", "TestTransformationIntegration"],
     "TestTransformerFeatures": ["tests.test_features", "TestTransformerFeatures"],
-    "TestTypeConverterBenchmarks": [
-        "tests.test_benchmarks",
-        "TestTypeConverterBenchmarks",
-    ],
+    "TestTypeConverterBenchmarks": ["tests.test_benchmarks", "TestTypeConverterBenchmarks"],
     "TestUtilitiesFeatures": ["tests.test_features", "TestUtilitiesFeatures"],
     "TestWMSDataTransformer": ["tests.test_wms_patterns", "TestWMSDataTransformer"],
     "TestWMSSchemaMapper": ["tests.test_wms_patterns", "TestWMSSchemaMapper"],
@@ -323,10 +241,7 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "test_catalog": ["tests.test_catalog", ""],
     "test_examples": ["tests.examples.test_examples", ""],
     "test_features": ["tests.test_features", ""],
-    "test_import_from_correct_module": [
-        "tests.test_structure",
-        "test_import_from_correct_module",
-    ],
+    "test_import_from_correct_module": ["tests.test_structure", "test_import_from_correct_module"],
     "test_no_dual_structure": ["tests.test_structure", "test_no_dual_structure"],
     "test_oracle": ["tests.integration.test_oracle", ""],
     "test_oracle_wms_cli": ["tests.test_oracle_wms_cli", ""],
@@ -346,14 +261,14 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "x": ["flext_tests", "x"],
 }
 
-__all__ = [
-    "PERF_ITERATIONS",
-    "PERF_THRESHOLD_SEC",
+_EXPORTS: Sequence[str] = [
     "FlextTargetOracleWmsTestConstants",
     "FlextTargetOracleWmsTestModels",
     "FlextTargetOracleWmsTestProtocols",
     "FlextTargetOracleWmsTestTypes",
     "FlextTargetOracleWmsTestUtilities",
+    "PERF_ITERATIONS",
+    "PERF_THRESHOLD_SEC",
     "TestCatalogAddStream",
     "TestCatalogAndTableIntegration",
     "TestCatalogBenchmarks",
@@ -454,41 +369,4 @@ __all__ = [
 ]
 
 
-_LAZY_CACHE: MutableMapping[str, FlextTypes.ModuleExport] = {}
-
-
-def __getattr__(name: str) -> FlextTypes.ModuleExport:
-    """Lazy-load module attributes on first access (PEP 562).
-
-    A local cache ``_LAZY_CACHE`` persists resolved objects across repeated
-    accesses during process lifetime.
-
-    Args:
-        name: Attribute name requested by dir()/import.
-
-    Returns:
-        Lazy-loaded module export type.
-
-    Raises:
-        AttributeError: If attribute not registered.
-
-    """
-    if name in _LAZY_CACHE:
-        return _LAZY_CACHE[name]
-
-    value = lazy_getattr(name, _LAZY_IMPORTS, globals(), __name__)
-    _LAZY_CACHE[name] = value
-    return value
-
-
-def __dir__() -> Sequence[str]:
-    """Return list of available attributes for dir() and autocomplete.
-
-    Returns:
-        List of public names from module exports.
-
-    """
-    return sorted(__all__)
-
-
-cleanup_submodule_namespace(__name__, _LAZY_IMPORTS)
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, _EXPORTS)
