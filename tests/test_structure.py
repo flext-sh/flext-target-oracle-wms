@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import importlib.util
 
-from flext_target_oracle_wms._utilities.client import Target as FlextTargetOracleWms
+from flext_target_oracle_wms import Target as FlextTargetOracleWms
 
 
 def test_import_from_correct_module() -> None:

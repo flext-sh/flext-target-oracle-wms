@@ -20,7 +20,6 @@ if TYPE_CHECKING:
 
     from flext_target_oracle_wms import _utilities
     from flext_target_oracle_wms.__version__ import (
-        __all__,
         __author__,
         __author_email__,
         __description__,
@@ -133,7 +132,6 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
         "flext_target_oracle_wms._utilities.helpers",
         "WMSTypeConverter",
     ],
-    "__all__": ["flext_target_oracle_wms.__version__", "__all__"],
     "__author__": ["flext_target_oracle_wms.__version__", "__author__"],
     "__author_email__": ["flext_target_oracle_wms.__version__", "__author_email__"],
     "__description__": ["flext_target_oracle_wms.__version__", "__description__"],
@@ -196,7 +194,6 @@ __all__ = [
     "WMSSchemaMapper",
     "WMSTableManager",
     "WMSTypeConverter",
-    "__all__",
     "__author__",
     "__author_email__",
     "__description__",

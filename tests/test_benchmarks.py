@@ -11,11 +11,13 @@ from __future__ import annotations
 import time
 from unittest.mock import MagicMock, patch
 
-from flext_target_oracle_wms import m, u
-from flext_target_oracle_wms._utilities.client import (
+from flext_target_oracle_wms import (
     CatalogManager as FlextTargetOracleWmsCatalogManager,
+    FlextTargetFactory,
+    create_oracle_wms_target,
+    m,
+    u,
 )
-from flext_target_oracle_wms.factory import FlextTargetFactory, create_oracle_wms_target
 
 PERF_ITERATIONS = 500
 PERF_THRESHOLD_SEC = 5.0

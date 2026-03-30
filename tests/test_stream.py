@@ -10,9 +10,10 @@ from unittest.mock import MagicMock
 
 from flext_core import r
 
-from flext_target_oracle_wms import m, u
-from flext_target_oracle_wms._utilities.client import (
+from flext_target_oracle_wms import (
     StreamProcessor as FlextTargetOracleWmsStreamProcessor,
+    m,
+    u,
 )
 from tests import t
 

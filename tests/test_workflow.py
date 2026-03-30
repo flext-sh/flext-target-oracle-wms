@@ -11,8 +11,10 @@ from unittest.mock import MagicMock, patch
 
 import orjson
 
-from flext_target_oracle_wms._utilities.client import Target as FlextTargetOracleWms
-from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
+from flext_target_oracle_wms import (
+    FlextTargetOracleWmsCli,
+    Target as FlextTargetOracleWms,
+)
 from tests import t
 
 

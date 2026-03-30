@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from flext_tests import FlextTestsTypes
 
-from flext_target_oracle_wms.typings import FlextTargetOracleWmsTypes
+from flext_target_oracle_wms import FlextTargetOracleWmsTypes
 
 
 class FlextTargetOracleWmsTestTypes(FlextTestsTypes, FlextTargetOracleWmsTypes):
