@@ -10,30 +10,10 @@ from typing import TYPE_CHECKING
 
 from flext_core.lazy import install_lazy_exports
 
-if TYPE_CHECKING:
-    from flext_tests import *
+from tests.examples import _LAZY_IMPORTS as _CHILD_LAZY_0
+from tests.integration import _LAZY_IMPORTS as _CHILD_LAZY_1
 
-    from tests import (
-        conftest,
-        constants,
-        models,
-        protocols,
-        test_benchmarks,
-        test_catalog,
-        test_features,
-        test_oracle_wms_cli,
-        test_oracle_wms_factory,
-        test_oracle_wms_init,
-        test_quality,
-        test_sinks,
-        test_stream,
-        test_structure,
-        test_target,
-        test_wms_patterns,
-        test_workflow,
-        typings,
-        utilities,
-    )
+if TYPE_CHECKING:
     from tests.conftest import *
     from tests.constants import *
     from tests.examples import *
@@ -57,6 +37,8 @@ if TYPE_CHECKING:
     from tests.utilities import *
 
 _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
+    **_CHILD_LAZY_0,
+    **_CHILD_LAZY_1,
     "FlextTargetOracleWmsTestConstants": "tests.constants",
     "FlextTargetOracleWmsTestModels": "tests.models",
     "FlextTargetOracleWmsTestProtocols": "tests.protocols",
@@ -75,10 +57,6 @@ _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
     "TestConvenienceFunctions": "tests.test_oracle_wms_factory",
     "TestDataTransformerBenchmarks": "tests.test_benchmarks",
     "TestErrorWorkflows": "tests.test_workflow",
-    "TestExamplesCodeQuality": "tests.examples.test_examples",
-    "TestExamplesFlextIntegration": "tests.examples.test_examples",
-    "TestExamplesImportability": "tests.examples.test_examples",
-    "TestExamplesStructure": "tests.examples.test_examples",
     "TestFactoryBenchmarks": "tests.test_benchmarks",
     "TestFlextTargetFactory": "tests.test_oracle_wms_factory",
     "TestFlextTargetMonitoringFactory": "tests.test_oracle_wms_factory",
@@ -87,7 +65,6 @@ _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
     "TestModelsNamespace": "tests.test_quality",
     "TestModuleInit": "tests.test_oracle_wms_init",
     "TestMonitoredTargetCreationRequest": "tests.test_oracle_wms_factory",
-    "TestMultiStreamIntegration": "tests.integration.test_oracle",
     "TestOracleWMSTargetCliExecute": "tests.test_oracle_wms_cli",
     "TestOracleWMSTargetCliInit": "tests.test_oracle_wms_cli",
     "TestOracleWMSTargetCliLoadConfig": "tests.test_oracle_wms_cli",
@@ -104,7 +81,6 @@ _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
     "TestTargetHandleSchemaMessage": "tests.test_target",
     "TestTargetHandleStateMessage": "tests.test_target",
     "TestTargetInit": "tests.test_target",
-    "TestTargetLifecycle": "tests.integration.test_oracle",
     "TestTargetProcessLines": "tests.test_target",
     "TestTargetSetupCleanup": "tests.test_target",
     "TestTransformationIntegration": "tests.test_sinks",
@@ -141,11 +117,9 @@ _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
     "temp_output_dir": "tests.conftest",
     "test_benchmarks": "tests.test_benchmarks",
     "test_catalog": "tests.test_catalog",
-    "test_examples": "tests.examples.test_examples",
     "test_features": "tests.test_features",
     "test_import_from_correct_module": "tests.test_structure",
     "test_no_dual_structure": "tests.test_structure",
-    "test_oracle": "tests.integration.test_oracle",
     "test_oracle_wms_cli": "tests.test_oracle_wms_cli",
     "test_oracle_wms_factory": "tests.test_oracle_wms_factory",
     "test_oracle_wms_init": "tests.test_oracle_wms_init",
@@ -164,4 +138,4 @@ _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
 }
 
 
-install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, sorted(_LAZY_IMPORTS))
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)

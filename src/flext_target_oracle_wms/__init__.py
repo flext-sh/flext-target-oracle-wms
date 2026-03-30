@@ -14,30 +14,10 @@ from typing import TYPE_CHECKING
 
 from flext_core.lazy import install_lazy_exports
 
-from flext_target_oracle_wms.__version__ import (
-    __author__,
-    __author_email__,
-    __description__,
-    __license__,
-    __title__,
-    __url__,
-    __version__,
-    __version_info__,
-)
+from flext_target_oracle_wms._utilities import _LAZY_IMPORTS as _CHILD_LAZY_0
 
 if TYPE_CHECKING:
-    from flext_meltano import *
-
-    from flext_target_oracle_wms import (
-        cli,
-        constants,
-        factory,
-        models,
-        protocols,
-        target_config,
-        typings,
-        utilities,
-    )
+    from flext_target_oracle_wms.__version__ import *
     from flext_target_oracle_wms._utilities import *
     from flext_target_oracle_wms.cli import *
     from flext_target_oracle_wms.constants import *
@@ -49,7 +29,7 @@ if TYPE_CHECKING:
     from flext_target_oracle_wms.utilities import *
 
 _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
-    "CatalogManager": "flext_target_oracle_wms._utilities.client",
+    **_CHILD_LAZY_0,
     "FlextTargetFactory": "flext_target_oracle_wms.factory",
     "FlextTargetMonitoringFactory": "flext_target_oracle_wms.factory",
     "FlextTargetOracleWmsCli": "flext_target_oracle_wms.cli",
@@ -60,28 +40,24 @@ _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
     "FlextTargetOracleWmsTypes": "flext_target_oracle_wms.typings",
     "FlextTargetOracleWmsUtilities": "flext_target_oracle_wms.utilities",
     "MIN_CONFIG_ARG_COUNT": "flext_target_oracle_wms.cli",
-    "StreamProcessor": "flext_target_oracle_wms._utilities.client",
-    "Target": "flext_target_oracle_wms._utilities.client",
-    "Validation": "flext_target_oracle_wms._utilities.helpers",
-    "WMSDataTransformer": "flext_target_oracle_wms._utilities.helpers",
-    "WMSSchemaMapper": "flext_target_oracle_wms._utilities.helpers",
-    "WMSTableManager": "flext_target_oracle_wms._utilities.helpers",
-    "WMSTypeConverter": "flext_target_oracle_wms._utilities.helpers",
+    "__author__": "flext_target_oracle_wms.__version__",
+    "__author_email__": "flext_target_oracle_wms.__version__",
+    "__description__": "flext_target_oracle_wms.__version__",
+    "__license__": "flext_target_oracle_wms.__version__",
+    "__title__": "flext_target_oracle_wms.__version__",
+    "__url__": "flext_target_oracle_wms.__version__",
+    "__version__": "flext_target_oracle_wms.__version__",
+    "__version_info__": "flext_target_oracle_wms.__version__",
     "_utilities": "flext_target_oracle_wms._utilities",
     "c": ["flext_target_oracle_wms.constants", "FlextTargetOracleWmsConstants"],
     "cli": "flext_target_oracle_wms.cli",
-    "client": "flext_target_oracle_wms._utilities.client",
     "constants": "flext_target_oracle_wms.constants",
     "create_monitored_oracle_wms_target": "flext_target_oracle_wms.factory",
     "create_oracle_wms_target": "flext_target_oracle_wms.factory",
-    "create_record_message": "flext_target_oracle_wms._utilities.helpers",
-    "create_schema_message": "flext_target_oracle_wms._utilities.helpers",
-    "create_state_message": "flext_target_oracle_wms._utilities.helpers",
     "d": "flext_meltano",
     "e": "flext_meltano",
     "factory": "flext_target_oracle_wms.factory",
     "h": "flext_meltano",
-    "helpers": "flext_target_oracle_wms._utilities.helpers",
     "m": ["flext_target_oracle_wms.models", "FlextTargetOracleWmsModels"],
     "main": "flext_target_oracle_wms.cli",
     "models": "flext_target_oracle_wms.models",
@@ -98,4 +74,4 @@ _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
 }
 
 
-install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, sorted(_LAZY_IMPORTS))
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)
