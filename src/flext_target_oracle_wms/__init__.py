@@ -29,7 +29,18 @@ if TYPE_CHECKING:
     from flext_core import FlextTypes
     from flext_meltano import d, e, h, r, s, x
 
-    from flext_target_oracle_wms import _utilities
+    from flext_target_oracle_wms import (
+        _utilities,
+        cli,
+        constants,
+        factory,
+        models,
+        protocols,
+        target_config,
+        typings,
+        utilities,
+    )
+    from flext_target_oracle_wms._utilities import client, helpers
     from flext_target_oracle_wms._utilities.client import (
         CatalogManager,
         StreamProcessor,
@@ -135,6 +146,9 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     ],
     "_utilities": ["flext_target_oracle_wms._utilities", ""],
     "c": ["flext_target_oracle_wms.constants", "FlextTargetOracleWmsConstants"],
+    "cli": ["flext_target_oracle_wms.cli", ""],
+    "client": ["flext_target_oracle_wms._utilities.client", ""],
+    "constants": ["flext_target_oracle_wms.constants", ""],
     "create_monitored_oracle_wms_target": [
         "flext_target_oracle_wms.factory",
         "create_monitored_oracle_wms_target",
@@ -157,14 +171,21 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     ],
     "d": ["flext_meltano", "d"],
     "e": ["flext_meltano", "e"],
+    "factory": ["flext_target_oracle_wms.factory", ""],
     "h": ["flext_meltano", "h"],
+    "helpers": ["flext_target_oracle_wms._utilities.helpers", ""],
     "m": ["flext_target_oracle_wms.models", "FlextTargetOracleWmsModels"],
     "main": ["flext_target_oracle_wms.cli", "main"],
+    "models": ["flext_target_oracle_wms.models", ""],
     "p": ["flext_target_oracle_wms.protocols", "FlextTargetOracleWmsProtocols"],
+    "protocols": ["flext_target_oracle_wms.protocols", ""],
     "r": ["flext_meltano", "r"],
     "s": ["flext_meltano", "s"],
     "t": ["flext_target_oracle_wms.typings", "FlextTargetOracleWmsTypes"],
+    "target_config": ["flext_target_oracle_wms.target_config", ""],
+    "typings": ["flext_target_oracle_wms.typings", ""],
     "u": ["flext_target_oracle_wms.utilities", "FlextTargetOracleWmsUtilities"],
+    "utilities": ["flext_target_oracle_wms.utilities", ""],
     "x": ["flext_meltano", "x"],
 }
 
@@ -197,6 +218,9 @@ __all__ = [
     "__version_info__",
     "_utilities",
     "c",
+    "cli",
+    "client",
+    "constants",
     "create_monitored_oracle_wms_target",
     "create_oracle_wms_target",
     "create_record_message",
@@ -204,14 +228,21 @@ __all__ = [
     "create_state_message",
     "d",
     "e",
+    "factory",
     "h",
+    "helpers",
     "m",
     "main",
+    "models",
     "p",
+    "protocols",
     "r",
     "s",
     "t",
+    "target_config",
+    "typings",
     "u",
+    "utilities",
     "x",
 ]
 

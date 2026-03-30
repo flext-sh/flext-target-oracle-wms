@@ -18,6 +18,7 @@ from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 if TYPE_CHECKING:
     from flext_core import FlextTypes
 
+    from tests.integration import test_oracle
     from tests.integration.test_oracle import (
         TestMultiStreamIntegration,
         TestTargetLifecycle,
@@ -29,11 +30,13 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
         "TestMultiStreamIntegration",
     ],
     "TestTargetLifecycle": ["tests.integration.test_oracle", "TestTargetLifecycle"],
+    "test_oracle": ["tests.integration.test_oracle", ""],
 }
 
 __all__ = [
     "TestMultiStreamIntegration",
     "TestTargetLifecycle",
+    "test_oracle",
 ]
 
 

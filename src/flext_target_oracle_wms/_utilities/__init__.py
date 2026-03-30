@@ -13,6 +13,7 @@ from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 if TYPE_CHECKING:
     from flext_core import FlextTypes
 
+    from flext_target_oracle_wms._utilities import client, helpers
     from flext_target_oracle_wms._utilities.client import (
         CatalogManager,
         StreamProcessor,
@@ -50,6 +51,7 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
         "flext_target_oracle_wms._utilities.helpers",
         "WMSTypeConverter",
     ],
+    "client": ["flext_target_oracle_wms._utilities.client", ""],
     "create_record_message": [
         "flext_target_oracle_wms._utilities.helpers",
         "create_record_message",
@@ -62,6 +64,7 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
         "flext_target_oracle_wms._utilities.helpers",
         "create_state_message",
     ],
+    "helpers": ["flext_target_oracle_wms._utilities.helpers", ""],
 }
 
 __all__ = [
@@ -73,9 +76,11 @@ __all__ = [
     "WMSSchemaMapper",
     "WMSTableManager",
     "WMSTypeConverter",
+    "client",
     "create_record_message",
     "create_schema_message",
     "create_state_message",
+    "helpers",
 ]
 
 
