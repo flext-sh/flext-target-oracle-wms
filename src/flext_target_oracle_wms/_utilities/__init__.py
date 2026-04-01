@@ -13,8 +13,22 @@ from flext_core.lazy import install_lazy_exports
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
 
-    from flext_target_oracle_wms._utilities.client import *
-    from flext_target_oracle_wms._utilities.helpers import *
+    from flext_target_oracle_wms._utilities import client, helpers
+    from flext_target_oracle_wms._utilities.client import (
+        CatalogManager,
+        StreamProcessor,
+        Target,
+    )
+    from flext_target_oracle_wms._utilities.helpers import (
+        Validation,
+        WMSDataTransformer,
+        WMSSchemaMapper,
+        WMSTableManager,
+        WMSTypeConverter,
+        create_record_message,
+        create_schema_message,
+        create_state_message,
+    )
 
 _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
     "CatalogManager": "flext_target_oracle_wms._utilities.client",

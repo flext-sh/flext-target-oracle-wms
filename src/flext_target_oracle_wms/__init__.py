@@ -29,15 +29,64 @@ if _TYPE_CHECKING:
     from flext_core import FlextTypes
     from flext_meltano import d, e, h, r, s, x
 
-    from flext_target_oracle_wms._utilities import *
-    from flext_target_oracle_wms.cli import *
-    from flext_target_oracle_wms.constants import *
-    from flext_target_oracle_wms.factory import *
-    from flext_target_oracle_wms.models import *
-    from flext_target_oracle_wms.protocols import *
-    from flext_target_oracle_wms.target_config import *
-    from flext_target_oracle_wms.typings import *
-    from flext_target_oracle_wms.utilities import *
+    from flext_target_oracle_wms import (
+        _utilities,
+        cli,
+        constants,
+        factory,
+        models,
+        protocols,
+        target_config,
+        typings,
+        utilities,
+    )
+    from flext_target_oracle_wms._utilities import (
+        CatalogManager,
+        StreamProcessor,
+        Target,
+        Validation,
+        WMSDataTransformer,
+        WMSSchemaMapper,
+        WMSTableManager,
+        WMSTypeConverter,
+        client,
+        create_record_message,
+        create_schema_message,
+        create_state_message,
+        helpers,
+    )
+    from flext_target_oracle_wms.cli import (
+        MIN_CONFIG_ARG_COUNT,
+        FlextTargetOracleWmsCli,
+        main,
+    )
+    from flext_target_oracle_wms.constants import (
+        FlextTargetOracleWmsConstants,
+        FlextTargetOracleWmsConstants as c,
+    )
+    from flext_target_oracle_wms.factory import (
+        FlextTargetFactory,
+        FlextTargetMonitoringFactory,
+        create_monitored_oracle_wms_target,
+        create_oracle_wms_target,
+    )
+    from flext_target_oracle_wms.models import (
+        FlextTargetOracleWmsModels,
+        FlextTargetOracleWmsModels as m,
+    )
+    from flext_target_oracle_wms.protocols import (
+        FlextTargetOracleWmsProtocols,
+        FlextTargetOracleWmsProtocols as p,
+    )
+    from flext_target_oracle_wms.target_config import FlextTargetOracleWmsSettings
+    from flext_target_oracle_wms.typings import (
+        FlextTargetOracleWmsTypes,
+        FlextTargetOracleWmsTypes as t,
+    )
+    from flext_target_oracle_wms.utilities import (
+        FlextTargetOracleWmsUtilities,
+        FlextTargetOracleWmsUtilities as u,
+    )
 
 _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = merge_lazy_imports(
     ("flext_target_oracle_wms._utilities",),

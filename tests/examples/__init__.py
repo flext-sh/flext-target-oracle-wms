@@ -18,6 +18,7 @@ from flext_core.lazy import install_lazy_exports
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
 
+    from tests.examples import test_examples
     from tests.examples.test_examples import (
         TestExamplesCodeQuality,
         TestExamplesFlextIntegration,
