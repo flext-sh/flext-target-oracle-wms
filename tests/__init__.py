@@ -20,19 +20,79 @@ if _TYPE_CHECKING:
     from tests.integration import *
     from tests.models import *
     from tests.protocols import *
-    from tests.test_benchmarks import *
-    from tests.test_catalog import *
-    from tests.test_features import *
-    from tests.test_oracle_wms_cli import *
-    from tests.test_oracle_wms_factory import *
-    from tests.test_oracle_wms_init import *
-    from tests.test_quality import *
-    from tests.test_sinks import *
-    from tests.test_stream import *
-    from tests.test_structure import *
-    from tests.test_target import *
-    from tests.test_wms_patterns import *
-    from tests.test_workflow import *
+    from tests.test_benchmarks import (
+        PERF_ITERATIONS,
+        PERF_THRESHOLD_SEC,
+        TestCatalogBenchmarks,
+        TestDataTransformerBenchmarks,
+        TestFactoryBenchmarks,
+        TestSchemaMapperBenchmarks,
+        TestTableManagerBenchmarks,
+        TestTypeConverterBenchmarks,
+    )
+    from tests.test_catalog import (
+        TestCatalogAddStream,
+        TestCatalogGetStream,
+        TestCatalogMultipleStreams,
+    )
+    from tests.test_features import (
+        TestTargetFeatures,
+        TestTransformerFeatures,
+        TestUtilitiesFeatures,
+    )
+    from tests.test_oracle_wms_cli import (
+        TestMain,
+        TestOracleWMSTargetCliExecute,
+        TestOracleWMSTargetCliInit,
+        TestOracleWMSTargetCliLoadConfig,
+    )
+    from tests.test_oracle_wms_factory import (
+        TestConvenienceFunctions,
+        TestFlextTargetFactory,
+        TestFlextTargetMonitoringFactory,
+        TestMonitoredTargetCreationRequest,
+        TestTargetCreationRequest,
+    )
+    from tests.test_oracle_wms_init import TestModuleInit
+    from tests.test_quality import (
+        TestClassAttributes,
+        TestConstantsNamespace,
+        TestModelsNamespace,
+        TestProtocolsNamespace,
+    )
+    from tests.test_sinks import (
+        TestCatalogAndTableIntegration,
+        TestTargetComponentWiring,
+        TestTransformationIntegration,
+    )
+    from tests.test_stream import (
+        TestStreamProcessorInitialize,
+        TestStreamProcessorMultipleStreams,
+        TestStreamProcessorRecord,
+    )
+    from tests.test_structure import (
+        test_import_from_correct_module,
+        test_no_dual_structure,
+    )
+    from tests.test_target import (
+        TestTargetHandleRecordMessage,
+        TestTargetHandleSchemaMessage,
+        TestTargetHandleStateMessage,
+        TestTargetInit,
+        TestTargetProcessLines,
+        TestTargetSetupCleanup,
+    )
+    from tests.test_wms_patterns import (
+        TestWMSDataTransformer,
+        TestWMSSchemaMapper,
+        TestWMSTableManager,
+        TestWMSTypeConverter,
+    )
+    from tests.test_workflow import (
+        TestCliWorkflow,
+        TestErrorWorkflows,
+        TestFullSingerWorkflow,
+    )
     from tests.typings import *
     from tests.utilities import *
 
