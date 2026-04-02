@@ -10,10 +10,11 @@ from flext_meltano import (
     FlextMeltanoSingerSinkBase,
     FlextMeltanoSingerTargetBase,
 )
-
-from flext_target_oracle_wms import m, t, u
-from flext_target_oracle_wms._utilities.client import (
+from flext_target_oracle_wms import (
     Target as FlextTargetOracleWmsTarget,
+    m,
+    t,
+    u,
 )
 
 

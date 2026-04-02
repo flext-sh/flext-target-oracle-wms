@@ -5,10 +5,14 @@ Facade composing helpers from _utilities/ submodules into u.TargetOracleWms.* na
 
 from __future__ import annotations
 
+from collections.abc import Mapping
+
 from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_wms import FlextOracleWmsUtilities
-
 from flext_target_oracle_wms import (
+    CatalogManager,
+    StreamProcessor,
+    Target,
     Validation,
     WMSDataTransformer,
     WMSSchemaMapper,
@@ -17,6 +21,7 @@ from flext_target_oracle_wms import (
     create_record_message,
     create_schema_message,
     create_state_message,
+    t,
 )
 
 
@@ -26,15 +31,39 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
     class TargetOracleWms:
         """Helpers for Singer message shape handling."""
 
-        create_record_message = staticmethod(create_record_message)
-        create_schema_message = staticmethod(create_schema_message)
-        create_state_message = staticmethod(create_state_message)
-
+        # Nested class bindings — private _utilities classes exposed through the facade
+        CatalogManager = CatalogManager
+        StreamProcessor = StreamProcessor
+        Target = Target
         Validation = Validation
-        WMSTypeConverter = WMSTypeConverter
         WMSDataTransformer = WMSDataTransformer
         WMSSchemaMapper = WMSSchemaMapper
         WMSTableManager = WMSTableManager
+        WMSTypeConverter = WMSTypeConverter
+
+        @staticmethod
+        def create_record_message(
+            stream_name: str,
+            record: Mapping[str, t.ContainerValue],
+        ) -> Mapping[str, t.ContainerValue | t.ContainerValueMapping]:
+            """Create a Singer RECORD message payload."""
+            return create_record_message(stream_name, record)
+
+        @staticmethod
+        def create_schema_message(
+            stream_name: str,
+            schema: Mapping[str, t.ContainerValue],
+            key_properties: t.StrSequence | None = None,
+        ) -> Mapping[str, t.ContainerValue | t.ContainerValueMapping | t.StrSequence]:
+            """Create a Singer SCHEMA message payload."""
+            return create_schema_message(stream_name, schema, key_properties)
+
+        @staticmethod
+        def create_state_message(
+            state: Mapping[str, t.ContainerValue],
+        ) -> Mapping[str, t.ContainerValue | t.ContainerValueMapping]:
+            """Create a Singer STATE message payload."""
+            return create_state_message(state)
 
 
 __all__ = [

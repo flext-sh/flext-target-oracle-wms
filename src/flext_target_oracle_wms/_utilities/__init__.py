@@ -12,7 +12,6 @@ from flext_core.lazy import install_lazy_exports
 
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
-
     from flext_target_oracle_wms._utilities import client, helpers, service_runtime
     from flext_target_oracle_wms._utilities.client import (
         CatalogManager,
@@ -33,7 +32,7 @@ if _TYPE_CHECKING:
         FlextTargetOracleWmsServiceRuntime,
     )
 
-_LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
+_LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "CatalogManager": "flext_target_oracle_wms._utilities.client",
     "FlextTargetOracleWmsServiceRuntime": "flext_target_oracle_wms._utilities.service_runtime",
     "StreamProcessor": "flext_target_oracle_wms._utilities.client",

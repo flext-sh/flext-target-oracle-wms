@@ -12,10 +12,9 @@ from __future__ import annotations
 from typing import override
 
 from flext_meltano import FlextMeltanoSingerSinkBase, FlextMeltanoTargetServiceBase
-
-from flext_target_oracle_wms import t
-from flext_target_oracle_wms._utilities.service_runtime import (
+from flext_target_oracle_wms import (
     FlextTargetOracleWmsServiceRuntime,
+    t,
 )
 
 

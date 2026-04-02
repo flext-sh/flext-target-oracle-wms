@@ -6,10 +6,7 @@ import sys
 from pathlib import Path
 
 from flext_core import r
-
-from flext_target_oracle_wms import Target as FlextTargetOracleWms, m, t, u
-
-MIN_CONFIG_ARG_COUNT = 3
+from flext_target_oracle_wms import Target as FlextTargetOracleWms, c, m, t, u
 
 
 class FlextTargetOracleWmsCli:
@@ -87,7 +84,10 @@ def main() -> None:
     """Run CLI command from process arguments."""
     cli_instance = FlextTargetOracleWmsCli()
     config_path: str | None = None
-    if len(sys.argv) >= MIN_CONFIG_ARG_COUNT and sys.argv[1] == "--config":
+    if (
+        len(sys.argv) >= c.TargetOracleWms.CLI_MIN_CONFIG_ARG_COUNT
+        and sys.argv[1] == "--config"
+    ):
         config_path = sys.argv[2]
     result = (
         cli_instance.execute(config=config_path)

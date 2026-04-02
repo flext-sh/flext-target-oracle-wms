@@ -5,7 +5,6 @@ from __future__ import annotations
 from collections.abc import Mapping
 
 from flext_core import r
-
 from flext_target_oracle_wms import c, m, t
 
 

@@ -14,6 +14,8 @@ class FlextTargetOracleWmsConstants(FlextMeltanoConstants, FlextOracleWmsConstan
     class TargetOracleWms:
         """Target-specific defaults and limits."""
 
+        CLI_MIN_CONFIG_ARG_COUNT: Final[int] = 3
+
         class OracleWms:
             """Oracle WMS runtime defaults."""
 

@@ -6,7 +6,6 @@ from collections.abc import Mapping, MutableMapping
 from typing import ClassVar
 
 from flext_core import FlextLogger, r
-
 from flext_target_oracle_wms import Target as FlextTargetOracleWms, c, m, t
 
 logger = FlextLogger(__name__)

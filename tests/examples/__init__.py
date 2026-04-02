@@ -17,7 +17,6 @@ from flext_core.lazy import install_lazy_exports
 
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
-
     from tests.examples import test_examples
     from tests.examples.test_examples import (
         TestExamplesCodeQuality,
@@ -26,7 +25,7 @@ if _TYPE_CHECKING:
         TestExamplesStructure,
     )
 
-_LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
+_LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "TestExamplesCodeQuality": "tests.examples.test_examples",
     "TestExamplesFlextIntegration": "tests.examples.test_examples",
     "TestExamplesImportability": "tests.examples.test_examples",

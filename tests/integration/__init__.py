@@ -17,14 +17,13 @@ from flext_core.lazy import install_lazy_exports
 
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
-
     from tests.integration import test_oracle
     from tests.integration.test_oracle import (
         TestMultiStreamIntegration,
         TestTargetLifecycle,
     )
 
-_LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
+_LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "TestMultiStreamIntegration": "tests.integration.test_oracle",
     "TestTargetLifecycle": "tests.integration.test_oracle",
     "test_oracle": "tests.integration.test_oracle",
