@@ -6,26 +6,21 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-from pydantic import TypeAdapter, ValidationError
+from pydantic import ValidationError
 
 from flext_target_oracle_wms import FlextTargetOracleWmsCli, main
 from tests import t
-
-_config_adapter: TypeAdapter[Mapping[str, t.StrMapping]] = TypeAdapter(
-    Mapping[str, t.StrMapping],
-)
-_list_int_adapter: TypeAdapter[Sequence[int]] = TypeAdapter(Sequence[int])
 
 
 def _write_config_file(config: Mapping[str, t.StrMapping], tmp_path: Path) -> str:
     config_file = tmp_path / "config.json"
     config_file.write_text(
-        _config_adapter.dump_json(config).decode("utf-8"),
+        t.STR_MAPPING_MAPPING_ADAPTER.dump_json(config).decode("utf-8"),
         encoding="utf-8",
     )
     return str(config_file)
@@ -69,7 +64,7 @@ class TestOracleWMSTargetCliLoadConfig:
         cli = FlextTargetOracleWmsCli()
         bad_file = tmp_path / "bad.json"
         bad_file.write_text(
-            _list_int_adapter.dump_json([1, 2, 3]).decode("utf-8"),
+            t.INTEGER_SEQUENCE_ADAPTER.dump_json([1, 2, 3]).decode("utf-8"),
             encoding="utf-8",
         )
         with pytest.raises(ValidationError):
