@@ -9,13 +9,8 @@ from __future__ import annotations
 import math
 from collections.abc import Mapping, Sequence
 
-from flext_target_oracle_wms import (
-    FlextTargetOracleWmsUtilities,
-    Target as FlextTargetOracleWms,
-    m,
-    u,
-)
-from tests import t
+from flext_target_oracle_wms import Target as FlextTargetOracleWms
+from tests import m, t, u
 
 
 def _valid_config() -> Mapping[str, t.ContainerValue]:
@@ -93,7 +88,7 @@ class TestUtilitiesFeatures:
     """Verify utility helper features."""
 
     def test_create_schema_message(self) -> None:
-        msg = FlextTargetOracleWmsUtilities.TargetOracleWms.create_schema_message(
+        msg = u.TargetOracleWms.create_schema_message(
             "test",
             {"type": "object"},
         )
@@ -101,7 +96,7 @@ class TestUtilitiesFeatures:
         assert msg["stream"] == "test"
 
     def test_create_record_message(self) -> None:
-        msg = FlextTargetOracleWmsUtilities.TargetOracleWms.create_record_message(
+        msg = u.TargetOracleWms.create_record_message(
             "test",
             {"id": "1"},
         )
@@ -109,14 +104,14 @@ class TestUtilitiesFeatures:
         assert msg["stream"] == "test"
 
     def test_create_state_message(self) -> None:
-        msg = FlextTargetOracleWmsUtilities.TargetOracleWms.create_state_message({
+        msg = u.TargetOracleWms.create_state_message({
             "pos": 42,
         })
         assert msg["type"] == "STATE"
         assert msg["value"] == {"pos": 42}
 
     def test_validate_config_success(self) -> None:
-        result = FlextTargetOracleWmsUtilities.TargetOracleWms.Validation.validate_wms_target_config({
+        result = u.TargetOracleWms.Validation.validate_wms_target_config({
             "base_url": "https://x",
             "username": "u",
             "password": "p",
@@ -124,5 +119,5 @@ class TestUtilitiesFeatures:
         assert result.is_success
 
     def test_validate_config_missing_fields(self) -> None:
-        result = FlextTargetOracleWmsUtilities.TargetOracleWms.Validation.validate_wms_target_config({})
+        result = u.TargetOracleWms.Validation.validate_wms_target_config({})
         assert result.is_failure

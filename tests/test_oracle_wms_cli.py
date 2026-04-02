@@ -13,7 +13,8 @@ from unittest.mock import patch
 import pytest
 from pydantic import TypeAdapter, ValidationError
 
-from flext_target_oracle_wms import FlextTargetOracleWmsCli, main, t
+from flext_target_oracle_wms import FlextTargetOracleWmsCli, main
+from tests import t
 
 _config_adapter: TypeAdapter[Mapping[str, t.StrMapping]] = TypeAdapter(
     Mapping[str, t.StrMapping],

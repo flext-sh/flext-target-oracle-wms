@@ -10,9 +10,8 @@ import pytest
 
 from flext_target_oracle_wms import (
     CatalogManager as FlextTargetOracleWmsCatalogManager,
-    m,
 )
-from tests import t
+from tests import m, t
 
 
 def _make_schema_message(

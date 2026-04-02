@@ -10,8 +10,8 @@ from collections.abc import Mapping
 
 import pytest
 
-from flext_target_oracle_wms import Target as FlextTargetOracleWms, m
-from tests import t
+from flext_target_oracle_wms import Target as FlextTargetOracleWms
+from tests import m, t
 
 
 def _valid_config() -> Mapping[str, t.ContainerValue]:

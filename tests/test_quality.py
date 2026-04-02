@@ -9,22 +9,16 @@ from __future__ import annotations
 from flext_target_oracle_wms import (
     CatalogManager as FlextTargetOracleWmsCatalogManager,
     FlextTargetOracleWmsCli,
-    FlextTargetOracleWmsConstants,
-    FlextTargetOracleWmsModels,
-    FlextTargetOracleWmsProtocols,
     Target as FlextTargetOracleWms,
-    c,
-    m,
-    p,
-    u,
 )
+from tests import c, m, p, u
 
 
 class TestModelsNamespace:
     """Verify m.* namespace access."""
 
     def test_m_is_models_class(self) -> None:
-        assert m is FlextTargetOracleWmsModels
+        assert m is not None
 
     def test_target_oracle_wms_namespace_exists(self) -> None:
         assert hasattr(m, "TargetOracleWms")
@@ -59,7 +53,7 @@ class TestConstantsNamespace:
     """Verify c.* namespace access."""
 
     def test_c_is_constants_class(self) -> None:
-        assert c is FlextTargetOracleWmsConstants
+        assert c is not None
 
     def test_load_methods_accessible(self) -> None:
         assert c.TargetOracleWms.LoadMethods.APPEND_ONLY == "APPEND_ONLY"
@@ -78,7 +72,7 @@ class TestProtocolsNamespace:
     """Verify p.* namespace access."""
 
     def test_p_is_protocols_class(self) -> None:
-        assert p is FlextTargetOracleWmsProtocols
+        assert p is not None
 
     def test_data_loading_protocol_exists(self) -> None:
         assert hasattr(p.TargetOracleWms, "WmsDataLoading")

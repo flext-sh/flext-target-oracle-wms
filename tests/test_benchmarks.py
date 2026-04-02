@@ -15,9 +15,8 @@ from flext_target_oracle_wms import (
     CatalogManager as FlextTargetOracleWmsCatalogManager,
     FlextTargetFactory,
     create_oracle_wms_target,
-    m,
-    u,
 )
+from tests import m, u
 
 PERF_ITERATIONS = 500
 PERF_THRESHOLD_SEC = 5.0

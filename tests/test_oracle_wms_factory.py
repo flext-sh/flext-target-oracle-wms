@@ -13,8 +13,8 @@ from flext_target_oracle_wms import (
     FlextTargetMonitoringFactory,
     create_monitored_oracle_wms_target,
     create_oracle_wms_target,
-    m,
 )
+from tests import m
 
 _PATCH_TARGET = "flext_target_oracle_wms.factory.FlextTargetOracleWms"
 

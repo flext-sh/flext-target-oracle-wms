@@ -14,10 +14,8 @@ from flext_target_oracle_wms import (
     CatalogManager as FlextTargetOracleWmsCatalogManager,
     StreamProcessor as FlextTargetOracleWmsStreamProcessor,
     Target as FlextTargetOracleWms,
-    m,
-    u,
 )
-from tests import t
+from tests import m, t, u
 
 
 def _valid_config() -> Mapping[str, t.ContainerValue]:

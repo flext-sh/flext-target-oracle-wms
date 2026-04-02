@@ -31,6 +31,7 @@ if _TYPE_CHECKING:
 
     from flext_target_oracle_wms import (
         _utilities,
+        api,
         cli,
         constants,
         factory,
@@ -55,6 +56,7 @@ if _TYPE_CHECKING:
         create_state_message,
         helpers,
     )
+    from flext_target_oracle_wms.api import FlextTargetOracleWmsService
     from flext_target_oracle_wms.cli import (
         MIN_CONFIG_ARG_COUNT,
         FlextTargetOracleWmsCli,
@@ -97,11 +99,13 @@ _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = merge_lazy_imports(
         "FlextTargetOracleWmsConstants": "flext_target_oracle_wms.constants",
         "FlextTargetOracleWmsModels": "flext_target_oracle_wms.models",
         "FlextTargetOracleWmsProtocols": "flext_target_oracle_wms.protocols",
+        "FlextTargetOracleWmsService": "flext_target_oracle_wms.api",
         "FlextTargetOracleWmsSettings": "flext_target_oracle_wms.target_config",
         "FlextTargetOracleWmsTypes": "flext_target_oracle_wms.typings",
         "FlextTargetOracleWmsUtilities": "flext_target_oracle_wms.utilities",
         "MIN_CONFIG_ARG_COUNT": "flext_target_oracle_wms.cli",
         "_utilities": "flext_target_oracle_wms._utilities",
+        "api": "flext_target_oracle_wms.api",
         "c": ("flext_target_oracle_wms.constants", "FlextTargetOracleWmsConstants"),
         "cli": "flext_target_oracle_wms.cli",
         "constants": "flext_target_oracle_wms.constants",
