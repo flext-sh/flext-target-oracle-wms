@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping, MutableMapping
+from collections.abc import Mapping
 from typing import ClassVar
 
 from flext_core import FlextLogger, r
@@ -61,7 +61,7 @@ class FlextTargetFactory:
         request: m.TargetOracleWms.TargetCreationRequest,
     ) -> r[FlextTargetOracleWms]:
         """Create target instance from validated request."""
-        config: MutableMapping[str, t.ContainerValue] = {
+        config: t.MutableContainerValueMapping = {
             "base_url": request.base_url,
             "username": request.username,
             "password": request.password,

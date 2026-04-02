@@ -7,13 +7,13 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import math
-from collections.abc import Mapping, Sequence
+from collections.abc import Sequence
 
 from flext_target_oracle_wms import Target as FlextTargetOracleWms
 from tests import m, t, u
 
 
-def _valid_config() -> Mapping[str, t.ContainerValue]:
+def _valid_config() -> t.ContainerValueMapping:
     return {
         "wms_auth": {
             "base_url": "https://test.wms.example.com",

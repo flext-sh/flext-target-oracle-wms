@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import sys
-from collections.abc import Mapping, MutableMapping
+from collections.abc import MutableMapping
 from typing import ClassVar
 
 from pydantic import ValidationError
@@ -113,7 +113,7 @@ class _WmsClients:
 
         def __init__(
             self,
-            config: Mapping[str, t.ContainerValue] | m.TargetOracleWms.WmsTargetConfig,
+            config: t.ContainerValueMapping | m.TargetOracleWms.WmsTargetConfig,
         ) -> None:
             """Initialize target runtime with validated config."""
             self.config = m.TargetOracleWms.WmsTargetConfig.model_validate(config)

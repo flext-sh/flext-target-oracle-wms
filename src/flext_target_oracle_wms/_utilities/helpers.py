@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping, MutableMapping
+from collections.abc import Mapping
 
 from flext_core import r
 from flext_target_oracle_wms import c, m, t
@@ -16,7 +16,7 @@ class _WmsHelpers:
 
         @staticmethod
         def validate_wms_target_config(
-            config: Mapping[str, t.ContainerValue],
+            config: t.ContainerValueMapping,
         ) -> r[bool]:
             """Validate minimal required target configuration fields."""
             required = {"base_url", "username", "password"}
@@ -140,7 +140,7 @@ class _WmsHelpers:
 
         def __init__(self) -> None:
             """Initialize table manager map."""
-            self._stream_tables: MutableMapping[str, str] = {}
+            self._stream_tables: t.MutableStrMapping = {}
 
         def get_table_name(self, stream_name: str) -> r[str]:
             """Get registered table name for stream."""
@@ -158,7 +158,7 @@ class _WmsHelpers:
     @staticmethod
     def create_record_message(
         stream_name: str,
-        record: Mapping[str, t.ContainerValue],
+        record: t.ContainerValueMapping,
     ) -> Mapping[str, t.ContainerValue | t.ContainerValueMapping]:
         """Create a Singer RECORD message payload."""
         return {"type": "RECORD", "stream": stream_name, "record": record}
@@ -166,7 +166,7 @@ class _WmsHelpers:
     @staticmethod
     def create_schema_message(
         stream_name: str,
-        schema: Mapping[str, t.ContainerValue],
+        schema: t.ContainerValueMapping,
         key_properties: t.StrSequence | None = None,
     ) -> Mapping[str, t.ContainerValue | t.ContainerValueMapping | t.StrSequence]:
         """Create a Singer SCHEMA message payload."""
@@ -179,7 +179,7 @@ class _WmsHelpers:
 
     @staticmethod
     def create_state_message(
-        state: Mapping[str, t.ContainerValue],
+        state: t.ContainerValueMapping,
     ) -> Mapping[str, t.ContainerValue | t.ContainerValueMapping]:
         """Create a Singer STATE message payload."""
         return {"type": "STATE", "value": state}

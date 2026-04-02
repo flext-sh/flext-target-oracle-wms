@@ -129,7 +129,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                 Field(description="Singer stream name"),
             ]
             schema_definition: Annotated[
-                Mapping[str, t.ContainerValue],
+                t.ContainerValueMapping,
                 Field(
                     alias="schema",
                     serialization_alias="schema",
@@ -162,7 +162,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                 Field(description="Singer stream name"),
             ]
             record: Annotated[
-                Mapping[str, t.ContainerValue],
+                t.ContainerValueMapping,
                 Field(description="Singer record payload"),
             ]
             time_extracted: Annotated[
@@ -196,7 +196,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                 Field(description="Singer stream name"),
             ]
             schema_definition: Annotated[
-                Mapping[str, t.ContainerValue],
+                t.ContainerValueMapping,
                 Field(
                     alias="schema",
                     serialization_alias="schema",
