@@ -26,7 +26,12 @@ from flext_target_oracle_wms.__version__ import (
 
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
-    from flext_meltano import d, e, h, r, s, x
+    from flext_core.decorators import FlextDecorators as d
+    from flext_core.exceptions import FlextExceptions as e
+    from flext_core.handlers import FlextHandlers as h
+    from flext_core.mixins import FlextMixins as x
+    from flext_core.result import FlextResult as r
+    from flext_core.service import FlextService as s
     from flext_target_oracle_wms import (
         _utilities,
         api,
@@ -106,23 +111,23 @@ _LAZY_IMPORTS: FlextTypes.LazyImportIndex = merge_lazy_imports(
         "constants": "flext_target_oracle_wms.constants",
         "create_monitored_oracle_wms_target": "flext_target_oracle_wms.factory",
         "create_oracle_wms_target": "flext_target_oracle_wms.factory",
-        "d": "flext_meltano",
-        "e": "flext_meltano",
+        "d": ("flext_core.decorators", "FlextDecorators"),
+        "e": ("flext_core.exceptions", "FlextExceptions"),
         "factory": "flext_target_oracle_wms.factory",
-        "h": "flext_meltano",
+        "h": ("flext_core.handlers", "FlextHandlers"),
         "m": ("flext_target_oracle_wms.models", "FlextTargetOracleWmsModels"),
         "main": "flext_target_oracle_wms.cli",
         "models": "flext_target_oracle_wms.models",
         "p": ("flext_target_oracle_wms.protocols", "FlextTargetOracleWmsProtocols"),
         "protocols": "flext_target_oracle_wms.protocols",
-        "r": "flext_meltano",
-        "s": "flext_meltano",
+        "r": ("flext_core.result", "FlextResult"),
+        "s": ("flext_core.service", "FlextService"),
         "t": ("flext_target_oracle_wms.typings", "FlextTargetOracleWmsTypes"),
         "target_config": "flext_target_oracle_wms.target_config",
         "typings": "flext_target_oracle_wms.typings",
         "u": ("flext_target_oracle_wms.utilities", "FlextTargetOracleWmsUtilities"),
         "utilities": "flext_target_oracle_wms.utilities",
-        "x": "flext_meltano",
+        "x": ("flext_core.mixins", "FlextMixins"),
     },
 )
 
