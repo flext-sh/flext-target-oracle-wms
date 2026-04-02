@@ -9,9 +9,6 @@ from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_wms import FlextOracleWmsUtilities
 
 from flext_target_oracle_wms import (
-    CatalogManager,
-    StreamProcessor,
-    Target,
     Validation,
     WMSDataTransformer,
     WMSSchemaMapper,
@@ -28,13 +25,6 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
 
     class TargetOracleWms:
         """Helpers for Singer message shape handling."""
-
-        class Client:
-            """Target client runtime classes — u.TargetOracleWms.Client.*."""
-
-            CatalogManager = CatalogManager
-            StreamProcessor = StreamProcessor
-            Target = Target
 
         create_record_message = staticmethod(create_record_message)
         create_schema_message = staticmethod(create_schema_message)

@@ -43,6 +43,7 @@ if _TYPE_CHECKING:
     )
     from flext_target_oracle_wms._utilities import (
         CatalogManager,
+        FlextTargetOracleWmsServiceRuntime,
         StreamProcessor,
         Target,
         Validation,
@@ -55,6 +56,7 @@ if _TYPE_CHECKING:
         create_schema_message,
         create_state_message,
         helpers,
+        service_runtime,
     )
     from flext_target_oracle_wms.api import FlextTargetOracleWmsService
     from flext_target_oracle_wms.cli import (

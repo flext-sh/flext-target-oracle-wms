@@ -14,20 +14,9 @@ from typing import override
 from flext_meltano import FlextMeltanoSingerSinkBase, FlextMeltanoTargetServiceBase
 
 from flext_target_oracle_wms import t
-
-
-class _OracleWmsSink(FlextMeltanoSingerSinkBase):
-    """Minimal Singer sink bridging to Oracle WMS target runtime."""
-
-    name = "target-oracle-wms-sink"
-
-    @override
-    def process_record(self, record: dict, context: dict) -> None:  # type: ignore[override]
-        """Process a single record (delegated to WMS runtime)."""
-
-    @override
-    def process_batch(self, context: dict) -> None:  # type: ignore[override]
-        """Process a batch (delegated to WMS runtime)."""
+from flext_target_oracle_wms._utilities.service_runtime import (
+    FlextTargetOracleWmsServiceRuntime,
+)
 
 
 class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
@@ -42,11 +31,13 @@ class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
         schema: t.FlatContainerMapping,
     ) -> FlextMeltanoSingerSinkBase:
         """Create an Oracle WMS sink for a stream."""
-        return _OracleWmsSink(
-            target=None,
+        target_config: t.ContainerMapping = (
+            self.config_overrides if self.config_overrides is not None else {}
+        )
+        return FlextTargetOracleWmsServiceRuntime.create_sink(
             stream_name=stream_name,
-            schema=dict(schema),
-            key_properties=[],
+            schema=schema,
+            target_config=target_config,
         )
 
 
