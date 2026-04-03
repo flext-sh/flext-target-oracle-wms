@@ -5,34 +5,39 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
-from typing import TYPE_CHECKING as _TYPE_CHECKING
+import typing as _t
 
 from flext_core.lazy import install_lazy_exports
 
-if _TYPE_CHECKING:
-    from flext_core import FlextTypes
-    from flext_target_oracle_wms._utilities import client, helpers, service_runtime
-    from flext_target_oracle_wms._utilities.client import (
+if _t.TYPE_CHECKING:
+    import flext_target_oracle_wms._utilities.client as _flext_target_oracle_wms__utilities_client
+
+    client = _flext_target_oracle_wms__utilities_client
+    import flext_target_oracle_wms._utilities.helpers as _flext_target_oracle_wms__utilities_helpers
+
+    helpers = _flext_target_oracle_wms__utilities_helpers
+    import flext_target_oracle_wms._utilities.service_runtime as _flext_target_oracle_wms__utilities_service_runtime
+
+    service_runtime = _flext_target_oracle_wms__utilities_service_runtime
+
+    _ = (
         CatalogManager,
+        FlextTargetOracleWmsServiceRuntime,
         StreamProcessor,
         Target,
-    )
-    from flext_target_oracle_wms._utilities.helpers import (
         Validation,
         WMSDataTransformer,
         WMSSchemaMapper,
         WMSTableManager,
         WMSTypeConverter,
+        client,
         create_record_message,
         create_schema_message,
         create_state_message,
+        helpers,
+        service_runtime,
     )
-    from flext_target_oracle_wms._utilities.service_runtime import (
-        FlextTargetOracleWmsServiceRuntime,
-    )
-
-_LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
+_LAZY_IMPORTS = {
     "CatalogManager": "flext_target_oracle_wms._utilities.client",
     "FlextTargetOracleWmsServiceRuntime": "flext_target_oracle_wms._utilities.service_runtime",
     "StreamProcessor": "flext_target_oracle_wms._utilities.client",
@@ -49,6 +54,24 @@ _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "helpers": "flext_target_oracle_wms._utilities.helpers",
     "service_runtime": "flext_target_oracle_wms._utilities.service_runtime",
 }
+
+__all__ = [
+    "CatalogManager",
+    "FlextTargetOracleWmsServiceRuntime",
+    "StreamProcessor",
+    "Target",
+    "Validation",
+    "WMSDataTransformer",
+    "WMSSchemaMapper",
+    "WMSTableManager",
+    "WMSTypeConverter",
+    "client",
+    "create_record_message",
+    "create_schema_message",
+    "create_state_message",
+    "helpers",
+    "service_runtime",
+]
 
 
 install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)
