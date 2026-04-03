@@ -23,15 +23,15 @@ if _TYPE_CHECKING:
     from flext_core.service import FlextService as s
     from flext_core.typings import FlextTypes as t
     from flext_core.utilities import FlextUtilities as u
-    from flext_target_oracle_wms import test_oracle
-    from flext_target_oracle_wms.test_oracle import (
+    from tests.integration import test_oracle
+    from tests.integration.test_oracle import (
         TestMultiStreamIntegration,
         TestTargetLifecycle,
     )
 
 _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
-    "TestMultiStreamIntegration": "flext_target_oracle_wms.test_oracle",
-    "TestTargetLifecycle": "flext_target_oracle_wms.test_oracle",
+    "TestMultiStreamIntegration": "tests.integration.test_oracle",
+    "TestTargetLifecycle": "tests.integration.test_oracle",
     "c": ("flext_core.constants", "FlextConstants"),
     "d": ("flext_core.decorators", "FlextDecorators"),
     "e": ("flext_core.exceptions", "FlextExceptions"),
@@ -41,7 +41,7 @@ _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "r": ("flext_core.result", "FlextResult"),
     "s": ("flext_core.service", "FlextService"),
     "t": ("flext_core.typings", "FlextTypes"),
-    "test_oracle": "flext_target_oracle_wms.test_oracle",
+    "test_oracle": "tests.integration.test_oracle",
     "u": ("flext_core.utilities", "FlextUtilities"),
     "x": ("flext_core.mixins", "FlextMixins"),
 }
