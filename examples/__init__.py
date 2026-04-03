@@ -23,11 +23,8 @@ if _TYPE_CHECKING:
     from flext_core.service import FlextService as s
     from flext_core.typings import FlextTypes as t
     from flext_core.utilities import FlextUtilities as u
-    from flext_target_oracle_wms import test_examples
-    from flext_target_oracle_wms.test_examples import TestExamplesCodeQuality
 
 _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
-    "TestExamplesCodeQuality": "flext_target_oracle_wms.test_examples",
     "c": ("flext_core.constants", "FlextConstants"),
     "d": ("flext_core.decorators", "FlextDecorators"),
     "e": ("flext_core.exceptions", "FlextExceptions"),
@@ -37,7 +34,6 @@ _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "r": ("flext_core.result", "FlextResult"),
     "s": ("flext_core.service", "FlextService"),
     "t": ("flext_core.typings", "FlextTypes"),
-    "test_examples": "flext_target_oracle_wms.test_examples",
     "u": ("flext_core.utilities", "FlextUtilities"),
     "x": ("flext_core.mixins", "FlextMixins"),
 }
