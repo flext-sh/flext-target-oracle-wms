@@ -14,28 +14,28 @@ if _t.TYPE_CHECKING:
 
     client = _flext_target_oracle_wms__utilities_client
     import flext_target_oracle_wms._utilities.helpers as _flext_target_oracle_wms__utilities_helpers
+    from flext_target_oracle_wms._utilities.client import (
+        CatalogManager,
+        StreamProcessor,
+        Target,
+    )
 
     helpers = _flext_target_oracle_wms__utilities_helpers
     import flext_target_oracle_wms._utilities.service_runtime as _flext_target_oracle_wms__utilities_service_runtime
-
-    service_runtime = _flext_target_oracle_wms__utilities_service_runtime
-
-    _ = (
-        CatalogManager,
-        FlextTargetOracleWmsServiceRuntime,
-        StreamProcessor,
-        Target,
+    from flext_target_oracle_wms._utilities.helpers import (
         Validation,
         WMSDataTransformer,
         WMSSchemaMapper,
         WMSTableManager,
         WMSTypeConverter,
-        client,
         create_record_message,
         create_schema_message,
         create_state_message,
-        helpers,
-        service_runtime,
+    )
+
+    service_runtime = _flext_target_oracle_wms__utilities_service_runtime
+    from flext_target_oracle_wms._utilities.service_runtime import (
+        FlextTargetOracleWmsServiceRuntime,
     )
 _LAZY_IMPORTS = {
     "CatalogManager": "flext_target_oracle_wms._utilities.client",
