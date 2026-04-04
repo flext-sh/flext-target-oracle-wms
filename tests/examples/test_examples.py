@@ -25,8 +25,8 @@ class TestExamplesCodeQuality:
 
     @pytest.fixture(scope="class")
     def example_files(self, examples_dir: Path) -> Sequence[Path]:
-        """Get all Python example files."""
-        return list(examples_dir.glob("*.py"))
+        """Get all Python example files (excluding __init__.py)."""
+        return [f for f in examples_dir.glob("*.py") if f.name != "__init__.py"]
 
     def test_examples_directory_exists(self, examples_dir: Path) -> None:
         """Test that examples directory exists and contains files."""

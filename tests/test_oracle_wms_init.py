@@ -30,9 +30,9 @@ class TestModuleInit:
     def test_module_exports(self) -> None:
         """Test that module exports are properly defined."""
         assert hasattr(flext_target_oracle_wms, "__all__")
-        assert isinstance(flext_target_oracle_wms.__all__, list)
+        assert isinstance(flext_target_oracle_wms.__all__, (list, tuple))
         expected_exports = [
-            "FlextTargetOracleWms",
+            "Target",
             "FlextTargetOracleWmsUtilities",
         ]
         for export in expected_exports:
