@@ -33,13 +33,13 @@ class FlextTargetOracleWmsConstants(FlextMeltanoConstants, FlextOracleWmsConstan
             REPLACE: Final[str] = "REPLACE"
             MERGE: Final[str] = "MERGE"
             TRUNCATE_INSERT: Final[str] = "TRUNCATE_INSERT"
-            VALID_LOAD_METHODS: Final[set[str]] = {
+            VALID_LOAD_METHODS: Final[frozenset[str]] = frozenset({
                 APPEND_ONLY,
                 UPSERT,
                 REPLACE,
                 MERGE,
                 TRUNCATE_INSERT,
-            }
+            })
 
 
 c = FlextTargetOracleWmsConstants
