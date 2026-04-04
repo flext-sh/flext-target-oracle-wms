@@ -24,33 +24,23 @@ if _t.TYPE_CHECKING:
     )
 
     _utilities = _flext_target_oracle_wms__utilities
-    import flext_target_oracle_wms._utilities.client as _flext_target_oracle_wms__utilities_client
-
-    client = _flext_target_oracle_wms__utilities_client
-    import flext_target_oracle_wms._utilities.helpers as _flext_target_oracle_wms__utilities_helpers
-    from flext_target_oracle_wms._utilities.client import (
+    import flext_target_oracle_wms.api as _flext_target_oracle_wms_api
+    from flext_target_oracle_wms._utilities import (
         CatalogManager,
+        FlextTargetOracleWmsServiceRuntime,
         StreamProcessor,
         Target,
-    )
-
-    helpers = _flext_target_oracle_wms__utilities_helpers
-    import flext_target_oracle_wms._utilities.service_runtime as _flext_target_oracle_wms__utilities_service_runtime
-    from flext_target_oracle_wms._utilities.helpers import (
         Validation,
         WMSDataTransformer,
         WMSSchemaMapper,
         WMSTableManager,
         WMSTypeConverter,
+        client,
         create_record_message,
         create_schema_message,
         create_state_message,
-    )
-
-    service_runtime = _flext_target_oracle_wms__utilities_service_runtime
-    import flext_target_oracle_wms.api as _flext_target_oracle_wms_api
-    from flext_target_oracle_wms._utilities.service_runtime import (
-        FlextTargetOracleWmsServiceRuntime,
+        helpers,
+        service_runtime,
     )
 
     api = _flext_target_oracle_wms_api

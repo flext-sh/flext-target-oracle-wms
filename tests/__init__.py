@@ -34,25 +34,21 @@ if _t.TYPE_CHECKING:
     )
 
     examples = _tests_examples
-    import tests.examples.test_examples as _tests_examples_test_examples
-
-    test_examples = _tests_examples_test_examples
     import tests.integration as _tests_integration
-    from tests.examples.test_examples import (
+    from tests.examples import (
         TestExamplesCodeQuality,
         TestExamplesFlextIntegration,
         TestExamplesImportability,
         TestExamplesStructure,
+        test_examples,
     )
 
     integration = _tests_integration
-    import tests.integration.test_oracle as _tests_integration_test_oracle
-
-    test_oracle = _tests_integration_test_oracle
     import tests.models as _tests_models
-    from tests.integration.test_oracle import (
+    from tests.integration import (
         TestMultiStreamIntegration,
         TestTargetLifecycle,
+        test_oracle,
     )
 
     models = _tests_models
