@@ -51,7 +51,7 @@ class FlextTargetFactory:
                 **config,
                 "additional_config": additional or None,
             })
-        except c.Meltano.Singer.SAFE_EXCEPTIONS as exc:
+        except c.Meltano.SINGER_SAFE_EXCEPTIONS as exc:
             return r[FlextTargetOracleWms].fail(str(exc))
         return cls.create_target(request)
 

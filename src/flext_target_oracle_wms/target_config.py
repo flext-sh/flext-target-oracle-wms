@@ -22,7 +22,7 @@ class FlextTargetOracleWmsSettings(m.TargetOracleWms.WmsTargetConfig):
         try:
             data: t.ContainerValueMapping = dict(overrides) if overrides else {}
             settings = FlextTargetOracleWmsSettings.model_validate(data)
-        except c.Meltano.Singer.SAFE_EXCEPTIONS as exc:
+        except c.Meltano.SINGER_SAFE_EXCEPTIONS as exc:
             return r[FlextTargetOracleWmsSettings].fail(
                 f"Invalid settings overrides: {exc}",
             )
