@@ -68,15 +68,18 @@ if _t.TYPE_CHECKING:
     )
 
     protocols = _flext_target_oracle_wms_protocols
-    import flext_target_oracle_wms.target_config as _flext_target_oracle_wms_target_config
+    import flext_target_oracle_wms.settings as _flext_target_oracle_wms_settings
     from flext_target_oracle_wms.protocols import (
         FlextTargetOracleWmsProtocols,
         FlextTargetOracleWmsProtocols as p,
     )
 
+    settings = _flext_target_oracle_wms_settings
+    import flext_target_oracle_wms.target_config as _flext_target_oracle_wms_target_config
+    from flext_target_oracle_wms.settings import FlextTargetOracleWmsSettings
+
     target_config = _flext_target_oracle_wms_target_config
     import flext_target_oracle_wms.typings as _flext_target_oracle_wms_typings
-    from flext_target_oracle_wms.target_config import FlextTargetOracleWmsSettings
 
     typings = _flext_target_oracle_wms_typings
     import flext_target_oracle_wms.utilities as _flext_target_oracle_wms_utilities
@@ -105,7 +108,7 @@ _LAZY_IMPORTS = merge_lazy_imports(
         "FlextTargetOracleWmsModels": "flext_target_oracle_wms.models",
         "FlextTargetOracleWmsProtocols": "flext_target_oracle_wms.protocols",
         "FlextTargetOracleWmsService": "flext_target_oracle_wms.api",
-        "FlextTargetOracleWmsSettings": "flext_target_oracle_wms.target_config",
+        "FlextTargetOracleWmsSettings": "flext_target_oracle_wms.settings",
         "FlextTargetOracleWmsTypes": "flext_target_oracle_wms.typings",
         "FlextTargetOracleWmsUtilities": "flext_target_oracle_wms.utilities",
         "__author__": "flext_target_oracle_wms.__version__",
@@ -134,6 +137,7 @@ _LAZY_IMPORTS = merge_lazy_imports(
         "protocols": "flext_target_oracle_wms.protocols",
         "r": ("flext_core.result", "FlextResult"),
         "s": ("flext_target_oracle_wms.api", "FlextTargetOracleWmsService"),
+        "settings": "flext_target_oracle_wms.settings",
         "t": ("flext_target_oracle_wms.typings", "FlextTargetOracleWmsTypes"),
         "target_config": "flext_target_oracle_wms.target_config",
         "typings": "flext_target_oracle_wms.typings",
@@ -195,6 +199,7 @@ __all__ = [
     "r",
     "s",
     "service_runtime",
+    "settings",
     "t",
     "target_config",
     "typings",

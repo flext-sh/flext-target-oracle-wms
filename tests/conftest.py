@@ -15,6 +15,8 @@ import pytest
 
 from tests import t
 
+pytest_plugins = ["flext_tests.conftest_plugin"]
+
 
 @pytest.fixture
 def config() -> t.ContainerMapping:

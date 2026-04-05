@@ -16,6 +16,7 @@ if _t.TYPE_CHECKING:
     import tests.constants as _tests_constants
     from tests.conftest import (
         config,
+        pytest_plugins,
         sample_inventory_records,
         sample_order_records,
         sample_task_records,
@@ -267,6 +268,7 @@ _LAZY_IMPORTS = merge_lazy_imports(
         "models": "tests.models",
         "p": ("tests.protocols", "FlextTargetOracleWmsTestProtocols"),
         "protocols": "tests.protocols",
+        "pytest_plugins": "tests.conftest",
         "r": ("flext_core.result", "FlextResult"),
         "s": ("flext_core.service", "FlextService"),
         "sample_inventory_records": "tests.conftest",
@@ -373,6 +375,7 @@ __all__ = [
     "models",
     "p",
     "protocols",
+    "pytest_plugins",
     "r",
     "s",
     "sample_inventory_records",
