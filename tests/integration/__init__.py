@@ -29,8 +29,11 @@ if _t.TYPE_CHECKING:
         TestTargetLifecycle,
     )
 _LAZY_IMPORTS = {
-    "TestMultiStreamIntegration": "tests.integration.test_oracle",
-    "TestTargetLifecycle": "tests.integration.test_oracle",
+    "TestMultiStreamIntegration": (
+        "tests.integration.test_oracle",
+        "TestMultiStreamIntegration",
+    ),
+    "TestTargetLifecycle": ("tests.integration.test_oracle", "TestTargetLifecycle"),
     "c": ("flext_core.constants", "FlextConstants"),
     "d": ("flext_core.decorators", "FlextDecorators"),
     "e": ("flext_core.exceptions", "FlextExceptions"),

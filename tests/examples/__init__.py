@@ -31,10 +31,19 @@ if _t.TYPE_CHECKING:
         TestExamplesStructure,
     )
 _LAZY_IMPORTS = {
-    "TestExamplesCodeQuality": "tests.examples.test_examples",
-    "TestExamplesFlextIntegration": "tests.examples.test_examples",
-    "TestExamplesImportability": "tests.examples.test_examples",
-    "TestExamplesStructure": "tests.examples.test_examples",
+    "TestExamplesCodeQuality": (
+        "tests.examples.test_examples",
+        "TestExamplesCodeQuality",
+    ),
+    "TestExamplesFlextIntegration": (
+        "tests.examples.test_examples",
+        "TestExamplesFlextIntegration",
+    ),
+    "TestExamplesImportability": (
+        "tests.examples.test_examples",
+        "TestExamplesImportability",
+    ),
+    "TestExamplesStructure": ("tests.examples.test_examples", "TestExamplesStructure"),
     "c": ("flext_core.constants", "FlextConstants"),
     "d": ("flext_core.decorators", "FlextDecorators"),
     "e": ("flext_core.exceptions", "FlextExceptions"),
