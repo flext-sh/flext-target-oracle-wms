@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from typing import override
 
-from flext_meltano import FlextMeltanoSingerSinkBase, FlextMeltanoTargetServiceBase
+from flext_meltano import FlextMeltanoTargetServiceBase, p
 from flext_target_oracle_wms import (
     FlextTargetOracleWmsServiceRuntime,
     t,
@@ -28,7 +28,7 @@ class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
         self,
         stream_name: str,
         schema: t.FlatContainerMapping,
-    ) -> FlextMeltanoSingerSinkBase:
+    ) -> p.Meltano.SingerDrainSink:
         """Create an Oracle WMS sink for a stream."""
         target_config: t.ContainerMapping = (
             self.config_overrides if self.config_overrides is not None else {}

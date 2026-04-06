@@ -8,6 +8,7 @@ from typing import override
 from flext_meltano import (
     FlextMeltanoSingerSinkBase,
     FlextMeltanoSingerTargetBase,
+    p,
 )
 from flext_target_oracle_wms import (
     Target as FlextTargetOracleWmsTarget,
@@ -29,24 +30,27 @@ class FlextTargetOracleWmsServiceRuntime:
         """Singer sink adapter delegating records to the Oracle WMS runtime."""
 
         name = "target-oracle-wms-sink"
+        _runtime_target: FlextTargetOracleWmsTarget
 
-        def __init__(
-            self,
+        @classmethod
+        def create(
+            cls,
             *,
             runtime_target: FlextTargetOracleWmsTarget,
             target: FlextMeltanoSingerTargetBase,
             stream_name: str,
             schema: dict[str, t.ContainerValue],
             key_properties: t.StrSequence,
-        ) -> None:
-            """Initialize the adapter and keep the Oracle WMS runtime target."""
-            super().__init__(
+        ) -> FlextTargetOracleWmsServiceRuntime.Sink:
+            """Create an adapter sink and attach the Oracle WMS runtime target."""
+            service_sink = cls(
                 target=target,
                 stream_name=stream_name,
                 schema=schema,
                 key_properties=key_properties,
             )
-            self._runtime_target = runtime_target
+            service_sink._runtime_target = runtime_target
+            return service_sink
 
         @override
         def process_record(
@@ -84,7 +88,7 @@ class FlextTargetOracleWmsServiceRuntime:
         stream_name: str,
         schema: t.FlatContainerMapping,
         target_config: t.ContainerMapping,
-    ) -> FlextMeltanoSingerSinkBase:
+    ) -> p.Meltano.SingerDrainSink:
         """Create the service-level Singer sink adapter."""
         normalized_target_config = cls.normalize_singer_mapping(target_config)
         runtime_target = FlextTargetOracleWmsTarget(normalized_target_config)
@@ -99,7 +103,7 @@ class FlextTargetOracleWmsServiceRuntime:
         if schema_result.is_failure:
             msg = schema_result.error or "Oracle WMS runtime rejected the schema"
             raise RuntimeError(msg)
-        return cls.Sink(
+        return cls.Sink.create(
             runtime_target=runtime_target,
             target=cls.Target(config=normalized_target_config, validate_config=False),
             stream_name=stream_name,
