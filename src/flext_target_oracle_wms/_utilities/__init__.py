@@ -32,7 +32,6 @@ _LAZY_IMPORTS = {
         "flext_target_oracle_wms._utilities.helpers",
         "WMSTypeConverter",
     ),
-    "client": "flext_target_oracle_wms._utilities.client",
     "create_record_message": (
         "flext_target_oracle_wms._utilities.helpers",
         "create_record_message",
@@ -45,8 +44,6 @@ _LAZY_IMPORTS = {
         "flext_target_oracle_wms._utilities.helpers",
         "create_state_message",
     ),
-    "helpers": "flext_target_oracle_wms._utilities.helpers",
-    "service_runtime": "flext_target_oracle_wms._utilities.service_runtime",
 }
 
 
