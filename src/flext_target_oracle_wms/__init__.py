@@ -56,8 +56,6 @@ if _t.TYPE_CHECKING:
     from flext_target_oracle_wms.factory import (
         FlextTargetFactory,
         FlextTargetMonitoringFactory,
-        create_monitored_oracle_wms_target,
-        create_oracle_wms_target,
     )
 
     models = _flext_target_oracle_wms_models
@@ -151,14 +149,6 @@ _LAZY_IMPORTS = merge_lazy_imports(
         "c": ("flext_target_oracle_wms.constants", "FlextTargetOracleWmsConstants"),
         "cli": "flext_target_oracle_wms.cli",
         "constants": "flext_target_oracle_wms.constants",
-        "create_monitored_oracle_wms_target": (
-            "flext_target_oracle_wms.factory",
-            "create_monitored_oracle_wms_target",
-        ),
-        "create_oracle_wms_target": (
-            "flext_target_oracle_wms.factory",
-            "create_oracle_wms_target",
-        ),
         "d": ("flext_core.decorators", "FlextDecorators"),
         "e": ("flext_core.exceptions", "FlextExceptions"),
         "factory": "flext_target_oracle_wms.factory",
@@ -220,8 +210,6 @@ __all__ = [
     "cli",
     "client",
     "constants",
-    "create_monitored_oracle_wms_target",
-    "create_oracle_wms_target",
     "create_record_message",
     "create_schema_message",
     "create_state_message",

@@ -89,11 +89,20 @@ if _t.TYPE_CHECKING:
     )
 
     test_features = _tests_test_features
-    import tests.test_oracle_wms_cli as _tests_test_oracle_wms_cli
+    import tests.test_module_governance as _tests_test_module_governance
     from tests.test_features import (
         TestTargetFeatures,
         TestTransformerFeatures,
         TestUtilitiesFeatures,
+    )
+
+    test_module_governance = _tests_test_module_governance
+    import tests.test_oracle_wms_cli as _tests_test_oracle_wms_cli
+    from tests.test_module_governance import (
+        ALLOWED_MODULE_FUNCTIONS,
+        PACKAGE_ROOT,
+        test_package_modules_do_not_define_module_level_loggers,
+        test_package_modules_do_not_define_unapproved_top_level_functions,
     )
 
     test_oracle_wms_cli = _tests_test_oracle_wms_cli
@@ -108,7 +117,7 @@ if _t.TYPE_CHECKING:
     test_oracle_wms_factory = _tests_test_oracle_wms_factory
     import tests.test_oracle_wms_init as _tests_test_oracle_wms_init
     from tests.test_oracle_wms_factory import (
-        TestConvenienceFunctions,
+        TestFactoryConvenienceMethods,
         TestFlextTargetFactory,
         TestFlextTargetMonitoringFactory,
         TestMonitoredTargetCreationRequest,
@@ -203,6 +212,10 @@ _LAZY_IMPORTS = merge_lazy_imports(
         "tests.integration",
     ),
     {
+        "ALLOWED_MODULE_FUNCTIONS": (
+            "tests.test_module_governance",
+            "ALLOWED_MODULE_FUNCTIONS",
+        ),
         "FlextTargetOracleWmsTestConstants": (
             "tests.constants",
             "FlextTargetOracleWmsTestConstants",
@@ -223,6 +236,7 @@ _LAZY_IMPORTS = merge_lazy_imports(
             "tests.utilities",
             "FlextTargetOracleWmsTestUtilities",
         ),
+        "PACKAGE_ROOT": ("tests.test_module_governance", "PACKAGE_ROOT"),
         "PERF_ITERATIONS": ("tests.test_benchmarks", "PERF_ITERATIONS"),
         "PERF_THRESHOLD_SEC": ("tests.test_benchmarks", "PERF_THRESHOLD_SEC"),
         "TestCatalogAddStream": ("tests.test_catalog", "TestCatalogAddStream"),
@@ -239,16 +253,16 @@ _LAZY_IMPORTS = merge_lazy_imports(
         "TestClassAttributes": ("tests.test_quality", "TestClassAttributes"),
         "TestCliWorkflow": ("tests.test_workflow", "TestCliWorkflow"),
         "TestConstantsNamespace": ("tests.test_quality", "TestConstantsNamespace"),
-        "TestConvenienceFunctions": (
-            "tests.test_oracle_wms_factory",
-            "TestConvenienceFunctions",
-        ),
         "TestDataTransformerBenchmarks": (
             "tests.test_benchmarks",
             "TestDataTransformerBenchmarks",
         ),
         "TestErrorWorkflows": ("tests.test_workflow", "TestErrorWorkflows"),
         "TestFactoryBenchmarks": ("tests.test_benchmarks", "TestFactoryBenchmarks"),
+        "TestFactoryConvenienceMethods": (
+            "tests.test_oracle_wms_factory",
+            "TestFactoryConvenienceMethods",
+        ),
         "TestFlextTargetFactory": (
             "tests.test_oracle_wms_factory",
             "TestFlextTargetFactory",
@@ -362,10 +376,19 @@ _LAZY_IMPORTS = merge_lazy_imports(
             "tests.test_structure",
             "test_import_from_correct_module",
         ),
+        "test_module_governance": "tests.test_module_governance",
         "test_no_dual_structure": ("tests.test_structure", "test_no_dual_structure"),
         "test_oracle_wms_cli": "tests.test_oracle_wms_cli",
         "test_oracle_wms_factory": "tests.test_oracle_wms_factory",
         "test_oracle_wms_init": "tests.test_oracle_wms_init",
+        "test_package_modules_do_not_define_module_level_loggers": (
+            "tests.test_module_governance",
+            "test_package_modules_do_not_define_module_level_loggers",
+        ),
+        "test_package_modules_do_not_define_unapproved_top_level_functions": (
+            "tests.test_module_governance",
+            "test_package_modules_do_not_define_unapproved_top_level_functions",
+        ),
         "test_quality": "tests.test_quality",
         "test_sinks": "tests.test_sinks",
         "test_stream": "tests.test_stream",
@@ -388,6 +411,8 @@ _ = _LAZY_IMPORTS.pop("output", None)
 _ = _LAZY_IMPORTS.pop("output_reporting", None)
 
 __all__ = [
+    "ALLOWED_MODULE_FUNCTIONS",
+    "PACKAGE_ROOT",
     "PERF_ITERATIONS",
     "PERF_THRESHOLD_SEC",
     "FlextTargetOracleWmsTestConstants",
@@ -403,7 +428,6 @@ __all__ = [
     "TestClassAttributes",
     "TestCliWorkflow",
     "TestConstantsNamespace",
-    "TestConvenienceFunctions",
     "TestDataTransformerBenchmarks",
     "TestErrorWorkflows",
     "TestExamplesCodeQuality",
@@ -411,6 +435,7 @@ __all__ = [
     "TestExamplesImportability",
     "TestExamplesStructure",
     "TestFactoryBenchmarks",
+    "TestFactoryConvenienceMethods",
     "TestFlextTargetFactory",
     "TestFlextTargetMonitoringFactory",
     "TestFullSingerWorkflow",
@@ -476,11 +501,14 @@ __all__ = [
     "test_examples",
     "test_features",
     "test_import_from_correct_module",
+    "test_module_governance",
     "test_no_dual_structure",
     "test_oracle",
     "test_oracle_wms_cli",
     "test_oracle_wms_factory",
     "test_oracle_wms_init",
+    "test_package_modules_do_not_define_module_level_loggers",
+    "test_package_modules_do_not_define_unapproved_top_level_functions",
     "test_quality",
     "test_sinks",
     "test_stream",

@@ -11,8 +11,6 @@ from unittest.mock import MagicMock, patch
 from flext_target_oracle_wms import (
     FlextTargetFactory,
     FlextTargetMonitoringFactory,
-    create_monitored_oracle_wms_target,
-    create_oracle_wms_target,
 )
 from tests import m
 
@@ -173,12 +171,12 @@ class TestFlextTargetMonitoringFactory:
         assert result.is_success
 
 
-class TestConvenienceFunctions:
-    """Tests for module-level convenience functions."""
+class TestFactoryConvenienceMethods:
+    """Tests for class-level convenience methods."""
 
     @patch(_PATCH_TARGET)
     def test_create_oracle_wms_target(self, _mock_cls: MagicMock) -> None:
-        result = create_oracle_wms_target(
+        result = FlextTargetMonitoringFactory.create_oracle_wms_target(
             base_url="https://x",
             username="u",
             password="p",
@@ -187,7 +185,7 @@ class TestConvenienceFunctions:
 
     @patch(_PATCH_TARGET)
     def test_create_oracle_wms_target_with_preset(self, _mock_cls: MagicMock) -> None:
-        result = create_oracle_wms_target(
+        result = FlextTargetMonitoringFactory.create_oracle_wms_target(
             base_url="https://x",
             username="u",
             password="p",
@@ -203,5 +201,5 @@ class TestConvenienceFunctions:
             password="p",
             additional_config=None,
         )
-        result = create_monitored_oracle_wms_target(req)
+        result = FlextTargetMonitoringFactory.create_monitored_oracle_wms_target(req)
         assert result.is_success

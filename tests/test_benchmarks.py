@@ -14,7 +14,7 @@ from unittest.mock import MagicMock, patch
 from flext_target_oracle_wms import (
     CatalogManager as FlextTargetOracleWmsCatalogManager,
     FlextTargetFactory,
-    create_oracle_wms_target,
+    FlextTargetMonitoringFactory,
 )
 from tests import m, u
 
@@ -123,7 +123,7 @@ class TestFactoryBenchmarks:
     def test_convenience_function_performance(self, mock_target: MagicMock) -> None:
         start = time.time()
         for _ in range(PERF_ITERATIONS):
-            create_oracle_wms_target(
+            FlextTargetMonitoringFactory.create_oracle_wms_target(
                 base_url="https://bench.example.com",
                 username="u",
                 password="p",

@@ -6,6 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+import json
 from collections.abc import Mapping
 from pathlib import Path
 from unittest.mock import patch
@@ -20,7 +21,7 @@ from tests import t
 def _write_config_file(config: Mapping[str, t.StrMapping], tmp_path: Path) -> str:
     config_file = tmp_path / "config.json"
     config_file.write_text(
-        t.STR_MAPPING_MAPPING_ADAPTER.dump_json(config).decode("utf-8"),
+        json.dumps(config),
         encoding="utf-8",
     )
     return str(config_file)
@@ -64,7 +65,7 @@ class TestOracleWMSTargetCliLoadConfig:
         cli = FlextTargetOracleWmsCli()
         bad_file = tmp_path / "bad.json"
         bad_file.write_text(
-            t.INTEGER_SEQUENCE_ADAPTER.dump_json([1, 2, 3]).decode("utf-8"),
+            json.dumps([1, 2, 3]),
             encoding="utf-8",
         )
         with pytest.raises(ValidationError):
