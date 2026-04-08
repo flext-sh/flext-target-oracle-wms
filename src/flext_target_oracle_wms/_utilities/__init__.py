@@ -8,42 +8,18 @@ from __future__ import annotations
 from flext_core.lazy import install_lazy_exports
 
 _LAZY_IMPORTS = {
-    "CatalogManager": ("flext_target_oracle_wms._utilities.client", "CatalogManager"),
-    "FlextTargetOracleWmsServiceRuntime": (
-        "flext_target_oracle_wms._utilities.service_runtime",
-        "FlextTargetOracleWmsServiceRuntime",
-    ),
-    "StreamProcessor": ("flext_target_oracle_wms._utilities.client", "StreamProcessor"),
-    "Target": ("flext_target_oracle_wms._utilities.client", "Target"),
-    "Validation": ("flext_target_oracle_wms._utilities.helpers", "Validation"),
-    "WMSDataTransformer": (
-        "flext_target_oracle_wms._utilities.helpers",
-        "WMSDataTransformer",
-    ),
-    "WMSSchemaMapper": (
-        "flext_target_oracle_wms._utilities.helpers",
-        "WMSSchemaMapper",
-    ),
-    "WMSTableManager": (
-        "flext_target_oracle_wms._utilities.helpers",
-        "WMSTableManager",
-    ),
-    "WMSTypeConverter": (
-        "flext_target_oracle_wms._utilities.helpers",
-        "WMSTypeConverter",
-    ),
-    "create_record_message": (
-        "flext_target_oracle_wms._utilities.helpers",
-        "create_record_message",
-    ),
-    "create_schema_message": (
-        "flext_target_oracle_wms._utilities.helpers",
-        "create_schema_message",
-    ),
-    "create_state_message": (
-        "flext_target_oracle_wms._utilities.helpers",
-        "create_state_message",
-    ),
+    "CatalogManager": ".client",
+    "FlextTargetOracleWmsServiceRuntime": ".service_runtime",
+    "StreamProcessor": ".client",
+    "Target": ".client",
+    "Validation": ".helpers",
+    "WMSDataTransformer": ".helpers",
+    "WMSSchemaMapper": ".helpers",
+    "WMSTableManager": ".helpers",
+    "WMSTypeConverter": ".helpers",
+    "create_record_message": ".helpers",
+    "create_schema_message": ".helpers",
+    "create_state_message": ".helpers",
 }
 
 

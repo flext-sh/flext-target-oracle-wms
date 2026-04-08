@@ -37,36 +37,21 @@ if _t.TYPE_CHECKING:
         TestsFlextTargetOracleWmsUtilities as u,
     )
 _LAZY_IMPORTS = {
-    "TestsFlextTargetOracleWmsConstants": (
-        "tests.constants",
-        "TestsFlextTargetOracleWmsConstants",
-    ),
-    "TestsFlextTargetOracleWmsModels": (
-        "tests.models",
-        "TestsFlextTargetOracleWmsModels",
-    ),
-    "TestsFlextTargetOracleWmsProtocols": (
-        "tests.protocols",
-        "TestsFlextTargetOracleWmsProtocols",
-    ),
-    "TestsFlextTargetOracleWmsTypes": (
-        "tests.typings",
-        "TestsFlextTargetOracleWmsTypes",
-    ),
-    "TestsFlextTargetOracleWmsUtilities": (
-        "tests.utilities",
-        "TestsFlextTargetOracleWmsUtilities",
-    ),
-    "c": ("tests.constants", "TestsFlextTargetOracleWmsConstants"),
+    "TestsFlextTargetOracleWmsConstants": ".constants",
+    "TestsFlextTargetOracleWmsModels": ".models",
+    "TestsFlextTargetOracleWmsProtocols": ".protocols",
+    "TestsFlextTargetOracleWmsTypes": ".typings",
+    "TestsFlextTargetOracleWmsUtilities": ".utilities",
+    "c": (".constants", "TestsFlextTargetOracleWmsConstants"),
     "d": ("flext_core.decorators", "FlextDecorators"),
     "e": ("flext_core.exceptions", "FlextExceptions"),
     "h": ("flext_core.handlers", "FlextHandlers"),
-    "m": ("tests.models", "TestsFlextTargetOracleWmsModels"),
-    "p": ("tests.protocols", "TestsFlextTargetOracleWmsProtocols"),
+    "m": (".models", "TestsFlextTargetOracleWmsModels"),
+    "p": (".protocols", "TestsFlextTargetOracleWmsProtocols"),
     "r": ("flext_core.result", "FlextResult"),
     "s": ("flext_core.service", "FlextService"),
-    "t": ("tests.typings", "TestsFlextTargetOracleWmsTypes"),
-    "u": ("tests.utilities", "TestsFlextTargetOracleWmsUtilities"),
+    "t": (".typings", "TestsFlextTargetOracleWmsTypes"),
+    "u": (".utilities", "TestsFlextTargetOracleWmsUtilities"),
     "x": ("flext_core.mixins", "FlextMixins"),
 }
 
