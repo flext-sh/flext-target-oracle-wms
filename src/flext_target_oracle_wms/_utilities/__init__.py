@@ -3,22 +3,28 @@
 
 from __future__ import annotations
 
-from flext_core.lazy import install_lazy_exports
+from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
-_LAZY_IMPORTS = {
-    "CatalogManager": ".client",
-    "FlextTargetOracleWmsServiceRuntime": ".service_runtime",
-    "StreamProcessor": ".client",
-    "Target": ".client",
-    "Validation": ".helpers",
-    "WMSDataTransformer": ".helpers",
-    "WMSSchemaMapper": ".helpers",
-    "WMSTableManager": ".helpers",
-    "WMSTypeConverter": ".helpers",
-    "create_record_message": ".helpers",
-    "create_schema_message": ".helpers",
-    "create_state_message": ".helpers",
-}
+_LAZY_IMPORTS = build_lazy_import_map(
+    {
+        ".client": (
+            "CatalogManager",
+            "StreamProcessor",
+            "Target",
+        ),
+        ".helpers": (
+            "Validation",
+            "WMSDataTransformer",
+            "WMSSchemaMapper",
+            "WMSTableManager",
+            "WMSTypeConverter",
+            "create_record_message",
+            "create_schema_message",
+            "create_state_message",
+        ),
+        ".service_runtime": ("FlextTargetOracleWmsServiceRuntime",),
+    },
+)
 
 
 install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, publish_all=False)
