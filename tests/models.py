@@ -2,7 +2,7 @@
 
 This module provides test-specific models that extend the main flext-target-oracle-wms models.
 Uses the unified namespace pattern m.Wms.Tests.* for test-only objects.
-Combines FlextTestsModels functionality with project-specific test models.
+Combines TestsFlextModels functionality with project-specific test models.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -16,8 +16,8 @@ from flext_tests import FlextTestsModels
 from flext_target_oracle_wms import FlextTargetOracleWmsModels
 
 
-class FlextTargetOracleWmsTestModels(FlextTestsModels, FlextTargetOracleWmsModels):
-    """Test models combining FlextTestsModels and project-specific models."""
+class TestsFlextTargetOracleWmsModels(FlextTestsModels, FlextTargetOracleWmsModels):
+    """Test models combining TestsFlextModels and project-specific models."""
 
     class TargetOracleWms(FlextTargetOracleWmsModels.TargetOracleWms):
         """TargetOracleWms domain models extending project models."""
@@ -26,7 +26,6 @@ class FlextTargetOracleWmsTestModels(FlextTestsModels, FlextTargetOracleWmsModel
             """Internal tests declarations."""
 
 
-tm = FlextTargetOracleWmsTestModels
-m = FlextTargetOracleWmsTestModels
+m = TestsFlextTargetOracleWmsModels
 
-__all__ = ["FlextTargetOracleWmsTestModels", "m", "tm"]
+__all__ = ["TestsFlextTargetOracleWmsModels", "m"]

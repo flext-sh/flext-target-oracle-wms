@@ -24,16 +24,7 @@ if _t.TYPE_CHECKING:
     from flext_core.service import FlextService as s
     from flext_core.typings import FlextTypes as t
     from flext_core.utilities import FlextUtilities as u
-    from tests.integration.test_oracle import (
-        TestMultiStreamIntegration,
-        TestTargetLifecycle,
-    )
 _LAZY_IMPORTS = {
-    "TestMultiStreamIntegration": (
-        "tests.integration.test_oracle",
-        "TestMultiStreamIntegration",
-    ),
-    "TestTargetLifecycle": ("tests.integration.test_oracle", "TestTargetLifecycle"),
     "c": ("flext_core.constants", "FlextConstants"),
     "d": ("flext_core.decorators", "FlextDecorators"),
     "e": ("flext_core.exceptions", "FlextExceptions"),
@@ -49,8 +40,6 @@ _LAZY_IMPORTS = {
 }
 
 __all__ = [
-    "TestMultiStreamIntegration",
-    "TestTargetLifecycle",
     "c",
     "d",
     "e",

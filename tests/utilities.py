@@ -1,4 +1,4 @@
-"""Module skeleton for FlextTargetOracleWmsTestUtilities.
+"""Module skeleton for TestsFlextTargetOracleWmsUtilities.
 
 Test utilities for flext-target-oracle-wms.
 
@@ -13,12 +13,12 @@ from flext_tests import FlextTestsUtilities
 from flext_target_oracle_wms import FlextTargetOracleWmsUtilities
 
 
-class FlextTargetOracleWmsTestUtilities(
+class TestsFlextTargetOracleWmsUtilities(
     FlextTestsUtilities,
     FlextTargetOracleWmsUtilities,
 ):
     """Test utilities for flext-target-oracle-wms."""
 
 
-u = FlextTargetOracleWmsTestUtilities
-__all__ = ["FlextTargetOracleWmsTestUtilities", "u"]
+u = TestsFlextTargetOracleWmsUtilities
+__all__ = ["TestsFlextTargetOracleWmsUtilities", "u"]

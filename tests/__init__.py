@@ -7,40 +7,43 @@ from __future__ import annotations
 
 import typing as _t
 
-from flext_core.lazy import install_lazy_exports
+from flext_core.lazy import install_lazy_exports, merge_lazy_imports
 
 if _t.TYPE_CHECKING:
     import tests.conftest as _tests_conftest
 
     conftest = _tests_conftest
     import tests.constants as _tests_constants
-    from tests.conftest import pytest_plugins
 
     constants = _tests_constants
-    import tests.models as _tests_models
+    import tests.examples as _tests_examples
     from tests.constants import (
-        FlextTargetOracleWmsTestConstants,
-        FlextTargetOracleWmsTestConstants as c,
+        TestsFlextTargetOracleWmsConstants,
+        TestsFlextTargetOracleWmsConstants as c,
     )
+
+    examples = _tests_examples
+    import tests.integration as _tests_integration
+
+    integration = _tests_integration
+    import tests.models as _tests_models
 
     models = _tests_models
     import tests.protocols as _tests_protocols
     from tests.models import (
-        FlextTargetOracleWmsTestModels,
-        FlextTargetOracleWmsTestModels as m,
-        tm,
+        TestsFlextTargetOracleWmsModels,
+        TestsFlextTargetOracleWmsModels as m,
     )
 
     protocols = _tests_protocols
     import tests.test_benchmarks as _tests_test_benchmarks
     from tests.protocols import (
-        FlextTargetOracleWmsTestProtocols,
-        FlextTargetOracleWmsTestProtocols as p,
+        TestsFlextTargetOracleWmsProtocols,
+        TestsFlextTargetOracleWmsProtocols as p,
     )
 
     test_benchmarks = _tests_test_benchmarks
     import tests.test_catalog as _tests_test_catalog
-    from tests.test_benchmarks import PERF_ITERATIONS, PERF_THRESHOLD_SEC
 
     test_catalog = _tests_test_catalog
     import tests.test_features as _tests_test_features
@@ -50,7 +53,6 @@ if _t.TYPE_CHECKING:
 
     test_module_governance = _tests_test_module_governance
     import tests.test_oracle_wms_cli as _tests_test_oracle_wms_cli
-    from tests.test_module_governance import ALLOWED_MODULE_FUNCTIONS, PACKAGE_ROOT
 
     test_oracle_wms_cli = _tests_test_oracle_wms_cli
     import tests.test_oracle_wms_factory as _tests_test_oracle_wms_factory
@@ -85,8 +87,8 @@ if _t.TYPE_CHECKING:
     typings = _tests_typings
     import tests.utilities as _tests_utilities
     from tests.typings import (
-        FlextTargetOracleWmsTestTypes,
-        FlextTargetOracleWmsTestTypes as t,
+        TestsFlextTargetOracleWmsTypes,
+        TestsFlextTargetOracleWmsTypes as t,
     )
 
     utilities = _tests_utilities
@@ -97,90 +99,96 @@ if _t.TYPE_CHECKING:
     from flext_core.result import FlextResult as r
     from flext_core.service import FlextService as s
     from tests.utilities import (
-        FlextTargetOracleWmsTestUtilities,
-        FlextTargetOracleWmsTestUtilities as u,
+        TestsFlextTargetOracleWmsUtilities,
+        TestsFlextTargetOracleWmsUtilities as u,
     )
-_LAZY_IMPORTS = {
-    "ALLOWED_MODULE_FUNCTIONS": (
-        "tests.test_module_governance",
-        "ALLOWED_MODULE_FUNCTIONS",
+_LAZY_IMPORTS = merge_lazy_imports(
+    (
+        "tests.examples",
+        "tests.integration",
     ),
-    "FlextTargetOracleWmsTestConstants": (
-        "tests.constants",
-        "FlextTargetOracleWmsTestConstants",
-    ),
-    "FlextTargetOracleWmsTestModels": (
-        "tests.models",
-        "FlextTargetOracleWmsTestModels",
-    ),
-    "FlextTargetOracleWmsTestProtocols": (
-        "tests.protocols",
-        "FlextTargetOracleWmsTestProtocols",
-    ),
-    "FlextTargetOracleWmsTestTypes": ("tests.typings", "FlextTargetOracleWmsTestTypes"),
-    "FlextTargetOracleWmsTestUtilities": (
-        "tests.utilities",
-        "FlextTargetOracleWmsTestUtilities",
-    ),
-    "PACKAGE_ROOT": ("tests.test_module_governance", "PACKAGE_ROOT"),
-    "PERF_ITERATIONS": ("tests.test_benchmarks", "PERF_ITERATIONS"),
-    "PERF_THRESHOLD_SEC": ("tests.test_benchmarks", "PERF_THRESHOLD_SEC"),
-    "c": ("tests.constants", "FlextTargetOracleWmsTestConstants"),
-    "conftest": "tests.conftest",
-    "constants": "tests.constants",
-    "d": ("flext_core.decorators", "FlextDecorators"),
-    "e": ("flext_core.exceptions", "FlextExceptions"),
-    "h": ("flext_core.handlers", "FlextHandlers"),
-    "m": ("tests.models", "FlextTargetOracleWmsTestModels"),
-    "models": "tests.models",
-    "p": ("tests.protocols", "FlextTargetOracleWmsTestProtocols"),
-    "protocols": "tests.protocols",
-    "pytest_plugins": ("tests.conftest", "pytest_plugins"),
-    "r": ("flext_core.result", "FlextResult"),
-    "s": ("flext_core.service", "FlextService"),
-    "t": ("tests.typings", "FlextTargetOracleWmsTestTypes"),
-    "test_benchmarks": "tests.test_benchmarks",
-    "test_catalog": "tests.test_catalog",
-    "test_features": "tests.test_features",
-    "test_module_governance": "tests.test_module_governance",
-    "test_oracle_wms_cli": "tests.test_oracle_wms_cli",
-    "test_oracle_wms_factory": "tests.test_oracle_wms_factory",
-    "test_oracle_wms_init": "tests.test_oracle_wms_init",
-    "test_quality": "tests.test_quality",
-    "test_sinks": "tests.test_sinks",
-    "test_stream": "tests.test_stream",
-    "test_structure": "tests.test_structure",
-    "test_target": "tests.test_target",
-    "test_wms_patterns": "tests.test_wms_patterns",
-    "test_workflow": "tests.test_workflow",
-    "tm": ("tests.models", "tm"),
-    "typings": "tests.typings",
-    "u": ("tests.utilities", "FlextTargetOracleWmsTestUtilities"),
-    "utilities": "tests.utilities",
-    "x": ("flext_core.mixins", "FlextMixins"),
-}
+    {
+        "TestsFlextTargetOracleWmsConstants": (
+            "tests.constants",
+            "TestsFlextTargetOracleWmsConstants",
+        ),
+        "TestsFlextTargetOracleWmsModels": (
+            "tests.models",
+            "TestsFlextTargetOracleWmsModels",
+        ),
+        "TestsFlextTargetOracleWmsProtocols": (
+            "tests.protocols",
+            "TestsFlextTargetOracleWmsProtocols",
+        ),
+        "TestsFlextTargetOracleWmsTypes": (
+            "tests.typings",
+            "TestsFlextTargetOracleWmsTypes",
+        ),
+        "TestsFlextTargetOracleWmsUtilities": (
+            "tests.utilities",
+            "TestsFlextTargetOracleWmsUtilities",
+        ),
+        "c": ("tests.constants", "TestsFlextTargetOracleWmsConstants"),
+        "conftest": "tests.conftest",
+        "constants": "tests.constants",
+        "d": ("flext_core.decorators", "FlextDecorators"),
+        "e": ("flext_core.exceptions", "FlextExceptions"),
+        "examples": "tests.examples",
+        "h": ("flext_core.handlers", "FlextHandlers"),
+        "integration": "tests.integration",
+        "m": ("tests.models", "TestsFlextTargetOracleWmsModels"),
+        "models": "tests.models",
+        "p": ("tests.protocols", "TestsFlextTargetOracleWmsProtocols"),
+        "protocols": "tests.protocols",
+        "r": ("flext_core.result", "FlextResult"),
+        "s": ("flext_core.service", "FlextService"),
+        "t": ("tests.typings", "TestsFlextTargetOracleWmsTypes"),
+        "test_benchmarks": "tests.test_benchmarks",
+        "test_catalog": "tests.test_catalog",
+        "test_features": "tests.test_features",
+        "test_module_governance": "tests.test_module_governance",
+        "test_oracle_wms_cli": "tests.test_oracle_wms_cli",
+        "test_oracle_wms_factory": "tests.test_oracle_wms_factory",
+        "test_oracle_wms_init": "tests.test_oracle_wms_init",
+        "test_quality": "tests.test_quality",
+        "test_sinks": "tests.test_sinks",
+        "test_stream": "tests.test_stream",
+        "test_structure": "tests.test_structure",
+        "test_target": "tests.test_target",
+        "test_wms_patterns": "tests.test_wms_patterns",
+        "test_workflow": "tests.test_workflow",
+        "typings": "tests.typings",
+        "u": ("tests.utilities", "TestsFlextTargetOracleWmsUtilities"),
+        "utilities": "tests.utilities",
+        "x": ("flext_core.mixins", "FlextMixins"),
+    },
+)
+_ = _LAZY_IMPORTS.pop("cleanup_submodule_namespace", None)
+_ = _LAZY_IMPORTS.pop("install_lazy_exports", None)
+_ = _LAZY_IMPORTS.pop("lazy_getattr", None)
+_ = _LAZY_IMPORTS.pop("logger", None)
+_ = _LAZY_IMPORTS.pop("merge_lazy_imports", None)
+_ = _LAZY_IMPORTS.pop("output", None)
+_ = _LAZY_IMPORTS.pop("output_reporting", None)
 
 __all__ = [
-    "ALLOWED_MODULE_FUNCTIONS",
-    "PACKAGE_ROOT",
-    "PERF_ITERATIONS",
-    "PERF_THRESHOLD_SEC",
-    "FlextTargetOracleWmsTestConstants",
-    "FlextTargetOracleWmsTestModels",
-    "FlextTargetOracleWmsTestProtocols",
-    "FlextTargetOracleWmsTestTypes",
-    "FlextTargetOracleWmsTestUtilities",
+    "TestsFlextTargetOracleWmsConstants",
+    "TestsFlextTargetOracleWmsModels",
+    "TestsFlextTargetOracleWmsProtocols",
+    "TestsFlextTargetOracleWmsTypes",
+    "TestsFlextTargetOracleWmsUtilities",
     "c",
     "conftest",
     "constants",
     "d",
     "e",
+    "examples",
     "h",
+    "integration",
     "m",
     "models",
     "p",
     "protocols",
-    "pytest_plugins",
     "r",
     "s",
     "t",
@@ -198,7 +206,6 @@ __all__ = [
     "test_target",
     "test_wms_patterns",
     "test_workflow",
-    "tm",
     "typings",
     "u",
     "utilities",
