@@ -10,94 +10,52 @@ import typing as _t
 from flext_core.lazy import install_lazy_exports, merge_lazy_imports
 
 if _t.TYPE_CHECKING:
-    import tests.conftest as _tests_conftest
-
-    conftest = _tests_conftest
-    import tests.constants as _tests_constants
-
-    constants = _tests_constants
-    import tests.examples as _tests_examples
-    from tests.constants import (
-        TestsFlextTargetOracleWmsConstants,
-        TestsFlextTargetOracleWmsConstants as c,
-    )
-
-    examples = _tests_examples
-    import tests.integration as _tests_integration
-
-    integration = _tests_integration
-    import tests.models as _tests_models
-
-    models = _tests_models
-    import tests.protocols as _tests_protocols
-    from tests.models import (
-        TestsFlextTargetOracleWmsModels,
-        TestsFlextTargetOracleWmsModels as m,
-    )
-
-    protocols = _tests_protocols
-    import tests.test_benchmarks as _tests_test_benchmarks
-    from tests.protocols import (
-        TestsFlextTargetOracleWmsProtocols,
-        TestsFlextTargetOracleWmsProtocols as p,
-    )
-
-    test_benchmarks = _tests_test_benchmarks
-    import tests.test_catalog as _tests_test_catalog
-
-    test_catalog = _tests_test_catalog
-    import tests.test_features as _tests_test_features
-
-    test_features = _tests_test_features
-    import tests.test_module_governance as _tests_test_module_governance
-
-    test_module_governance = _tests_test_module_governance
-    import tests.test_oracle_wms_cli as _tests_test_oracle_wms_cli
-
-    test_oracle_wms_cli = _tests_test_oracle_wms_cli
-    import tests.test_oracle_wms_factory as _tests_test_oracle_wms_factory
-
-    test_oracle_wms_factory = _tests_test_oracle_wms_factory
-    import tests.test_oracle_wms_init as _tests_test_oracle_wms_init
-
-    test_oracle_wms_init = _tests_test_oracle_wms_init
-    import tests.test_quality as _tests_test_quality
-
-    test_quality = _tests_test_quality
-    import tests.test_sinks as _tests_test_sinks
-
-    test_sinks = _tests_test_sinks
-    import tests.test_stream as _tests_test_stream
-
-    test_stream = _tests_test_stream
-    import tests.test_structure as _tests_test_structure
-
-    test_structure = _tests_test_structure
-    import tests.test_target as _tests_test_target
-
-    test_target = _tests_test_target
-    import tests.test_wms_patterns as _tests_test_wms_patterns
-
-    test_wms_patterns = _tests_test_wms_patterns
-    import tests.test_workflow as _tests_test_workflow
-
-    test_workflow = _tests_test_workflow
-    import tests.typings as _tests_typings
-
-    typings = _tests_typings
-    import tests.utilities as _tests_utilities
-    from tests.typings import (
-        TestsFlextTargetOracleWmsTypes,
-        TestsFlextTargetOracleWmsTypes as t,
-    )
-
-    utilities = _tests_utilities
     from flext_core.decorators import FlextDecorators as d
     from flext_core.exceptions import FlextExceptions as e
     from flext_core.handlers import FlextHandlers as h
     from flext_core.mixins import FlextMixins as x
     from flext_core.result import FlextResult as r
     from flext_core.service import FlextService as s
+    from tests import (
+        conftest,
+        constants,
+        examples,
+        integration,
+        models,
+        protocols,
+        test_benchmarks,
+        test_catalog,
+        test_features,
+        test_module_governance,
+        test_oracle_wms_cli,
+        test_oracle_wms_factory,
+        test_oracle_wms_init,
+        test_quality,
+        test_sinks,
+        test_stream,
+        test_structure,
+        test_target,
+        test_wms_patterns,
+        test_workflow,
+        typings,
+        utilities,
+    )
+    from tests.constants import (
+        TestsFlextTargetOracleWmsConstants,
+        TestsFlextTargetOracleWmsConstants as c,
+    )
+    from tests.models import (
+        TestsFlextTargetOracleWmsModels,
+        TestsFlextTargetOracleWmsModels as m,
+    )
+    from tests.protocols import (
+        TestsFlextTargetOracleWmsProtocols,
+        TestsFlextTargetOracleWmsProtocols as p,
+    )
+    from tests.typings import (
+        TestsFlextTargetOracleWmsTypes,
+        TestsFlextTargetOracleWmsTypes as t,
+    )
     from tests.utilities import (
         TestsFlextTargetOracleWmsUtilities,
         TestsFlextTargetOracleWmsUtilities as u,
