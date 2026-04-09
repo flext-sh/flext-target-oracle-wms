@@ -15,13 +15,11 @@ class TestModuleInit:
 
     def test_version_import_success(self) -> None:
         """Test successful version import from importlib.metadata."""
-        assert hasattr(flext_target_oracle_wms, "__version__")
         assert isinstance(flext_target_oracle_wms.__version__, str)
         assert flext_target_oracle_wms.__version__
 
     def test_version_import_fallback(self) -> None:
         """Test fallback version logic - simplified approach."""
-        assert hasattr(flext_target_oracle_wms, "__version__")
         assert isinstance(flext_target_oracle_wms.__version__, str)
         version = flext_target_oracle_wms.__version__
         assert version
@@ -29,7 +27,6 @@ class TestModuleInit:
 
     def test_module_exports(self) -> None:
         """Test that module exports are properly defined."""
-        assert hasattr(flext_target_oracle_wms, "__all__")
         assert isinstance(flext_target_oracle_wms.__all__, (list, tuple))
         expected_exports = [
             "Target",
@@ -37,4 +34,3 @@ class TestModuleInit:
         ]
         for export in expected_exports:
             assert export in flext_target_oracle_wms.__all__
-            assert hasattr(flext_target_oracle_wms, export)

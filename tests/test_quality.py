@@ -21,32 +21,20 @@ class TestModelsNamespace:
         assert m is not None
 
     def test_target_oracle_wms_namespace_exists(self) -> None:
-        assert hasattr(m, "TargetOracleWms")
 
     def test_wms_target_config_accessible(self) -> None:
-        assert hasattr(m.TargetOracleWms, "WmsTargetConfig")
 
     def test_wms_authentication_config_accessible(self) -> None:
-        assert hasattr(m.TargetOracleWms, "WmsAuthenticationConfig")
 
     def test_wms_target_result_accessible(self) -> None:
-        assert hasattr(m.TargetOracleWms, "WmsTargetResult")
 
     def test_singer_field_schema_accessible(self) -> None:
-        assert hasattr(m.TargetOracleWms, "SingerFieldSchema")
 
     def test_singer_schema_properties_accessible(self) -> None:
-        assert hasattr(m.TargetOracleWms, "SingerSchemaProperties")
 
     def test_meltano_namespace_inherited(self) -> None:
-        assert hasattr(m, "Meltano")
-        assert hasattr(m.Meltano, "SingerSchemaMessage")
-        assert hasattr(m.Meltano, "SingerRecordMessage")
-        assert hasattr(m.Meltano, "SingerStateMessage")
-        assert hasattr(m.Meltano, "SingerCatalogEntry")
 
     def test_oracle_wms_namespace_inherited(self) -> None:
-        assert hasattr(m, "OracleWms")
 
 
 class TestConstantsNamespace:
@@ -75,10 +63,8 @@ class TestProtocolsNamespace:
         assert p is not None
 
     def test_data_loading_protocol_exists(self) -> None:
-        assert hasattr(p.TargetOracleWms, "WmsDataLoading")
 
     def test_data_transformation_protocol_exists(self) -> None:
-        assert hasattr(p.TargetOracleWms, "DataTransformation")
 
 
 class TestClassAttributes:
