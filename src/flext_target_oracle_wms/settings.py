@@ -11,7 +11,7 @@ from typing import ClassVar
 from pydantic_settings import SettingsConfigDict
 
 from flext_core import FlextSettings
-from flext_target_oracle_wms import r, t
+from flext_target_oracle_wms import c, r, t
 
 
 @FlextSettings.auto_register("target-oracle-wms")
