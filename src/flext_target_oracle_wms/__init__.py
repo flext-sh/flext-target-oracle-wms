@@ -2,16 +2,22 @@
 """Flext Target Oracle Wms package."""
 
 from __future__ import annotations
-from flext_core.lazy import build_lazy_import_map, install_lazy_exports, merge_lazy_imports
-
-
-from flext_target_oracle_wms.__version__ import *
-
 
 import typing as _t
 
-if _t.TYPE_CHECKING:
+from flext_core.lazy import (
+    build_lazy_import_map,
+    install_lazy_exports,
+    merge_lazy_imports,
+)
+from flext_target_oracle_wms.__version__ import *
 
+if _t.TYPE_CHECKING:
+    from flext_core.decorators import d
+    from flext_core.exceptions import e
+    from flext_core.handlers import h
+    from flext_core.mixins import x
+    from flext_core.result import r
     from flext_target_oracle_wms._utilities.client import (
         CatalogManager,
         StreamProcessor,
@@ -61,15 +67,8 @@ if _t.TYPE_CHECKING:
         FlextTargetOracleWmsUtilities,
         FlextTargetOracleWmsUtilities as u,
     )
-    from flext_core.decorators import d
-    from flext_core.exceptions import e
-    from flext_core.handlers import h
-    from flext_core.mixins import x
-    from flext_core.result import r
 _LAZY_IMPORTS = merge_lazy_imports(
-    (
-        "._utilities",
-    ),
+    ("._utilities",),
     build_lazy_import_map(
         {
             ".__version__": (
