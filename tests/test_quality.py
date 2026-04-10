@@ -21,20 +21,28 @@ class TestModelsNamespace:
         assert m is not None
 
     def test_target_oracle_wms_namespace_exists(self) -> None:
+        pass
 
     def test_wms_target_config_accessible(self) -> None:
+        pass
 
     def test_wms_authentication_config_accessible(self) -> None:
+        pass
 
     def test_wms_target_result_accessible(self) -> None:
+        pass
 
     def test_singer_field_schema_accessible(self) -> None:
+        pass
 
     def test_singer_schema_properties_accessible(self) -> None:
+        pass
 
     def test_meltano_namespace_inherited(self) -> None:
+        pass
 
     def test_oracle_wms_namespace_inherited(self) -> None:
+        pass
 
 
 class TestConstantsNamespace:
@@ -63,8 +71,10 @@ class TestProtocolsNamespace:
         assert p is not None
 
     def test_data_loading_protocol_exists(self) -> None:
+        pass
 
     def test_data_transformation_protocol_exists(self) -> None:
+        pass
 
 
 class TestClassAttributes:

@@ -1,180 +1,128 @@
-# AUTO-GENERATED FILE — DO NOT EDIT MANUALLY.
-# Regenerate with: make gen
-#
-"""Flext target oracle wms package."""
+# AUTO-GENERATED FILE — Regenerate with: make gen
+"""Flext Target Oracle Wms package."""
 
 from __future__ import annotations
 
 import typing as _t
 
-from flext_core.lazy import install_lazy_exports, merge_lazy_imports
+from flext_core.lazy import (
+    build_lazy_import_map,
+    install_lazy_exports,
+    merge_lazy_imports,
+)
 from flext_target_oracle_wms.__version__ import *
 
 if _t.TYPE_CHECKING:
-    import flext_target_oracle_wms._utilities as _flext_target_oracle_wms__utilities
-
-    _utilities = _flext_target_oracle_wms__utilities
-    import flext_target_oracle_wms.api as _flext_target_oracle_wms_api
-    from flext_target_oracle_wms._utilities import (
+    from flext_core.decorators import d
+    from flext_core.exceptions import e
+    from flext_core.handlers import h
+    from flext_core.mixins import x
+    from flext_core.result import r
+    from flext_target_oracle_wms._utilities.client import (
         CatalogManager,
-        FlextTargetOracleWmsServiceRuntime,
         StreamProcessor,
         Target,
+    )
+    from flext_target_oracle_wms._utilities.helpers import (
         Validation,
         WMSDataTransformer,
         WMSSchemaMapper,
         WMSTableManager,
         WMSTypeConverter,
-        client,
         create_record_message,
         create_schema_message,
         create_state_message,
-        helpers,
-        service_runtime,
     )
-
-    api = _flext_target_oracle_wms_api
-    import flext_target_oracle_wms.cli as _flext_target_oracle_wms_cli
+    from flext_target_oracle_wms._utilities.service_runtime import (
+        FlextTargetOracleWmsServiceRuntime,
+    )
     from flext_target_oracle_wms.api import (
         FlextTargetOracleWmsService,
         FlextTargetOracleWmsService as s,
     )
-
-    cli = _flext_target_oracle_wms_cli
-    import flext_target_oracle_wms.constants as _flext_target_oracle_wms_constants
     from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli, main
-
-    constants = _flext_target_oracle_wms_constants
-    import flext_target_oracle_wms.factory as _flext_target_oracle_wms_factory
     from flext_target_oracle_wms.constants import (
         FlextTargetOracleWmsConstants,
         FlextTargetOracleWmsConstants as c,
     )
-
-    factory = _flext_target_oracle_wms_factory
-    import flext_target_oracle_wms.models as _flext_target_oracle_wms_models
     from flext_target_oracle_wms.factory import (
         FlextTargetFactory,
         FlextTargetMonitoringFactory,
     )
-
-    models = _flext_target_oracle_wms_models
-    import flext_target_oracle_wms.protocols as _flext_target_oracle_wms_protocols
     from flext_target_oracle_wms.models import (
         FlextTargetOracleWmsModels,
         FlextTargetOracleWmsModels as m,
     )
-
-    protocols = _flext_target_oracle_wms_protocols
-    import flext_target_oracle_wms.settings as _flext_target_oracle_wms_settings
     from flext_target_oracle_wms.protocols import (
         FlextTargetOracleWmsProtocols,
         FlextTargetOracleWmsProtocols as p,
     )
-
-    settings = _flext_target_oracle_wms_settings
-    import flext_target_oracle_wms.target_config as _flext_target_oracle_wms_target_config
     from flext_target_oracle_wms.settings import FlextTargetOracleWmsSettings
-
-    target_config = _flext_target_oracle_wms_target_config
-    import flext_target_oracle_wms.typings as _flext_target_oracle_wms_typings
-
-    typings = _flext_target_oracle_wms_typings
-    import flext_target_oracle_wms.utilities as _flext_target_oracle_wms_utilities
+    from flext_target_oracle_wms.target_config import FlextTargetOracleWmsTargetConfig
     from flext_target_oracle_wms.typings import (
         FlextTargetOracleWmsTypes,
         FlextTargetOracleWmsTypes as t,
     )
-
-    utilities = _flext_target_oracle_wms_utilities
-    from flext_core.decorators import FlextDecorators as d
-    from flext_core.exceptions import FlextExceptions as e
-    from flext_core.handlers import FlextHandlers as h
-    from flext_core.mixins import FlextMixins as x
-    from flext_core.result import FlextResult as r
     from flext_target_oracle_wms.utilities import (
         FlextTargetOracleWmsUtilities,
         FlextTargetOracleWmsUtilities as u,
     )
 _LAZY_IMPORTS = merge_lazy_imports(
-    ("flext_target_oracle_wms._utilities",),
-    {
-        "FlextTargetFactory": ("flext_target_oracle_wms.factory", "FlextTargetFactory"),
-        "FlextTargetMonitoringFactory": (
-            "flext_target_oracle_wms.factory",
-            "FlextTargetMonitoringFactory",
-        ),
-        "FlextTargetOracleWmsCli": (
-            "flext_target_oracle_wms.cli",
-            "FlextTargetOracleWmsCli",
-        ),
-        "FlextTargetOracleWmsConstants": (
-            "flext_target_oracle_wms.constants",
-            "FlextTargetOracleWmsConstants",
-        ),
-        "FlextTargetOracleWmsModels": (
-            "flext_target_oracle_wms.models",
-            "FlextTargetOracleWmsModels",
-        ),
-        "FlextTargetOracleWmsProtocols": (
-            "flext_target_oracle_wms.protocols",
-            "FlextTargetOracleWmsProtocols",
-        ),
-        "FlextTargetOracleWmsService": (
-            "flext_target_oracle_wms.api",
-            "FlextTargetOracleWmsService",
-        ),
-        "FlextTargetOracleWmsSettings": (
-            "flext_target_oracle_wms.settings",
-            "FlextTargetOracleWmsSettings",
-        ),
-        "FlextTargetOracleWmsTypes": (
-            "flext_target_oracle_wms.typings",
-            "FlextTargetOracleWmsTypes",
-        ),
-        "FlextTargetOracleWmsUtilities": (
-            "flext_target_oracle_wms.utilities",
-            "FlextTargetOracleWmsUtilities",
-        ),
-        "__author__": ("flext_target_oracle_wms.__version__", "__author__"),
-        "__author_email__": ("flext_target_oracle_wms.__version__", "__author_email__"),
-        "__description__": ("flext_target_oracle_wms.__version__", "__description__"),
-        "__license__": ("flext_target_oracle_wms.__version__", "__license__"),
-        "__title__": ("flext_target_oracle_wms.__version__", "__title__"),
-        "__url__": ("flext_target_oracle_wms.__version__", "__url__"),
-        "__version__": ("flext_target_oracle_wms.__version__", "__version__"),
-        "__version_info__": ("flext_target_oracle_wms.__version__", "__version_info__"),
-        "_utilities": "flext_target_oracle_wms._utilities",
-        "api": "flext_target_oracle_wms.api",
-        "c": ("flext_target_oracle_wms.constants", "FlextTargetOracleWmsConstants"),
-        "cli": "flext_target_oracle_wms.cli",
-        "constants": "flext_target_oracle_wms.constants",
-        "d": ("flext_core.decorators", "FlextDecorators"),
-        "e": ("flext_core.exceptions", "FlextExceptions"),
-        "factory": "flext_target_oracle_wms.factory",
-        "h": ("flext_core.handlers", "FlextHandlers"),
-        "m": ("flext_target_oracle_wms.models", "FlextTargetOracleWmsModels"),
-        "main": ("flext_target_oracle_wms.cli", "main"),
-        "models": "flext_target_oracle_wms.models",
-        "p": ("flext_target_oracle_wms.protocols", "FlextTargetOracleWmsProtocols"),
-        "protocols": "flext_target_oracle_wms.protocols",
-        "r": ("flext_core.result", "FlextResult"),
-        "s": ("flext_target_oracle_wms.api", "FlextTargetOracleWmsService"),
-        "settings": "flext_target_oracle_wms.settings",
-        "t": ("flext_target_oracle_wms.typings", "FlextTargetOracleWmsTypes"),
-        "target_config": "flext_target_oracle_wms.target_config",
-        "typings": "flext_target_oracle_wms.typings",
-        "u": ("flext_target_oracle_wms.utilities", "FlextTargetOracleWmsUtilities"),
-        "utilities": "flext_target_oracle_wms.utilities",
-        "x": ("flext_core.mixins", "FlextMixins"),
-    },
+    ("._utilities",),
+    build_lazy_import_map(
+        {
+            ".__version__": (
+                "__author__",
+                "__author_email__",
+                "__description__",
+                "__license__",
+                "__title__",
+                "__url__",
+                "__version__",
+                "__version_info__",
+            ),
+            ".api": ("FlextTargetOracleWmsService",),
+            ".cli": (
+                "FlextTargetOracleWmsCli",
+                "main",
+            ),
+            ".constants": ("FlextTargetOracleWmsConstants",),
+            ".factory": (
+                "FlextTargetFactory",
+                "FlextTargetMonitoringFactory",
+            ),
+            ".models": ("FlextTargetOracleWmsModels",),
+            ".protocols": ("FlextTargetOracleWmsProtocols",),
+            ".settings": ("FlextTargetOracleWmsSettings",),
+            ".target_config": ("FlextTargetOracleWmsTargetConfig",),
+            ".typings": ("FlextTargetOracleWmsTypes",),
+            ".utilities": ("FlextTargetOracleWmsUtilities",),
+            "flext_core.decorators": ("d",),
+            "flext_core.exceptions": ("e",),
+            "flext_core.handlers": ("h",),
+            "flext_core.mixins": ("x",),
+            "flext_core.result": ("r",),
+        },
+        alias_groups={
+            ".api": (("s", "FlextTargetOracleWmsService"),),
+            ".constants": (("c", "FlextTargetOracleWmsConstants"),),
+            ".models": (("m", "FlextTargetOracleWmsModels"),),
+            ".protocols": (("p", "FlextTargetOracleWmsProtocols"),),
+            ".typings": (("t", "FlextTargetOracleWmsTypes"),),
+            ".utilities": (("u", "FlextTargetOracleWmsUtilities"),),
+        },
+    ),
+    exclude_names=(
+        "cleanup_submodule_namespace",
+        "install_lazy_exports",
+        "lazy_getattr",
+        "logger",
+        "merge_lazy_imports",
+        "output",
+        "output_reporting",
+    ),
+    module_name=__name__,
 )
-_ = _LAZY_IMPORTS.pop("cleanup_submodule_namespace", None)
-_ = _LAZY_IMPORTS.pop("install_lazy_exports", None)
-_ = _LAZY_IMPORTS.pop("lazy_getattr", None)
-_ = _LAZY_IMPORTS.pop("merge_lazy_imports", None)
-_ = _LAZY_IMPORTS.pop("output", None)
-_ = _LAZY_IMPORTS.pop("output_reporting", None)
 
 __all__ = [
     "CatalogManager",
@@ -187,6 +135,7 @@ __all__ = [
     "FlextTargetOracleWmsService",
     "FlextTargetOracleWmsServiceRuntime",
     "FlextTargetOracleWmsSettings",
+    "FlextTargetOracleWmsTargetConfig",
     "FlextTargetOracleWmsTypes",
     "FlextTargetOracleWmsUtilities",
     "StreamProcessor",
@@ -204,34 +153,20 @@ __all__ = [
     "__url__",
     "__version__",
     "__version_info__",
-    "_utilities",
-    "api",
     "c",
-    "cli",
-    "client",
-    "constants",
     "create_record_message",
     "create_schema_message",
     "create_state_message",
     "d",
     "e",
-    "factory",
     "h",
-    "helpers",
     "m",
     "main",
-    "models",
     "p",
-    "protocols",
     "r",
     "s",
-    "service_runtime",
-    "settings",
     "t",
-    "target_config",
-    "typings",
     "u",
-    "utilities",
     "x",
 ]
 
