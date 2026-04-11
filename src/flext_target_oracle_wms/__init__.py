@@ -25,12 +25,15 @@ if _t.TYPE_CHECKING:
         WMSSchemaMapper,
         WMSTableManager,
         WMSTypeConverter,
+        create_record_message,
+        create_schema_message,
+        create_state_message,
     )
     from flext_target_oracle_wms._utilities.service_runtime import (
         FlextTargetOracleWmsServiceRuntime,
     )
     from flext_target_oracle_wms.api import FlextTargetOracleWmsService
-    from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli, main
+    from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
     from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants, c
     from flext_target_oracle_wms.factory import (
         FlextTargetFactory,
@@ -57,10 +60,7 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "__version_info__",
             ),
             ".api": ("FlextTargetOracleWmsService",),
-            ".cli": (
-                "FlextTargetOracleWmsCli",
-                "main",
-            ),
+            ".cli": ("FlextTargetOracleWmsCli",),
             ".constants": (
                 "FlextTargetOracleWmsConstants",
                 "c",
@@ -142,11 +142,13 @@ __all__ = [
     "__version__",
     "__version_info__",
     "c",
+    "create_record_message",
+    "create_schema_message",
+    "create_state_message",
     "d",
     "e",
     "h",
     "m",
-    "main",
     "p",
     "r",
     "s",
