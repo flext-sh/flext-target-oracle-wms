@@ -19,7 +19,7 @@ pytest_plugins = ["flext_tests.conftest_plugin"]
 
 
 @pytest.fixture
-def config() -> t.ContainerMapping:
+def settings() -> t.ContainerMapping:
     """Return a test configuration matching WmsTargetConfig schema."""
     return {
         "wms_auth": {

@@ -40,14 +40,14 @@ class FlextTargetFactory:
     @classmethod
     def create_from_config_dict(
         cls,
-        config: t.ConfigurationMapping,
+        settings: t.ConfigurationMapping,
     ) -> r[FlextTargetOracleWms]:
-        """Create target from plain dictionary config via Pydantic validation."""
+        """Create target from plain dictionary settings via Pydantic validation."""
         known_keys = {"base_url", "username", "password", "environment", "preset"}
-        additional = {k: v for k, v in config.items() if k not in known_keys}
+        additional = {k: v for k, v in settings.items() if k not in known_keys}
         try:
             request = m.TargetOracleWms.TargetCreationRequest.model_validate({
-                **config,
+                **settings,
                 "additional_config": additional or None,
             })
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as exc:
@@ -60,18 +60,18 @@ class FlextTargetFactory:
         request: m.TargetOracleWms.TargetCreationRequest,
     ) -> r[FlextTargetOracleWms]:
         """Create target instance from validated request."""
-        config: t.MutableContainerValueMapping = {
+        settings: t.MutableContainerValueMapping = {
             "base_url": request.base_url,
             "username": request.username,
             "password": request.password,
             "environment": request.environment,
         }
         if request.preset is not None and request.preset in cls.PRESETS:
-            config.update(cls.PRESETS[request.preset])
+            settings.update(cls.PRESETS[request.preset])
         if request.additional_config is not None:
-            config.update(request.additional_config)
+            settings.update(request.additional_config)
         cls._logger.info("Created Oracle WMS target", environment=request.environment)
-        return r[FlextTargetOracleWms].ok(FlextTargetOracleWms(config))
+        return r[FlextTargetOracleWms].ok(FlextTargetOracleWms(settings))
 
 
 class FlextTargetMonitoringFactory:
@@ -103,7 +103,7 @@ class FlextTargetMonitoringFactory:
         password: str,
         environment: str = "development",
         preset: str | None = None,
-        **config: t.Scalar,
+        **settings: t.Scalar,
     ) -> r[FlextTargetOracleWms]:
         """Convenience method to create base target instance."""
         request = m.TargetOracleWms.TargetCreationRequest.model_validate({
@@ -112,7 +112,7 @@ class FlextTargetMonitoringFactory:
             "password": password,
             "environment": environment,
             "preset": preset,
-            "additional_config": config,
+            "additional_config": settings,
         })
         return FlextTargetFactory.create_target(request)
 

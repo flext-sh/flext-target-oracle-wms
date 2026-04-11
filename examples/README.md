@@ -80,7 +80,7 @@ from flext_observability import flext_monitor_function
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
 # Real configuration
-config = {
+settings = {
     "base_url": "https://example.wms.oracle.com",
     "username": "demo_user",
     "password": "demo_password",
@@ -90,7 +90,7 @@ config = {
 }
 
 # Real implementation with error handling
-target = SingerTargetOracleWMS(config)
+target = SingerTargetOracleWMS(settings)
 setup_result = target.setup()
 if not setup_result.success:
     logger.error(f"Setup failed: {setup_result.error}")
@@ -121,7 +121,7 @@ class CustomWMSTypeConverter(WMSTypeConverter):
 
 
 # Advanced configuration
-config = {
+settings = {
     "batch_size": 2000,
     "enable_compression": True,
     "enable_encryption": True,
@@ -150,7 +150,7 @@ Demonstrates optimized batch processing for large-scale data:
 
 ```python
 # Performance optimization
-config = {
+settings = {
     "batch_size": 5000,
     "bulk_insert_mode": True,
     "parallel_processing": True,
@@ -181,7 +181,7 @@ Shows comprehensive error handling and recovery patterns:
 
 ```python
 # Error handling configuration
-config = {
+settings = {
     "max_retries": 3,
     "exponential_backoff": True,
     "circuit_breaker_enabled": True,
@@ -260,7 +260,7 @@ All examples support both file-based and environment-based configuration:
 
 ### File-based Configuration
 
-Create `config.json` in the project root:
+Create `settings.json` in the project root:
 
 ```json
 {

@@ -25,7 +25,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
         m.OracleWms.*  — WMS entity/API types (from FlextOracleWmsModels)
 
     Local namespace:
-        m.TargetOracleWms.* — target-specific config, result, schema helpers
+        m.TargetOracleWms.* — target-specific settings, result, schema helpers
     """
 
     class TargetOracleWms:
@@ -52,7 +52,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             validate_records: bool = True
 
             def validate_business_rules(self) -> r[bool]:
-                """Validate basic config business rules."""
+                """Validate basic settings business rules."""
                 if (
                     self.load_method
                     not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS

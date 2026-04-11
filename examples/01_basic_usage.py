@@ -44,7 +44,7 @@ def run_basic_example() -> t.Scalar:
 def run_from_singer_files() -> t.Scalar:
     """Run target from Singer JSON files - REAL Singer integration."""
     logger.info("Running target from Singer JSON files")
-    config_file = Path("config.json")
+    config_file = Path("settings.json")
     if config_file.exists():
         logger.info("Config file found")
     else:

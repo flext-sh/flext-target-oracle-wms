@@ -86,11 +86,11 @@ class TestTargetInit:
     def test_init_with_valid_config(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
         assert target.name == "target-oracle-wms"
-        assert target.config is not None
+        assert target.settings is not None
 
     def test_init_with_invalid_config_raises(self) -> None:
         with pytest.raises(Exception):
-            FlextTargetOracleWms({"bad": "config"})
+            FlextTargetOracleWms({"bad": "settings"})
 
     def test_has_catalog_manager(self) -> None:
         target = FlextTargetOracleWms(_valid_config())

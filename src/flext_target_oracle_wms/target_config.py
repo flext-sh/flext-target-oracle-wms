@@ -7,7 +7,7 @@ from flext_target_oracle_wms import c, m, t
 
 
 class FlextTargetOracleWmsTargetConfig(m.TargetOracleWms.WmsTargetConfig):
-    """Validated target config used by target runtime and factory helpers."""
+    """Validated target settings used by target runtime and factory helpers."""
 
     def validate_runtime(self) -> r[bool]:
         """Validate runtime constraints before processing starts."""
@@ -18,20 +18,20 @@ class FlextTargetOracleWmsTargetConfig(m.TargetOracleWms.WmsTargetConfig):
         cls,
         overrides: t.ContainerValueMapping | None = None,
     ) -> r[FlextTargetOracleWmsTargetConfig]:
-        """Create target config instance with optional override values."""
+        """Create target settings instance with optional override values."""
         try:
             data: t.ContainerValueMapping = dict(overrides) if overrides else {}
-            config = cls.model_validate(data)
+            settings = cls.model_validate(data)
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as exc:
             return r[FlextTargetOracleWmsTargetConfig].fail(
                 f"Invalid settings overrides: {exc}",
             )
-        validation = config.validate_runtime()
+        validation = settings.validate_runtime()
         if validation.failure:
             return r[FlextTargetOracleWmsTargetConfig].fail(
                 validation.error or "Runtime validation failed",
             )
-        return r[FlextTargetOracleWmsTargetConfig].ok(config)
+        return r[FlextTargetOracleWmsTargetConfig].ok(settings)
 
 
 __all__ = ["FlextTargetOracleWmsTargetConfig"]

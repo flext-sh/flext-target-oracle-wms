@@ -19,8 +19,8 @@ class FlextTargetOracleWmsCli:
         self.version = "0.9.0"
 
     def execute(self, **kwargs: t.Scalar) -> r[bool]:
-        """Execute target run using optional config path."""
-        config_arg = kwargs.get("config")
+        """Execute target run using optional settings path."""
+        config_arg = kwargs.get("settings")
         config_path = str(config_arg) if config_arg is not None else None
         return (
             self
@@ -31,10 +31,10 @@ class FlextTargetOracleWmsCli:
 
     def _execute_target_pipeline(
         self,
-        config: m.TargetOracleWms.WmsTargetConfig,
+        settings: m.TargetOracleWms.WmsTargetConfig,
     ) -> r[bool]:
         """Setup, process stdin, and cleanup target runtime."""
-        target = FlextTargetOracleWms(config)
+        target = FlextTargetOracleWms(settings)
         setup_result = target.setup().map_error(lambda e: e or "Setup failed")
         return u.flow_result(
             setup_result,
@@ -58,7 +58,7 @@ class FlextTargetOracleWmsCli:
         self,
         config_path: str | None,
     ) -> r[m.TargetOracleWms.WmsTargetConfig]:
-        """Load config from file or build defaults."""
+        """Load settings from file or build defaults."""
         if config_path is not None:
             return r[m.TargetOracleWms.WmsTargetConfig].ok(
                 m.TargetOracleWms.WmsTargetConfig.model_validate_json(
@@ -86,11 +86,11 @@ def main() -> None:
     config_path: str | None = None
     if (
         len(sys.argv) >= c.TargetOracleWms.CLI_MIN_CONFIG_ARG_COUNT
-        and sys.argv[1] == "--config"
+        and sys.argv[1] == "--settings"
     ):
         config_path = sys.argv[2]
     result = (
-        cli_instance.execute(config=config_path)
+        cli_instance.execute(settings=config_path)
         if config_path is not None
         else cli_instance.execute()
     )

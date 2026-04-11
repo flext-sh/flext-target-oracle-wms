@@ -18,10 +18,10 @@ from flext_target_oracle_wms import FlextTargetOracleWmsCli, main
 from tests import t
 
 
-def _write_config_file(config: Mapping[str, t.StrMapping], tmp_path: Path) -> str:
-    config_file = tmp_path / "config.json"
+def _write_config_file(settings: Mapping[str, t.StrMapping], tmp_path: Path) -> str:
+    config_file = tmp_path / "settings.json"
     config_file.write_text(
-        json.dumps(config),
+        json.dumps(settings),
         encoding="utf-8",
     )
     return str(config_file)
@@ -59,7 +59,7 @@ class TestOracleWMSTargetCliLoadConfig:
     def test_load_nonexistent_file_raises(self) -> None:
         cli = FlextTargetOracleWmsCli()
         with pytest.raises(FileNotFoundError):
-            cli._load_config("/nonexistent/path/config.json")
+            cli._load_config("/nonexistent/path/settings.json")
 
     def test_load_non_object_json_raises(self, tmp_path: Path) -> None:
         cli = FlextTargetOracleWmsCli()
@@ -79,7 +79,7 @@ class TestOracleWMSTargetCliExecute:
     def test_execute_with_config_file(self, tmp_path: Path) -> None:
         cli = FlextTargetOracleWmsCli()
         config_path = _write_config_file(_valid_config_dict(), tmp_path)
-        result = cli.execute(config=config_path)
+        result = cli.execute(settings=config_path)
         assert result.success
 
     @patch("flext_target_oracle_wms.cli.sys.stdin", [])
@@ -108,14 +108,14 @@ class TestMain:
         config_path = _write_config_file(_valid_config_dict(), tmp_path)
         with patch(
             "flext_target_oracle_wms.cli.sys.argv",
-            ["target-oracle-wms", "--config", config_path],
+            ["target-oracle-wms", "--settings", config_path],
         ):
             main()
 
     @patch("flext_target_oracle_wms.cli.sys.stdin", [])
     @patch(
         "flext_target_oracle_wms.cli.sys.argv",
-        ["target-oracle-wms", "--config", "/bad/path.json"],
+        ["target-oracle-wms", "--settings", "/bad/path.json"],
     )
     def test_main_with_bad_config_raises(self) -> None:
         with pytest.raises(FileNotFoundError):

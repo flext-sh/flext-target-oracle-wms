@@ -114,10 +114,10 @@ class _WmsClients:
 
         def __init__(
             self,
-            config: t.ContainerValueMapping | m.TargetOracleWms.WmsTargetConfig,
+            settings: t.ContainerValueMapping | m.TargetOracleWms.WmsTargetConfig,
         ) -> None:
-            """Initialize target runtime with validated config."""
-            self.config = m.TargetOracleWms.WmsTargetConfig.model_validate(config)
+            """Initialize target runtime with validated settings."""
+            self.settings = m.TargetOracleWms.WmsTargetConfig.model_validate(settings)
             self.catalog_manager = _WmsClients.CatalogManager()
             self.table_manager = WMSTableManager()
             self.data_transformer = WMSDataTransformer()

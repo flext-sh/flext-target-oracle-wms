@@ -16,16 +16,16 @@ class _WmsHelpers:
 
         @staticmethod
         def validate_wms_target_config(
-            config: t.ContainerValueMapping,
+            settings: t.ContainerValueMapping,
         ) -> r[bool]:
             """Validate minimal required target configuration fields."""
             required = {"base_url", "username", "password"}
-            missing = sorted(key for key in required if key not in config)
+            missing = sorted(key for key in required if key not in settings)
             if missing:
                 return r[bool].fail(
                     f"Missing required configuration fields: {missing}",
                 )
-            load_method = config.get(
+            load_method = settings.get(
                 "load_method",
                 c.TargetOracleWms.LoadMethods.APPEND_ONLY,
             )

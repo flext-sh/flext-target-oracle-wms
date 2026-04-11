@@ -5,10 +5,6 @@ from __future__ import annotations
 from pathlib import Path
 from typing import override
 
-from flext_meltano import (
-    Sink as FlextMeltanoSingerSinkBase,
-    Target as FlextMeltanoSingerTargetBase,
-)
 from flext_target_oracle_wms import (
     Target as FlextTargetOracleWmsTarget,
     m,
@@ -21,12 +17,12 @@ from flext_target_oracle_wms import (
 class FlextTargetOracleWmsServiceRuntime:
     """Service-runtime adapters used by the target-oracle-wms facade."""
 
-    class Target(FlextMeltanoSingerTargetBase):
+    class Target(m.Meltano.SingerTargetBase):
         """Minimal Singer target used by the service facade."""
 
         name = "target-oracle-wms"
 
-    class Sink(FlextMeltanoSingerSinkBase):
+    class Sink(m.Meltano.SingerSinkBase):
         """Singer sink adapter delegating records to the Oracle WMS runtime."""
 
         name = "target-oracle-wms-sink"
@@ -37,7 +33,7 @@ class FlextTargetOracleWmsServiceRuntime:
             cls,
             *,
             runtime_target: FlextTargetOracleWmsTarget,
-            target: FlextMeltanoSingerTargetBase,
+            target: m.Meltano.SingerTargetBase,
             stream_name: str,
             schema: dict[str, t.ContainerValue],
             key_properties: t.StrSequence,

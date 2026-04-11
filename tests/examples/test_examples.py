@@ -178,9 +178,9 @@ class TestExamplesCodeQuality:
                 if pattern in content:
                     has_config = True
                     break
-            if "config" in content.lower():
+            if "settings" in content.lower():
                 assert has_config, (
-                    f"{example_file.name} mentions config but has no realistic configuration"
+                    f"{example_file.name} mentions settings but has no realistic configuration"
                 )
             oracle_patterns = ["oracle", "wms", "FlextTargetOracleWms"]
             has_oracle_pattern = False
