@@ -5,14 +5,13 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import ClassVar
 
-from flext_core import FlextLogger, r
-from flext_target_oracle_wms import Target as FlextTargetOracleWms, c, m, t
+from flext_target_oracle_wms import Target as FlextTargetOracleWms, c, m, p, r, t, u
 
 
 class FlextTargetFactory:
     """Factory for creating configured target instances."""
 
-    _logger: ClassVar[FlextLogger] = FlextLogger(__name__)
+    _logger: ClassVar[p.Logger] = u.fetch_logger(__name__)
 
     PRESETS: ClassVar[Mapping[str, t.ConfigurationMapping]] = {
         "development": {

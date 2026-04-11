@@ -321,8 +321,8 @@ class TestExamplesFlextIntegration:
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
             if "FlextLogger" in content:
-                assert "logger = FlextLogger(__name__)" in content, (
-                    f"{example_file.name} must use FlextLogger(__name__) pattern"
+                assert "logger = u.fetch_logger(__name__)" in content, (
+                    f"{example_file.name} must use u.fetch_logger(__name__) pattern"
                 )
                 assert "logger.info(" in content or "logger.error(" in content, (
                     f"{example_file.name} must actually use the logger"

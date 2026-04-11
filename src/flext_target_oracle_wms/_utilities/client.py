@@ -108,7 +108,7 @@ class _WmsClients:
         _state_type: ClassVar[str] = "STATE"
         _schema_type: ClassVar[str] = "SCHEMA"
         _record_type: ClassVar[str] = "RECORD"
-        _logger: ClassVar[FlextLogger] = FlextLogger(__name__)
+        _logger: ClassVar[FlextLogger] = u.fetch_logger(__name__)
 
         def __init__(
             self,

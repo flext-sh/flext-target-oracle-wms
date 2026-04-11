@@ -32,8 +32,11 @@ if _t.TYPE_CHECKING:
     from flext_target_oracle_wms._utilities.service_runtime import (
         FlextTargetOracleWmsServiceRuntime,
     )
-    from flext_target_oracle_wms.api import FlextTargetOracleWmsService
-    from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
+    from flext_target_oracle_wms.api import (
+        FlextTargetOracleWmsService,
+        target_oracle_wms,
+    )
+    from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli, main
     from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants, c
     from flext_target_oracle_wms.factory import (
         FlextTargetFactory,
@@ -59,8 +62,14 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "__version__",
                 "__version_info__",
             ),
-            ".api": ("FlextTargetOracleWmsService",),
-            ".cli": ("FlextTargetOracleWmsCli",),
+            ".api": (
+                "FlextTargetOracleWmsService",
+                "target_oracle_wms",
+            ),
+            ".cli": (
+                "FlextTargetOracleWmsCli",
+                "main",
+            ),
             ".constants": (
                 "FlextTargetOracleWmsConstants",
                 "c",
@@ -149,10 +158,12 @@ __all__ = [
     "e",
     "h",
     "m",
+    "main",
     "p",
     "r",
     "s",
     "t",
+    "target_oracle_wms",
     "u",
     "x",
 ]
