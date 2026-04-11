@@ -27,7 +27,7 @@ class FlextTargetOracleWmsTargetConfig(m.TargetOracleWms.WmsTargetConfig):
                 f"Invalid settings overrides: {exc}",
             )
         validation = config.validate_runtime()
-        if validation.is_failure:
+        if validation.failure:
             return r[FlextTargetOracleWmsTargetConfig].fail(
                 validation.error or "Runtime validation failed",
             )

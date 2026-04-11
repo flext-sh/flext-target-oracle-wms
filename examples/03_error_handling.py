@@ -25,7 +25,7 @@ def run_error_handling_example() -> t.Scalar:
     try:
         tm = FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTableManager()
         result = tm.get_table_name("nonexistent")
-        if result.is_failure:
+        if result.failure:
             logger.info("Expected failure handled: %s", result.error)
         logger.info("Error handling example completed successfully")
     except (RuntimeError, OSError, ValueError):

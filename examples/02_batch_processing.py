@@ -33,7 +33,7 @@ def run_batch_example() -> t.Scalar:
     logger.info("Starting batch processing example")
     tm = FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTableManager()
     result = tm.register_stream("orders")
-    if result.is_success:
+    if result.success:
         logger.info("Registered stream table: %s", result.value)
     logger.info("Batch processing completed successfully")
     return True

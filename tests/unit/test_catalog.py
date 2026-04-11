@@ -34,14 +34,14 @@ class TestCatalogAddStream:
     def test_add_stream_returns_success(self) -> None:
         mgr = FlextTargetOracleWmsCatalogManager()
         result = mgr.add_stream(_make_schema_message())
-        assert result.is_success
+        assert result.success
         assert result.value is True
 
     def test_add_stream_makes_stream_retrievable(self) -> None:
         mgr = FlextTargetOracleWmsCatalogManager()
         mgr.add_stream(_make_schema_message("inventory"))
         result = mgr.get_stream("inventory")
-        assert result.is_success
+        assert result.success
 
     def test_add_stream_overwrites_existing(self) -> None:
         mgr = FlextTargetOracleWmsCatalogManager()
@@ -50,7 +50,7 @@ class TestCatalogAddStream:
         mgr.add_stream(schema_v1)
         mgr.add_stream(schema_v2)
         result = mgr.get_stream("s")
-        assert result.is_success
+        assert result.success
         assert result.value is not None
         entry = result.value
         assert entry.key_properties == ["id", "name"]
@@ -62,7 +62,7 @@ class TestCatalogGetStream:
     def test_get_nonexistent_stream_fails(self) -> None:
         mgr = FlextTargetOracleWmsCatalogManager()
         result = mgr.get_stream("nope")
-        assert result.is_failure
+        assert result.failure
         assert result.error is not None
         assert "nope" in result.error
 
@@ -70,7 +70,7 @@ class TestCatalogGetStream:
         mgr = FlextTargetOracleWmsCatalogManager()
         mgr.add_stream(_make_schema_message("orders"))
         result = mgr.get_stream("orders")
-        assert result.is_success
+        assert result.success
         assert result.value is not None
         entry = result.value
         assert entry.stream == "orders"
@@ -80,7 +80,7 @@ class TestCatalogGetStream:
         mgr = FlextTargetOracleWmsCatalogManager()
         mgr.add_stream(_make_schema_message("items", key_properties=["item_id", "lot"]))
         stream_result = mgr.get_stream("items")
-        assert stream_result.is_success
+        assert stream_result.success
         assert stream_result.value is not None
         entry = stream_result.value
         assert entry.key_properties == ["item_id", "lot"]
@@ -94,7 +94,7 @@ class TestCatalogMultipleStreams:
         for name in ("alpha", "beta", "gamma"):
             mgr.add_stream(_make_schema_message(name))
         for name in ("alpha", "beta", "gamma"):
-            assert mgr.get_stream(name).is_success
+            assert mgr.get_stream(name).success
 
     @pytest.mark.parametrize(
         "stream_name",
@@ -103,4 +103,4 @@ class TestCatalogMultipleStreams:
     def test_various_stream_names(self, stream_name: str) -> None:
         mgr = FlextTargetOracleWmsCatalogManager()
         mgr.add_stream(_make_schema_message(stream_name))
-        assert mgr.get_stream(stream_name).is_success
+        assert mgr.get_stream(stream_name).success

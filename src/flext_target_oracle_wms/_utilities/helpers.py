@@ -99,7 +99,7 @@ class _WmsHelpers:
                     resolved_type,
                     value,
                 )
-                if converted.is_failure:
+                if converted.failure:
                     return r[m.Meltano.SingerRecordMessage].fail(
                         converted.error or "Conversion failed",
                     )

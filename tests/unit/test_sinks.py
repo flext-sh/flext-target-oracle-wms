@@ -83,15 +83,15 @@ class TestCatalogAndTableIntegration:
         target = FlextTargetOracleWms(_valid_config())
         schema = _schema_msg("items")
         target.handle_schema_message(schema)
-        assert target.catalog_manager.get_stream("items").is_success
-        assert target.table_manager.get_table_name("items").is_success
+        assert target.catalog_manager.get_stream("items").success
+        assert target.table_manager.get_table_name("items").success
 
     def test_table_name_is_uppercased_stream(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
         schema = _schema_msg("orders")
         target.handle_schema_message(schema)
         table_result = target.table_manager.get_table_name("orders")
-        assert table_result.is_success
+        assert table_result.success
         assert table_result.value is not None
         assert table_result.value == "ORDERS"
 
@@ -105,4 +105,4 @@ class TestTransformationIntegration:
         target.handle_schema_message(schema)
         record = _record_msg("s", {"name": "test"})
         result = target.handle_record_message(record)
-        assert result.is_success
+        assert result.success

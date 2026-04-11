@@ -85,7 +85,7 @@ class TestFlextTargetFactory:
             additional_config=None,
         )
         result = FlextTargetFactory.create_target(req)
-        assert result.is_success
+        assert result.success
 
     @patch(_PATCH_TARGET)
     def test_create_target_with_preset(self, _mock_cls: MagicMock) -> None:
@@ -97,7 +97,7 @@ class TestFlextTargetFactory:
             additional_config=None,
         )
         result = FlextTargetFactory.create_target(req)
-        assert result.is_success
+        assert result.success
 
     @patch(_PATCH_TARGET)
     def test_create_target_with_additional_config(self, _mock_cls: MagicMock) -> None:
@@ -108,7 +108,7 @@ class TestFlextTargetFactory:
             additional_config={"custom_key": "custom_value"},
         )
         result = FlextTargetFactory.create_target(req)
-        assert result.is_success
+        assert result.success
 
     @patch(_PATCH_TARGET)
     def test_create_from_config_dict_success(self, _mock_cls: MagicMock) -> None:
@@ -117,14 +117,14 @@ class TestFlextTargetFactory:
             "username": "u",
             "password": "p",
         })
-        assert result.is_success
+        assert result.success
 
     def test_create_from_config_dict_missing_base_url(self) -> None:
         result = FlextTargetFactory.create_from_config_dict({
             "username": "u",
             "password": "p",
         })
-        assert result.is_failure
+        assert result.failure
         assert result.error is not None
         assert "base_url" in result.error
 
@@ -133,7 +133,7 @@ class TestFlextTargetFactory:
             "base_url": "https://x",
             "password": "p",
         })
-        assert result.is_failure
+        assert result.failure
         assert result.error is not None
         assert "username" in result.error
 
@@ -142,7 +142,7 @@ class TestFlextTargetFactory:
             "base_url": "https://x",
             "username": "u",
         })
-        assert result.is_failure
+        assert result.failure
         assert result.error is not None
         assert "password" in result.error
 
@@ -168,7 +168,7 @@ class TestFlextTargetMonitoringFactory:
             additional_config=None,
         )
         result = factory.create_monitored_target(req)
-        assert result.is_success
+        assert result.success
 
 
 class TestFactoryConvenienceMethods:
@@ -181,7 +181,7 @@ class TestFactoryConvenienceMethods:
             username="u",
             password="p",
         )
-        assert result.is_success
+        assert result.success
 
     @patch(_PATCH_TARGET)
     def test_create_oracle_wms_target_with_preset(self, _mock_cls: MagicMock) -> None:
@@ -191,7 +191,7 @@ class TestFactoryConvenienceMethods:
             password="p",
             preset="production",
         )
-        assert result.is_success
+        assert result.success
 
     @patch(_PATCH_TARGET)
     def test_create_monitored_oracle_wms_target(self, _mock_cls: MagicMock) -> None:
@@ -202,4 +202,4 @@ class TestFactoryConvenienceMethods:
             additional_config=None,
         )
         result = FlextTargetMonitoringFactory.create_monitored_oracle_wms_target(req)
-        assert result.is_success
+        assert result.success

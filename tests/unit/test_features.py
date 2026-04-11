@@ -32,12 +32,12 @@ class TestTargetFeatures:
 
     def test_target_setup_cleanup_lifecycle(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
-        assert target.setup().is_success
-        assert target.cleanup().is_success
+        assert target.setup().success
+        assert target.cleanup().success
 
     def test_target_process_empty_lines(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
-        assert target.process_lines([]).is_success
+        assert target.process_lines([]).success
 
 
 class TestTransformerFeatures:
@@ -55,12 +55,12 @@ class TestTransformerFeatures:
         ]
         for singer_type, value in types_and_values:
             result = converter.convert_singer_to_oracle(singer_type, value)
-            assert result.is_success, f"Failed for type={singer_type}"
+            assert result.success, f"Failed for type={singer_type}"
 
     def test_type_converter_null_handling(self) -> None:
         converter = u.TargetOracleWms.WMSTypeConverter()
         result = converter.convert_singer_to_oracle("string", "")
-        assert result.is_success
+        assert result.success
         assert result.value == ""
 
     def test_transformer_uppercases_keys(self) -> None:
@@ -79,7 +79,7 @@ class TestTransformerFeatures:
             "key_properties": ["name"],
         })
         result = transformer.transform_record(record, schema)
-        assert result.is_success
+        assert result.success
         assert result.value is not None
         assert "NAME" in result.value.record
 
@@ -116,8 +116,8 @@ class TestUtilitiesFeatures:
             "username": "u",
             "password": "p",
         })
-        assert result.is_success
+        assert result.success
 
     def test_validate_config_missing_fields(self) -> None:
         result = u.TargetOracleWms.Validation.validate_wms_target_config({})
-        assert result.is_failure
+        assert result.failure

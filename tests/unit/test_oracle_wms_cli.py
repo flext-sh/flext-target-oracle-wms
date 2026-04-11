@@ -80,19 +80,19 @@ class TestOracleWMSTargetCliExecute:
         cli = FlextTargetOracleWmsCli()
         config_path = _write_config_file(_valid_config_dict(), tmp_path)
         result = cli.execute(config=config_path)
-        assert result.is_success
+        assert result.success
 
     @patch("flext_target_oracle_wms.cli.sys.stdin", [])
     def test_execute_without_config_uses_defaults(self) -> None:
         cli = FlextTargetOracleWmsCli()
         result = cli.execute()
-        assert result.is_success
+        assert result.success
 
     @patch("flext_target_oracle_wms.cli.sys.stdin", [])
     def test_execute_with_none_config(self) -> None:
         cli = FlextTargetOracleWmsCli()
         result = cli.execute()
-        assert result.is_success
+        assert result.success
 
 
 class TestMain:

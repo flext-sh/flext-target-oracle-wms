@@ -94,7 +94,7 @@ def main() -> None:
         if config_path is not None
         else cli_instance.execute()
     )
-    if result.is_failure:
+    if result.failure:
         msg = result.error or "Execution failed"
         raise RuntimeError(msg)
 

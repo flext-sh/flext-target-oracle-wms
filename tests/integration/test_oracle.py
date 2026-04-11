@@ -54,7 +54,7 @@ class TestTargetLifecycle:
 
     def test_setup_process_cleanup(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
-        assert target.setup().is_success
+        assert target.setup().success
         lines = [
             _schema_line(
                 "items",
@@ -64,8 +64,8 @@ class TestTargetLifecycle:
             _record_line("items", {"id": "1", "name": "Widget"}),
             _state_line({"bookmarks": {"items": "1"}}),
         ]
-        assert target.process_lines(lines).is_success
-        assert target.cleanup().is_success
+        assert target.process_lines(lines).success
+        assert target.cleanup().success
 
     def test_multiple_batches(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
@@ -75,13 +75,13 @@ class TestTargetLifecycle:
             _record_line("orders", {"order_id": "ORD001"}),
             _record_line("orders", {"order_id": "ORD002"}),
         ]
-        assert target.process_lines(batch1).is_success
+        assert target.process_lines(batch1).success
         batch2 = [
             _record_line("orders", {"order_id": "ORD003"}),
             _state_line({"bookmarks": {"orders": "3"}}),
         ]
-        assert target.process_lines(batch2).is_success
-        assert target.cleanup().is_success
+        assert target.process_lines(batch2).success
+        assert target.cleanup().success
 
 
 @pytest.mark.integration
@@ -101,5 +101,5 @@ class TestMultiStreamIntegration:
             _record_line("orders", {"id": "O2"}),
             _state_line({"bookmarks": {}}),
         ]
-        assert target.process_lines(lines).is_success
-        assert target.cleanup().is_success
+        assert target.process_lines(lines).success
+        assert target.cleanup().success

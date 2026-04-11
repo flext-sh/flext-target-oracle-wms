@@ -48,7 +48,7 @@ class TestStreamProcessorInitialize:
             u.TargetOracleWms.WMSDataTransformer(),
         )
         result = proc.initialize_stream(_schema_msg("orders"))
-        assert result.is_success
+        assert result.success
         assert result.value is True
 
     def test_initialize_registers_table(self) -> None:
@@ -59,7 +59,7 @@ class TestStreamProcessorInitialize:
         )
         proc.initialize_stream(_schema_msg("items"))
         table_result = tm.get_table_name("items")
-        assert table_result.is_success
+        assert table_result.success
         assert table_result.value == "ITEMS"
 
 
@@ -74,7 +74,7 @@ class TestStreamProcessorRecord:
         schema = _schema_msg("orders")
         proc.initialize_stream(schema)
         result = proc.process_record(_record_msg("orders", {"id": "1"}), schema)
-        assert result.is_success
+        assert result.success
 
     def test_process_record_without_init_fails(self) -> None:
         proc = FlextTargetOracleWmsStreamProcessor(
@@ -85,7 +85,7 @@ class TestStreamProcessorRecord:
             _record_msg("orders", {"id": "1"}),
             _schema_msg("orders"),
         )
-        assert result.is_failure
+        assert result.failure
         assert result.error is not None
         assert (
             "not registered" in result.error.lower() or "lookup" in result.error.lower()
@@ -104,7 +104,7 @@ class TestStreamProcessorRecord:
         )
         proc.initialize_stream(schema)
         result = proc.process_record(_record_msg("s", {"name": "hello"}), schema)
-        assert result.is_success
+        assert result.success
         assert result.value is not None
         transformed = result.value
         assert "NAME" in transformed.record
@@ -116,7 +116,7 @@ class TestStreamProcessorRecord:
         proc = FlextTargetOracleWmsStreamProcessor(tm, dt)
         tm.register_stream("s")
         result = proc.process_record(_record_msg("s"), _schema_msg("s"))
-        assert result.is_failure
+        assert result.failure
 
 
 class TestStreamProcessorMultipleStreams:
@@ -133,5 +133,5 @@ class TestStreamProcessorMultipleStreams:
         proc.initialize_stream(schema_b)
         r_a = proc.process_record(_record_msg("alpha", {"id": "1"}), schema_a)
         r_b = proc.process_record(_record_msg("beta", {"id": "2"}), schema_b)
-        assert r_a.is_success
-        assert r_b.is_success
+        assert r_a.success
+        assert r_b.success

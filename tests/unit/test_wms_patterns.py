@@ -46,7 +46,7 @@ class TestWMSTypeConverter:
             "string",
             "hello",
         )
-        assert result.is_success
+        assert result.success
         assert result.value == "hello"
 
     def test_integer_type(self) -> None:
@@ -54,7 +54,7 @@ class TestWMSTypeConverter:
             "integer",
             42,
         )
-        assert result.is_success
+        assert result.success
         assert result.value == 42
 
     def test_number_type_float(self) -> None:
@@ -62,7 +62,7 @@ class TestWMSTypeConverter:
             "number",
             math.pi,
         )
-        assert result.is_success
+        assert result.success
         assert result.value == math.pi
 
     def test_none_value(self) -> None:
@@ -70,7 +70,7 @@ class TestWMSTypeConverter:
             "string",
             "",
         )
-        assert result.is_success
+        assert result.success
         assert result.value == ""
 
     def test_object_type_serializes_to_json(self) -> None:
@@ -79,7 +79,7 @@ class TestWMSTypeConverter:
             "object",
             data,
         )
-        assert result.is_success
+        assert result.success
         assert result.value is not None
         assert TypeAdapter(t.TextValue).validate_json(str(result.value)) == data
 
@@ -89,7 +89,7 @@ class TestWMSTypeConverter:
             "array",
             data,
         )
-        assert result.is_success
+        assert result.success
         assert result.value is not None
         assert TypeAdapter(t.TextValue).validate_json(str(result.value)) == data
 
@@ -98,7 +98,7 @@ class TestWMSTypeConverter:
             "boolean",
             True,
         )
-        assert result.is_success
+        assert result.success
         assert result.value == "True"
 
 
@@ -111,7 +111,7 @@ class TestWMSDataTransformer:
             _record_msg("s", {"name": "alice", "age": "30"}),
             _schema_msg("s"),
         )
-        assert result.is_success
+        assert result.success
         assert result.value is not None
         assert "NAME" in result.value.record
         assert "AGE" in result.value.record
@@ -122,7 +122,7 @@ class TestWMSDataTransformer:
             _record_msg("orders", {"id": "1"}),
             _schema_msg("orders"),
         )
-        assert result.is_success
+        assert result.success
         assert result.value is not None
         assert result.value.stream == "orders"
 
@@ -133,14 +133,14 @@ class TestWMSDataTransformer:
             _record_msg("s", {"qty": 10}),
             _schema_msg("s"),
         )
-        assert result.is_success
+        assert result.success
         assert result.value is not None
         assert "QTY" in result.value.record
 
     def test_transform_without_schema(self) -> None:
         transformer = u.TargetOracleWms.WMSDataTransformer()
         result = transformer.transform_record(_record_msg("s", {"name": "bob"}), None)
-        assert result.is_success
+        assert result.success
         assert result.value is not None
         assert "NAME" in result.value.record
 
@@ -151,7 +151,7 @@ class TestWMSSchemaMapper:
     def test_returns_catalog_entry(self) -> None:
         mapper = u.TargetOracleWms.WMSSchemaMapper()
         result = mapper.map_stream_schema(_schema_msg("inventory"))
-        assert result.is_success
+        assert result.success
         assert result.value is not None
         entry = result.value
         assert entry.stream == "inventory"
@@ -171,30 +171,30 @@ class TestWMSTableManager:
     def test_register_stream_returns_uppercase(self) -> None:
         tm = u.TargetOracleWms.WMSTableManager()
         result = tm.register_stream("orders")
-        assert result.is_success
+        assert result.success
         assert result.value == "ORDERS"
 
     def test_get_registered_table(self) -> None:
         tm = u.TargetOracleWms.WMSTableManager()
         tm.register_stream("items")
         result = tm.get_table_name("items")
-        assert result.is_success
+        assert result.success
         assert result.value == "ITEMS"
 
     def test_get_unregistered_fails(self) -> None:
         tm = u.TargetOracleWms.WMSTableManager()
         result = tm.get_table_name("nope")
-        assert result.is_failure
+        assert result.failure
 
     def test_multiple_streams(self) -> None:
         tm = u.TargetOracleWms.WMSTableManager()
         tm.register_stream("a")
         tm.register_stream("b")
         result_a = tm.get_table_name("a")
-        assert result_a.is_success
+        assert result_a.success
         assert result_a.value is not None
         result_b = tm.get_table_name("b")
-        assert result_b.is_success
+        assert result_b.success
         assert result_b.value is not None
         assert result_a.value == "A"
         assert result_b.value == "B"

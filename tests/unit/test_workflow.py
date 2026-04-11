@@ -67,7 +67,7 @@ class TestFullSingerWorkflow:
             _state_line({"bookmarks": {"inventory": "2"}}),
         ]
         result = target.process_lines(lines)
-        assert result.is_success
+        assert result.success
 
     def test_multiple_stream_workflow(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
@@ -79,7 +79,7 @@ class TestFullSingerWorkflow:
             _state_line({"bookmarks": {}}),
         ]
         result = target.process_lines(lines)
-        assert result.is_success
+        assert result.success
 
     def test_schema_update_mid_stream(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
@@ -94,13 +94,13 @@ class TestFullSingerWorkflow:
             _record_line("s", {"id": "2", "name": "updated"}),
         ]
         result = target.process_lines(lines)
-        assert result.is_success
+        assert result.success
 
     def test_state_only_workflow(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
         lines = [_state_line({"bookmarks": {}})]
         result = target.process_lines(lines)
-        assert result.is_success
+        assert result.success
 
 
 class TestCliWorkflow:
@@ -110,7 +110,7 @@ class TestCliWorkflow:
     def test_cli_execute_empty_stdin(self) -> None:
         cli = FlextTargetOracleWmsCli()
         result = cli.execute()
-        assert result.is_success
+        assert result.success
 
     @patch("flext_target_oracle_wms.cli.sys.stdin")
     def test_cli_execute_with_messages(self, mock_stdin: MagicMock) -> None:
@@ -123,7 +123,7 @@ class TestCliWorkflow:
         mock_stdin.__next__ = MagicMock(side_effect=lines)
         cli = FlextTargetOracleWmsCli()
         result = cli.execute()
-        assert result.is_success
+        assert result.success
 
 
 class TestErrorWorkflows:
@@ -136,10 +136,10 @@ class TestErrorWorkflows:
             "NOT VALID JSON",
         ]
         result = target.process_lines(lines)
-        assert result.is_failure
+        assert result.failure
 
     def test_record_for_unknown_stream_fails(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
         lines = [_record_line("unknown_stream", {"id": "1"})]
         result = target.process_lines(lines)
-        assert result.is_failure
+        assert result.failure

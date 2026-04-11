@@ -35,7 +35,7 @@ def run_factory_example() -> t.Scalar:
         additional_config=None,
     )
     result = FlextTargetFactory.create_target(request)
-    if result.is_success:
+    if result.success:
         logger.info("Created Oracle WMS target: %s", result.value.name)
     logger.info("Factory usage example completed successfully")
     return True

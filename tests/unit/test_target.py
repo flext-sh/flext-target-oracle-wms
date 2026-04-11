@@ -107,13 +107,13 @@ class TestTargetSetupCleanup:
     def test_setup_returns_success(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
         result = target.setup()
-        assert result.is_success
+        assert result.success
         assert result.value is True
 
     def test_cleanup_returns_success(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
         result = target.cleanup()
-        assert result.is_success
+        assert result.success
         assert result.value is True
 
 
@@ -124,13 +124,13 @@ class TestTargetHandleSchemaMessage:
         target = FlextTargetOracleWms(_valid_config())
         msg = _schema_msg("orders")
         result = target.handle_schema_message(msg)
-        assert result.is_success
+        assert result.success
 
     def test_schema_registered_in_catalog(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
         msg = _schema_msg("items")
         target.handle_schema_message(msg)
-        assert target.catalog_manager.get_stream("items").is_success
+        assert target.catalog_manager.get_stream("items").success
 
 
 class TestTargetHandleRecordMessage:
@@ -140,7 +140,7 @@ class TestTargetHandleRecordMessage:
         target = FlextTargetOracleWms(_valid_config())
         msg = _record_msg("orphan", {"id": "1"})
         result = target.handle_record_message(msg)
-        assert result.is_failure
+        assert result.failure
         assert result.error is not None
         assert "schema not registered" in result.error.lower()
 
@@ -150,7 +150,7 @@ class TestTargetHandleRecordMessage:
         target.handle_schema_message(schema)
         record = _record_msg("s", {"id": "1"})
         result = target.handle_record_message(record)
-        assert result.is_success
+        assert result.success
 
 
 class TestTargetHandleStateMessage:
@@ -160,7 +160,7 @@ class TestTargetHandleStateMessage:
         target = FlextTargetOracleWms(_valid_config())
         msg = _state_msg({"bookmarks": {"pos": "42"}})
         result = target.handle_state_message(msg)
-        assert result.is_success
+        assert result.success
 
 
 class TestTargetProcessLines:
@@ -169,17 +169,17 @@ class TestTargetProcessLines:
     def test_empty_lines_succeeds(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
         result = target.process_lines([])
-        assert result.is_success
+        assert result.success
 
     def test_blank_lines_ignored(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
         result = target.process_lines(["", "  ", "\n"])
-        assert result.is_success
+        assert result.success
 
     def test_invalid_json_fails(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
         result = target.process_lines(["not json"])
-        assert result.is_failure
+        assert result.failure
         assert result.error is not None
         assert "invalid json" in result.error.lower()
 
@@ -194,10 +194,10 @@ class TestTargetProcessLines:
             _state_line({"bookmarks": {"orders": "1"}}),
         ]
         result = target.process_lines(lines)
-        assert result.is_success
+        assert result.success
 
     def test_record_before_schema_fails(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
         lines = [_record_line("orders", {"id": "1"})]
         result = target.process_lines(lines)
-        assert result.is_failure
+        assert result.failure

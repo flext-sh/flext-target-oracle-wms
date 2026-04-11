@@ -80,7 +80,7 @@ class _WmsClients:
             """Register stream metadata in table manager."""
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
             registration = self.table_manager.register_stream(typed_schema.stream)
-            if registration.is_failure:
+            if registration.failure:
                 return r[bool].fail(registration.error or "Table registration failed")
             return r[bool].ok(value=True)
 
@@ -92,7 +92,7 @@ class _WmsClients:
             """Transform one typed Singer record."""
             typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
             table_lookup = self.table_manager.get_table_name(typed_record.stream)
-            if table_lookup.is_failure:
+            if table_lookup.failure:
                 return r[m.Meltano.SingerRecordMessage].fail(
                     table_lookup.error or "Table lookup failed",
                 )
@@ -144,7 +144,7 @@ class _WmsClients:
                 typed_record,
                 schema_message,
             )
-            if process_result.is_failure:
+            if process_result.failure:
                 return r[bool].fail(process_result.error or "Record processing failed")
             return r[bool].ok(value=True)
 
@@ -155,10 +155,10 @@ class _WmsClients:
             """Handle one SCHEMA message."""
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(message)
             add_result = self.catalog_manager.add_stream(typed_schema)
-            if add_result.is_failure:
+            if add_result.failure:
                 return add_result
             init_result = self.stream_processor.initialize_stream(typed_schema)
-            if init_result.is_success:
+            if init_result.success:
                 self._schemas[typed_schema.stream] = typed_schema
             return init_result
 
@@ -188,21 +188,21 @@ class _WmsClients:
                             message,
                         )
                         schema_result = self.handle_schema_message(parsed_schema)
-                        if schema_result.is_failure:
+                        if schema_result.failure:
                             return schema_result
                     elif message_type == self._record_type:
                         parsed_record = m.Meltano.SingerRecordMessage.model_validate(
                             message,
                         )
                         record_result = self.handle_record_message(parsed_record)
-                        if record_result.is_failure:
+                        if record_result.failure:
                             return record_result
                     elif message_type == self._state_type:
                         parsed_state = m.Meltano.SingerStateMessage.model_validate(
                             message,
                         )
                         state_result = self.handle_state_message(parsed_state)
-                        if state_result.is_failure:
+                        if state_result.failure:
                             return state_result
                 except ValidationError as exc:
                     return r[bool].fail(f"Invalid Singer message: {exc}")

@@ -69,7 +69,7 @@ class FlextTargetOracleWmsServiceRuntime:
                     ),
                 }),
             )
-            if result.is_failure:
+            if result.failure:
                 msg = result.error or "Oracle WMS runtime rejected the record"
                 raise RuntimeError(msg)
 
@@ -100,7 +100,7 @@ class FlextTargetOracleWmsServiceRuntime:
             "key_properties": [],
         })
         schema_result = runtime_target.handle_schema_message(schema_message)
-        if schema_result.is_failure:
+        if schema_result.failure:
             msg = schema_result.error or "Oracle WMS runtime rejected the schema"
             raise RuntimeError(msg)
         return cls.Sink.create(
