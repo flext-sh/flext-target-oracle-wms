@@ -8,12 +8,14 @@ from typing import ClassVar
 
 from pydantic import ValidationError
 
-from flext_core import FlextLogger, r
+from flext_core import r
 from flext_target_oracle_wms import (
     WMSDataTransformer,
     WMSTableManager,
     m,
+    p,
     t,
+    u,
 )
 
 
@@ -108,7 +110,7 @@ class _WmsClients:
         _state_type: ClassVar[str] = "STATE"
         _schema_type: ClassVar[str] = "SCHEMA"
         _record_type: ClassVar[str] = "RECORD"
-        _logger: ClassVar[FlextLogger] = u.fetch_logger(__name__)
+        _logger: ClassVar[p.Logger] = u.fetch_logger(__name__)
 
         def __init__(
             self,
