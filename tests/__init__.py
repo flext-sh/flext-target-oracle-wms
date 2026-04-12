@@ -22,7 +22,7 @@ if _t.TYPE_CHECKING:
     from tests.utilities import TestsFlextTargetOracleWmsUtilities, u
 _LAZY_IMPORTS = merge_lazy_imports(
     (
-        ".examples",
+        "examples",
         ".integration",
         ".unit",
     ),
@@ -66,6 +66,10 @@ _LAZY_IMPORTS = merge_lazy_imports(
         },
     ),
     exclude_names=(
+        "FlextDispatcher",
+        "FlextLogger",
+        "FlextRegistry",
+        "FlextRuntime",
         "cleanup_submodule_namespace",
         "install_lazy_exports",
         "lazy_getattr",
