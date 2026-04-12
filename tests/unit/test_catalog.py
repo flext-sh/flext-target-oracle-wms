@@ -16,7 +16,7 @@ from tests import m, t
 
 def _make_schema_message(
     stream_name: str = "test_stream",
-    schema: t.ContainerMapping | None = None,
+    schema: t.RecursiveContainerMapping | None = None,
     key_properties: t.StrSequence | None = None,
 ) -> m.Meltano.SingerSchemaMessage:
     """Build a valid SingerSchemaMessage dict."""

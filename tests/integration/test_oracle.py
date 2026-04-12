@@ -38,13 +38,13 @@ def _schema_line(
     }).decode("utf-8")
 
 
-def _record_line(stream: str, record: t.ContainerMapping) -> str:
+def _record_line(stream: str, record: t.RecursiveContainerMapping) -> str:
     return orjson.dumps({"type": "RECORD", "stream": stream, "record": record}).decode(
         "utf-8",
     )
 
 
-def _state_line(value: t.ContainerMapping) -> str:
+def _state_line(value: t.RecursiveContainerMapping) -> str:
     return orjson.dumps({"type": "STATE", "value": value}).decode("utf-8")
 
 

@@ -51,8 +51,8 @@ class FlextTargetOracleWmsServiceRuntime:
         @override
         def process_record(
             self,
-            record: t.ContainerMapping,
-            context: t.ContainerMapping,
+            record: t.RecursiveContainerMapping,
+            context: t.RecursiveContainerMapping,
         ) -> None:
             """Process a single record through the Oracle WMS runtime."""
             _ = context
@@ -72,7 +72,7 @@ class FlextTargetOracleWmsServiceRuntime:
         @override
         def process_batch(
             self,
-            context: t.ContainerMapping,
+            context: t.RecursiveContainerMapping,
         ) -> None:
             """Process a batch through the service adapter."""
             _ = context
@@ -83,7 +83,7 @@ class FlextTargetOracleWmsServiceRuntime:
         *,
         stream_name: str,
         schema: t.FlatContainerMapping,
-        target_config: t.ContainerMapping,
+        target_config: t.RecursiveContainerMapping,
     ) -> p.Meltano.SingerDrainSink:
         """Create the service-level Singer sink adapter."""
         normalized_target_config = cls.normalize_singer_mapping(target_config)
@@ -110,7 +110,7 @@ class FlextTargetOracleWmsServiceRuntime:
     @classmethod
     def normalize_singer_mapping(
         cls,
-        source: t.ContainerMapping,
+        source: t.RecursiveContainerMapping,
     ) -> dict[str, t.ContainerValue]:
         """Normalize a Singer payload mapping to the WMS runtime contract."""
         normalized: dict[str, t.ContainerValue] = {}
@@ -123,7 +123,7 @@ class FlextTargetOracleWmsServiceRuntime:
     @classmethod
     def normalize_singer_value(
         cls,
-        value: t.NormalizedValue,
+        value: t.RecursiveContainer,
     ) -> t.ContainerValue | None:
         """Normalize a Singer payload value to the WMS runtime contract."""
         if value is None:

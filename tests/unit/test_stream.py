@@ -17,7 +17,7 @@ from tests import m, t, u
 
 def _schema_msg(
     stream: str = "test_stream",
-    schema: t.ContainerMapping | None = None,
+    schema: t.RecursiveContainerMapping | None = None,
     key_properties: t.StrSequence | None = None,
 ) -> m.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage.model_validate({
@@ -30,7 +30,7 @@ def _schema_msg(
 
 def _record_msg(
     stream: str = "test_stream",
-    record: t.ContainerMapping | None = None,
+    record: t.RecursiveContainerMapping | None = None,
 ) -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage.model_validate({
         "type": "RECORD",

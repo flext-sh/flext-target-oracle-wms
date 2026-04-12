@@ -31,7 +31,7 @@ class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
         schema: t.FlatContainerMapping,
     ) -> p.Meltano.SingerDrainSink:
         """Create an Oracle WMS sink for a stream."""
-        target_config: t.ContainerMapping = (
+        target_config: t.RecursiveContainerMapping = (
             self.settings_overrides if self.settings_overrides is not None else {}
         )
         return FlextTargetOracleWmsServiceRuntime.create_sink(
