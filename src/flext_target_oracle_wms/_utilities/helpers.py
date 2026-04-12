@@ -195,7 +195,7 @@ create_record_message = _WmsHelpers.create_record_message
 create_schema_message = _WmsHelpers.create_schema_message
 create_state_message = _WmsHelpers.create_state_message
 
-__all__ = [
+__all__: list[str] = [
     "Validation",
     "WMSDataTransformer",
     "WMSSchemaMapper",

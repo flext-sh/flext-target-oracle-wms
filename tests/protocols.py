@@ -30,4 +30,4 @@ class TestsFlextTargetOracleWmsProtocols(
 
 
 p = TestsFlextTargetOracleWmsProtocols
-__all__ = ["TestsFlextTargetOracleWmsProtocols", "p"]
+__all__: list[str] = ["TestsFlextTargetOracleWmsProtocols", "p"]

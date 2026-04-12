@@ -152,4 +152,4 @@ class FlextTargetOracleWmsServiceRuntime:
         }
 
 
-__all__ = ["FlextTargetOracleWmsServiceRuntime"]
+__all__: list[str] = ["FlextTargetOracleWmsServiceRuntime"]

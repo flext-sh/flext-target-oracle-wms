@@ -43,4 +43,4 @@ class FlextTargetOracleWmsConstants(FlextMeltanoConstants, FlextOracleWmsConstan
 
 
 c = FlextTargetOracleWmsConstants
-__all__ = ["FlextTargetOracleWmsConstants", "c"]
+__all__: list[str] = ["FlextTargetOracleWmsConstants", "c"]

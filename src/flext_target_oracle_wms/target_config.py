@@ -34,4 +34,4 @@ class FlextTargetOracleWmsTargetConfig(m.TargetOracleWms.WmsTargetConfig):
         return r[FlextTargetOracleWmsTargetConfig].ok(settings)
 
 
-__all__ = ["FlextTargetOracleWmsTargetConfig"]
+__all__: list[str] = ["FlextTargetOracleWmsTargetConfig"]

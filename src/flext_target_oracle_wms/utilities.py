@@ -66,7 +66,7 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
             return create_state_message(state)
 
 
-__all__ = [
+__all__: list[str] = [
     "FlextTargetOracleWmsUtilities",
     "u",
 ]

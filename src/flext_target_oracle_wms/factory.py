@@ -125,7 +125,7 @@ class FlextTargetMonitoringFactory:
         return factory.create_monitored_target(request)
 
 
-__all__ = [
+__all__: list[str] = [
     "FlextTargetFactory",
     "FlextTargetMonitoringFactory",
 ]

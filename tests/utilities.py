@@ -21,4 +21,4 @@ class TestsFlextTargetOracleWmsUtilities(
 
 
 u = TestsFlextTargetOracleWmsUtilities
-__all__ = ["TestsFlextTargetOracleWmsUtilities", "u"]
+__all__: list[str] = ["TestsFlextTargetOracleWmsUtilities", "u"]

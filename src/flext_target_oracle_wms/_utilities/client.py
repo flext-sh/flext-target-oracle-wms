@@ -224,7 +224,7 @@ CatalogManager = _WmsClients.CatalogManager
 StreamProcessor = _WmsClients.StreamProcessor
 Target = _WmsClients.Target
 
-__all__ = [
+__all__: list[str] = [
     "CatalogManager",
     "StreamProcessor",
     "Target",

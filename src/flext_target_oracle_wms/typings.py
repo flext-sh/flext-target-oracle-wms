@@ -25,4 +25,4 @@ class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
 
 
 t = FlextTargetOracleWmsTypes
-__all__ = ["FlextTargetOracleWmsTypes", "t"]
+__all__: list[str] = ["FlextTargetOracleWmsTypes", "t"]
