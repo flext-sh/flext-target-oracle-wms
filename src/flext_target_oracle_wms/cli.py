@@ -86,7 +86,7 @@ def main() -> None:
     config_path: str | None = None
     if (
         len(sys.argv) >= c.TargetOracleWms.CLI_MIN_CONFIG_ARG_COUNT
-        and sys.argv[1] == "--settings"
+        and sys.argv[1] == "--config"
     ):
         config_path = sys.argv[2]
     result = (

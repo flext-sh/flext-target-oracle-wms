@@ -19,8 +19,7 @@ class FlextTargetOracleWmsSettings(FlextSettings):
     """Runtime configuration for target Oracle WMS."""
 
     model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(
-        env_prefix="FLEXT_TARGET_ORACLE_WMS_",
-        extra="ignore",
+        env_prefix="FLEXT_TARGET_ORACLE_WMS_", extra="ignore"
     )
 
     @classmethod
