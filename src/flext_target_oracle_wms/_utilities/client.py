@@ -8,12 +8,12 @@ from typing import ClassVar
 
 from pydantic import ValidationError
 
-from flext_core import p, r
 from flext_target_oracle_wms import (
     WMSDataTransformer,
     WMSTableManager,
     m,
     p,
+    r,
     t,
     u,
 )

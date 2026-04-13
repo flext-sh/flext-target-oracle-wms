@@ -11,10 +11,9 @@ from typing import Annotated, ClassVar, Literal
 
 from pydantic import ConfigDict, Field, SecretStr
 
-from flext_core import p, r
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_wms import FlextOracleWmsModels
-from flext_target_oracle_wms import c, t
+from flext_target_oracle_wms import c, p, r, t
 
 
 class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):

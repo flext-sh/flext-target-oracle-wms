@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-from flext_core import p, r
-from flext_target_oracle_wms import c, m, t
+from flext_target_oracle_wms import c, m, p, r, t
 
 
 class FlextTargetOracleWmsTargetConfig(m.TargetOracleWms.WmsTargetConfig):

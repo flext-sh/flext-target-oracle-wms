@@ -5,8 +5,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from flext_core import p, r
-from flext_target_oracle_wms import Target as FlextTargetOracleWms, c, m, t, u
+from flext_target_oracle_wms import Target as FlextTargetOracleWms, c, m, p, r, t
 
 
 class FlextTargetOracleWmsCli:
@@ -36,11 +35,12 @@ class FlextTargetOracleWmsCli:
         """Setup, process stdin, and cleanup target runtime."""
         target = FlextTargetOracleWms(settings)
         setup_result = target.setup().map_error(lambda e: e or "Setup failed")
-        return u.flow_result(
-            setup_result,
-            lambda _: self._process_stdin_messages(target),
-            lambda _: self._finalize_target(target),
-        )
+        if setup_result.failure:
+            return setup_result
+        process_result = self._process_stdin_messages(target)
+        if process_result.failure:
+            return process_result
+        return self._finalize_target(target)
 
     def _finalize_target(self, target: FlextTargetOracleWms) -> p.Result[bool]:
         """Finalize target processing."""
