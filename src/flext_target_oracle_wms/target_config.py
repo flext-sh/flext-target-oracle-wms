@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-from flext_core import r
+from flext_core import p, r
 from flext_target_oracle_wms import c, m, t
 
 
 class FlextTargetOracleWmsTargetConfig(m.TargetOracleWms.WmsTargetConfig):
     """Validated target settings used by target runtime and factory helpers."""
 
-    def validate_runtime(self) -> r[bool]:
+    def validate_runtime(self) -> p.Result[bool]:
         """Validate runtime constraints before processing starts."""
         return self.validate_business_rules()
 
@@ -17,7 +17,7 @@ class FlextTargetOracleWmsTargetConfig(m.TargetOracleWms.WmsTargetConfig):
     def create_config(
         cls,
         overrides: t.ContainerValueMapping | None = None,
-    ) -> r[FlextTargetOracleWmsTargetConfig]:
+    ) -> p.Result[FlextTargetOracleWmsTargetConfig]:
         """Create target settings instance with optional override values."""
         try:
             data: t.ContainerValueMapping = dict(overrides) if overrides else {}

@@ -5,7 +5,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from flext_core import r
+from flext_core import p, r
 from flext_target_oracle_wms import Target as FlextTargetOracleWms, c, m, t, u
 
 
@@ -18,7 +18,7 @@ class FlextTargetOracleWmsCli:
         self.description = "Oracle WMS Singer Target"
         self.version = "0.9.0"
 
-    def execute(self, **kwargs: t.Scalar) -> r[bool]:
+    def execute(self, **kwargs: t.Scalar) -> p.Result[bool]:
         """Execute target run using optional settings path."""
         config_arg = kwargs.get("settings")
         config_path = str(config_arg) if config_arg is not None else None
@@ -32,7 +32,7 @@ class FlextTargetOracleWmsCli:
     def _execute_target_pipeline(
         self,
         settings: m.TargetOracleWms.WmsTargetConfig,
-    ) -> r[bool]:
+    ) -> p.Result[bool]:
         """Setup, process stdin, and cleanup target runtime."""
         target = FlextTargetOracleWms(settings)
         setup_result = target.setup().map_error(lambda e: e or "Setup failed")
@@ -42,7 +42,7 @@ class FlextTargetOracleWmsCli:
             lambda _: self._finalize_target(target),
         )
 
-    def _finalize_target(self, target: FlextTargetOracleWms) -> r[bool]:
+    def _finalize_target(self, target: FlextTargetOracleWms) -> p.Result[bool]:
         """Finalize target processing."""
         return target.cleanup()
 
@@ -57,7 +57,7 @@ class FlextTargetOracleWmsCli:
     def _prepare_config(
         self,
         config_path: str | None,
-    ) -> r[m.TargetOracleWms.WmsTargetConfig]:
+    ) -> p.Result[m.TargetOracleWms.WmsTargetConfig]:
         """Load settings from file or build defaults."""
         if config_path is not None:
             return r[m.TargetOracleWms.WmsTargetConfig].ok(
@@ -75,7 +75,7 @@ class FlextTargetOracleWmsCli:
             }),
         )
 
-    def _process_stdin_messages(self, target: FlextTargetOracleWms) -> r[bool]:
+    def _process_stdin_messages(self, target: FlextTargetOracleWms) -> p.Result[bool]:
         """Read and process stdin message lines."""
         return target.process_lines(list(sys.stdin))
 

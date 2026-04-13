@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from flext_core import r
+from flext_core import p, r
 from flext_target_oracle_wms import c, m, t
 
 
@@ -17,7 +17,7 @@ class _WmsHelpers:
         @staticmethod
         def validate_wms_target_config(
             settings: t.ContainerValueMapping,
-        ) -> r[bool]:
+        ) -> p.Result[bool]:
             """Validate minimal required target configuration fields."""
             required = {"base_url", "username", "password"}
             missing = sorted(key for key in required if key not in settings)
@@ -40,7 +40,7 @@ class _WmsHelpers:
             self,
             singer_type: str,
             value: t.Container | t.ContainerValue,
-        ) -> r[t.Container]:
+        ) -> p.Result[t.Container]:
             """Convert a single source value according to Singer type."""
             if singer_type in {"object", "array"}:
                 return r[t.Container].ok(
@@ -73,7 +73,7 @@ class _WmsHelpers:
             schema_message: m.Meltano.SingerSchemaMessage
             | t.ContainerValueMapping
             | None = None,
-        ) -> r[m.Meltano.SingerRecordMessage]:
+        ) -> p.Result[m.Meltano.SingerRecordMessage]:
             """Transform one typed Singer RECORD payload with optional typed schema."""
             typed_record = m.Meltano.SingerRecordMessage.model_validate(
                 record_message,
@@ -120,7 +120,7 @@ class _WmsHelpers:
         def map_stream_schema(
             self,
             schema_message: m.Meltano.SingerSchemaMessage | t.ContainerValueMapping,
-        ) -> r[m.Meltano.SingerCatalogEntry]:
+        ) -> p.Result[m.Meltano.SingerCatalogEntry]:
             """Build normalized schema map for table creation."""
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(
                 schema_message,
@@ -142,14 +142,14 @@ class _WmsHelpers:
             """Initialize table manager map."""
             self._stream_tables: t.MutableStrMapping = {}
 
-        def get_table_name(self, stream_name: str) -> r[str]:
+        def get_table_name(self, stream_name: str) -> p.Result[str]:
             """Get registered table name for stream."""
             table_name = self._stream_tables.get(stream_name)
             if table_name is None:
                 return r[str].fail(f"Stream not registered: {stream_name}")
             return r[str].ok(table_name)
 
-        def register_stream(self, stream_name: str) -> r[str]:
+        def register_stream(self, stream_name: str) -> p.Result[str]:
             """Register a stream and return table name."""
             table_name = stream_name.upper()
             self._stream_tables[stream_name] = table_name

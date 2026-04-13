@@ -70,7 +70,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t
@@ -115,7 +115,7 @@ Shows sophisticated configuration and custom business logic:
 class CustomWMSTypeConverter(WMSTypeConverter):
     def convert_singer_to_oracle(
         self, singer_type: str, value
-    ) -> r[t.RecursiveContainer]:
+    ) -> p.Result[t.RecursiveContainer]:
         if singer_type == "business_currency":
             return r[bool].ok(round(float(value), 2))
         return super().convert_singer_to_oracle(singer_type, value)
@@ -192,7 +192,9 @@ settings = {
 
 
 # Retry with backoff
-def retry_with_backoff(operation, max_retries: int = 3) -> r[t.RecursiveContainer]:
+def retry_with_backoff(
+    operation, max_retries: int = 3
+) -> p.Result[t.RecursiveContainer]:
     for attempt in range(max_retries):
         try:
             return operation()

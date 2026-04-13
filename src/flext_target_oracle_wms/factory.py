@@ -41,7 +41,7 @@ class FlextTargetFactory:
     def create_from_config_dict(
         cls,
         settings: t.ConfigurationMapping,
-    ) -> r[FlextTargetOracleWms]:
+    ) -> p.Result[FlextTargetOracleWms]:
         """Create target from plain dictionary settings via Pydantic validation."""
         known_keys = {"base_url", "username", "password", "environment", "preset"}
         additional = {k: v for k, v in settings.items() if k not in known_keys}
@@ -58,7 +58,7 @@ class FlextTargetFactory:
     def create_target(
         cls,
         request: m.TargetOracleWms.TargetCreationRequest,
-    ) -> r[FlextTargetOracleWms]:
+    ) -> p.Result[FlextTargetOracleWms]:
         """Create target instance from validated request."""
         settings: t.MutableContainerValueMapping = {
             "base_url": request.base_url,
@@ -84,7 +84,7 @@ class FlextTargetMonitoringFactory:
     def create_monitored_target(
         self,
         request: m.TargetOracleWms.MonitoredTargetCreationRequest,
-    ) -> r[FlextTargetOracleWms]:
+    ) -> p.Result[FlextTargetOracleWms]:
         """Create monitored target using base factory."""
         base_request = m.TargetOracleWms.TargetCreationRequest.model_validate({
             "base_url": request.base_url,
@@ -104,7 +104,7 @@ class FlextTargetMonitoringFactory:
         environment: str = "development",
         preset: str | None = None,
         **settings: t.Scalar,
-    ) -> r[FlextTargetOracleWms]:
+    ) -> p.Result[FlextTargetOracleWms]:
         """Convenience method to create base target instance."""
         request = m.TargetOracleWms.TargetCreationRequest.model_validate({
             "base_url": base_url,
@@ -119,7 +119,7 @@ class FlextTargetMonitoringFactory:
     @staticmethod
     def create_monitored_oracle_wms_target(
         request: m.TargetOracleWms.MonitoredTargetCreationRequest,
-    ) -> r[FlextTargetOracleWms]:
+    ) -> p.Result[FlextTargetOracleWms]:
         """Convenience method to create monitored target instance."""
         factory = FlextTargetMonitoringFactory(request.monitor_name)
         return factory.create_monitored_target(request)

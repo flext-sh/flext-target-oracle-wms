@@ -11,7 +11,7 @@ from typing import Annotated, ClassVar, Literal
 
 from pydantic import ConfigDict, Field, SecretStr
 
-from flext_core import r
+from flext_core import p, r
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_wms import FlextOracleWmsModels
 from flext_target_oracle_wms import c, t
@@ -51,7 +51,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             load_method: str = c.TargetOracleWms.LoadMethods.APPEND_ONLY
             validate_records: bool = True
 
-            def validate_business_rules(self) -> r[bool]:
+            def validate_business_rules(self) -> p.Result[bool]:
                 """Validate basic settings business rules."""
                 if (
                     self.load_method
