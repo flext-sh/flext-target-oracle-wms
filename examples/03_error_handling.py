@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from tests import t, u
 
-from flext_observability.services.monitoring import (
+from flext_observability import (
     FlextObservabilityMonitor,
     flext_monitor_function,
 )

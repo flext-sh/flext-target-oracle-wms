@@ -21,6 +21,19 @@ _LAZY_IMPORTS = build_lazy_import_map(
         ".test_target": ("test_target",),
         ".test_wms_patterns": ("test_wms_patterns",),
         ".test_workflow": ("test_workflow",),
+        "flext_target_oracle_wms": (
+            "c",
+            "d",
+            "e",
+            "h",
+            "m",
+            "p",
+            "r",
+            "s",
+            "t",
+            "u",
+            "x",
+        ),
     },
 )
 
