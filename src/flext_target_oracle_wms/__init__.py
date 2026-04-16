@@ -62,6 +62,22 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "__version__",
                 "__version_info__",
             ),
+            "._utilities.client": (
+                "CatalogManager",
+                "StreamProcessor",
+                "Target",
+            ),
+            "._utilities.helpers": (
+                "Validation",
+                "WMSDataTransformer",
+                "WMSSchemaMapper",
+                "WMSTableManager",
+                "WMSTypeConverter",
+                "create_record_message",
+                "create_schema_message",
+                "create_state_message",
+            ),
+            "._utilities.service_runtime": ("FlextTargetOracleWmsServiceRuntime",),
             ".api": (
                 "FlextTargetOracleWmsService",
                 "target_oracle_wms",
