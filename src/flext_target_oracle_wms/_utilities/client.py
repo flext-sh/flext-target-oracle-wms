@@ -6,11 +6,10 @@ import sys
 from collections.abc import MutableMapping
 from typing import ClassVar
 
-from pydantic import ValidationError
-
 from flext_target_oracle_wms import (
     WMSDataTransformer,
     WMSTableManager,
+    c,
     m,
     p,
     r,
@@ -181,7 +180,7 @@ class _WmsClients:
                     continue
                 try:
                     message = t.CONTAINER_MAP_ADAPTER.validate_json(line)
-                except ValidationError as exc:
+                except c.ValidationError as exc:
                     return r[bool].fail(f"Invalid JSON message: {exc}")
                 message_type = str(message.get("type", ""))
                 try:
@@ -206,7 +205,7 @@ class _WmsClients:
                         state_result = self.handle_state_message(parsed_state)
                         if state_result.failure:
                             return state_result
-                except ValidationError as exc:
+                except c.ValidationError as exc:
                     return r[bool].fail(f"Invalid Singer message: {exc}")
             return r[bool].ok(value=True)
 

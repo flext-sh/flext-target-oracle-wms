@@ -11,15 +11,16 @@ from pydantic import TypeAdapter
 
 from flext_meltano import FlextMeltanoTypes
 from flext_oracle_wms import FlextOracleWmsTypes
+from flext_target_oracle_wms import m
 
 
 class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
     """MRO facade composing Meltano + OracleWms type namespaces."""
 
-    NV_ADAPTER: TypeAdapter[FlextMeltanoTypes.NormalizedValue] = TypeAdapter(
+    NV_ADAPTER: m.TypeAdapter[FlextMeltanoTypes.NormalizedValue] = TypeAdapter(
         FlextMeltanoTypes.NormalizedValue
     )
-    CONTAINER_MAP_ADAPTER: TypeAdapter[FlextMeltanoTypes.ContainerMapping] = (
+    CONTAINER_MAP_ADAPTER: m.TypeAdapter[FlextMeltanoTypes.ContainerMapping] = (
         TypeAdapter(FlextMeltanoTypes.ContainerMapping)
     )
 
