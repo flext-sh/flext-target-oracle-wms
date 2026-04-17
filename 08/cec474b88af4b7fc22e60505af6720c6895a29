@@ -1,0 +1,14 @@
+AGENTS.md
+  h_9db9d35f50cf33 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.0",
+  "base_commit_sha": "08cec474b88af4b7fc22e60505af6720c6895a29",
+  "prompts": {},
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
