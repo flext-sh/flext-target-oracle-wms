@@ -9,9 +9,8 @@ from __future__ import annotations
 
 from pydantic import TypeAdapter
 
-from flext_meltano import FlextMeltanoTypes
+from flext_meltano import FlextMeltanoTypes, m
 from flext_oracle_wms import FlextOracleWmsTypes
-from flext_target_oracle_wms import m
 
 
 class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):

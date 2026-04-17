@@ -6,6 +6,7 @@ import sys
 from collections.abc import MutableMapping
 from typing import ClassVar
 
+from flext_meltano import u
 from flext_target_oracle_wms import (
     WMSDataTransformer,
     WMSTableManager,
@@ -14,7 +15,6 @@ from flext_target_oracle_wms import (
     p,
     r,
     t,
-    u,
 )
 
 

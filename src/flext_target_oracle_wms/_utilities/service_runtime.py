@@ -5,12 +5,12 @@ from __future__ import annotations
 from pathlib import Path
 from typing import override
 
+from flext_meltano import u
 from flext_target_oracle_wms import (
     Target as FlextTargetOracleWmsTarget,
     m,
     p,
     t,
-    u,
 )
 
 
