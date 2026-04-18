@@ -7,20 +7,18 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from pydantic import TypeAdapter
-
-from flext_meltano import FlextMeltanoTypes, m
+from flext_meltano import FlextMeltanoTypes, m, t
 from flext_oracle_wms import FlextOracleWmsTypes
 
 
 class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
     """MRO facade composing Meltano + OracleWms type namespaces."""
 
-    NV_ADAPTER: m.TypeAdapter[FlextMeltanoTypes.NormalizedValue] = TypeAdapter(
-        FlextMeltanoTypes.NormalizedValue
+    NV_ADAPTER: m.TypeAdapter[t.RecursiveContainer] = m.TypeAdapter(
+        t.RecursiveContainer
     )
-    CONTAINER_MAP_ADAPTER: m.TypeAdapter[FlextMeltanoTypes.ContainerMapping] = (
-        TypeAdapter(FlextMeltanoTypes.ContainerMapping)
+    CONTAINER_MAP_ADAPTER: m.TypeAdapter[t.RecursiveContainerMapping] = m.TypeAdapter(
+        t.RecursiveContainerMapping
     )
 
 
