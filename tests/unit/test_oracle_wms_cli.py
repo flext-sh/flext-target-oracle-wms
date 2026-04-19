@@ -12,10 +12,9 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-from pydantic import ValidationError
 
 from flext_target_oracle_wms import FlextTargetOracleWmsCli, main
-from tests import t
+from tests import e, t
 
 
 def _write_config_file(settings: Mapping[str, t.StrMapping], tmp_path: Path) -> str:
@@ -68,7 +67,7 @@ class TestOracleWMSTargetCliLoadConfig:
             json.dumps([1, 2, 3]),
             encoding="utf-8",
         )
-        with pytest.raises(ValidationError):
+        with pytest.raises(e.ValidationError):
             cli._prepare_config(str(bad_file))
 
 

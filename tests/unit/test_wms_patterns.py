@@ -8,8 +8,6 @@ from __future__ import annotations
 
 import math
 
-from pydantic import TypeAdapter
-
 from tests import m, t, u
 
 
@@ -81,7 +79,7 @@ class TestWMSTypeConverter:
         )
         assert result.success
         assert result.value is not None
-        assert TypeAdapter(t.TextValue).validate_json(str(result.value)) == data
+        assert m.TypeAdapter(t.TextValue).validate_json(str(result.value)) == data
 
     def test_array_type_serializes_to_json(self) -> None:
         data = "[1, 2, 3]"
@@ -91,7 +89,7 @@ class TestWMSTypeConverter:
         )
         assert result.success
         assert result.value is not None
-        assert TypeAdapter(t.TextValue).validate_json(str(result.value)) == data
+        assert m.TypeAdapter(t.TextValue).validate_json(str(result.value)) == data
 
     def test_boolean_type_becomes_string(self) -> None:
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(

@@ -9,9 +9,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Annotated, ClassVar, Literal
 
-from pydantic import ConfigDict, SecretStr
-
-from flext_meltano import FlextMeltanoModels, p, r, t, u
+from flext_meltano import FlextMeltanoModels, m, p, r, t, u
 from flext_oracle_wms import FlextOracleWmsModels
 from flext_target_oracle_wms import c
 
@@ -44,11 +42,11 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                 str | None, u.Field(description="Optional authentication username.")
             ] = None
             password: Annotated[
-                SecretStr | None,
+                t.SecretStr | None,
                 u.Field(description="Optional authentication password."),
             ] = None
             api_key: Annotated[
-                SecretStr | None,
+                t.SecretStr | None,
                 u.Field(description="Optional API key for the selected auth method."),
             ] = None
             company_code: Annotated[str, u.Field(description="WMS company code.")] = (
@@ -103,7 +101,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
 
             _flext_enforcement_exempt: ClassVar[bool] = True
 
-            model_config: ClassVar[m.ConfigDict] = ConfigDict(extra="ignore")
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(extra="ignore")
 
             type: Annotated[
                 str, u.Field(description="JSON schema type descriptor for the field.")
@@ -114,7 +112,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
 
             _flext_enforcement_exempt: ClassVar[bool] = True
 
-            model_config: ClassVar[m.ConfigDict] = ConfigDict(extra="ignore")
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(extra="ignore")
 
             properties: Mapping[
                 str,
@@ -156,7 +154,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
 
             _flext_enforcement_exempt: ClassVar[bool] = True
 
-            model_config: ClassVar[m.ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
                 populate_by_name=True,
             )
 
@@ -221,7 +219,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
 
             _flext_enforcement_exempt: ClassVar[bool] = True
 
-            model_config: ClassVar[m.ConfigDict] = ConfigDict(
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
                 populate_by_name=True,
             )
 

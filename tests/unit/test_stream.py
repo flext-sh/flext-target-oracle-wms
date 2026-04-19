@@ -8,11 +8,10 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock
 
-from flext_core import r
 from flext_target_oracle_wms import (
     StreamProcessor as FlextTargetOracleWmsStreamProcessor,
 )
-from tests import m, t, u
+from tests import m, r, t, u
 
 
 def _schema_msg(
