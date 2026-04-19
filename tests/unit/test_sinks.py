@@ -8,6 +8,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
+
 from flext_target_oracle_wms import (
     CatalogManager as FlextTargetOracleWmsCatalogManager,
     StreamProcessor as FlextTargetOracleWmsStreamProcessor,
@@ -39,7 +41,7 @@ def _schema_msg(stream: str = "items") -> m.Meltano.SingerSchemaMessage:
 
 def _record_msg(
     stream: str = "items",
-    record: t.RecursiveContainerMapping | None = None,
+    record: Mapping[str, t.Container] | None = None,
 ) -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage.model_validate({
         "type": "RECORD",

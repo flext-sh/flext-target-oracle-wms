@@ -17,7 +17,7 @@ from tests import t
 
 
 @pytest.fixture
-def settings() -> t.RecursiveContainerMapping:
+def settings() -> Mapping[str, t.Container]:
     """Return a test configuration matching WmsTargetConfig schema."""
     return {
         "wms_auth": {
@@ -39,7 +39,7 @@ def temp_output_dir() -> Generator[Path]:
 
 
 @pytest.fixture
-def sample_inventory_records() -> Sequence[t.RecursiveContainerMapping]:
+def sample_inventory_records() -> Sequence[Mapping[str, t.Container]]:
     """Return sample inventory records."""
     return [
         {
@@ -64,7 +64,7 @@ def sample_inventory_records() -> Sequence[t.RecursiveContainerMapping]:
 
 
 @pytest.fixture
-def sample_order_records() -> Sequence[t.RecursiveContainerMapping]:
+def sample_order_records() -> Sequence[Mapping[str, t.Container]]:
     """Return sample order records."""
     return [
         {
@@ -87,7 +87,7 @@ def sample_order_records() -> Sequence[t.RecursiveContainerMapping]:
 
 
 @pytest.fixture
-def sample_task_records() -> Sequence[t.RecursiveContainerMapping]:
+def sample_task_records() -> Sequence[Mapping[str, t.Container]]:
     """Return sample task records."""
     return [
         {
@@ -112,7 +112,7 @@ def sample_task_records() -> Sequence[t.RecursiveContainerMapping]:
 
 
 @pytest.fixture
-def singer_schema() -> t.RecursiveContainerMapping:
+def singer_schema() -> Mapping[str, t.Container]:
     """Return a sample Singer schema."""
     return {
         "type": "object",
@@ -127,7 +127,7 @@ def singer_schema() -> t.RecursiveContainerMapping:
 
 
 @pytest.fixture
-def singer_schema_message() -> t.RecursiveContainerMapping:
+def singer_schema_message() -> Mapping[str, t.Container]:
     """Return a sample Singer SCHEMA message."""
     return {
         "type": "SCHEMA",
@@ -141,7 +141,7 @@ def singer_schema_message() -> t.RecursiveContainerMapping:
 
 
 @pytest.fixture
-def singer_record_message() -> t.RecursiveContainerMapping:
+def singer_record_message() -> Mapping[str, t.Container]:
     """Return a sample Singer RECORD message."""
     return {
         "type": "RECORD",
@@ -153,6 +153,6 @@ def singer_record_message() -> t.RecursiveContainerMapping:
 
 
 @pytest.fixture
-def singer_state_message() -> t.RecursiveContainerMapping:
+def singer_state_message() -> Mapping[str, t.Container]:
     """Return a sample Singer STATE message."""
     return {"type": "STATE", "value": {"bookmarks": {}}}

@@ -14,11 +14,9 @@ from flext_oracle_wms import FlextOracleWmsTypes
 class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
     """MRO facade composing Meltano + OracleWms type namespaces."""
 
-    NV_ADAPTER: m.TypeAdapter[t.RecursiveContainer] = m.TypeAdapter(
-        t.RecursiveContainer
-    )
-    CONTAINER_MAP_ADAPTER: m.TypeAdapter[t.RecursiveContainerMapping] = m.TypeAdapter(
-        t.RecursiveContainerMapping
+    NV_ADAPTER: m.TypeAdapter[t.Container] = m.TypeAdapter(t.Container)
+    CONTAINER_MAP_ADAPTER: m.TypeAdapter[Mapping[str, t.Container]] = m.TypeAdapter(
+        Mapping[str, t.Container]
     )
 
 

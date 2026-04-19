@@ -115,7 +115,7 @@ Shows sophisticated configuration and custom business logic:
 class CustomWMSTypeConverter(WMSTypeConverter):
     def convert_singer_to_oracle(
         self, singer_type: str, value
-    ) -> p.Result[t.RecursiveContainer]:
+    ) -> p.Result[t.Container]:
         if singer_type == "business_currency":
             return r[bool].ok(round(float(value), 2))
         return super().convert_singer_to_oracle(singer_type, value)
@@ -192,9 +192,7 @@ settings = {
 
 
 # Retry with backoff
-def retry_with_backoff(
-    operation, max_retries: int = 3
-) -> p.Result[t.RecursiveContainer]:
+def retry_with_backoff(operation, max_retries: int = 3) -> p.Result[t.Container]:
     for attempt in range(max_retries):
         try:
             return operation()

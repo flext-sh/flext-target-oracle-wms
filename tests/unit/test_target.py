@@ -36,12 +36,12 @@ def _schema_line(
 
 def _record_line(
     stream: str = "test_stream",
-    record: t.RecursiveContainerMapping | None = None,
+    record: Mapping[str, t.Container] | None = None,
 ) -> str:
     return _record_msg(stream, record).model_dump_json()
 
 
-def _state_line(state: t.RecursiveContainerMapping | None = None) -> str:
+def _state_line(state: Mapping[str, t.Container] | None = None) -> str:
     return _state_msg(state).model_dump_json()
 
 
@@ -62,7 +62,7 @@ def _schema_msg(
 
 def _record_msg(
     stream: str = "test_stream",
-    record: t.RecursiveContainerMapping | None = None,
+    record: Mapping[str, t.Container] | None = None,
 ) -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage.model_validate({
         "type": "RECORD",
@@ -72,7 +72,7 @@ def _record_msg(
 
 
 def _state_msg(
-    state: t.RecursiveContainerMapping | None = None,
+    state: Mapping[str, t.Container] | None = None,
 ) -> m.Meltano.SingerStateMessage:
     return m.Meltano.SingerStateMessage.model_validate({
         "type": "STATE",
