@@ -33,16 +33,35 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
         class WmsAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
             """Authentication and endpoint settings."""
 
-            base_url: str
-            auth_method: Literal["oauth2", "basic", "api_key"] = "oauth2"
-            username: str | None = None
-            password: SecretStr | None = None
-            api_key: SecretStr | None = None
-            company_code: str = "DEFAULT"
-            facility_code: str = "MAIN"
+            base_url: Annotated[
+                str, u.Field(description="Oracle WMS REST API base URL.")
+            ]
+            auth_method: Annotated[
+                Literal["oauth2", "basic", "api_key"],
+                u.Field(description="WMS authentication method."),
+            ] = "oauth2"
+            username: Annotated[
+                str | None, u.Field(description="Optional authentication username.")
+            ] = None
+            password: Annotated[
+                SecretStr | None,
+                u.Field(description="Optional authentication password."),
+            ] = None
+            api_key: Annotated[
+                SecretStr | None,
+                u.Field(description="Optional API key for the selected auth method."),
+            ] = None
+            company_code: Annotated[str, u.Field(description="WMS company code.")] = (
+                "DEFAULT"
+            )
+            facility_code: Annotated[str, u.Field(description="WMS facility code.")] = (
+                "MAIN"
+            )
 
         class WmsTargetConfig(FlextMeltanoModels.ArbitraryTypesModel):
             """Top-level target configuration model."""
+
+            _flext_enforcement_exempt: ClassVar[bool] = True
 
             wms_auth: FlextTargetOracleWmsModels.TargetOracleWms.WmsAuthenticationConfig
             stream_maps: Mapping[str, t.StrMapping] = u.Field(default_factory=dict)
@@ -64,6 +83,8 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
         class WmsTargetResult(FlextMeltanoModels.ArbitraryTypesModel):
             """Execution summary for the target pipeline."""
 
+            _flext_enforcement_exempt: ClassVar[bool] = True
+
             total_records_processed: t.NonNegativeInt = 0
             successful_records: t.NonNegativeInt = 0
             failed_records: t.NonNegativeInt = 0
@@ -80,12 +101,18 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
         class SingerFieldSchema(FlextMeltanoModels.ArbitraryTypesModel):
             """Typed Singer field schema entry for target-side schema parsing."""
 
+            _flext_enforcement_exempt: ClassVar[bool] = True
+
             model_config: ClassVar[m.ConfigDict] = ConfigDict(extra="ignore")
 
-            type: str = "string"
+            type: Annotated[
+                str, u.Field(description="JSON schema type descriptor for the field.")
+            ] = "string"
 
         class SingerSchemaProperties(FlextMeltanoModels.ArbitraryTypesModel):
             """Typed Singer schema properties block for target-side schema parsing."""
+
+            _flext_enforcement_exempt: ClassVar[bool] = True
 
             model_config: ClassVar[m.ConfigDict] = ConfigDict(extra="ignore")
 
@@ -97,23 +124,37 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
         class TargetCreationRequest(FlextMeltanoModels.ArbitraryTypesModel):
             """Input object for target construction."""
 
-            base_url: str
-            username: str
-            password: str
-            environment: str = "development"
-            preset: str | None = None
+            base_url: Annotated[
+                str, u.Field(description="Oracle WMS REST API base URL.")
+            ]
+            username: Annotated[
+                str, u.Field(description="Username used to authenticate against WMS.")
+            ]
+            password: Annotated[
+                str, u.Field(description="Password used to authenticate against WMS.")
+            ]
+            environment: Annotated[
+                str, u.Field(description="Target environment name.")
+            ] = "development"
+            preset: Annotated[
+                str | None, u.Field(description="Optional preset profile name.")
+            ] = None
             additional_config: Annotated[
                 t.ConfigurationMapping | None,
-                u.Field(default=None),
+                u.Field(default=None, description="Additional environment overrides."),
             ]
 
         class MonitoredTargetCreationRequest(TargetCreationRequest):
             """Input object for monitored target creation."""
 
-            monitor_name: str = "oracle_wms_target"
+            monitor_name: Annotated[
+                str, u.Field(description="Monitoring label for the created target.")
+            ] = "oracle_wms_target"
 
         class SingerSchemaMessage(FlextMeltanoModels.ArbitraryTypesModel):
             """Singer SCHEMA message with ContainerValue schema support."""
+
+            _flext_enforcement_exempt: ClassVar[bool] = True
 
             model_config: ClassVar[m.ConfigDict] = ConfigDict(
                 populate_by_name=True,
@@ -177,6 +218,8 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
 
         class SingerCatalogEntry(FlextMeltanoModels.ArbitraryTypesModel):
             """Singer catalog entry with ContainerValue schema support."""
+
+            _flext_enforcement_exempt: ClassVar[bool] = True
 
             model_config: ClassVar[m.ConfigDict] = ConfigDict(
                 populate_by_name=True,

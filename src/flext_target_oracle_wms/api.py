@@ -9,8 +9,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import override
+from typing import Annotated, override
 
+from flext_core import u
 from flext_meltano import FlextMeltanoTargetServiceBase
 from flext_target_oracle_wms import (
     FlextTargetOracleWmsServiceRuntime,
@@ -22,7 +23,10 @@ from flext_target_oracle_wms import (
 class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
     """Orchestrator for target-oracle-wms. All behavior from base via MRO."""
 
-    target_name: t.NonEmptyStr = "target-oracle-wms"
+    target_name: Annotated[
+        t.NonEmptyStr,
+        u.Field(description="Canonical Singer target identifier."),
+    ] = "target-oracle-wms"
 
     @override
     def create_sink(
