@@ -1,0 +1,36 @@
+tests/unit/test_target.py
+  h_9db9d35f50cf33 39,44,65,75
+tests/integration/test_oracle.py
+  h_9db9d35f50cf33 41,47
+docs/guides/troubleshooting.md
+  h_9db9d35f50cf33 141,155
+examples/README.md
+  h_9db9d35f50cf33 118
+docs/guides/testing.md
+  h_9db9d35f50cf33 528
+tests/unit/test_catalog.py
+  h_9db9d35f50cf33 10
+tests/unit/test_workflow.py
+  h_9db9d35f50cf33 44,50
+docs/guides/development.md
+  h_9db9d35f50cf33 154,193,196,202,353,356,405
+tests/conftest.py
+  h_9db9d35f50cf33 20,42,67,90,115,130,144,156
+src/flext_target_oracle_wms/api.py
+  h_9db9d35f50cf33 38
+src/flext_target_oracle_wms/typings.py
+  h_9db9d35f50cf33 17-18
+src/flext_target_oracle_wms/_utilities/service_runtime.py
+  h_9db9d35f50cf33 54-55,75,86,113,126
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.0",
+  "base_commit_sha": "be5ca53db35325a80d167e5f4e23b6812f90ca42",
+  "prompts": {},
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
