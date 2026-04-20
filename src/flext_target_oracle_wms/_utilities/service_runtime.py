@@ -38,7 +38,7 @@ class FlextTargetOracleWmsServiceRuntime:
             runtime_target: FlextTargetOracleWmsTarget,
             target: m.Meltano.SingerTargetBase,
             stream_name: str,
-            schema: dict[str, t.ContainerValue],
+            schema: dict[str, t.Container],
             key_properties: t.StrSequence,
         ) -> FlextTargetOracleWmsServiceRuntime.Sink:
             """Create an adapter sink and attach the Oracle WMS runtime target."""
@@ -114,9 +114,9 @@ class FlextTargetOracleWmsServiceRuntime:
     def normalize_singer_mapping(
         cls,
         source: Mapping[str, t.Container],
-    ) -> dict[str, t.ContainerValue]:
+    ) -> dict[str, t.Container]:
         """Normalize a Singer payload mapping to the WMS runtime contract."""
-        normalized: dict[str, t.ContainerValue] = {}
+        normalized: dict[str, t.Container] = {}
         for key, value in source.items():
             normalized_value = cls.normalize_singer_value(value)
             if normalized_value is not None:
@@ -127,7 +127,7 @@ class FlextTargetOracleWmsServiceRuntime:
     def normalize_singer_value(
         cls,
         value: t.Container,
-    ) -> t.ContainerValue | None:
+    ) -> t.Container | None:
         """Normalize a Singer payload value to the WMS runtime contract."""
         if value is None:
             return None
@@ -137,7 +137,7 @@ class FlextTargetOracleWmsServiceRuntime:
             return value
         if u.mapping(value):
             return cls.normalize_singer_mapping(value)
-        normalized_sequence: list[t.ContainerValue] = []
+        normalized_sequence: list[t.Container] = []
         for item in value:
             normalized_item = cls.normalize_singer_value(item)
             if normalized_item is not None:
@@ -147,7 +147,7 @@ class FlextTargetOracleWmsServiceRuntime:
     @staticmethod
     def normalize_flat_schema(
         schema: t.FlatContainerMapping,
-    ) -> dict[str, t.ContainerValue]:
+    ) -> dict[str, t.Container]:
         """Normalize a flat Singer schema to the WMS runtime contract."""
         return {
             key: (str(value) if isinstance(value, Path) else value)

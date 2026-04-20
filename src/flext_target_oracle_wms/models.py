@@ -20,7 +20,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
     """Pydantic model namespace for target Oracle WMS.
 
     Inherited namespaces:
-        m.Meltano.*    — Singer message types (overridden with ContainerValue support)
+        m.Meltano.*    — Singer message types (overridden with Container support)
         m.OracleWms.*  — WMS entity/API types (from FlextOracleWmsModels)
 
     Local namespace:
@@ -152,7 +152,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             ] = "oracle_wms_target"
 
         class SingerSchemaMessage(FlextMeltanoModels.ArbitraryTypesModel):
-            """Singer SCHEMA message with ContainerValue schema support."""
+            """Singer SCHEMA message with Container schema support."""
 
             _flext_enforcement_exempt: ClassVar[bool] = True
 
@@ -190,7 +190,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             ] = u.Field(default_factory=list)
 
         class SingerRecordMessage(FlextMeltanoModels.ArbitraryTypesModel):
-            """Singer RECORD message with ContainerValue record support."""
+            """Singer RECORD message with Container record support."""
 
             type: Annotated[
                 Literal["RECORD"], u.Field(description="Singer message discriminator")
@@ -217,7 +217,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             ] = None
 
         class SingerCatalogEntry(FlextMeltanoModels.ArbitraryTypesModel):
-            """Singer catalog entry with ContainerValue schema support."""
+            """Singer catalog entry with Container schema support."""
 
             _flext_enforcement_exempt: ClassVar[bool] = True
 

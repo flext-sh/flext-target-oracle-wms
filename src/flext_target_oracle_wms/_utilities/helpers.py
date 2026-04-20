@@ -40,7 +40,7 @@ class _WmsHelpers:
         def convert_singer_to_oracle(
             self,
             singer_type: str,
-            value: t.Container | t.ContainerValue,
+            value: t.Container,
         ) -> p.Result[t.Container]:
             """Convert a single source value according to Singer type."""
             if singer_type in {"object", "array"}:
@@ -160,7 +160,7 @@ class _WmsHelpers:
     def create_record_message(
         stream_name: str,
         record: t.ContainerValueMapping,
-    ) -> Mapping[str, t.ContainerValue | t.ContainerValueMapping]:
+    ) -> Mapping[str, t.Container | t.ContainerValueMapping]:
         """Create a Singer RECORD message payload."""
         return {"type": "RECORD", "stream": stream_name, "record": record}
 
@@ -169,7 +169,7 @@ class _WmsHelpers:
         stream_name: str,
         schema: t.ContainerValueMapping,
         key_properties: t.StrSequence | None = None,
-    ) -> Mapping[str, t.ContainerValue | t.ContainerValueMapping | t.StrSequence]:
+    ) -> Mapping[str, t.Container | t.ContainerValueMapping | t.StrSequence]:
         """Create a Singer SCHEMA message payload."""
         return {
             "type": "SCHEMA",
@@ -181,7 +181,7 @@ class _WmsHelpers:
     @staticmethod
     def create_state_message(
         state: t.ContainerValueMapping,
-    ) -> Mapping[str, t.ContainerValue | t.ContainerValueMapping]:
+    ) -> Mapping[str, t.Container | t.ContainerValueMapping]:
         """Create a Singer STATE message payload."""
         return {"type": "STATE", "value": state}
 
