@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import (
     Mapping,
 )
+from datetime import datetime
 from pathlib import Path
 from typing import override
 
@@ -114,9 +115,9 @@ class FlextTargetOracleWmsServiceRuntime:
     def normalize_singer_mapping(
         cls,
         source: Mapping[str, t.Container],
-    ) -> dict[str, t.Container]:
+    ) -> dict[str, t.JsonValue]:
         """Normalize a Singer payload mapping to the WMS runtime contract."""
-        normalized: dict[str, t.Container] = {}
+        normalized: dict[str, t.JsonValue] = {}
         for key, value in source.items():
             normalized_value = cls.normalize_singer_value(value)
             if normalized_value is not None:
@@ -127,17 +128,21 @@ class FlextTargetOracleWmsServiceRuntime:
     def normalize_singer_value(
         cls,
         value: t.Container,
-    ) -> t.Container | None:
+    ) -> t.JsonValue | None:
         """Normalize a Singer payload value to the WMS runtime contract."""
         if value is None:
             return None
         if isinstance(value, Path):
             return str(value)
-        if u.scalar(value):
+        if isinstance(value, (str, int, float, bool)):
             return value
+        if isinstance(value, datetime):
+            return value.isoformat()
+        if isinstance(value, bytes):
+            return value.decode('utf-8', errors='replace')
         if u.mapping(value):
             return cls.normalize_singer_mapping(value)
-        normalized_sequence: list[t.Container] = []
+        normalized_sequence: list[t.JsonValue] = []
         for item in value:
             normalized_item = cls.normalize_singer_value(item)
             if normalized_item is not None:
