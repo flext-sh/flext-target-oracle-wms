@@ -13,6 +13,7 @@ from typing import Annotated, ClassVar, Literal
 
 from flext_meltano import FlextMeltanoModels, m, p, r, t, u
 from flext_oracle_wms import FlextOracleWmsModels
+
 from flext_target_oracle_wms import c
 
 

@@ -11,6 +11,7 @@ from collections.abc import (
 
 from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_wms import FlextOracleWmsUtilities
+
 from flext_target_oracle_wms import (
     CatalogManager,
     StreamProcessor,

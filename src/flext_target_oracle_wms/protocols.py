@@ -9,6 +9,7 @@ from typing import Protocol, runtime_checkable
 
 from flext_meltano import FlextMeltanoProtocols
 from flext_oracle_wms import FlextOracleWmsProtocols
+
 from flext_target_oracle_wms import t
 
 

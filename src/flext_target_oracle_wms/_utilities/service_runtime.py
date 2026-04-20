@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import override
 
 from flext_meltano import u
+
 from flext_target_oracle_wms import (
     Target as FlextTargetOracleWmsTarget,
     m,
