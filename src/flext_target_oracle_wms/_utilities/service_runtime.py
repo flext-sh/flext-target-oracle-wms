@@ -139,7 +139,7 @@ class FlextTargetOracleWmsServiceRuntime:
         if isinstance(value, datetime):
             return value.isoformat()
         if isinstance(value, bytes):
-            return value.decode('utf-8', errors='replace')
+            return value.decode("utf-8", errors="replace")
         if u.mapping(value):
             return cls.normalize_singer_mapping(value)
         normalized_sequence: list[t.JsonValue] = []
