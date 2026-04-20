@@ -1,0 +1,18 @@
+tests/conftest.py
+  h_9db9d35f50cf33 11
+src/flext_target_oracle_wms/_utilities/service_runtime.py
+  h_9db9d35f50cf33 7
+src/flext_target_oracle_wms/api.py
+  h_9db9d35f50cf33 13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.0",
+  "base_commit_sha": "3fa31615bb124f9db31e7ebf8a3f2f24cd2616f4",
+  "prompts": {},
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
