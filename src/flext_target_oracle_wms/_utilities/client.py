@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import sys
-from collections.abc import MutableMapping
+from collections.abc import (
+    MutableMapping,
+)
 from typing import ClassVar
 
 from flext_meltano import u

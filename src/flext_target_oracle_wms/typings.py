@@ -7,6 +7,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import (
+    Mapping,
+)
+
 from flext_meltano import FlextMeltanoTypes, m, t
 from flext_oracle_wms import FlextOracleWmsTypes
 

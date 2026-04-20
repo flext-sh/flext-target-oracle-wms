@@ -5,7 +5,9 @@ Facade composing helpers from _utilities/ submodules into u.TargetOracleWms.* na
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import (
+    Mapping,
+)
 
 from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_wms import FlextOracleWmsUtilities

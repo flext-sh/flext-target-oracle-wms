@@ -6,7 +6,9 @@ Defines local TargetOracleWms namespace for target-specific models.
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import (
+    Mapping,
+)
 from typing import Annotated, ClassVar, Literal
 
 from flext_meltano import FlextMeltanoModels, m, p, r, t, u

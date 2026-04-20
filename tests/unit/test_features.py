@@ -7,7 +7,9 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import math
-from collections.abc import Sequence
+from collections.abc import (
+    Sequence,
+)
 
 from flext_target_oracle_wms import Target as FlextTargetOracleWms
 from tests import m, t, u
