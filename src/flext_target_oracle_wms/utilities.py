@@ -5,12 +5,8 @@ Facade composing helpers from _utilities/ submodules into u.TargetOracleWms.* na
 
 from __future__ import annotations
 
-from collections.abc import (
-    Mapping,
-)
-
-from flext_meltano import FlextMeltanoUtilities
-from flext_oracle_wms import FlextOracleWmsUtilities
+from flext_meltano import u as meltano_u
+from flext_oracle_wms import u
 
 from flext_target_oracle_wms import (
     CatalogManager,
@@ -28,7 +24,7 @@ from flext_target_oracle_wms import (
 )
 
 
-class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtilities):
+class FlextTargetOracleWmsUtilities(meltano_u, u):
     """Namespace with Singer-target utility helpers."""
 
     class TargetOracleWms:
@@ -47,26 +43,32 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
         @staticmethod
         def create_record_message(
             stream_name: str,
-            record: t.ContainerValueMapping,
-        ) -> Mapping[str, t.Container | t.ContainerValueMapping]:
+            record: t.Cli.JsonMapping,
+        ) -> t.Cli.JsonMapping:
             """Create a Singer RECORD message payload."""
-            return create_record_message(stream_name, record)
+            return t.Cli.JSON_MAPPING_ADAPTER.validate_python(
+                create_record_message(stream_name, record),
+            )
 
         @staticmethod
         def create_schema_message(
             stream_name: str,
-            schema: t.ContainerValueMapping,
+            schema: t.Cli.JsonMapping,
             key_properties: t.StrSequence | None = None,
-        ) -> Mapping[str, t.Container | t.ContainerValueMapping | t.StrSequence]:
+        ) -> t.Cli.JsonMapping:
             """Create a Singer SCHEMA message payload."""
-            return create_schema_message(stream_name, schema, key_properties)
+            return t.Cli.JSON_MAPPING_ADAPTER.validate_python(
+                create_schema_message(stream_name, schema, key_properties),
+            )
 
         @staticmethod
         def create_state_message(
-            state: t.ContainerValueMapping,
-        ) -> Mapping[str, t.Container | t.ContainerValueMapping]:
+            state: t.Cli.JsonMapping,
+        ) -> t.Cli.JsonMapping:
             """Create a Singer STATE message payload."""
-            return create_state_message(state)
+            return t.Cli.JSON_MAPPING_ADAPTER.validate_python(
+                create_state_message(state),
+            )
 
 
 __all__: list[str] = [

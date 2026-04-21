@@ -7,22 +7,20 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    Mapping,
-)
-
-from flext_meltano import FlextMeltanoTypes, m, t
-from flext_oracle_wms import FlextOracleWmsTypes
+from flext_meltano import m, t as meltano_t
+from flext_oracle_wms import t
 
 
-class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
+class FlextTargetOracleWmsTypes(meltano_t, t):
     """MRO facade composing Meltano + OracleWms type namespaces."""
 
-    NV_ADAPTER: m.TypeAdapter[t.Container] = m.TypeAdapter(t.Container)
-    CONTAINER_MAP_ADAPTER: m.TypeAdapter[Mapping[str, t.Container]] = m.TypeAdapter(
-        Mapping[str, t.Container]
+    NV_ADAPTER: m.TypeAdapter[meltano_t.Cli.JsonValue] = m.TypeAdapter(
+        meltano_t.Cli.JsonValue
+    )
+    CONTAINER_MAP_ADAPTER: m.TypeAdapter[meltano_t.Cli.JsonMapping] = m.TypeAdapter(
+        meltano_t.Cli.JsonMapping
     )
 
 
-t = FlextTargetOracleWmsTypes
-__all__: list[str] = ["FlextTargetOracleWmsTypes", "t"]
+meltano_t = FlextTargetOracleWmsTypes
+__all__: list[str] = ["FlextTargetOracleWmsTypes", "meltano_t"]

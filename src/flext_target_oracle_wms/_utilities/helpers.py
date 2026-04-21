@@ -6,7 +6,7 @@ from collections.abc import (
     Mapping,
 )
 
-from flext_target_oracle_wms import c, m, p, r, t
+from flext_target_oracle_wms import c, m, p, r, t, u
 
 
 class _WmsHelpers:
@@ -28,7 +28,7 @@ class _WmsHelpers:
                 )
             load_method = settings.get(
                 "load_method",
-                c.TargetOracleWms.LoadMethods.APPEND_ONLY,
+                c.TargetOracleWms.LoadMethods.Method.APPEND_ONLY,
             )
             if load_method not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS:
                 return r[bool].fail("Invalid load_method")
@@ -45,7 +45,9 @@ class _WmsHelpers:
             """Convert a single source value according to Singer type."""
             if singer_type in {"object", "array"}:
                 return r[t.Container].ok(
-                    t.NV_ADAPTER.dump_json(value).decode("utf-8"),
+                    t.NV_ADAPTER.dump_json(
+                        u.Cli.normalize_json_value(value),
+                    ).decode("utf-8"),
                 )
             if singer_type in {"integer", "number"}:
                 try:

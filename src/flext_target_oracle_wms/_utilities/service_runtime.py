@@ -5,17 +5,15 @@ from __future__ import annotations
 from collections.abc import (
     Mapping,
 )
-from datetime import datetime
 from pathlib import Path
 from typing import override
-
-from flext_meltano import u
 
 from flext_target_oracle_wms import (
     Target as FlextTargetOracleWmsTarget,
     m,
     p,
     t,
+    u,
 )
 
 
@@ -65,9 +63,7 @@ class FlextTargetOracleWmsServiceRuntime:
                 m.Meltano.SingerRecordMessage.model_validate({
                     "type": "RECORD",
                     "stream": self.stream_name,
-                    "record": FlextTargetOracleWmsServiceRuntime.normalize_singer_mapping(
-                        record,
-                    ),
+                    "record": u.Meltano.normalize_runtime_json_mapping(record),
                 }),
             )
             if result.failure:
@@ -91,7 +87,9 @@ class FlextTargetOracleWmsServiceRuntime:
         target_config: Mapping[str, t.Container],
     ) -> p.Meltano.SingerDrainSink:
         """Create the service-level Singer sink adapter."""
-        normalized_target_config = cls.normalize_singer_mapping(target_config)
+        normalized_target_config = u.Meltano.normalize_runtime_json_mapping(
+            target_config,
+        )
         runtime_target = FlextTargetOracleWmsTarget(normalized_target_config)
         normalized_schema = cls.normalize_flat_schema(schema)
         schema_message = m.Meltano.SingerSchemaMessage.model_validate({
@@ -106,49 +104,14 @@ class FlextTargetOracleWmsServiceRuntime:
             raise RuntimeError(msg)
         return cls.Sink.create(
             runtime_target=runtime_target,
-            target=cls.Target(config=normalized_target_config, validate_config=False),
+            target=cls.Target(
+                config=dict(normalized_target_config),
+                validate_config=False,
+            ),
             stream_name=stream_name,
             schema=normalized_schema,
             key_properties=[],
         )
-
-    @classmethod
-    def normalize_singer_mapping(
-        cls,
-        source: Mapping[str, t.Container],
-    ) -> dict[str, t.JsonValue]:
-        """Normalize a Singer payload mapping to the WMS runtime contract."""
-        normalized: dict[str, t.JsonValue] = {}
-        for key, value in source.items():
-            normalized_value = cls.normalize_singer_value(value)
-            if normalized_value is not None:
-                normalized[str(key)] = normalized_value
-        return normalized
-
-    @classmethod
-    def normalize_singer_value(
-        cls,
-        value: t.Container,
-    ) -> t.JsonValue | None:
-        """Normalize a Singer payload value to the WMS runtime contract."""
-        if value is None:
-            return None
-        if isinstance(value, Path):
-            return str(value)
-        if isinstance(value, (str, int, float, bool)):
-            return value
-        if isinstance(value, datetime):
-            return value.isoformat()
-        if isinstance(value, bytes):
-            return value.decode("utf-8", errors="replace")
-        if u.mapping(value):
-            return cls.normalize_singer_mapping(value)
-        normalized_sequence: list[t.JsonValue] = []
-        for item in value:
-            normalized_item = cls.normalize_singer_value(item)
-            if normalized_item is not None:
-                normalized_sequence.append(normalized_item)
-        return normalized_sequence
 
     @staticmethod
     def normalize_flat_schema(

@@ -1,6 +1,6 @@
 """Domain models for target Oracle WMS.
 
-Inherits from FlextMeltanoModels (m.Meltano.*) and FlextOracleWmsModels (m.OracleWms.*).
+Inherits from the canonical Meltano models facade and m.
 Defines local TargetOracleWms namespace for target-specific models.
 """
 
@@ -11,18 +11,18 @@ from collections.abc import (
 )
 from typing import Annotated, ClassVar, Literal
 
-from flext_meltano import FlextMeltanoModels, m, p, r, t, u
-from flext_oracle_wms import FlextOracleWmsModels
+from flext_meltano import m as meltano_m, p, r, t, u
+from flext_oracle_wms import m
 
 from flext_target_oracle_wms import c
 
 
-class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
+class FlextTargetOracleWmsModels(meltano_m, m):
     """Pydantic model namespace for target Oracle WMS.
 
     Inherited namespaces:
         m.Meltano.*    — Singer message types (overridden with Container support)
-        m.OracleWms.*  — WMS entity/API types (from FlextOracleWmsModels)
+        m.OracleWms.*  — WMS entity/API types (from m)
 
     Local namespace:
         m.TargetOracleWms.* — target-specific settings, result, schema helpers
@@ -31,7 +31,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
     class TargetOracleWms:
         """Target Oracle WMS model namespace — m.TargetOracleWms.*."""
 
-        class WmsAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
+        class WmsAuthenticationConfig(meltano_m.ArbitraryTypesModel):
             """Authentication and endpoint settings."""
 
             base_url: Annotated[
@@ -59,7 +59,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                 "MAIN"
             )
 
-        class WmsTargetConfig(FlextMeltanoModels.ArbitraryTypesModel):
+        class WmsTargetConfig(meltano_m.ArbitraryTypesModel):
             """Top-level target configuration model."""
 
             _flext_enforcement_exempt: ClassVar[bool] = True
@@ -67,7 +67,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
             wms_auth: FlextTargetOracleWmsModels.TargetOracleWms.WmsAuthenticationConfig
             stream_maps: Mapping[str, t.StrMapping] = u.Field(default_factory=dict)
             batch_size: t.BatchSize = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
-            load_method: str = c.TargetOracleWms.LoadMethods.APPEND_ONLY
+            load_method: str = c.TargetOracleWms.LoadMethods.Method.APPEND_ONLY
             validate_records: bool = True
 
             def validate_business_rules(self) -> p.Result[bool]:
@@ -81,7 +81,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                     return r[bool].fail("Batch size must be positive")
                 return r[bool].ok(value=True)
 
-        class WmsTargetResult(FlextMeltanoModels.ArbitraryTypesModel):
+        class WmsTargetResult(meltano_m.ArbitraryTypesModel):
             """Execution summary for the target pipeline."""
 
             _flext_enforcement_exempt: ClassVar[bool] = True
@@ -99,30 +99,34 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                     return 0.0
                 return (self.successful_records / self.total_records_processed) * 100.0
 
-        class SingerFieldSchema(FlextMeltanoModels.ArbitraryTypesModel):
+        class SingerFieldSchema(meltano_m.ArbitraryTypesModel):
             """Typed Singer field schema entry for target-side schema parsing."""
 
             _flext_enforcement_exempt: ClassVar[bool] = True
 
-            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(extra="ignore")
+            model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
+                extra="ignore",
+            )
 
             type: Annotated[
                 str, u.Field(description="JSON schema type descriptor for the field.")
             ] = "string"
 
-        class SingerSchemaProperties(FlextMeltanoModels.ArbitraryTypesModel):
+        class SingerSchemaProperties(meltano_m.ArbitraryTypesModel):
             """Typed Singer schema properties block for target-side schema parsing."""
 
             _flext_enforcement_exempt: ClassVar[bool] = True
 
-            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(extra="ignore")
+            model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
+                extra="ignore",
+            )
 
             properties: Mapping[
                 str,
                 FlextTargetOracleWmsModels.TargetOracleWms.SingerFieldSchema,
             ] = u.Field(default_factory=dict)
 
-        class TargetCreationRequest(FlextMeltanoModels.ArbitraryTypesModel):
+        class TargetCreationRequest(meltano_m.ArbitraryTypesModel):
             """Input object for target construction."""
 
             base_url: Annotated[
@@ -152,12 +156,12 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                 str, u.Field(description="Monitoring label for the created target.")
             ] = "oracle_wms_target"
 
-        class SingerSchemaMessage(FlextMeltanoModels.ArbitraryTypesModel):
+        class SingerSchemaMessage(meltano_m.ArbitraryTypesModel):
             """Singer SCHEMA message with Container schema support."""
 
             _flext_enforcement_exempt: ClassVar[bool] = True
 
-            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
+            model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
                 populate_by_name=True,
             )
 
@@ -169,7 +173,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                 u.Field(description="Singer stream name"),
             ]
             schema_definition: Annotated[
-                t.ContainerValueMapping,
+                t.Cli.JsonMapping,
                 u.Field(
                     alias="schema",
                     serialization_alias="schema",
@@ -190,7 +194,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                 ),
             ] = u.Field(default_factory=list)
 
-        class SingerRecordMessage(FlextMeltanoModels.ArbitraryTypesModel):
+        class SingerRecordMessage(meltano_m.ArbitraryTypesModel):
             """Singer RECORD message with Container record support."""
 
             type: Annotated[
@@ -201,7 +205,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                 u.Field(description="Singer stream name"),
             ]
             record: Annotated[
-                t.ContainerValueMapping,
+                t.Cli.JsonMapping,
                 u.Field(description="Singer record payload"),
             ]
             time_extracted: Annotated[
@@ -217,12 +221,12 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                 ),
             ] = None
 
-        class SingerCatalogEntry(FlextMeltanoModels.ArbitraryTypesModel):
+        class SingerCatalogEntry(meltano_m.ArbitraryTypesModel):
             """Singer catalog entry with Container schema support."""
 
             _flext_enforcement_exempt: ClassVar[bool] = True
 
-            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
+            model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
                 populate_by_name=True,
             )
 
@@ -235,7 +239,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                 u.Field(description="Singer stream name"),
             ]
             schema_definition: Annotated[
-                t.ContainerValueMapping,
+                t.Cli.JsonMapping,
                 u.Field(
                     alias="schema",
                     serialization_alias="schema",

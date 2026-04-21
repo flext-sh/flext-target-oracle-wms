@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+from enum import StrEnum, unique
 from typing import Final
 
-from flext_meltano import FlextMeltanoConstants
-from flext_oracle_wms import FlextOracleWmsConstants
+from flext_meltano import c as meltano_c
+from flext_oracle_wms import c
 
 
-class FlextTargetOracleWmsConstants(FlextMeltanoConstants, FlextOracleWmsConstants):
+class FlextTargetOracleWmsConstants(meltano_c, c):
     """Typed constant namespace used by target Oracle WMS modules."""
 
     class TargetOracleWms:
@@ -19,28 +20,27 @@ class FlextTargetOracleWmsConstants(FlextMeltanoConstants, FlextOracleWmsConstan
         class OracleWms:
             """Oracle WMS runtime defaults."""
 
-            DEFAULT_TIMEOUT: Final[int] = FlextMeltanoConstants.DEFAULT_TIMEOUT_SECONDS
-            DEFAULT_MAX_RETRIES: Final[int] = (
-                FlextMeltanoConstants.DEFAULT_MAX_RETRY_ATTEMPTS
-            )
-            DEFAULT_BATCH_SIZE: Final[int] = FlextMeltanoConstants.DEFAULT_BATCH_SIZE
+            DEFAULT_TIMEOUT: Final[int] = meltano_c.DEFAULT_TIMEOUT_SECONDS
+            DEFAULT_MAX_RETRIES: Final[int] = meltano_c.DEFAULT_MAX_RETRY_ATTEMPTS
+            DEFAULT_BATCH_SIZE: Final[int] = meltano_c.DEFAULT_BATCH_SIZE
 
         class LoadMethods:
             """Allowed load methods."""
 
-            APPEND_ONLY: Final[str] = "APPEND_ONLY"
-            UPSERT: Final[str] = "UPSERT"
-            REPLACE: Final[str] = "REPLACE"
-            MERGE: Final[str] = "MERGE"
-            TRUNCATE_INSERT: Final[str] = "TRUNCATE_INSERT"
-            VALID_LOAD_METHODS: Final[frozenset[str]] = frozenset({
-                APPEND_ONLY,
-                UPSERT,
-                REPLACE,
-                MERGE,
-                TRUNCATE_INSERT,
-            })
+            @unique
+            class Method(StrEnum):
+                """Allowed target load methods."""
+
+                APPEND_ONLY = "APPEND_ONLY"
+                UPSERT = "UPSERT"
+                REPLACE = "REPLACE"
+                MERGE = "MERGE"
+                TRUNCATE_INSERT = "TRUNCATE_INSERT"
+
+            VALID_LOAD_METHODS: Final[frozenset[str]] = frozenset(
+                member.value for member in Method
+            )
 
 
-c = FlextTargetOracleWmsConstants
-__all__: list[str] = ["FlextTargetOracleWmsConstants", "c"]
+meltano_c = FlextTargetOracleWmsConstants
+__all__: list[str] = ["FlextTargetOracleWmsConstants", "meltano_c"]
