@@ -62,8 +62,6 @@ class FlextTargetOracleWmsModels(meltano_m, m):
         class WmsTargetConfig(meltano_m.ArbitraryTypesModel):
             """Top-level target configuration model."""
 
-            _flext_enforcement_exempt: ClassVar[bool] = True
-
             wms_auth: FlextTargetOracleWmsModels.TargetOracleWms.WmsAuthenticationConfig
             stream_maps: Mapping[str, t.StrMapping] = u.Field(default_factory=dict)
             batch_size: t.BatchSize = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
@@ -84,8 +82,6 @@ class FlextTargetOracleWmsModels(meltano_m, m):
         class WmsTargetResult(meltano_m.ArbitraryTypesModel):
             """Execution summary for the target pipeline."""
 
-            _flext_enforcement_exempt: ClassVar[bool] = True
-
             total_records_processed: t.NonNegativeInt = 0
             successful_records: t.NonNegativeInt = 0
             failed_records: t.NonNegativeInt = 0
@@ -102,8 +98,6 @@ class FlextTargetOracleWmsModels(meltano_m, m):
         class SingerFieldSchema(meltano_m.ArbitraryTypesModel):
             """Typed Singer field schema entry for target-side schema parsing."""
 
-            _flext_enforcement_exempt: ClassVar[bool] = True
-
             model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
                 extra="ignore",
             )
@@ -114,8 +108,6 @@ class FlextTargetOracleWmsModels(meltano_m, m):
 
         class SingerSchemaProperties(meltano_m.ArbitraryTypesModel):
             """Typed Singer schema properties block for target-side schema parsing."""
-
-            _flext_enforcement_exempt: ClassVar[bool] = True
 
             model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
                 extra="ignore",
@@ -158,8 +150,6 @@ class FlextTargetOracleWmsModels(meltano_m, m):
 
         class SingerSchemaMessage(meltano_m.ArbitraryTypesModel):
             """Singer SCHEMA message with Container schema support."""
-
-            _flext_enforcement_exempt: ClassVar[bool] = True
 
             model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
                 populate_by_name=True,
@@ -223,8 +213,6 @@ class FlextTargetOracleWmsModels(meltano_m, m):
 
         class SingerCatalogEntry(meltano_m.ArbitraryTypesModel):
             """Singer catalog entry with Container schema support."""
-
-            _flext_enforcement_exempt: ClassVar[bool] = True
 
             model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
                 populate_by_name=True,
