@@ -62,7 +62,7 @@ class FlextTargetFactory:
         request: m.TargetOracleWms.TargetCreationRequest,
     ) -> p.Result[FlextTargetOracleWms]:
         """Create target instance from validated request."""
-        settings: t.MutableContainerValueMapping = {
+        settings: t.MutableJsonMapping = {
             "base_url": request.base_url,
             "username": request.username,
             "password": request.password,

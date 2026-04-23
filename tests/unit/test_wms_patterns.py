@@ -7,9 +7,6 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import math
-from collections.abc import (
-    Mapping,
-)
 
 from tests import m, t, u
 
@@ -30,7 +27,7 @@ def _schema_msg(
 
 def _record_msg(
     stream: str = "test_stream",
-    record: Mapping[str, t.Container] | None = None,
+    record: t.JsonMapping | None = None,
 ) -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage.model_validate({
         "type": "RECORD",
@@ -82,7 +79,7 @@ class TestWMSTypeConverter:
         )
         assert result.success
         assert result.value is not None
-        assert m.TypeAdapter(t.TextValue).validate_json(str(result.value)) == data
+        assert m.TypeAdapter(t.StrictStr).validate_json(str(result.value)) == data
 
     def test_array_type_serializes_to_json(self) -> None:
         data = "[1, 2, 3]"
@@ -92,7 +89,7 @@ class TestWMSTypeConverter:
         )
         assert result.success
         assert result.value is not None
-        assert m.TypeAdapter(t.TextValue).validate_json(str(result.value)) == data
+        assert m.TypeAdapter(t.StrictStr).validate_json(str(result.value)) == data
 
     def test_boolean_type_becomes_string(self) -> None:
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(

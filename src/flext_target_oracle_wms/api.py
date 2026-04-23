@@ -9,9 +9,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    Mapping,
-)
 from typing import Annotated, override
 
 from flext_core import u
@@ -36,10 +33,10 @@ class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
     def create_sink(
         self,
         stream_name: str,
-        schema: t.FlatContainerMapping,
+        schema: t.JsonMapping,
     ) -> p.Meltano.SingerDrainSink:
         """Create an Oracle WMS sink for a stream."""
-        target_config: Mapping[str, t.Container] = (
+        target_config: t.JsonMapping = (
             self.settings_overrides if self.settings_overrides is not None else {}
         )
         return FlextTargetOracleWmsServiceRuntime.create_sink(

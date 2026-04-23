@@ -17,7 +17,7 @@ class _WmsHelpers:
 
         @staticmethod
         def validate_wms_target_config(
-            settings: t.ContainerValueMapping,
+            settings: t.JsonMapping,
         ) -> p.Result[bool]:
             """Validate minimal required target configuration fields."""
             required = {"base_url", "username", "password"}
@@ -40,11 +40,11 @@ class _WmsHelpers:
         def convert_singer_to_oracle(
             self,
             singer_type: str,
-            value: t.Container,
-        ) -> p.Result[t.Container]:
+            value: t.JsonValue,
+        ) -> p.Result[t.JsonValue]:
             """Convert a single source value according to Singer type."""
             if singer_type in {"object", "array"}:
-                return r[t.Container].ok(
+                return r[t.JsonValue].ok(
                     t.NV_ADAPTER.dump_json(
                         u.Cli.normalize_json_value(value),
                     ).decode("utf-8"),
@@ -52,13 +52,13 @@ class _WmsHelpers:
             if singer_type in {"integer", "number"}:
                 try:
                     as_text = str(value)
-                    converted: t.Container = (
+                    converted: t.JsonValue = (
                         float(as_text) if "." in as_text else int(as_text)
                     )
-                    return r[t.Container].ok(converted)
+                    return r[t.JsonValue].ok(converted)
                 except c.Meltano.SINGER_SAFE_EXCEPTIONS:
-                    return r[t.Container].ok(str(value))
-            return r[t.Container].ok(str(value))
+                    return r[t.JsonValue].ok(str(value))
+            return r[t.JsonValue].ok(str(value))
 
     class WMSDataTransformer:
         """Transform incoming Singer record payloads for loading."""
@@ -72,17 +72,15 @@ class _WmsHelpers:
 
         def transform_record(
             self,
-            record_message: m.Meltano.SingerRecordMessage | t.ContainerValueMapping,
-            schema_message: m.Meltano.SingerSchemaMessage
-            | t.ContainerValueMapping
-            | None = None,
+            record_message: m.Meltano.SingerRecordMessage | t.JsonMapping,
+            schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping | None = None,
         ) -> p.Result[m.Meltano.SingerRecordMessage]:
             """Transform one typed Singer RECORD payload with optional typed schema."""
             typed_record = m.Meltano.SingerRecordMessage.model_validate(
                 record_message,
             )
-            transformed: t.MutableFlatContainerMapping = {}
-            empty_schema: t.MutableFlatContainerMapping = {}
+            transformed: t.MutableJsonMapping = {}
+            empty_schema: t.MutableJsonMapping = {}
             schema_definition = (
                 m.Meltano.SingerSchemaMessage.model_validate(
                     schema_message,
@@ -122,7 +120,7 @@ class _WmsHelpers:
 
         def map_stream_schema(
             self,
-            schema_message: m.Meltano.SingerSchemaMessage | t.ContainerValueMapping,
+            schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping,
         ) -> p.Result[m.Meltano.SingerCatalogEntry]:
             """Build normalized schema map for table creation."""
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(
@@ -161,17 +159,17 @@ class _WmsHelpers:
     @staticmethod
     def create_record_message(
         stream_name: str,
-        record: t.ContainerValueMapping,
-    ) -> Mapping[str, t.Container | t.ContainerValueMapping]:
+        record: t.JsonMapping,
+    ) -> Mapping[str, t.JsonValue | t.JsonMapping]:
         """Create a Singer RECORD message payload."""
         return {"type": "RECORD", "stream": stream_name, "record": record}
 
     @staticmethod
     def create_schema_message(
         stream_name: str,
-        schema: t.ContainerValueMapping,
+        schema: t.JsonMapping,
         key_properties: t.StrSequence | None = None,
-    ) -> Mapping[str, t.Container | t.ContainerValueMapping | t.StrSequence]:
+    ) -> Mapping[str, t.JsonValue | t.JsonMapping | t.StrSequence]:
         """Create a Singer SCHEMA message payload."""
         return {
             "type": "SCHEMA",
@@ -182,8 +180,8 @@ class _WmsHelpers:
 
     @staticmethod
     def create_state_message(
-        state: t.ContainerValueMapping,
-    ) -> Mapping[str, t.Container | t.ContainerValueMapping]:
+        state: t.JsonMapping,
+    ) -> Mapping[str, t.JsonValue | t.JsonMapping]:
         """Create a Singer STATE message payload."""
         return {"type": "STATE", "value": state}
 

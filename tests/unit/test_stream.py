@@ -6,9 +6,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    Mapping,
-)
 from unittest.mock import MagicMock
 
 from flext_target_oracle_wms import (
@@ -19,7 +16,7 @@ from tests import m, r, t, u
 
 def _schema_msg(
     stream: str = "test_stream",
-    schema: Mapping[str, t.Container] | None = None,
+    schema: t.JsonMapping | None = None,
     key_properties: t.StrSequence | None = None,
 ) -> m.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage.model_validate({
@@ -32,7 +29,7 @@ def _schema_msg(
 
 def _record_msg(
     stream: str = "test_stream",
-    record: Mapping[str, t.Container] | None = None,
+    record: t.JsonMapping | None = None,
 ) -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage.model_validate({
         "type": "RECORD",

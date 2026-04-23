@@ -43,8 +43,8 @@ class FlextTargetOracleWmsUtilities(meltano_u, u):
         @staticmethod
         def create_record_message(
             stream_name: str,
-            record: t.Cli.JsonMapping,
-        ) -> t.Cli.JsonMapping:
+            record: t.JsonMapping,
+        ) -> t.JsonMapping:
             """Create a Singer RECORD message payload."""
             return t.Cli.JSON_MAPPING_ADAPTER.validate_python(
                 create_record_message(stream_name, record),
@@ -53,9 +53,9 @@ class FlextTargetOracleWmsUtilities(meltano_u, u):
         @staticmethod
         def create_schema_message(
             stream_name: str,
-            schema: t.Cli.JsonMapping,
+            schema: t.JsonMapping,
             key_properties: t.StrSequence | None = None,
-        ) -> t.Cli.JsonMapping:
+        ) -> t.JsonMapping:
             """Create a Singer SCHEMA message payload."""
             return t.Cli.JSON_MAPPING_ADAPTER.validate_python(
                 create_schema_message(stream_name, schema, key_properties),
@@ -63,8 +63,8 @@ class FlextTargetOracleWmsUtilities(meltano_u, u):
 
         @staticmethod
         def create_state_message(
-            state: t.Cli.JsonMapping,
-        ) -> t.Cli.JsonMapping:
+            state: t.JsonMapping,
+        ) -> t.JsonMapping:
             """Create a Singer STATE message payload."""
             return t.Cli.JSON_MAPPING_ADAPTER.validate_python(
                 create_state_message(state),

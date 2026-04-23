@@ -15,7 +15,7 @@ from flext_target_oracle_wms import Target as FlextTargetOracleWms
 from tests import m, t, u
 
 
-def _valid_config() -> t.ContainerValueMapping:
+def _valid_config() -> t.JsonMapping:
     return {
         "wms_auth": {
             "base_url": "https://test.wms.example.com",

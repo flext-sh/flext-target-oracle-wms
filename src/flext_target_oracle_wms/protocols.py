@@ -25,7 +25,7 @@ class FlextTargetOracleWmsProtocols(meltano_p, p):
 
             def load_data(
                 self,
-                records: Sequence[t.Cli.JsonMapping],
+                records: Sequence[t.JsonMapping],
             ) -> meltano_p.Result[bool]:
                 """Load a batch of records."""
                 ...
@@ -36,8 +36,8 @@ class FlextTargetOracleWmsProtocols(meltano_p, p):
 
             def transform_to_wms(
                 self,
-                record: t.Cli.JsonMapping,
-            ) -> meltano_p.Result[t.Cli.JsonMapping]:
+                record: t.JsonMapping,
+            ) -> meltano_p.Result[t.JsonMapping]:
                 """Transform one record to WMS shape."""
                 ...
 

@@ -17,7 +17,7 @@ from flext_target_oracle_wms import Target as FlextTargetOracleWms
 from tests import t
 
 
-def _valid_config() -> t.ContainerValueMapping:
+def _valid_config() -> t.JsonMapping:
     return {
         "wms_auth": {
             "base_url": "https://test.wms.example.com",
@@ -40,13 +40,13 @@ def _schema_line(
     }).decode("utf-8")
 
 
-def _record_line(stream: str, record: Mapping[str, t.Container]) -> str:
+def _record_line(stream: str, record: t.JsonMapping) -> str:
     return orjson.dumps({"type": "RECORD", "stream": stream, "record": record}).decode(
         "utf-8",
     )
 
 
-def _state_line(value: Mapping[str, t.Container]) -> str:
+def _state_line(value: t.JsonMapping) -> str:
     return orjson.dumps({"type": "STATE", "value": value}).decode("utf-8")
 
 

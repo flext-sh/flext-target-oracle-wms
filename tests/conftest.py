@@ -10,7 +10,6 @@ from __future__ import annotations
 import tempfile
 from collections.abc import (
     Generator,
-    Mapping,
     Sequence,
 )
 from pathlib import Path
@@ -21,7 +20,7 @@ from tests import t
 
 
 @pytest.fixture
-def settings() -> Mapping[str, t.Container]:
+def settings() -> t.JsonMapping:
     """Return a test configuration matching WmsTargetConfig schema."""
     return {
         "wms_auth": {
@@ -43,7 +42,7 @@ def temp_output_dir() -> Generator[Path]:
 
 
 @pytest.fixture
-def sample_inventory_records() -> Sequence[Mapping[str, t.Container]]:
+def sample_inventory_records() -> Sequence[t.JsonMapping]:
     """Return sample inventory records."""
     return [
         {
@@ -68,7 +67,7 @@ def sample_inventory_records() -> Sequence[Mapping[str, t.Container]]:
 
 
 @pytest.fixture
-def sample_order_records() -> Sequence[Mapping[str, t.Container]]:
+def sample_order_records() -> Sequence[t.JsonMapping]:
     """Return sample order records."""
     return [
         {
@@ -91,7 +90,7 @@ def sample_order_records() -> Sequence[Mapping[str, t.Container]]:
 
 
 @pytest.fixture
-def sample_task_records() -> Sequence[Mapping[str, t.Container]]:
+def sample_task_records() -> Sequence[t.JsonMapping]:
     """Return sample task records."""
     return [
         {
@@ -116,7 +115,7 @@ def sample_task_records() -> Sequence[Mapping[str, t.Container]]:
 
 
 @pytest.fixture
-def singer_schema() -> Mapping[str, t.Container]:
+def singer_schema() -> t.JsonMapping:
     """Return a sample Singer schema."""
     return {
         "type": "object",
@@ -131,7 +130,7 @@ def singer_schema() -> Mapping[str, t.Container]:
 
 
 @pytest.fixture
-def singer_schema_message() -> Mapping[str, t.Container]:
+def singer_schema_message() -> t.JsonMapping:
     """Return a sample Singer SCHEMA message."""
     return {
         "type": "SCHEMA",
@@ -145,7 +144,7 @@ def singer_schema_message() -> Mapping[str, t.Container]:
 
 
 @pytest.fixture
-def singer_record_message() -> Mapping[str, t.Container]:
+def singer_record_message() -> t.JsonMapping:
     """Return a sample Singer RECORD message."""
     return {
         "type": "RECORD",
@@ -157,6 +156,6 @@ def singer_record_message() -> Mapping[str, t.Container]:
 
 
 @pytest.fixture
-def singer_state_message() -> Mapping[str, t.Container]:
+def singer_state_message() -> t.JsonMapping:
     """Return a sample Singer STATE message."""
     return {"type": "STATE", "value": {"bookmarks": {}}}

@@ -2,9 +2,6 @@
 
 from __future__ import annotations
 
-from collections.abc import (
-    Mapping,
-)
 from pathlib import Path
 from typing import override
 
@@ -38,7 +35,7 @@ class FlextTargetOracleWmsServiceRuntime:
             runtime_target: FlextTargetOracleWmsTarget,
             target: m.Meltano.SingerTargetBase,
             stream_name: str,
-            schema: dict[str, t.Container],
+            schema: dict[str, t.JsonValue],
             key_properties: t.StrSequence,
         ) -> FlextTargetOracleWmsServiceRuntime.Sink:
             """Create an adapter sink and attach the Oracle WMS runtime target."""
@@ -54,8 +51,8 @@ class FlextTargetOracleWmsServiceRuntime:
         @override
         def process_record(
             self,
-            record: Mapping[str, t.Container],
-            context: Mapping[str, t.Container],
+            record: t.JsonMapping,
+            context: t.JsonMapping,
         ) -> None:
             """Process a single record through the Oracle WMS runtime."""
             _ = context
@@ -73,7 +70,7 @@ class FlextTargetOracleWmsServiceRuntime:
         @override
         def process_batch(
             self,
-            context: Mapping[str, t.Container],
+            context: t.JsonMapping,
         ) -> None:
             """Process a batch through the service adapter."""
             _ = context
@@ -83,8 +80,8 @@ class FlextTargetOracleWmsServiceRuntime:
         cls,
         *,
         stream_name: str,
-        schema: t.FlatContainerMapping,
-        target_config: Mapping[str, t.Container],
+        schema: t.JsonMapping,
+        target_config: t.JsonMapping,
     ) -> p.Meltano.SingerDrainSink:
         """Create the service-level Singer sink adapter."""
         normalized_target_config = u.Meltano.normalize_runtime_json_mapping(
@@ -115,8 +112,8 @@ class FlextTargetOracleWmsServiceRuntime:
 
     @staticmethod
     def normalize_flat_schema(
-        schema: t.FlatContainerMapping,
-    ) -> dict[str, t.Container]:
+        schema: t.JsonMapping,
+    ) -> dict[str, t.JsonValue]:
         """Normalize a flat Singer schema to the WMS runtime contract."""
         return {
             key: (str(value) if isinstance(value, Path) else value)

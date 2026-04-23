@@ -24,11 +24,11 @@ class FlextTargetOracleWmsSettings(FlextSettings):
     @classmethod
     def create_settings(
         cls,
-        overrides: t.ContainerValueMapping | None = None,
+        overrides: t.JsonMapping | None = None,
     ) -> p.Result[FlextTargetOracleWmsSettings]:
         """Create settings instance with optional override values."""
         try:
-            data: t.ContainerValueMapping = dict(overrides) if overrides else {}
+            data: t.JsonMapping = dict(overrides) if overrides else {}
             settings = FlextTargetOracleWmsSettings.model_validate(data)
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as exc:
             return r[FlextTargetOracleWmsSettings].fail(

@@ -64,8 +64,8 @@ class FlextTargetOracleWmsModels(meltano_m, m):
 
             wms_auth: FlextTargetOracleWmsModels.TargetOracleWms.WmsAuthenticationConfig
             stream_maps: Mapping[str, t.StrMapping] = u.Field(default_factory=dict)
-            batch_size: t.BatchSize = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
-            load_method: str = c.TargetOracleWms.LoadMethods.Method.APPEND_ONLY
+            batch_size: t.BatchSize = c.TargetOracleWms.DEFAULT_BATCH_SIZE
+            load_method: str = c.TargetOracleWms.Method.APPEND_ONLY
             validate_records: bool = True
 
             def validate_business_rules(self) -> p.Result[bool]:
@@ -163,7 +163,7 @@ class FlextTargetOracleWmsModels(meltano_m, m):
                 u.Field(description="Singer stream name"),
             ]
             schema_definition: Annotated[
-                t.Cli.JsonMapping,
+                t.JsonMapping,
                 u.Field(
                     alias="schema",
                     serialization_alias="schema",
@@ -195,7 +195,7 @@ class FlextTargetOracleWmsModels(meltano_m, m):
                 u.Field(description="Singer stream name"),
             ]
             record: Annotated[
-                t.Cli.JsonMapping,
+                t.JsonMapping,
                 u.Field(description="Singer record payload"),
             ]
             time_extracted: Annotated[
@@ -227,7 +227,7 @@ class FlextTargetOracleWmsModels(meltano_m, m):
                 u.Field(description="Singer stream name"),
             ]
             schema_definition: Annotated[
-                t.Cli.JsonMapping,
+                t.JsonMapping,
                 u.Field(
                     alias="schema",
                     serialization_alias="schema",

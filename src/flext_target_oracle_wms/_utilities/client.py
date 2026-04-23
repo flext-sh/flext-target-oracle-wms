@@ -91,7 +91,7 @@ class _WmsClients:
         def process_record(
             self,
             record_message: m.Meltano.SingerRecordMessage,
-            schema_message: m.Meltano.SingerSchemaMessage | t.ContainerValueMapping,
+            schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping,
         ) -> p.Result[m.Meltano.SingerRecordMessage]:
             """Transform one typed Singer record."""
             typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
@@ -116,7 +116,7 @@ class _WmsClients:
 
         def __init__(
             self,
-            settings: t.ContainerValueMapping | m.TargetOracleWms.WmsTargetConfig,
+            settings: t.JsonMapping | m.TargetOracleWms.WmsTargetConfig,
         ) -> None:
             """Initialize target runtime with validated settings."""
             self.settings = m.TargetOracleWms.WmsTargetConfig.model_validate(settings)
