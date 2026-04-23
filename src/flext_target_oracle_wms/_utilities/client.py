@@ -112,7 +112,7 @@ class _WmsClients:
         _state_type: ClassVar[str] = "STATE"
         _schema_type: ClassVar[str] = "SCHEMA"
         _record_type: ClassVar[str] = "RECORD"
-        _logger: ClassVar[p.Logger] = u.fetch_logger(__name__)
+        logger: ClassVar[p.Logger] = u.fetch_logger(__name__)
 
         def __init__(
             self,
@@ -172,7 +172,7 @@ class _WmsClients:
         ) -> p.Result[bool]:
             """Handle one STATE message."""
             typed_state = m.Meltano.SingerStateMessage.model_validate(message)
-            self._logger.debug("Received state", state=str(typed_state.value))
+            self.logger.debug("Received state", state=str(typed_state.value))
             return r[bool].ok(value=True)
 
         def process_lines(self, input_lines: t.StrSequence) -> p.Result[bool]:

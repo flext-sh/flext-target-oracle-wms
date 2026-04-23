@@ -13,7 +13,7 @@ from flext_target_oracle_wms import Target as FlextTargetOracleWms, c, m, p, r, 
 class FlextTargetFactory:
     """Factory for creating configured target instances."""
 
-    _logger: ClassVar[p.Logger] = u.fetch_logger(__name__)
+    logger: ClassVar[p.Logger] = u.fetch_logger(__name__)
 
     PRESETS: ClassVar[Mapping[str, t.JsonMapping]] = {
         "development": {
@@ -72,7 +72,7 @@ class FlextTargetFactory:
             settings.update(cls.PRESETS[request.preset])
         if request.additional_config is not None:
             settings.update(request.additional_config)
-        cls._logger.info("Created Oracle WMS target", environment=request.environment)
+        cls.logger.info("Created Oracle WMS target", environment=request.environment)
         return r[FlextTargetOracleWms].ok(FlextTargetOracleWms(settings))
 
 

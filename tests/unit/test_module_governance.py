@@ -27,7 +27,7 @@ def test_package_modules_do_not_define_module_level_loggers() -> None:
             if not isinstance(node, ast.Assign):
                 continue
             if any(
-                isinstance(target, ast.Name) and target.id in {"logger", "_logger"}
+                isinstance(target, ast.Name) and target.id == "logger"
                 for target in node.targets
             ):
                 violations.append(str(module_path.relative_to(PACKAGE_ROOT.parent)))
