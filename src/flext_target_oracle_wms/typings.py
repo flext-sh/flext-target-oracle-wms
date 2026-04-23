@@ -14,13 +14,9 @@ from flext_oracle_wms import t
 class FlextTargetOracleWmsTypes(meltano_t, t):
     """MRO facade composing Meltano + OracleWms type namespaces."""
 
-    NV_ADAPTER: m.TypeAdapter[meltano_t.Cli.JsonValue] = m.TypeAdapter(
-        meltano_t.Cli.JsonValue
-    )
-    CONTAINER_MAP_ADAPTER: m.TypeAdapter[meltano_t.Cli.JsonMapping] = m.TypeAdapter(
-        meltano_t.Cli.JsonMapping
-    )
+    NV_ADAPTER: m.TypeAdapter[t.JsonValue] = m.TypeAdapter(t.JsonValue)
+    CONTAINER_MAP_ADAPTER: m.TypeAdapter[t.JsonMapping] = m.TypeAdapter(t.JsonMapping)
 
 
-meltano_t = FlextTargetOracleWmsTypes
-__all__: list[str] = ["FlextTargetOracleWmsTypes", "meltano_t"]
+t = FlextTargetOracleWmsTypes
+__all__: list[str] = ["FlextTargetOracleWmsTypes", "t"]

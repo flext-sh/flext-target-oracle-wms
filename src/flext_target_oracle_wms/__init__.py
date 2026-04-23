@@ -39,24 +39,16 @@ if _t.TYPE_CHECKING:
         target_oracle_wms,
     )
     from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli, main
-    from flext_target_oracle_wms.constants import (
-        FlextTargetOracleWmsConstants,
-        c,
-        meltano_c,
-    )
+    from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants, c
     from flext_target_oracle_wms.factory import (
         FlextTargetFactory,
         FlextTargetMonitoringFactory,
     )
     from flext_target_oracle_wms.models import FlextTargetOracleWmsModels, m
-    from flext_target_oracle_wms.protocols import (
-        FlextTargetOracleWmsProtocols,
-        meltano_p,
-        p,
-    )
+    from flext_target_oracle_wms.protocols import FlextTargetOracleWmsProtocols, p
     from flext_target_oracle_wms.settings import FlextTargetOracleWmsSettings
     from flext_target_oracle_wms.target_config import FlextTargetOracleWmsTargetConfig
-    from flext_target_oracle_wms.typings import FlextTargetOracleWmsTypes, meltano_t, t
+    from flext_target_oracle_wms.typings import FlextTargetOracleWmsTypes, t
     from flext_target_oracle_wms.utilities import FlextTargetOracleWmsUtilities, u
 _LAZY_IMPORTS = merge_lazy_imports(
     ("._utilities",),
@@ -99,7 +91,6 @@ _LAZY_IMPORTS = merge_lazy_imports(
             ".constants": (
                 "FlextTargetOracleWmsConstants",
                 "c",
-                "meltano_c",
             ),
             ".factory": (
                 "FlextTargetFactory",
@@ -111,14 +102,12 @@ _LAZY_IMPORTS = merge_lazy_imports(
             ),
             ".protocols": (
                 "FlextTargetOracleWmsProtocols",
-                "meltano_p",
                 "p",
             ),
             ".settings": ("FlextTargetOracleWmsSettings",),
             ".target_config": ("FlextTargetOracleWmsTargetConfig",),
             ".typings": (
                 "FlextTargetOracleWmsTypes",
-                "meltano_t",
                 "t",
             ),
             ".utilities": (
@@ -188,9 +177,6 @@ __all__: list[str] = [
     "h",
     "m",
     "main",
-    "meltano_c",
-    "meltano_p",
-    "meltano_t",
     "p",
     "r",
     "s",

@@ -42,5 +42,5 @@ class FlextTargetOracleWmsProtocols(meltano_p, p):
                 ...
 
 
-meltano_p = FlextTargetOracleWmsProtocols
-__all__: list[str] = ["FlextTargetOracleWmsProtocols", "meltano_p"]
+p = FlextTargetOracleWmsProtocols
+__all__: list[str] = ["FlextTargetOracleWmsProtocols", "p"]

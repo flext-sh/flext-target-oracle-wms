@@ -15,7 +15,7 @@ class FlextTargetFactory:
 
     _logger: ClassVar[p.Logger] = u.fetch_logger(__name__)
 
-    PRESETS: ClassVar[Mapping[str, t.ConfigurationMapping]] = {
+    PRESETS: ClassVar[Mapping[str, t.JsonMapping]] = {
         "development": {
             "batch_size": 100,
             "timeout": 30,
@@ -42,7 +42,7 @@ class FlextTargetFactory:
     @classmethod
     def create_from_config_dict(
         cls,
-        settings: t.ConfigurationMapping,
+        settings: t.JsonMapping,
     ) -> p.Result[FlextTargetOracleWms]:
         """Create target from plain dictionary settings via Pydantic validation."""
         known_keys = {"base_url", "username", "password", "environment", "preset"}

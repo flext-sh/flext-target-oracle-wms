@@ -14,7 +14,7 @@ from typing import Annotated, ClassVar, Literal
 from flext_meltano import m as meltano_m, p, r, t, u
 from flext_oracle_wms import m
 
-from flext_target_oracle_wms import c
+from flext_target_oracle_wms.constants import c
 
 
 class FlextTargetOracleWmsModels(meltano_m, m):
@@ -64,8 +64,8 @@ class FlextTargetOracleWmsModels(meltano_m, m):
 
             wms_auth: FlextTargetOracleWmsModels.TargetOracleWms.WmsAuthenticationConfig
             stream_maps: Mapping[str, t.StrMapping] = u.Field(default_factory=dict)
-            batch_size: t.BatchSize = c.TargetOracleWms.DEFAULT_BATCH_SIZE
-            load_method: str = c.TargetOracleWms.Method.APPEND_ONLY
+            batch_size: t.BatchSize = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
+            load_method: str = c.TargetOracleWms.LoadMethods.Method.APPEND_ONLY
             validate_records: bool = True
 
             def validate_business_rules(self) -> p.Result[bool]:
@@ -86,7 +86,7 @@ class FlextTargetOracleWmsModels(meltano_m, m):
             successful_records: t.NonNegativeInt = 0
             failed_records: t.NonNegativeInt = 0
             error_messages: t.StrSequence = u.Field(default_factory=list)
-            metrics: t.ConfigurationMapping = u.Field(default_factory=dict)
+            metrics: t.JsonMapping = u.Field(default_factory=dict)
 
             @property
             def success_rate(self) -> float:
@@ -137,7 +137,7 @@ class FlextTargetOracleWmsModels(meltano_m, m):
                 str | None, u.Field(description="Optional preset profile name.")
             ] = None
             additional_config: Annotated[
-                t.ConfigurationMapping | None,
+                t.JsonMapping | None,
                 u.Field(default=None, description="Additional environment overrides."),
             ]
 

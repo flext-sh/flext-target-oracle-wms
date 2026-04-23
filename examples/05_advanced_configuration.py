@@ -20,7 +20,7 @@ from flext_target_oracle_wms import c, t, u
 logger = u.fetch_logger(__name__)
 monitor = FlextObservabilityMonitor()
 
-LOAD_METHOD: str = c.TargetOracleWms.LoadMethods.UPSERT
+LOAD_METHOD: str = c.TargetOracleWms.LoadMethods.Method.UPSERT
 DEFAULT_BATCH: int = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
 
 

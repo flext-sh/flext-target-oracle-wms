@@ -52,8 +52,8 @@ class TestConstantsNamespace:
         assert c is not None
 
     def test_load_methods_accessible(self) -> None:
-        assert c.TargetOracleWms.LoadMethods.APPEND_ONLY == "APPEND_ONLY"
-        assert c.TargetOracleWms.LoadMethods.UPSERT == "UPSERT"
+        assert c.TargetOracleWms.LoadMethods.Method.APPEND_ONLY == "APPEND_ONLY"
+        assert c.TargetOracleWms.LoadMethods.Method.UPSERT == "UPSERT"
 
     def test_valid_load_methods_is_set(self) -> None:
         assert "APPEND_ONLY" in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS
