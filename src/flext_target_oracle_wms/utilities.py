@@ -8,10 +8,12 @@ from __future__ import annotations
 from flext_meltano import u as meltano_u
 from flext_oracle_wms import u
 
-from flext_target_oracle_wms import (
+from flext_target_oracle_wms._utilities.client import (
     CatalogManager,
     StreamProcessor,
     Target,
+)
+from flext_target_oracle_wms._utilities.helpers import (
     Validation,
     WMSDataTransformer,
     WMSSchemaMapper,
@@ -20,8 +22,8 @@ from flext_target_oracle_wms import (
     create_record_message,
     create_schema_message,
     create_state_message,
-    t,
 )
+from flext_target_oracle_wms.typings import t
 
 
 class FlextTargetOracleWmsUtilities(meltano_u, u):
