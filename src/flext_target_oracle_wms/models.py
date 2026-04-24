@@ -7,9 +7,10 @@ Defines local TargetOracleWms namespace for target-specific models.
 from __future__ import annotations
 
 from collections.abc import (
-    Mapping,
+    MutableMapping,
+    MutableSequence,
 )
-from typing import Annotated, ClassVar, Literal
+from typing import Annotated, Literal
 
 from flext_meltano import m as meltano_m, p, r, t, u
 from flext_oracle_wms import m
@@ -62,11 +63,26 @@ class FlextTargetOracleWmsModels(meltano_m, m):
         class WmsTargetConfig(meltano_m.ArbitraryTypesModel):
             """Top-level target configuration model."""
 
-            wms_auth: FlextTargetOracleWmsModels.TargetOracleWms.WmsAuthenticationConfig
-            stream_maps: Mapping[str, t.StrMapping] = u.Field(default_factory=dict)
-            batch_size: t.BatchSize = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
-            load_method: str = c.TargetOracleWms.LoadMethods.Method.APPEND_ONLY
-            validate_records: bool = True
+            wms_auth: Annotated[
+                FlextTargetOracleWmsModels.TargetOracleWms.WmsAuthenticationConfig,
+                u.Field(description="WMS authentication and endpoint settings."),
+            ]
+            stream_maps: Annotated[
+                MutableMapping[str, t.StrMapping],
+                u.Field(default_factory=dict, description="Singer stream map configurations."),
+            ]
+            batch_size: Annotated[
+                t.BatchSize,
+                u.Field(description="Number of records per batch write."),
+            ] = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
+            load_method: Annotated[
+                str,
+                u.Field(description="Load strategy for writing records to WMS."),
+            ] = c.TargetOracleWms.LoadMethods.Method.APPEND_ONLY
+            validate_records: Annotated[
+                bool,
+                u.Field(description="Whether to validate records before writing."),
+            ] = True
 
             def validate_business_rules(self) -> p.Result[bool]:
                 """Validate basic settings business rules."""
@@ -112,11 +128,26 @@ class FlextTargetOracleWmsModels(meltano_m, m):
         class WmsTargetResult(meltano_m.ArbitraryTypesModel):
             """Execution summary for the target pipeline."""
 
-            total_records_processed: t.NonNegativeInt = 0
-            successful_records: t.NonNegativeInt = 0
-            failed_records: t.NonNegativeInt = 0
-            error_messages: t.StrSequence = u.Field(default_factory=list)
-            metrics: t.JsonMapping = u.Field(default_factory=dict)
+            total_records_processed: Annotated[
+                t.NonNegativeInt,
+                u.Field(description="Total number of records attempted."),
+            ] = 0
+            successful_records: Annotated[
+                t.NonNegativeInt,
+                u.Field(description="Number of records successfully written."),
+            ] = 0
+            failed_records: Annotated[
+                t.NonNegativeInt,
+                u.Field(description="Number of records that failed to write."),
+            ] = 0
+            error_messages: Annotated[
+                MutableSequence[str],
+                u.Field(default_factory=list, description="List of error messages from failed records."),
+            ]
+            metrics: Annotated[
+                MutableMapping[str, t.JsonValue],
+                u.Field(default_factory=dict, description="Aggregate runtime metrics for this pipeline run."),
+            ]
 
             @property
             def success_rate(self) -> float:
@@ -127,28 +158,23 @@ class FlextTargetOracleWmsModels(meltano_m, m):
                     float(self.successful_records) / float(self.total_records_processed)
                 ) * 100.0
 
-        class SingerFieldSchema(meltano_m.ArbitraryTypesModel):
+        class SingerFieldSchema(meltano_m.FlexibleModel):
             """Typed Singer field schema entry for target-side schema parsing."""
-
-            model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
-                extra="ignore",
-            )
 
             type: Annotated[
                 str, u.Field(description="JSON schema type descriptor for the field.")
             ] = "string"
 
-        class SingerSchemaProperties(meltano_m.ArbitraryTypesModel):
+        class SingerSchemaProperties(meltano_m.FlexibleModel):
             """Typed Singer schema properties block for target-side schema parsing."""
 
-            model_config: ClassVar[meltano_m.ConfigDict] = meltano_m.ConfigDict(
-                extra="ignore",
-            )
-
-            properties: Mapping[
-                str,
-                FlextTargetOracleWmsModels.TargetOracleWms.SingerFieldSchema,
-            ] = u.Field(default_factory=dict)
+            properties: Annotated[
+                MutableMapping[
+                    str,
+                    FlextTargetOracleWmsModels.TargetOracleWms.SingerFieldSchema,
+                ],
+                u.Field(default_factory=dict, description="Singer schema field property definitions."),
+            ]
 
         class TargetCreationRequest(meltano_m.ArbitraryTypesModel):
             """Input object for target construction."""

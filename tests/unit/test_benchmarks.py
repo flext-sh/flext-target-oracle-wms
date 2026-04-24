@@ -23,7 +23,7 @@ def _schema_msg(stream: str = "bench") -> m.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage(
         type=c.Meltano.SingerMessageType.SCHEMA,
         stream=stream,
-        schema_definition={
+        schema={
             "type": "object",
         },
         key_properties=["id"],

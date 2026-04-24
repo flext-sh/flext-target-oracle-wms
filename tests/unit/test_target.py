@@ -58,7 +58,7 @@ def _schema_msg(
     return m.Meltano.SingerSchemaMessage(
         type=c.Meltano.SingerMessageType.SCHEMA,
         stream=stream,
-        schema_definition={
+        schema={
             "type": "object",
         },
         key_properties=key_properties or ["id"],
@@ -79,9 +79,11 @@ def _record_msg(
 def _state_msg(
     state: t.JsonMapping | None = None,
 ) -> m.Meltano.SingerStateMessage:
-    return m.Meltano.SingerStateMessage(
-        type=c.Meltano.SingerMessageType.STATE,
-        value=dict(state) if state is not None else {"bookmarks": {}},
+    return m.Meltano.SingerStateMessage.model_validate(
+        {
+            "type": c.Meltano.SingerMessageType.STATE,
+            "value": state if state is not None else {"bookmarks": {}},
+        },
     )
 
 

@@ -75,7 +75,7 @@ class TestTransformerFeatures:
         schema = m.Meltano.SingerSchemaMessage(
             type=c.Meltano.SingerMessageType.SCHEMA,
             stream="s",
-            schema_definition={
+            schema={
                 "type": "object",
             },
             key_properties=["name"],
