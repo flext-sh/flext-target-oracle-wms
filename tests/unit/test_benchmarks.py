@@ -21,7 +21,7 @@ from tests import c, m, u
 
 def _schema_msg(stream: str = "bench") -> m.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage(
-        type="SCHEMA",
+        type=c.Meltano.SingerMessageType.SCHEMA,
         stream=stream,
         schema_definition={
             "type": "object",
@@ -32,7 +32,7 @@ def _schema_msg(stream: str = "bench") -> m.Meltano.SingerSchemaMessage:
 
 def _record_msg(stream: str = "bench") -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage(
-        type="RECORD",
+        type=c.Meltano.SingerMessageType.RECORD,
         stream=stream,
         record={"id": "1", "qty": 100},
     )

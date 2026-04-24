@@ -11,7 +11,7 @@ import pytest
 from flext_target_oracle_wms import (
     CatalogManager as FlextTargetOracleWmsCatalogManager,
 )
-from tests import m, t
+from tests import c, m, t
 
 
 def _make_schema_message(
@@ -20,12 +20,12 @@ def _make_schema_message(
     key_properties: t.StrSequence | None = None,
 ) -> m.Meltano.SingerSchemaMessage:
     """Build a valid SingerSchemaMessage dict."""
-    return m.Meltano.SingerSchemaMessage.model_validate({
-        "type": "SCHEMA",
-        "stream": stream_name,
-        "schema": schema or {"type": "object"},
-        "key_properties": key_properties or ["id"],
-    })
+    return m.Meltano.SingerSchemaMessage(
+        type=c.Meltano.SingerMessageType.SCHEMA,
+        stream=stream_name,
+        schema_definition=schema or {"type": "object"},
+        key_properties=key_properties or ["id"],
+    )
 
 
 class TestCatalogAddStream:

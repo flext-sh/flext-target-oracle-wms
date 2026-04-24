@@ -31,8 +31,10 @@ def _schema_line(
     properties: Mapping[str, t.StrMapping] | None = None,
     key_properties: t.StrSequence | None = None,
 ) -> str:
-    return _schema_msg(stream, properties, key_properties).model_dump_json(
-        by_alias=True,
+    return str(
+        _schema_msg(stream, properties, key_properties).model_dump_json(
+            by_alias=True,
+        ),
     )
 
 
@@ -40,11 +42,11 @@ def _record_line(
     stream: str = "test_stream",
     record: t.JsonMapping | None = None,
 ) -> str:
-    return _record_msg(stream, record).model_dump_json()
+    return str(_record_msg(stream, record).model_dump_json())
 
 
 def _state_line(state: t.JsonMapping | None = None) -> str:
-    return _state_msg(state).model_dump_json()
+    return str(_state_msg(state).model_dump_json())
 
 
 def _schema_msg(
@@ -79,7 +81,7 @@ def _state_msg(
 ) -> m.Meltano.SingerStateMessage:
     return m.Meltano.SingerStateMessage(
         type=c.Meltano.SingerMessageType.STATE,
-        value=state or {"bookmarks": {}},
+        value=dict(state) if state is not None else {"bookmarks": {}},
     )
 
 

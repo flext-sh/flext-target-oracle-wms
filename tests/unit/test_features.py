@@ -12,7 +12,7 @@ from collections.abc import (
 )
 
 from flext_target_oracle_wms import Target as FlextTargetOracleWms
-from tests import m, t, u
+from tests import c, m, t, u
 
 
 def _valid_config() -> t.JsonMapping:
@@ -67,19 +67,19 @@ class TestTransformerFeatures:
 
     def test_transformer_uppercases_keys(self) -> None:
         transformer = u.TargetOracleWms.WMSDataTransformer()
-        record = m.Meltano.SingerRecordMessage.model_validate({
-            "type": "RECORD",
-            "stream": "s",
-            "record": {"name": "test"},
-        })
-        schema = m.Meltano.SingerSchemaMessage.model_validate({
-            "type": "SCHEMA",
-            "stream": "s",
-            "schema": {
+        record = m.Meltano.SingerRecordMessage(
+            type=c.Meltano.SingerMessageType.RECORD,
+            stream="s",
+            record={"name": "test"},
+        )
+        schema = m.Meltano.SingerSchemaMessage(
+            type=c.Meltano.SingerMessageType.SCHEMA,
+            stream="s",
+            schema_definition={
                 "type": "object",
             },
-            "key_properties": ["name"],
-        })
+            key_properties=["name"],
+        )
         result = transformer.transform_record(record, schema)
         assert result.success
         assert result.value is not None
