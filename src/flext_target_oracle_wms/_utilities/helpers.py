@@ -10,9 +10,9 @@ from flext_cli import u
 from flext_core import p, r
 from flext_meltano import u as meltano_u
 
-from flext_target_oracle_wms.constants import c
-from flext_target_oracle_wms.models import m
-from flext_target_oracle_wms.typings import t
+from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants as c
+from flext_target_oracle_wms.models import FlextTargetOracleWmsModels as m
+from flext_target_oracle_wms.typings import FlextTargetOracleWmsTypes as t
 
 
 class _WmsHelpers:
@@ -53,7 +53,7 @@ class _WmsHelpers:
                 return r[t.JsonValue].ok(
                     t.NV_ADAPTER.dump_json(
                         u.Cli.normalize_json_value(value),
-                    ).decode("utf-8"),
+                    ).decode(c.DEFAULT_ENCODING),
                 )
             if singer_type in {"integer", "number"}:
                 try:
