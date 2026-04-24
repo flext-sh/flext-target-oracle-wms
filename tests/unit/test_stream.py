@@ -22,7 +22,7 @@ def _schema_msg(
     return m.Meltano.SingerSchemaMessage(
         type=c.Meltano.SingerMessageType.SCHEMA,
         stream=stream,
-        schema=schema or {"type": "object"},
+        schema_definition=schema or {"type": "object"},
         key_properties=key_properties or ["id"],
     )
 

@@ -69,7 +69,10 @@ class FlextTargetOracleWmsModels(meltano_m, m):
             ]
             stream_maps: Annotated[
                 MutableMapping[str, t.StrMapping],
-                u.Field(default_factory=dict, description="Singer stream map configurations."),
+                u.Field(
+                    default_factory=dict,
+                    description="Singer stream map configurations.",
+                ),
             ]
             batch_size: Annotated[
                 t.BatchSize,
@@ -142,11 +145,17 @@ class FlextTargetOracleWmsModels(meltano_m, m):
             ] = 0
             error_messages: Annotated[
                 MutableSequence[str],
-                u.Field(default_factory=list, description="List of error messages from failed records."),
+                u.Field(
+                    default_factory=list,
+                    description="List of error messages from failed records.",
+                ),
             ]
             metrics: Annotated[
                 MutableMapping[str, t.JsonValue],
-                u.Field(default_factory=dict, description="Aggregate runtime metrics for this pipeline run."),
+                u.Field(
+                    default_factory=dict,
+                    description="Aggregate runtime metrics for this pipeline run.",
+                ),
             ]
 
             @property
@@ -173,7 +182,10 @@ class FlextTargetOracleWmsModels(meltano_m, m):
                     str,
                     FlextTargetOracleWmsModels.TargetOracleWms.SingerFieldSchema,
                 ],
-                u.Field(default_factory=dict, description="Singer schema field property definitions."),
+                u.Field(
+                    default_factory=dict,
+                    description="Singer schema field property definitions.",
+                ),
             ]
 
         class TargetCreationRequest(meltano_m.ArbitraryTypesModel):
