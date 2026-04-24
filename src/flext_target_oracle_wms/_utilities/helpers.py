@@ -8,6 +8,7 @@ from collections.abc import (
 
 from flext_cli import u
 from flext_core import p, r
+from flext_meltano import u as meltano_u
 
 from flext_target_oracle_wms.constants import c
 from flext_target_oracle_wms.models import m
@@ -131,14 +132,20 @@ class _WmsHelpers:
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(
                 schema_message,
             )
+            entry_result = meltano_u.Meltano.build_catalog_entry(
+                stream_name=typed_schema.stream,
+                schema=typed_schema.schema_definition,
+                key_properties=typed_schema.key_properties,
+            )
+            if entry_result.failure or entry_result.value is None:
+                return r[m.Meltano.SingerCatalogEntry].fail(
+                    entry_result.error
+                    or f"Failed to map schema for stream: {typed_schema.stream}",
+                )
             return r[m.Meltano.SingerCatalogEntry].ok(
-                m.Meltano.SingerCatalogEntry.model_validate({
-                    "tap_stream_id": typed_schema.stream,
-                    "stream": typed_schema.stream,
-                    "schema": typed_schema.schema_definition,
-                    "key_properties": typed_schema.key_properties,
-                    "table_name": typed_schema.stream.upper(),
-                }),
+                entry_result.value.model_copy(
+                    update={"table_name": typed_schema.stream.upper()},
+                )
             )
 
     class WMSTableManager:

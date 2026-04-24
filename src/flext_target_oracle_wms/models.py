@@ -79,6 +79,36 @@ class FlextTargetOracleWmsModels(meltano_m, m):
                     return r[bool].fail("Batch size must be positive")
                 return r[bool].ok(value=True)
 
+            def validate_runtime(self) -> p.Result[bool]:
+                """Validate runtime constraints before processing starts."""
+                return self.validate_business_rules()
+
+            @classmethod
+            def create_config(
+                cls,
+                overrides: t.JsonMapping | None = None,
+            ) -> p.Result[FlextTargetOracleWmsModels.TargetOracleWms.WmsTargetConfig]:
+                """Create target settings instance with optional override values."""
+                try:
+                    data: t.JsonMapping = dict(overrides) if overrides else {}
+                    settings = cls.model_validate(data)
+                except c.Meltano.SINGER_SAFE_EXCEPTIONS as exc:
+                    return r[
+                        FlextTargetOracleWmsModels.TargetOracleWms.WmsTargetConfig
+                    ].fail(
+                        f"Invalid settings overrides: {exc}",
+                    )
+                validation = settings.validate_runtime()
+                if validation.failure:
+                    return r[
+                        FlextTargetOracleWmsModels.TargetOracleWms.WmsTargetConfig
+                    ].fail(
+                        validation.error or "Runtime validation failed",
+                    )
+                return r[FlextTargetOracleWmsModels.TargetOracleWms.WmsTargetConfig].ok(
+                    settings
+                )
+
         class WmsTargetResult(meltano_m.ArbitraryTypesModel):
             """Execution summary for the target pipeline."""
 
@@ -93,7 +123,9 @@ class FlextTargetOracleWmsModels(meltano_m, m):
                 """Calculate percentage of successful records."""
                 if self.total_records_processed == 0:
                     return 0.0
-                return (self.successful_records / self.total_records_processed) * 100.0
+                return (
+                    float(self.successful_records) / float(self.total_records_processed)
+                ) * 100.0
 
         class SingerFieldSchema(meltano_m.ArbitraryTypesModel):
             """Typed Singer field schema entry for target-side schema parsing."""

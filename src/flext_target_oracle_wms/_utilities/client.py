@@ -39,14 +39,16 @@ class _WmsClients:
             """Register one stream schema entry."""
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
             stream_name = typed_schema.stream
-            self._catalog_entries[stream_name] = (
-                m.Meltano.SingerCatalogEntry.model_validate({
-                    "tap_stream_id": stream_name,
-                    "stream": stream_name,
-                    "schema": typed_schema.schema_definition,
-                    "key_properties": typed_schema.key_properties,
-                })
+            entry_result = u.Meltano.build_catalog_entry(
+                stream_name=stream_name,
+                schema=typed_schema.schema_definition,
+                key_properties=typed_schema.key_properties,
             )
+            if entry_result.failure or entry_result.value is None:
+                return r[bool].fail(
+                    entry_result.error or f"Failed to register stream: {stream_name}",
+                )
+            self._catalog_entries[stream_name] = entry_result.value
             return r[bool].ok(value=True)
 
         def get_stream(

@@ -47,7 +47,6 @@ if _t.TYPE_CHECKING:
     from flext_target_oracle_wms.models import FlextTargetOracleWmsModels, m
     from flext_target_oracle_wms.protocols import FlextTargetOracleWmsProtocols, p
     from flext_target_oracle_wms.settings import FlextTargetOracleWmsSettings
-    from flext_target_oracle_wms.target_config import FlextTargetOracleWmsTargetConfig
     from flext_target_oracle_wms.typings import FlextTargetOracleWmsTypes, t
     from flext_target_oracle_wms.utilities import FlextTargetOracleWmsUtilities, u
 _LAZY_IMPORTS = merge_lazy_imports(
@@ -105,7 +104,6 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "p",
             ),
             ".settings": ("FlextTargetOracleWmsSettings",),
-            ".target_config": ("FlextTargetOracleWmsTargetConfig",),
             ".typings": (
                 "FlextTargetOracleWmsTypes",
                 "t",
@@ -150,7 +148,6 @@ __all__: list[str] = [
     "FlextTargetOracleWmsService",
     "FlextTargetOracleWmsServiceRuntime",
     "FlextTargetOracleWmsSettings",
-    "FlextTargetOracleWmsTargetConfig",
     "FlextTargetOracleWmsTypes",
     "FlextTargetOracleWmsUtilities",
     "StreamProcessor",
