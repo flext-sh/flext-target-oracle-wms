@@ -87,7 +87,7 @@ def _state_msg(
     )
 
 
-class TestTargetInit:
+class TestsFlextTargetOracleWmsTarget:
     """Tests for FlextTargetOracleWms initialization."""
 
     def test_init_with_valid_config(self) -> None:
@@ -107,10 +107,6 @@ class TestTargetInit:
         target = FlextTargetOracleWms(_valid_config())
         assert target.stream_processor is not None
 
-
-class TestTargetSetupCleanup:
-    """Tests for setup/cleanup lifecycle."""
-
     def test_setup_returns_success(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
         result = target.setup()
@@ -123,10 +119,6 @@ class TestTargetSetupCleanup:
         assert result.success
         assert result.value is True
 
-
-class TestTargetHandleSchemaMessage:
-    """Tests for handle_schema_message."""
-
     def test_handle_schema_success(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
         msg = _schema_msg("orders")
@@ -138,10 +130,6 @@ class TestTargetHandleSchemaMessage:
         msg = _schema_msg("items")
         target.handle_schema_message(msg)
         assert target.catalog_manager.get_stream("items").success
-
-
-class TestTargetHandleRecordMessage:
-    """Tests for handle_record_message."""
 
     def test_record_without_schema_fails(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
@@ -159,19 +147,11 @@ class TestTargetHandleRecordMessage:
         result = target.handle_record_message(record)
         assert result.success
 
-
-class TestTargetHandleStateMessage:
-    """Tests for handle_state_message."""
-
     def test_state_message_succeeds(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
         msg = _state_msg({"bookmarks": {"pos": "42"}})
         result = target.handle_state_message(msg)
         assert result.success
-
-
-class TestTargetProcessLines:
-    """Tests for process_lines."""
 
     def test_empty_lines_succeeds(self) -> None:
         target = FlextTargetOracleWms(_valid_config())

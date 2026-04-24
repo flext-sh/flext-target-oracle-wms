@@ -53,7 +53,7 @@ def _state_line(value: t.JsonMapping) -> str:
     return orjson.dumps({"type": "STATE", "value": value}).decode("utf-8")
 
 
-class TestFullSingerWorkflow:
+class TestsFlextTargetOracleWmsWorkflow:
     """End-to-end Singer SCHEMA → RECORD → STATE workflow."""
 
     def test_single_stream_workflow(self) -> None:
@@ -104,10 +104,6 @@ class TestFullSingerWorkflow:
         result = target.process_lines(lines)
         assert result.success
 
-
-class TestCliWorkflow:
-    """End-to-end CLI execution workflow."""
-
     @patch("flext_target_oracle_wms.cli.sys.stdin", [])
     def test_cli_execute_empty_stdin(self) -> None:
         cli = FlextTargetOracleWmsCli()
@@ -126,10 +122,6 @@ class TestCliWorkflow:
         cli = FlextTargetOracleWmsCli()
         result = cli.execute()
         assert result.success
-
-
-class TestErrorWorkflows:
-    """Tests for error handling in workflows."""
 
     def test_malformed_json_stops_processing(self) -> None:
         target = FlextTargetOracleWms(_valid_config())

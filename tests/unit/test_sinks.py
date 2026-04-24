@@ -48,7 +48,7 @@ def _record_msg(
     )
 
 
-class TestTargetComponentWiring:
+class TestsFlextTargetOracleWmsSinks:
     """Verify target initializes all expected sub-components."""
 
     def test_target_has_catalog_manager(self) -> None:
@@ -75,10 +75,6 @@ class TestTargetComponentWiring:
         target = FlextTargetOracleWms(_valid_config())
         assert target.stream_processor.data_transformer is target.data_transformer
 
-
-class TestCatalogAndTableIntegration:
-    """Verify catalog and table managers work together through target."""
-
     def test_schema_registers_in_both_catalog_and_table(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
         schema = _schema_msg("items")
@@ -94,10 +90,6 @@ class TestCatalogAndTableIntegration:
         assert table_result.success
         assert table_result.value is not None
         assert table_result.value == "ORDERS"
-
-
-class TestTransformationIntegration:
-    """Verify transformer pipeline through target record handling."""
 
     def test_record_keys_uppercased(self) -> None:
         target = FlextTargetOracleWms(_valid_config())

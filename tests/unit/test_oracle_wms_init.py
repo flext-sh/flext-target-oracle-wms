@@ -10,7 +10,7 @@ from __future__ import annotations
 import flext_target_oracle_wms
 
 
-class TestModuleInit:
+class TestsFlextTargetOracleWmsOracleWmsInit:
     """Test module initialization and version handling."""
 
     def test_version_import_success(self) -> None:

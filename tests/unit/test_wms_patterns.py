@@ -36,7 +36,7 @@ def _record_msg(
     )
 
 
-class TestWMSTypeConverter:
+class TestsFlextTargetOracleWmsWmsPatterns:
     """Tests for WMSTypeConverter.convert_singer_to_oracle."""
 
     def test_string_type(self) -> None:
@@ -99,10 +99,6 @@ class TestWMSTypeConverter:
         assert result.success
         assert result.value == "True"
 
-
-class TestWMSDataTransformer:
-    """Tests for WMSDataTransformer.transform_record."""
-
     def test_uppercases_record_keys(self) -> None:
         transformer = u.TargetOracleWms.WMSDataTransformer()
         result = transformer.transform_record(
@@ -142,10 +138,6 @@ class TestWMSDataTransformer:
         assert result.value is not None
         assert "NAME" in result.value.record
 
-
-class TestWMSSchemaMapper:
-    """Tests for WMSSchemaMapper.map_stream_schema."""
-
     def test_returns_catalog_entry(self) -> None:
         mapper = u.TargetOracleWms.WMSSchemaMapper()
         result = mapper.map_stream_schema(_schema_msg("inventory"))
@@ -161,10 +153,6 @@ class TestWMSSchemaMapper:
         result = mapper.map_stream_schema(_schema_msg("s", key_properties=["a", "b"]))
         assert result.value is not None
         assert result.value.key_properties == ["a", "b"]
-
-
-class TestWMSTableManager:
-    """Tests for WMSTableManager."""
 
     def test_register_stream_returns_uppercase(self) -> None:
         tm = u.TargetOracleWms.WMSTableManager()

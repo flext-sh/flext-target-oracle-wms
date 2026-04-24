@@ -28,9 +28,7 @@ def _make_schema_message(
     )
 
 
-class TestCatalogAddStream:
-    """Tests for FlextTargetOracleWmsCatalogManager.add_stream."""
-
+class TestsFlextTargetOracleWmsCatalog:
     def test_add_stream_returns_success(self) -> None:
         mgr = FlextTargetOracleWmsCatalogManager()
         result = mgr.add_stream(_make_schema_message())
@@ -54,10 +52,6 @@ class TestCatalogAddStream:
         assert result.value is not None
         entry = result.value
         assert entry.key_properties == ["id", "name"]
-
-
-class TestCatalogGetStream:
-    """Tests for FlextTargetOracleWmsCatalogManager.get_stream."""
 
     def test_get_nonexistent_stream_fails(self) -> None:
         mgr = FlextTargetOracleWmsCatalogManager()
@@ -84,10 +78,6 @@ class TestCatalogGetStream:
         assert stream_result.value is not None
         entry = stream_result.value
         assert entry.key_properties == ["item_id", "lot"]
-
-
-class TestCatalogMultipleStreams:
-    """Tests for managing multiple streams."""
 
     def test_multiple_independent_streams(self) -> None:
         mgr = FlextTargetOracleWmsCatalogManager()

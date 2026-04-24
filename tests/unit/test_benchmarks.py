@@ -38,7 +38,7 @@ def _record_msg(stream: str = "bench") -> m.Meltano.SingerRecordMessage:
     )
 
 
-class TestTypeConverterBenchmarks:
+class TestsFlextTargetOracleWmsBenchmarks:
     """Performance tests for WMSTypeConverter."""
 
     def test_convert_string_performance(self) -> None:
@@ -57,10 +57,6 @@ class TestTypeConverterBenchmarks:
         elapsed = time.time() - start
         assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
 
-
-class TestTableManagerBenchmarks:
-    """Performance tests for WMSTableManager."""
-
     def test_register_and_lookup_performance(self) -> None:
         tm = u.TargetOracleWms.WMSTableManager()
         start = time.time()
@@ -71,10 +67,6 @@ class TestTableManagerBenchmarks:
         elapsed = time.time() - start
         assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
 
-
-class TestSchemaMapperBenchmarks:
-    """Performance tests for WMSSchemaMapper."""
-
     def test_map_stream_schema_performance(self) -> None:
         mapper = u.TargetOracleWms.WMSSchemaMapper()
         msg = _schema_msg()
@@ -83,10 +75,6 @@ class TestSchemaMapperBenchmarks:
             mapper.map_stream_schema(msg)
         elapsed = time.time() - start
         assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
-
-
-class TestCatalogBenchmarks:
-    """Performance tests for FlextTargetOracleWmsCatalogManager."""
 
     def test_add_and_get_stream_performance(self) -> None:
         mgr = FlextTargetOracleWmsCatalogManager()
@@ -97,10 +85,6 @@ class TestCatalogBenchmarks:
             mgr.get_stream(name)
         elapsed = time.time() - start
         assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
-
-
-class TestFactoryBenchmarks:
-    """Performance tests for FlextTargetFactory."""
 
     @patch(c.TargetOracleWms.Tests.PATCH_TARGET)
     def test_create_target_performance(self, mock_target: MagicMock) -> None:
@@ -127,10 +111,6 @@ class TestFactoryBenchmarks:
             )
         elapsed = time.time() - start
         assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
-
-
-class TestDataTransformerBenchmarks:
-    """Performance tests for WMSDataTransformer."""
 
     def test_transform_record_performance(self) -> None:
         transformer = u.TargetOracleWms.WMSDataTransformer()

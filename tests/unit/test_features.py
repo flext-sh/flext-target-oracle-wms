@@ -25,7 +25,7 @@ def _valid_config() -> t.JsonMapping:
     }
 
 
-class TestTargetFeatures:
+class TestsFlextTargetOracleWmsFeatures:
     """Verify core target features."""
 
     def test_target_initialization(self) -> None:
@@ -40,10 +40,6 @@ class TestTargetFeatures:
     def test_target_process_empty_lines(self) -> None:
         target = FlextTargetOracleWms(_valid_config())
         assert target.process_lines([]).success
-
-
-class TestTransformerFeatures:
-    """Verify data transformation features."""
 
     def test_type_converter_handles_all_types(self) -> None:
         converter = u.TargetOracleWms.WMSTypeConverter()
@@ -84,10 +80,6 @@ class TestTransformerFeatures:
         assert result.success
         assert result.value is not None
         assert "NAME" in result.value.record
-
-
-class TestUtilitiesFeatures:
-    """Verify utility helper features."""
 
     def test_create_schema_message(self) -> None:
         msg = u.TargetOracleWms.create_schema_message(

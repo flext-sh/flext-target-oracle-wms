@@ -38,7 +38,7 @@ def _valid_config_dict() -> Mapping[str, t.StrMapping]:
     }
 
 
-class TestOracleWMSTargetCliInit:
+class TestsFlextTargetOracleWmsOracleWmsCli:
     """Tests for CLI initialization."""
 
     def test_default_attributes(self) -> None:
@@ -46,10 +46,6 @@ class TestOracleWMSTargetCliInit:
         assert cli.name == "target-oracle-wms"
         assert cli.description == "Oracle WMS Singer Target"
         assert cli.version == "0.9.0"
-
-
-class TestOracleWMSTargetCliLoadConfig:
-    """Tests for _load_config."""
 
     def test_load_valid_config(self, tmp_path: Path) -> None:
         cli = FlextTargetOracleWmsCli()
@@ -72,10 +68,6 @@ class TestOracleWMSTargetCliLoadConfig:
         with pytest.raises(c.ValidationError):
             cli._prepare_config(str(bad_file))
 
-
-class TestOracleWMSTargetCliExecute:
-    """Tests for execute method."""
-
     @patch("flext_target_oracle_wms.cli.sys.stdin", [])
     def test_execute_with_config_file(self, tmp_path: Path) -> None:
         cli = FlextTargetOracleWmsCli()
@@ -94,10 +86,6 @@ class TestOracleWMSTargetCliExecute:
         cli = FlextTargetOracleWmsCli()
         result = cli.execute()
         assert result.success
-
-
-class TestMain:
-    """Tests for main() entry point."""
 
     @patch("flext_target_oracle_wms.cli.sys.stdin", [])
     @patch("flext_target_oracle_wms.cli.sys.argv", ["target-oracle-wms"])

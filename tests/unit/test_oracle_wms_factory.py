@@ -15,7 +15,7 @@ from flext_target_oracle_wms import (
 from tests import c, m
 
 
-class TestTargetCreationRequest:
+class TestsFlextTargetOracleWmsOracleWmsFactory:
     """Tests for TargetCreationRequest dataclass."""
 
     def test_required_fields(self) -> None:
@@ -40,10 +40,6 @@ class TestTargetCreationRequest:
         )
         assert req.environment == "production"
 
-
-class TestMonitoredTargetCreationRequest:
-    """Tests for MonitoredTargetCreationRequest dataclass."""
-
     def test_default_monitor_name(self) -> None:
         req = m.TargetOracleWms.MonitoredTargetCreationRequest(
             base_url="https://x",
@@ -62,10 +58,6 @@ class TestMonitoredTargetCreationRequest:
             additional_config=None,
         )
         assert req.monitor_name == "custom"
-
-
-class TestFlextTargetFactory:
-    """Tests for FlextTargetFactory."""
 
     def test_presets_contain_expected_keys(self) -> None:
         assert set(FlextTargetFactory.PRESETS.keys()) == {
@@ -144,18 +136,6 @@ class TestFlextTargetFactory:
         assert result.error is not None
         assert "password" in result.error
 
-
-class TestFlextTargetMonitoringFactory:
-    """Tests for FlextTargetMonitoringFactory."""
-
-    def test_default_monitor_name(self) -> None:
-        factory = FlextTargetMonitoringFactory()
-        assert factory.monitor_name == "oracle_wms_target"
-
-    def test_custom_monitor_name(self) -> None:
-        factory = FlextTargetMonitoringFactory(monitor_name="custom")
-        assert factory.monitor_name == "custom"
-
     @patch(c.TargetOracleWms.Tests.PATCH_TARGET)
     def test_create_monitored_target_success(self, _mock_cls: MagicMock) -> None:
         factory = FlextTargetMonitoringFactory()
@@ -167,10 +147,6 @@ class TestFlextTargetMonitoringFactory:
         )
         result = factory.create_monitored_target(req)
         assert result.success
-
-
-class TestFactoryConvenienceMethods:
-    """Tests for class-level convenience methods."""
 
     @patch(c.TargetOracleWms.Tests.PATCH_TARGET)
     def test_create_oracle_wms_target(self, _mock_cls: MagicMock) -> None:

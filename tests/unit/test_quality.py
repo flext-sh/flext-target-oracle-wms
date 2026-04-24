@@ -14,7 +14,7 @@ from flext_target_oracle_wms import (
 from tests import c, m, p, u
 
 
-class TestModelsNamespace:
+class TestsFlextTargetOracleWmsQuality:
     """Verify m.* namespace access."""
 
     def test_m_is_models_class(self) -> None:
@@ -44,10 +44,6 @@ class TestModelsNamespace:
     def test_oracle_wms_namespace_inherited(self) -> None:
         pass
 
-
-class TestConstantsNamespace:
-    """Verify c.* namespace access."""
-
     def test_c_is_constants_class(self) -> None:
         assert c is not None
 
@@ -63,10 +59,6 @@ class TestConstantsNamespace:
         assert c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE > 0
         assert c.TargetOracleWms.OracleWms.DEFAULT_TIMEOUT > 0
 
-
-class TestProtocolsNamespace:
-    """Verify p.* namespace access."""
-
     def test_p_is_protocols_class(self) -> None:
         assert p is not None
 
@@ -75,10 +67,6 @@ class TestProtocolsNamespace:
 
     def test_data_transformation_protocol_exists(self) -> None:
         pass
-
-
-class TestClassAttributes:
-    """Verify class attributes and defaults."""
 
     def test_target_name(self) -> None:
         assert FlextTargetOracleWms.name == "target-oracle-wms"

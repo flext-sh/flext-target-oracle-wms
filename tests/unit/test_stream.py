@@ -38,7 +38,7 @@ def _record_msg(
     )
 
 
-class TestStreamProcessorInitialize:
+class TestsFlextTargetOracleWmsStream:
     """Tests for FlextTargetOracleWmsStreamProcessor.initialize_stream."""
 
     def test_initialize_stream_success(self) -> None:
@@ -60,10 +60,6 @@ class TestStreamProcessorInitialize:
         table_result = tm.get_table_name("items")
         assert table_result.success
         assert table_result.value == "ITEMS"
-
-
-class TestStreamProcessorRecord:
-    """Tests for FlextTargetOracleWmsStreamProcessor.process_record."""
 
     def test_process_record_after_init(self) -> None:
         proc = FlextTargetOracleWmsStreamProcessor(
@@ -116,10 +112,6 @@ class TestStreamProcessorRecord:
         tm.register_stream("s")
         result = proc.process_record(_record_msg("s"), _schema_msg("s"))
         assert result.failure
-
-
-class TestStreamProcessorMultipleStreams:
-    """Tests for processing multiple streams."""
 
     def test_two_independent_streams(self) -> None:
         proc = FlextTargetOracleWmsStreamProcessor(
