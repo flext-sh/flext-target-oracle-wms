@@ -8,6 +8,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from typing import Final
+
 from flext_tests import FlextTestsConstants
 
 from flext_target_oracle_wms import FlextTargetOracleWmsConstants
@@ -17,6 +19,35 @@ class TestsFlextTargetOracleWmsConstants(
     FlextTestsConstants, FlextTargetOracleWmsConstants
 ):
     """Test constants for flext-target-oracle-wms."""
+
+    class TargetOracleWms(FlextTargetOracleWmsConstants.TargetOracleWms):
+        """Target Oracle WMS domain test constants namespace."""
+
+        class Tests(FlextTestsConstants.Tests):
+            """Target Oracle WMS-specific test constants."""
+
+            class ModuleGovernance:
+                """Module-governance constants for target-oracle-wms tests."""
+
+                PROJECT_ROOT_PARENT_DEPTH: Final[int] = 1
+                SRC_DIR: Final[str] = "src"
+                PACKAGE_DIR: Final[str] = "flext_target_oracle_wms"
+                ALLOWED_MODULE_FUNCTIONS: Final[dict[str, frozenset[str]]] = {
+                    "cli.py": frozenset({"main"}),
+                }
+
+            class Benchmarks:
+                """Benchmark constants for target-oracle-wms tests."""
+
+                PERF_ITERATIONS: Final[int] = 500
+                PERF_THRESHOLD_SEC: Final[float] = 5.0
+
+            class Factory:
+                """Factory-test constants for target-oracle-wms tests."""
+
+                PATCH_TARGET: Final[str] = (
+                    "flext_target_oracle_wms.factory.FlextTargetOracleWms"
+                )
 
 
 c = TestsFlextTargetOracleWmsConstants

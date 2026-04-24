@@ -20,9 +20,11 @@ class FlextTargetOracleWmsConstants(meltano_c, c):
         class OracleWms:
             """Oracle WMS runtime defaults."""
 
-            DEFAULT_TIMEOUT: Final[int] = meltano_c.DEFAULT_TIMEOUT_SECONDS
-            DEFAULT_MAX_RETRIES: Final[int] = meltano_c.DEFAULT_MAX_RETRY_ATTEMPTS
-            DEFAULT_BATCH_SIZE: Final[int] = meltano_c.DEFAULT_BATCH_SIZE
+            DEFAULT_TIMEOUT: Final[int] = meltano_c.Meltano.DEFAULT_TIMEOUT_SECONDS
+            DEFAULT_MAX_RETRIES: Final[int] = 3
+            DEFAULT_BATCH_SIZE: Final[int] = (
+                meltano_c.Meltano.BATCH_DEFAULT_DEFAULT_BATCH_SIZE
+            )
 
         class LoadMethods:
             """Allowed load methods."""
