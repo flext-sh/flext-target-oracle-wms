@@ -13,7 +13,7 @@ from collections.abc import (
 import pytest
 
 from flext_target_oracle_wms import Target as FlextTargetOracleWms
-from tests import m, t
+from tests import c, m, t
 
 
 def _valid_config() -> t.JsonMapping:
@@ -52,34 +52,35 @@ def _schema_msg(
     properties: Mapping[str, t.StrMapping] | None = None,
     key_properties: t.StrSequence | None = None,
 ) -> m.Meltano.SingerSchemaMessage:
-    return m.Meltano.SingerSchemaMessage.model_validate({
-        "type": "SCHEMA",
-        "stream": stream,
-        "schema": {
+    _ = properties
+    return m.Meltano.SingerSchemaMessage(
+        type=c.Meltano.SingerMessageType.SCHEMA,
+        stream=stream,
+        schema_definition={
             "type": "object",
         },
-        "key_properties": key_properties or ["id"],
-    })
+        key_properties=key_properties or ["id"],
+    )
 
 
 def _record_msg(
     stream: str = "test_stream",
     record: t.JsonMapping | None = None,
 ) -> m.Meltano.SingerRecordMessage:
-    return m.Meltano.SingerRecordMessage.model_validate({
-        "type": "RECORD",
-        "stream": stream,
-        "record": record or {"id": "1"},
-    })
+    return m.Meltano.SingerRecordMessage(
+        type=c.Meltano.SingerMessageType.RECORD,
+        stream=stream,
+        record=record or {"id": "1"},
+    )
 
 
 def _state_msg(
     state: t.JsonMapping | None = None,
 ) -> m.Meltano.SingerStateMessage:
-    return m.Meltano.SingerStateMessage.model_validate({
-        "type": "STATE",
-        "value": state or {"bookmarks": {}},
-    })
+    return m.Meltano.SingerStateMessage(
+        type=c.Meltano.SingerMessageType.STATE,
+        value=state or {"bookmarks": {}},
+    )
 
 
 class TestTargetInit:

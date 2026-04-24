@@ -5,16 +5,16 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
-from tests import c
+from tests import c, m
 
 
 def _package_root() -> Path:
     return (
         Path(__file__)
         .resolve()
-        .parents[c.TargetOracleWms.Tests.ModuleGovernance.PROJECT_ROOT_PARENT_DEPTH]
-        / c.TargetOracleWms.Tests.ModuleGovernance.SRC_DIR
-        / c.TargetOracleWms.Tests.ModuleGovernance.PACKAGE_DIR
+        .parents[c.TargetOracleWms.Tests.PROJECT_ROOT_PARENT_DEPTH]
+        / c.TargetOracleWms.Tests.SRC_DIR
+        / c.TargetOracleWms.Tests.PACKAGE_DIR
     )
 
 
@@ -47,11 +47,9 @@ def test_package_modules_do_not_define_unapproved_top_level_functions() -> None:
     violations: list[str] = []
     for module_path in _iter_package_modules():
         relative_module_path = str(module_path.relative_to(_package_root()))
-        allowed_functions = (
-            c.TargetOracleWms.Tests.ModuleGovernance.ALLOWED_MODULE_FUNCTIONS.get(
-                relative_module_path,
-                frozenset(),
-            )
+        allowed_functions = c.TargetOracleWms.Tests.ALLOWED_MODULE_FUNCTIONS.get(
+            relative_module_path,
+            frozenset(),
         )
         module_tree = _read_module_tree(module_path)
         unexpected_functions = sorted(
@@ -66,3 +64,13 @@ def test_package_modules_do_not_define_unapproved_top_level_functions() -> None:
     assert not violations, (
         f"Top-level functions are forbidden outside approved entrypoints: {violations}"
     )
+
+
+def test_target_oracle_wms_namespace_does_not_define_local_singer_message_models() -> (
+    None
+):
+    assert hasattr(m.TargetOracleWms, "SingerFieldSchema")
+    assert hasattr(m.TargetOracleWms, "SingerSchemaProperties")
+    assert not hasattr(m.TargetOracleWms, "SingerSchemaMessage")
+    assert not hasattr(m.TargetOracleWms, "SingerRecordMessage")
+    assert not hasattr(m.TargetOracleWms, "SingerCatalogEntry")

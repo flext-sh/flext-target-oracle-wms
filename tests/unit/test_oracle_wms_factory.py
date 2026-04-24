@@ -74,7 +74,7 @@ class TestFlextTargetFactory:
             "testing",
         }
 
-    @patch(c.TargetOracleWms.Tests.Factory.PATCH_TARGET)
+    @patch(c.TargetOracleWms.Tests.PATCH_TARGET)
     def test_create_target_success(self, _mock_cls: MagicMock) -> None:
         req = m.TargetOracleWms.TargetCreationRequest(
             base_url="https://x",
@@ -85,7 +85,7 @@ class TestFlextTargetFactory:
         result = FlextTargetFactory.create_target(req)
         assert result.success
 
-    @patch(c.TargetOracleWms.Tests.Factory.PATCH_TARGET)
+    @patch(c.TargetOracleWms.Tests.PATCH_TARGET)
     def test_create_target_with_preset(self, _mock_cls: MagicMock) -> None:
         req = m.TargetOracleWms.TargetCreationRequest(
             base_url="https://x",
@@ -97,7 +97,7 @@ class TestFlextTargetFactory:
         result = FlextTargetFactory.create_target(req)
         assert result.success
 
-    @patch(c.TargetOracleWms.Tests.Factory.PATCH_TARGET)
+    @patch(c.TargetOracleWms.Tests.PATCH_TARGET)
     def test_create_target_with_additional_config(self, _mock_cls: MagicMock) -> None:
         req = m.TargetOracleWms.TargetCreationRequest(
             base_url="https://x",
@@ -108,7 +108,7 @@ class TestFlextTargetFactory:
         result = FlextTargetFactory.create_target(req)
         assert result.success
 
-    @patch(c.TargetOracleWms.Tests.Factory.PATCH_TARGET)
+    @patch(c.TargetOracleWms.Tests.PATCH_TARGET)
     def test_create_from_config_dict_success(self, _mock_cls: MagicMock) -> None:
         result = FlextTargetFactory.create_from_config_dict({
             "base_url": "https://x",
@@ -156,7 +156,7 @@ class TestFlextTargetMonitoringFactory:
         factory = FlextTargetMonitoringFactory(monitor_name="custom")
         assert factory.monitor_name == "custom"
 
-    @patch(c.TargetOracleWms.Tests.Factory.PATCH_TARGET)
+    @patch(c.TargetOracleWms.Tests.PATCH_TARGET)
     def test_create_monitored_target_success(self, _mock_cls: MagicMock) -> None:
         factory = FlextTargetMonitoringFactory()
         req = m.TargetOracleWms.MonitoredTargetCreationRequest(
@@ -172,7 +172,7 @@ class TestFlextTargetMonitoringFactory:
 class TestFactoryConvenienceMethods:
     """Tests for class-level convenience methods."""
 
-    @patch(c.TargetOracleWms.Tests.Factory.PATCH_TARGET)
+    @patch(c.TargetOracleWms.Tests.PATCH_TARGET)
     def test_create_oracle_wms_target(self, _mock_cls: MagicMock) -> None:
         result = FlextTargetMonitoringFactory.create_oracle_wms_target(
             base_url="https://x",
@@ -181,7 +181,7 @@ class TestFactoryConvenienceMethods:
         )
         assert result.success
 
-    @patch(c.TargetOracleWms.Tests.Factory.PATCH_TARGET)
+    @patch(c.TargetOracleWms.Tests.PATCH_TARGET)
     def test_create_oracle_wms_target_with_preset(self, _mock_cls: MagicMock) -> None:
         result = FlextTargetMonitoringFactory.create_oracle_wms_target(
             base_url="https://x",
@@ -191,7 +191,7 @@ class TestFactoryConvenienceMethods:
         )
         assert result.success
 
-    @patch(c.TargetOracleWms.Tests.Factory.PATCH_TARGET)
+    @patch(c.TargetOracleWms.Tests.PATCH_TARGET)
     def test_create_monitored_oracle_wms_target(self, _mock_cls: MagicMock) -> None:
         req = m.TargetOracleWms.MonitoredTargetCreationRequest(
             base_url="https://x",

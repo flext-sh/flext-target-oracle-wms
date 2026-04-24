@@ -26,28 +26,17 @@ class TestsFlextTargetOracleWmsConstants(
         class Tests(FlextTestsConstants.Tests):
             """Target Oracle WMS-specific test constants."""
 
-            class ModuleGovernance:
-                """Module-governance constants for target-oracle-wms tests."""
-
-                PROJECT_ROOT_PARENT_DEPTH: Final[int] = 1
-                SRC_DIR: Final[str] = "src"
-                PACKAGE_DIR: Final[str] = "flext_target_oracle_wms"
-                ALLOWED_MODULE_FUNCTIONS: Final[dict[str, frozenset[str]]] = {
-                    "cli.py": frozenset({"main"}),
-                }
-
-            class Benchmarks:
-                """Benchmark constants for target-oracle-wms tests."""
-
-                PERF_ITERATIONS: Final[int] = 500
-                PERF_THRESHOLD_SEC: Final[float] = 5.0
-
-            class Factory:
-                """Factory-test constants for target-oracle-wms tests."""
-
-                PATCH_TARGET: Final[str] = (
-                    "flext_target_oracle_wms.factory.FlextTargetOracleWms"
-                )
+            PROJECT_ROOT_PARENT_DEPTH: Final[int] = 1
+            SRC_DIR: Final[str] = "src"
+            PACKAGE_DIR: Final[str] = "flext_target_oracle_wms"
+            ALLOWED_MODULE_FUNCTIONS: Final[dict[str, frozenset[str]]] = {
+                "cli.py": frozenset({"main"}),
+            }
+            PERF_ITERATIONS: Final[int] = 500
+            PERF_THRESHOLD_SEC: Final[float] = 5.0
+            PATCH_TARGET: Final[str] = (
+                "flext_target_oracle_wms.factory.FlextTargetOracleWms"
+            )
 
 
 c = TestsFlextTargetOracleWmsConstants

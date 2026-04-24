@@ -11,7 +11,7 @@ from unittest.mock import MagicMock
 from flext_target_oracle_wms import (
     StreamProcessor as FlextTargetOracleWmsStreamProcessor,
 )
-from tests import m, r, t, u
+from tests import c, m, r, t, u
 
 
 def _schema_msg(
@@ -19,23 +19,23 @@ def _schema_msg(
     schema: t.JsonMapping | None = None,
     key_properties: t.StrSequence | None = None,
 ) -> m.Meltano.SingerSchemaMessage:
-    return m.Meltano.SingerSchemaMessage.model_validate({
-        "type": "SCHEMA",
-        "stream": stream,
-        "schema": schema or {"type": "object"},
-        "key_properties": key_properties or ["id"],
-    })
+    return m.Meltano.SingerSchemaMessage(
+        type=c.Meltano.SingerMessageType.SCHEMA,
+        stream=stream,
+        schema_definition=schema or {"type": "object"},
+        key_properties=key_properties or ["id"],
+    )
 
 
 def _record_msg(
     stream: str = "test_stream",
     record: t.JsonMapping | None = None,
 ) -> m.Meltano.SingerRecordMessage:
-    return m.Meltano.SingerRecordMessage.model_validate({
-        "type": "RECORD",
-        "stream": stream,
-        "record": record or {"id": "1"},
-    })
+    return m.Meltano.SingerRecordMessage(
+        type=c.Meltano.SingerMessageType.RECORD,
+        stream=stream,
+        record=record or {"id": "1"},
+    )
 
 
 class TestStreamProcessorInitialize:
