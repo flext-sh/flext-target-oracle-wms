@@ -1,0 +1,14 @@
+src/flext_target_oracle_wms/models.py
+  h_9db9d35f50cf33 74,157,187
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "0101d28364f0839f2e070bb17ead914769c1fd66",
+  "prompts": {},
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
