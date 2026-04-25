@@ -1,4 +1,4 @@
-"""Tests for FlextTargetOracleWmsCatalogManager.
+"""Tests for u.TargetOracleWms.CatalogManager.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -8,10 +8,7 @@ from __future__ import annotations
 
 import pytest
 
-from flext_target_oracle_wms import (
-    CatalogManager as FlextTargetOracleWmsCatalogManager,
-)
-from tests import c, m, t
+from tests import c, m, t, u
 
 
 def _make_schema_message(
@@ -30,19 +27,19 @@ def _make_schema_message(
 
 class TestsFlextTargetOracleWmsCatalog:
     def test_add_stream_returns_success(self) -> None:
-        mgr = FlextTargetOracleWmsCatalogManager()
+        mgr = u.TargetOracleWms.CatalogManager()
         result = mgr.add_stream(_make_schema_message())
         assert result.success
         assert result.value is True
 
     def test_add_stream_makes_stream_retrievable(self) -> None:
-        mgr = FlextTargetOracleWmsCatalogManager()
+        mgr = u.TargetOracleWms.CatalogManager()
         mgr.add_stream(_make_schema_message("inventory"))
         result = mgr.get_stream("inventory")
         assert result.success
 
     def test_add_stream_overwrites_existing(self) -> None:
-        mgr = FlextTargetOracleWmsCatalogManager()
+        mgr = u.TargetOracleWms.CatalogManager()
         schema_v1 = _make_schema_message("s", key_properties=["id"])
         schema_v2 = _make_schema_message("s", key_properties=["id", "name"])
         mgr.add_stream(schema_v1)
@@ -54,14 +51,14 @@ class TestsFlextTargetOracleWmsCatalog:
         assert entry.key_properties == ["id", "name"]
 
     def test_get_nonexistent_stream_fails(self) -> None:
-        mgr = FlextTargetOracleWmsCatalogManager()
+        mgr = u.TargetOracleWms.CatalogManager()
         result = mgr.get_stream("nope")
         assert result.failure
         assert result.error is not None
         assert "nope" in result.error
 
     def test_get_existing_stream_returns_catalog_entry(self) -> None:
-        mgr = FlextTargetOracleWmsCatalogManager()
+        mgr = u.TargetOracleWms.CatalogManager()
         mgr.add_stream(_make_schema_message("orders"))
         result = mgr.get_stream("orders")
         assert result.success
@@ -71,7 +68,7 @@ class TestsFlextTargetOracleWmsCatalog:
         assert entry.tap_stream_id == "orders"
 
     def test_entry_has_correct_key_properties(self) -> None:
-        mgr = FlextTargetOracleWmsCatalogManager()
+        mgr = u.TargetOracleWms.CatalogManager()
         mgr.add_stream(_make_schema_message("items", key_properties=["item_id", "lot"]))
         stream_result = mgr.get_stream("items")
         assert stream_result.success
@@ -80,7 +77,7 @@ class TestsFlextTargetOracleWmsCatalog:
         assert entry.key_properties == ["item_id", "lot"]
 
     def test_multiple_independent_streams(self) -> None:
-        mgr = FlextTargetOracleWmsCatalogManager()
+        mgr = u.TargetOracleWms.CatalogManager()
         for name in ("alpha", "beta", "gamma"):
             mgr.add_stream(_make_schema_message(name))
         for name in ("alpha", "beta", "gamma"):
@@ -91,6 +88,6 @@ class TestsFlextTargetOracleWmsCatalog:
         ["simple", "with-dashes", "with_underscores", "CamelCase", "stream.dotted"],
     )
     def test_various_stream_names(self, stream_name: str) -> None:
-        mgr = FlextTargetOracleWmsCatalogManager()
+        mgr = u.TargetOracleWms.CatalogManager()
         mgr.add_stream(_make_schema_message(stream_name))
         assert mgr.get_stream(stream_name).success

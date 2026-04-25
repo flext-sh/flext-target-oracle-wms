@@ -13,11 +13,8 @@ from unittest.mock import MagicMock, patch
 
 import orjson
 
-from flext_target_oracle_wms import (
-    FlextTargetOracleWmsCli,
-    Target as FlextTargetOracleWms,
-)
-from tests import t
+from flext_target_oracle_wms import FlextTargetOracleWmsCli
+from tests import t, u
 
 
 def _valid_config() -> t.JsonMapping:
@@ -57,7 +54,7 @@ class TestsFlextTargetOracleWmsWorkflow:
     """End-to-end Singer SCHEMA → RECORD → STATE workflow."""
 
     def test_single_stream_workflow(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         lines = [
             _schema_line(
                 "inventory",
@@ -72,7 +69,7 @@ class TestsFlextTargetOracleWmsWorkflow:
         assert result.success
 
     def test_multiple_stream_workflow(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         lines = [
             _schema_line("orders", {"order_id": {"type": "string"}}, ["order_id"]),
             _schema_line("items", {"item_id": {"type": "string"}}, ["item_id"]),
@@ -84,7 +81,7 @@ class TestsFlextTargetOracleWmsWorkflow:
         assert result.success
 
     def test_schema_update_mid_stream(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         lines = [
             _schema_line("s", {"id": {"type": "string"}}, ["id"]),
             _record_line("s", {"id": "1"}),
@@ -99,7 +96,7 @@ class TestsFlextTargetOracleWmsWorkflow:
         assert result.success
 
     def test_state_only_workflow(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         lines = [_state_line({"bookmarks": {}})]
         result = target.process_lines(lines)
         assert result.success
@@ -124,7 +121,7 @@ class TestsFlextTargetOracleWmsWorkflow:
         assert result.success
 
     def test_malformed_json_stops_processing(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         lines = [
             _schema_line("s", {"id": {"type": "string"}}, ["id"]),
             "NOT VALID JSON",
@@ -133,7 +130,7 @@ class TestsFlextTargetOracleWmsWorkflow:
         assert result.failure
 
     def test_record_for_unknown_stream_fails(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         lines = [_record_line("unknown_stream", {"id": "1"})]
         result = target.process_lines(lines)
         assert result.failure

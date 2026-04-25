@@ -1,4 +1,4 @@
-"""Tests for FlextTargetOracleWmsStreamProcessor.
+"""Tests for u.TargetOracleWms.StreamProcessor.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -8,9 +8,6 @@ from __future__ import annotations
 
 from typing import override
 
-from flext_target_oracle_wms import (
-    StreamProcessor as FlextTargetOracleWmsStreamProcessor,
-)
 from tests import c, m, p, r, t, u
 
 
@@ -52,10 +49,10 @@ def _record_msg(
 
 
 class TestsFlextTargetOracleWmsStream:
-    """Tests for FlextTargetOracleWmsStreamProcessor.initialize_stream."""
+    """Tests for u.TargetOracleWms.StreamProcessor.initialize_stream."""
 
     def test_initialize_stream_success(self) -> None:
-        proc = FlextTargetOracleWmsStreamProcessor(
+        proc = u.TargetOracleWms.StreamProcessor(
             u.TargetOracleWms.WMSTableManager(),
             u.TargetOracleWms.WMSDataTransformer(),
         )
@@ -65,7 +62,7 @@ class TestsFlextTargetOracleWmsStream:
 
     def test_initialize_registers_table(self) -> None:
         tm = u.TargetOracleWms.WMSTableManager()
-        proc = FlextTargetOracleWmsStreamProcessor(
+        proc = u.TargetOracleWms.StreamProcessor(
             tm,
             u.TargetOracleWms.WMSDataTransformer(),
         )
@@ -75,7 +72,7 @@ class TestsFlextTargetOracleWmsStream:
         assert table_result.value == "ITEMS"
 
     def test_process_record_after_init(self) -> None:
-        proc = FlextTargetOracleWmsStreamProcessor(
+        proc = u.TargetOracleWms.StreamProcessor(
             u.TargetOracleWms.WMSTableManager(),
             u.TargetOracleWms.WMSDataTransformer(),
         )
@@ -85,7 +82,7 @@ class TestsFlextTargetOracleWmsStream:
         assert result.success
 
     def test_process_record_without_init_fails(self) -> None:
-        proc = FlextTargetOracleWmsStreamProcessor(
+        proc = u.TargetOracleWms.StreamProcessor(
             u.TargetOracleWms.WMSTableManager(),
             u.TargetOracleWms.WMSDataTransformer(),
         )
@@ -100,7 +97,7 @@ class TestsFlextTargetOracleWmsStream:
         )
 
     def test_process_record_uppercases_keys(self) -> None:
-        proc = FlextTargetOracleWmsStreamProcessor(
+        proc = u.TargetOracleWms.StreamProcessor(
             u.TargetOracleWms.WMSTableManager(),
             u.TargetOracleWms.WMSDataTransformer(),
         )
@@ -119,13 +116,13 @@ class TestsFlextTargetOracleWmsStream:
 
     def test_process_record_with_transformer_failure(self) -> None:
         tm = u.TargetOracleWms.WMSTableManager()
-        proc = FlextTargetOracleWmsStreamProcessor(tm, _FailingTransformer())
+        proc = u.TargetOracleWms.StreamProcessor(tm, _FailingTransformer())
         tm.register_stream("s")
         result = proc.process_record(_record_msg("s"), _schema_msg("s"))
         assert result.failure
 
     def test_two_independent_streams(self) -> None:
-        proc = FlextTargetOracleWmsStreamProcessor(
+        proc = u.TargetOracleWms.StreamProcessor(
             u.TargetOracleWms.WMSTableManager(),
             u.TargetOracleWms.WMSDataTransformer(),
         )

@@ -13,8 +13,7 @@ from collections.abc import (
 import orjson
 import pytest
 
-from flext_target_oracle_wms import Target as FlextTargetOracleWms
-from tests import t
+from tests import t, u
 
 
 def _valid_config() -> t.JsonMapping:
@@ -55,7 +54,7 @@ class TestsFlextTargetOracleWmsOracle:
     """Integration tests for full target lifecycle."""
 
     def test_setup_process_cleanup(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         assert target.setup().success
         lines = [
             _schema_line(
@@ -70,7 +69,7 @@ class TestsFlextTargetOracleWmsOracle:
         assert target.cleanup().success
 
     def test_multiple_batches(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         target.setup()
         batch1 = [
             _schema_line("orders", {"order_id": {"type": "string"}}, ["order_id"]),
@@ -88,7 +87,7 @@ class TestsFlextTargetOracleWmsOracle:
     """Integration tests for multi-stream scenarios."""
 
     def test_three_streams_interleaved(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         target.setup()
         lines = [
             _schema_line("orders", {"id": {"type": "string"}}, ["id"]),

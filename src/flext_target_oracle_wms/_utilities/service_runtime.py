@@ -5,13 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import override
 
-from flext_target_oracle_wms import (
-    Target as FlextTargetOracleWmsTarget,
-    m,
-    p,
-    t,
-    u,
-)
+from flext_target_oracle_wms import m, p, t, u
 
 
 class FlextTargetOracleWmsServiceRuntime:
@@ -26,13 +20,13 @@ class FlextTargetOracleWmsServiceRuntime:
         """Singer sink adapter delegating records to the Oracle WMS runtime."""
 
         name = "target-oracle-wms-sink"
-        _runtime_target: FlextTargetOracleWmsTarget
+        _runtime_target: u.TargetOracleWms.Target
 
         @classmethod
         def create(
             cls,
             *,
-            runtime_target: FlextTargetOracleWmsTarget,
+            runtime_target: u.TargetOracleWms.Target,
             target: m.Meltano.SingerTargetBase,
             stream_name: str,
             schema: dict[str, t.JsonValue],
@@ -87,7 +81,7 @@ class FlextTargetOracleWmsServiceRuntime:
         normalized_target_config = u.Meltano.normalize_runtime_json_mapping(
             target_config,
         )
-        runtime_target = FlextTargetOracleWmsTarget(normalized_target_config)
+        runtime_target = u.TargetOracleWms.Target(normalized_target_config)
         normalized_schema = cls.normalize_flat_schema(schema)
         schema_message = m.Meltano.SingerSchemaMessage.model_validate({
             "type": "SCHEMA",

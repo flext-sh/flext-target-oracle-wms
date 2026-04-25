@@ -12,8 +12,7 @@ from collections.abc import (
 
 import pytest
 
-from flext_target_oracle_wms import Target as FlextTargetOracleWms
-from tests import c, m, t
+from tests import c, m, t, u
 
 
 def _valid_config() -> t.JsonMapping:
@@ -91,48 +90,48 @@ class TestsFlextTargetOracleWmsTarget:
     """Tests for FlextTargetOracleWms initialization."""
 
     def test_init_with_valid_config(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         assert target.name == "target-oracle-wms"
         assert target.settings is not None
 
     def test_init_with_invalid_config_raises(self) -> None:
         with pytest.raises(Exception):
-            FlextTargetOracleWms({"bad": "settings"})
+            u.TargetOracleWms.Target({"bad": "settings"})
 
     def test_has_catalog_manager(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         assert target.catalog_manager is not None
 
     def test_has_stream_processor(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         assert target.stream_processor is not None
 
     def test_setup_returns_success(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         result = target.setup()
         assert result.success
         assert result.value is True
 
     def test_cleanup_returns_success(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         result = target.cleanup()
         assert result.success
         assert result.value is True
 
     def test_handle_schema_success(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         msg = _schema_msg("orders")
         result = target.handle_schema_message(msg)
         assert result.success
 
     def test_schema_registered_in_catalog(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         msg = _schema_msg("items")
         target.handle_schema_message(msg)
         assert target.catalog_manager.get_stream("items").success
 
     def test_record_without_schema_fails(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         msg = _record_msg("orphan", {"id": "1"})
         result = target.handle_record_message(msg)
         assert result.failure
@@ -140,7 +139,7 @@ class TestsFlextTargetOracleWmsTarget:
         assert "schema not registered" in result.error.lower()
 
     def test_record_after_schema_succeeds(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         schema = _schema_msg("s")
         target.handle_schema_message(schema)
         record = _record_msg("s", {"id": "1"})
@@ -148,30 +147,30 @@ class TestsFlextTargetOracleWmsTarget:
         assert result.success
 
     def test_state_message_succeeds(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         msg = _state_msg({"bookmarks": {"pos": "42"}})
         result = target.handle_state_message(msg)
         assert result.success
 
     def test_empty_lines_succeeds(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         result = target.process_lines([])
         assert result.success
 
     def test_blank_lines_ignored(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         result = target.process_lines(["", "  ", "\n"])
         assert result.success
 
     def test_invalid_json_fails(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         result = target.process_lines(["not json"])
         assert result.failure
         assert result.error is not None
         assert "invalid json" in result.error.lower()
 
     def test_schema_then_record_then_state(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         lines = [
             _schema_line(
                 "orders",
@@ -184,7 +183,7 @@ class TestsFlextTargetOracleWmsTarget:
         assert result.success
 
     def test_record_before_schema_fails(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         lines = [_record_line("orders", {"id": "1"})]
         result = target.process_lines(lines)
         assert result.failure

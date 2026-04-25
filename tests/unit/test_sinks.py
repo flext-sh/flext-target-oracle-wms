@@ -8,11 +8,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_target_oracle_wms import (
-    CatalogManager as FlextTargetOracleWmsCatalogManager,
-    StreamProcessor as FlextTargetOracleWmsStreamProcessor,
-    Target as FlextTargetOracleWms,
-)
 from tests import c, m, t, u
 
 
@@ -52,38 +47,38 @@ class TestsFlextTargetOracleWmsSinks:
     """Verify target initializes all expected sub-components."""
 
     def test_target_has_catalog_manager(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
-        assert isinstance(target.catalog_manager, FlextTargetOracleWmsCatalogManager)
+        target = u.TargetOracleWms.Target(_valid_config())
+        assert isinstance(target.catalog_manager, u.TargetOracleWms.CatalogManager)
 
     def test_target_has_table_manager(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         assert isinstance(target.table_manager, u.TargetOracleWms.WMSTableManager)
 
     def test_target_has_data_transformer(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         assert isinstance(target.data_transformer, u.TargetOracleWms.WMSDataTransformer)
 
     def test_target_has_stream_processor(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
-        assert isinstance(target.stream_processor, FlextTargetOracleWmsStreamProcessor)
+        target = u.TargetOracleWms.Target(_valid_config())
+        assert isinstance(target.stream_processor, u.TargetOracleWms.StreamProcessor)
 
     def test_stream_processor_uses_table_manager(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         assert target.stream_processor.table_manager is target.table_manager
 
     def test_stream_processor_uses_data_transformer(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         assert target.stream_processor.data_transformer is target.data_transformer
 
     def test_schema_registers_in_both_catalog_and_table(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         schema = _schema_msg("items")
         target.handle_schema_message(schema)
         assert target.catalog_manager.get_stream("items").success
         assert target.table_manager.get_table_name("items").success
 
     def test_table_name_is_uppercased_stream(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         schema = _schema_msg("orders")
         target.handle_schema_message(schema)
         table_result = target.table_manager.get_table_name("orders")
@@ -92,7 +87,7 @@ class TestsFlextTargetOracleWmsSinks:
         assert table_result.value == "ORDERS"
 
     def test_record_keys_uppercased(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         schema = _schema_msg("s")
         target.handle_schema_message(schema)
         record = _record_msg("s", {"name": "test"})

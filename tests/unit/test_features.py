@@ -11,7 +11,6 @@ from collections.abc import (
     Sequence,
 )
 
-from flext_target_oracle_wms import Target as FlextTargetOracleWms
 from tests import c, m, t, u
 
 
@@ -29,16 +28,16 @@ class TestsFlextTargetOracleWmsFeatures:
     """Verify core target features."""
 
     def test_target_initialization(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         assert target.name == "target-oracle-wms"
 
     def test_target_setup_cleanup_lifecycle(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         assert target.setup().success
         assert target.cleanup().success
 
     def test_target_process_empty_lines(self) -> None:
-        target = FlextTargetOracleWms(_valid_config())
+        target = u.TargetOracleWms.Target(_valid_config())
         assert target.process_lines([]).success
 
     def test_type_converter_handles_all_types(self) -> None:

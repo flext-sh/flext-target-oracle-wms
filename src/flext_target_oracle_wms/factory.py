@@ -7,7 +7,7 @@ from collections.abc import (
 )
 from typing import ClassVar
 
-from flext_target_oracle_wms import Target as FlextTargetOracleWms, c, m, p, r, t, u
+from flext_target_oracle_wms import c, m, p, r, t, u
 
 
 class FlextTargetFactory:
@@ -43,7 +43,7 @@ class FlextTargetFactory:
     def create_from_config_dict(
         cls,
         settings: t.JsonMapping,
-    ) -> p.Result[FlextTargetOracleWms]:
+    ) -> p.Result[u.TargetOracleWms.Target]:
         """Create target from plain dictionary settings via Pydantic validation."""
         known_keys = {"base_url", "username", "password", "environment", "preset"}
         additional = {k: v for k, v in settings.items() if k not in known_keys}
@@ -53,14 +53,14 @@ class FlextTargetFactory:
                 "additional_config": additional or None,
             })
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as exc:
-            return r[FlextTargetOracleWms].fail(str(exc))
+            return r[u.TargetOracleWms.Target].fail(str(exc))
         return cls.create_target(request)
 
     @classmethod
     def create_target(
         cls,
         request: m.TargetOracleWms.TargetCreationRequest,
-    ) -> p.Result[FlextTargetOracleWms]:
+    ) -> p.Result[u.TargetOracleWms.Target]:
         """Create target instance from validated request."""
         settings: t.MutableJsonMapping = {
             "base_url": request.base_url,
@@ -73,7 +73,7 @@ class FlextTargetFactory:
         if request.additional_config is not None:
             settings.update(request.additional_config)
         cls.logger.info("Created Oracle WMS target", environment=request.environment)
-        return r[FlextTargetOracleWms].ok(FlextTargetOracleWms(settings))
+        return r[u.TargetOracleWms.Target].ok(u.TargetOracleWms.Target(settings))
 
 
 class FlextTargetMonitoringFactory:
@@ -86,7 +86,7 @@ class FlextTargetMonitoringFactory:
     def create_monitored_target(
         self,
         request: m.TargetOracleWms.MonitoredTargetCreationRequest,
-    ) -> p.Result[FlextTargetOracleWms]:
+    ) -> p.Result[u.TargetOracleWms.Target]:
         """Create monitored target using base factory."""
         base_request = m.TargetOracleWms.TargetCreationRequest.model_validate({
             "base_url": request.base_url,
@@ -106,7 +106,7 @@ class FlextTargetMonitoringFactory:
         environment: str = "development",
         preset: str | None = None,
         **settings: t.Scalar,
-    ) -> p.Result[FlextTargetOracleWms]:
+    ) -> p.Result[u.TargetOracleWms.Target]:
         """Convenience method to create base target instance."""
         request = m.TargetOracleWms.TargetCreationRequest.model_validate({
             "base_url": base_url,
@@ -121,7 +121,7 @@ class FlextTargetMonitoringFactory:
     @staticmethod
     def create_monitored_oracle_wms_target(
         request: m.TargetOracleWms.MonitoredTargetCreationRequest,
-    ) -> p.Result[FlextTargetOracleWms]:
+    ) -> p.Result[u.TargetOracleWms.Target]:
         """Convenience method to create monitored target instance."""
         factory = FlextTargetMonitoringFactory(request.monitor_name)
         return factory.create_monitored_target(request)

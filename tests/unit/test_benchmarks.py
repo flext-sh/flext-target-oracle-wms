@@ -12,7 +12,6 @@ import time
 from unittest.mock import MagicMock, patch
 
 from flext_target_oracle_wms import (
-    CatalogManager as FlextTargetOracleWmsCatalogManager,
     FlextTargetFactory,
     FlextTargetMonitoringFactory,
 )
@@ -77,7 +76,7 @@ class TestsFlextTargetOracleWmsBenchmarks:
         assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
 
     def test_add_and_get_stream_performance(self) -> None:
-        mgr = FlextTargetOracleWmsCatalogManager()
+        mgr = u.TargetOracleWms.CatalogManager()
         start = time.time()
         for i in range(c.TargetOracleWms.Tests.PERF_ITERATIONS):
             name = f"stream_{i}"

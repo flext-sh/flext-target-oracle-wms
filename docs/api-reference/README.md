@@ -19,7 +19,7 @@ This section is generated from public exports and real docstrings.
 
 ## Surface Summary
 
-- Primary facades: `FlextTargetFactory`, `FlextTargetMonitoringFactory`, `FlextTargetOracleWmsCli`, `FlextTargetOracleWmsConstants`, `FlextTargetOracleWmsModels`, `FlextTargetOracleWmsProtocols` (+4 more)
+- Primary facades: `FlextTargetOracleWmsModels`, `FlextTargetOracleWmsTypes`, `FlextTargetOracleWmsUtilitiesClient`, `FlextTargetOracleWmsUtilities`, `FlextTargetOracleWmsServiceRuntime`, `FlextTargetFactory` (+7 more)
 - Generated module pages: `10`
 
 - [Back to project docs](../index.md)

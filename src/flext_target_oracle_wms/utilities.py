@@ -17,16 +17,24 @@ from flext_target_oracle_wms._utilities.helpers import (
 from flext_target_oracle_wms.typings import t
 
 
-class FlextTargetOracleWmsUtilities(
-    FlextTargetOracleWmsUtilitiesClient,
-    FlextTargetOracleWmsUtilitiesHelpers,
-    FlextMeltanoUtilities,
-    u,
-):
-    """Namespace composing Singer-target client and helper utilities via MRO."""
+class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, u):
+    """Namespace exposing Singer-target Client and Helpers under TargetOracleWms.*."""
 
     class TargetOracleWms:
-        """Helpers for Singer message shape handling."""
+        """Project-local namespace aggregating Client and Helpers public classes."""
+
+        Client = FlextTargetOracleWmsUtilitiesClient
+        Helpers = FlextTargetOracleWmsUtilitiesHelpers
+
+        # Direct nested-class access for canonical u.TargetOracleWms.<Class> usage
+        CatalogManager = FlextTargetOracleWmsUtilitiesClient.CatalogManager
+        StreamProcessor = FlextTargetOracleWmsUtilitiesClient.StreamProcessor
+        Target = FlextTargetOracleWmsUtilitiesClient.Target
+        Validation = FlextTargetOracleWmsUtilitiesHelpers.Validation
+        WMSDataTransformer = FlextTargetOracleWmsUtilitiesHelpers.WMSDataTransformer
+        WMSSchemaMapper = FlextTargetOracleWmsUtilitiesHelpers.WMSSchemaMapper
+        WMSTableManager = FlextTargetOracleWmsUtilitiesHelpers.WMSTableManager
+        WMSTypeConverter = FlextTargetOracleWmsUtilitiesHelpers.WMSTypeConverter
 
         @staticmethod
         def create_record_message(

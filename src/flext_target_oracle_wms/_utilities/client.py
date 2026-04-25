@@ -223,13 +223,6 @@ class FlextTargetOracleWmsUtilitiesClient:
             return r[bool].ok(value=True)
 
 
-CatalogManager = FlextTargetOracleWmsUtilitiesClient.CatalogManager
-StreamProcessor = FlextTargetOracleWmsUtilitiesClient.StreamProcessor
-Target = FlextTargetOracleWmsUtilitiesClient.Target
-
 __all__: list[str] = [
-    "CatalogManager",
     "FlextTargetOracleWmsUtilitiesClient",
-    "StreamProcessor",
-    "Target",
 ]

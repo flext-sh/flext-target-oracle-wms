@@ -6,11 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_target_oracle_wms import (
-    CatalogManager as FlextTargetOracleWmsCatalogManager,
-    FlextTargetOracleWmsCli,
-    Target as FlextTargetOracleWms,
-)
+from flext_target_oracle_wms import FlextTargetOracleWmsCli
 from tests import c, m, p, u
 
 
@@ -69,7 +65,7 @@ class TestsFlextTargetOracleWmsQuality:
         pass
 
     def test_target_name(self) -> None:
-        assert FlextTargetOracleWms.name == "target-oracle-wms"
+        assert u.TargetOracleWms.Target.name == "target-oracle-wms"
 
     def test_cli_defaults(self) -> None:
         cli = FlextTargetOracleWmsCli()
@@ -77,7 +73,7 @@ class TestsFlextTargetOracleWmsQuality:
         assert cli.version == "0.9.0"
 
     def test_catalog_manager_instantiates(self) -> None:
-        mgr = FlextTargetOracleWmsCatalogManager()
+        mgr = u.TargetOracleWms.CatalogManager()
         assert mgr is not None
 
     def test_table_manager_instantiates(self) -> None:
