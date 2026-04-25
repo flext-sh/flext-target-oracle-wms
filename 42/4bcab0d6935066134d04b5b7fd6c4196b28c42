@@ -1,0 +1,30 @@
+src/flext_target_oracle_wms/protocols.py
+  8101ec7ad65f4317 10,16,29,40
+src/flext_target_oracle_wms/constants.py
+  8101ec7ad65f4317 8,12,24-25,28
+src/flext_target_oracle_wms/models.py
+  8101ec7ad65f4317 15,21,35,63,131,170,177,191
+src/flext_target_oracle_wms/utilities.py
+  8101ec7ad65f4317 8,12,15,20-23,25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "424bcab0d6935066134d04b5b7fd6c4196b28c42",
+  "prompts": {
+    "8101ec7ad65f4317": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "557c886b-b02d-489a-8237-05da7f2a1438",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "FLEXT Bot",
+      "messages": [],
+      "total_additions": 18,
+      "total_deletions": 18,
+      "accepted_lines": 20,
+      "overriden_lines": 2,
+      "messages_url": "https://usegitai.com/cas/bf0cb1818f000c7a54e23c4c8bb8fde9c1555796b03b17a1edbd55951f966dc7"
+    }
+  }
+}
