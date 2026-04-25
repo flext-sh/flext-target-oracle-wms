@@ -1,0 +1,52 @@
+src/flext_target_oracle_wms/_utilities/service_runtime.py
+  f23301fc760199d1 8,23,29,84
+tests/unit/test_quality.py
+  f23301fc760199d1 9,68,76
+tests/unit/test_target.py
+  f23301fc760199d1 15,93,99,102,106,110,116,122,128,134,142,150,156,161,166,173,186
+base.mk
+  f23301fc760199d1 537
+src/flext_target_oracle_wms/factory.py
+  f23301fc760199d1 10,46,56,63,76,89,109,124
+tests/unit/test_features.py
+  f23301fc760199d1 31,35,40
+tests/unit/test_benchmarks.py
+  f23301fc760199d1 79
+src/flext_target_oracle_wms/cli.py
+  f23301fc760199d1 8,36,45,78-80
+tests/unit/test_structure.py
+  f23301fc760199d1 12,20-21,23
+src/flext_target_oracle_wms/utilities.py
+  f23301fc760199d1 20-21,24-37
+tests/unit/test_catalog.py
+  f23301fc760199d1 1,11,30,36,42,54,61,71,80,91
+tests/unit/test_stream.py
+  f23301fc760199d1 1,52,55,65,75,85,100,119,125
+tests/integration/test_oracle.py
+  f23301fc760199d1 16,57,72,90
+tests/unit/test_sinks.py
+  f23301fc760199d1 50-51,54,58,62-63,66,70,74,81,90
+tests/unit/test_workflow.py
+  f23301fc760199d1 16-17,57,72,84,99,124,133
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "4fd45f1ae8132d6f1e89f39c4f7a32acf165703b",
+  "prompts": {
+    "f23301fc760199d1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a320e347-64b9-4ca2-8599-c05a2ae8bd25",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "FLEXT Bot",
+      "messages": [],
+      "total_additions": 105,
+      "total_deletions": 147,
+      "accepted_lines": 105,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/91db78ba586ff8ffb4f3ea756da9c11a038f40b45d2014934cf3a3c7c8e3b09e"
+    }
+  }
+}
