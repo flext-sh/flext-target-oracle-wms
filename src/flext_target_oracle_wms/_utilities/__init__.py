@@ -7,21 +7,8 @@ from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 _LAZY_IMPORTS = build_lazy_import_map(
     {
-        ".client": (
-            "CatalogManager",
-            "StreamProcessor",
-            "Target",
-        ),
-        ".helpers": (
-            "Validation",
-            "WMSDataTransformer",
-            "WMSSchemaMapper",
-            "WMSTableManager",
-            "WMSTypeConverter",
-            "create_record_message",
-            "create_schema_message",
-            "create_state_message",
-        ),
+        ".client": ("FlextTargetOracleWmsUtilitiesClient",),
+        ".helpers": ("FlextTargetOracleWmsUtilitiesHelpers",),
         ".service_runtime": ("FlextTargetOracleWmsServiceRuntime",),
     },
 )

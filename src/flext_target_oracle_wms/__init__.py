@@ -17,19 +17,10 @@ if _t.TYPE_CHECKING:
     from flext_oracle_wms import d, e, h, r, s, x
 
     from flext_target_oracle_wms._utilities.client import (
-        CatalogManager,
-        StreamProcessor,
-        Target,
+        FlextTargetOracleWmsUtilitiesClient,
     )
     from flext_target_oracle_wms._utilities.helpers import (
-        Validation,
-        WMSDataTransformer,
-        WMSSchemaMapper,
-        WMSTableManager,
-        WMSTypeConverter,
-        create_record_message,
-        create_schema_message,
-        create_state_message,
+        FlextTargetOracleWmsUtilitiesHelpers,
     )
     from flext_target_oracle_wms._utilities.service_runtime import (
         FlextTargetOracleWmsServiceRuntime,
@@ -63,21 +54,8 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "__version__",
                 "__version_info__",
             ),
-            "._utilities.client": (
-                "CatalogManager",
-                "StreamProcessor",
-                "Target",
-            ),
-            "._utilities.helpers": (
-                "Validation",
-                "WMSDataTransformer",
-                "WMSSchemaMapper",
-                "WMSTableManager",
-                "WMSTypeConverter",
-                "create_record_message",
-                "create_schema_message",
-                "create_state_message",
-            ),
+            "._utilities.client": ("FlextTargetOracleWmsUtilitiesClient",),
+            "._utilities.helpers": ("FlextTargetOracleWmsUtilitiesHelpers",),
             "._utilities.service_runtime": ("FlextTargetOracleWmsServiceRuntime",),
             ".api": (
                 "FlextTargetOracleWmsService",
@@ -148,7 +126,6 @@ _LAZY_IMPORTS = merge_lazy_imports(
 install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)
 
 __all__: list[str] = [
-    "CatalogManager",
     "FlextTargetFactory",
     "FlextTargetMonitoringFactory",
     "FlextTargetOracleWmsCli",
@@ -160,13 +137,8 @@ __all__: list[str] = [
     "FlextTargetOracleWmsSettings",
     "FlextTargetOracleWmsTypes",
     "FlextTargetOracleWmsUtilities",
-    "StreamProcessor",
-    "Target",
-    "Validation",
-    "WMSDataTransformer",
-    "WMSSchemaMapper",
-    "WMSTableManager",
-    "WMSTypeConverter",
+    "FlextTargetOracleWmsUtilitiesClient",
+    "FlextTargetOracleWmsUtilitiesHelpers",
     "__author__",
     "__author_email__",
     "__description__",
@@ -176,9 +148,6 @@ __all__: list[str] = [
     "__version__",
     "__version_info__",
     "c",
-    "create_record_message",
-    "create_schema_message",
-    "create_state_message",
     "d",
     "e",
     "h",

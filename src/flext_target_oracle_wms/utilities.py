@@ -5,42 +5,28 @@ Facade composing helpers from _utilities/ submodules into u.TargetOracleWms.* na
 
 from __future__ import annotations
 
-from flext_meltano import u as meltano_u
+from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_wms import u
 
 from flext_target_oracle_wms._utilities.client import (
-    CatalogManager,
-    StreamProcessor,
-    Target,
+    FlextTargetOracleWmsUtilitiesClient,
 )
 from flext_target_oracle_wms._utilities.helpers import (
-    Validation,
-    WMSDataTransformer,
-    WMSSchemaMapper,
-    WMSTableManager,
-    WMSTypeConverter,
-    create_record_message,
-    create_schema_message,
-    create_state_message,
+    FlextTargetOracleWmsUtilitiesHelpers,
 )
 from flext_target_oracle_wms.typings import t
 
 
-class FlextTargetOracleWmsUtilities(meltano_u, u):
-    """Namespace with Singer-target utility helpers."""
+class FlextTargetOracleWmsUtilities(
+    FlextTargetOracleWmsUtilitiesClient,
+    FlextTargetOracleWmsUtilitiesHelpers,
+    FlextMeltanoUtilities,
+    u,
+):
+    """Namespace composing Singer-target client and helper utilities via MRO."""
 
     class TargetOracleWms:
         """Helpers for Singer message shape handling."""
-
-        # Nested class bindings — private _utilities classes exposed through the facade
-        CatalogManager = CatalogManager
-        StreamProcessor = StreamProcessor
-        Target = Target
-        Validation = Validation
-        WMSDataTransformer = WMSDataTransformer
-        WMSSchemaMapper = WMSSchemaMapper
-        WMSTableManager = WMSTableManager
-        WMSTypeConverter = WMSTypeConverter
 
         @staticmethod
         def create_record_message(
@@ -49,7 +35,9 @@ class FlextTargetOracleWmsUtilities(meltano_u, u):
         ) -> t.JsonMapping:
             """Create a Singer RECORD message payload."""
             return t.Cli.JSON_MAPPING_ADAPTER.validate_python(
-                create_record_message(stream_name, record),
+                FlextTargetOracleWmsUtilitiesHelpers.create_record_message(
+                    stream_name, record
+                ),
             )
 
         @staticmethod
@@ -60,7 +48,9 @@ class FlextTargetOracleWmsUtilities(meltano_u, u):
         ) -> t.JsonMapping:
             """Create a Singer SCHEMA message payload."""
             return t.Cli.JSON_MAPPING_ADAPTER.validate_python(
-                create_schema_message(stream_name, schema, key_properties),
+                FlextTargetOracleWmsUtilitiesHelpers.create_schema_message(
+                    stream_name, schema, key_properties
+                ),
             )
 
         @staticmethod
@@ -69,7 +59,7 @@ class FlextTargetOracleWmsUtilities(meltano_u, u):
         ) -> t.JsonMapping:
             """Create a Singer STATE message payload."""
             return t.Cli.JSON_MAPPING_ADAPTER.validate_python(
-                create_state_message(state),
+                FlextTargetOracleWmsUtilitiesHelpers.create_state_message(state),
             )
 
 

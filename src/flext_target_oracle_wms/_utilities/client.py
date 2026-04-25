@@ -12,16 +12,15 @@ from flext_core import p, r
 from flext_meltano import u
 
 from flext_target_oracle_wms._utilities.helpers import (
-    WMSDataTransformer,
-    WMSTableManager,
+    FlextTargetOracleWmsUtilitiesHelpers,
 )
 from flext_target_oracle_wms.constants import c
 from flext_target_oracle_wms.models import m
 from flext_target_oracle_wms.typings import t
 
 
-class _WmsClients:
-    """Private namespace class wrapping all WMS client implementations."""
+class FlextTargetOracleWmsUtilitiesClient:
+    """Public namespace class wrapping all WMS client implementations."""
 
     class CatalogManager:
         """In-memory Singer catalog manager — u.TargetOracleWms.Client.CatalogManager."""
@@ -71,8 +70,8 @@ class _WmsClients:
 
         def __init__(
             self,
-            table_manager: WMSTableManager,
-            data_transformer: WMSDataTransformer,
+            table_manager: FlextTargetOracleWmsUtilitiesHelpers.WMSTableManager,
+            data_transformer: FlextTargetOracleWmsUtilitiesHelpers.WMSDataTransformer,
         ) -> None:
             """Initialize processing dependencies."""
             self.table_manager = table_manager
@@ -121,10 +120,12 @@ class _WmsClients:
         ) -> None:
             """Initialize target runtime with validated settings."""
             self.settings = m.TargetOracleWms.WmsTargetConfig.model_validate(settings)
-            self.catalog_manager = _WmsClients.CatalogManager()
-            self.table_manager = WMSTableManager()
-            self.data_transformer = WMSDataTransformer()
-            self.stream_processor = _WmsClients.StreamProcessor(
+            self.catalog_manager = FlextTargetOracleWmsUtilitiesClient.CatalogManager()
+            self.table_manager = FlextTargetOracleWmsUtilitiesHelpers.WMSTableManager()
+            self.data_transformer = (
+                FlextTargetOracleWmsUtilitiesHelpers.WMSDataTransformer()
+            )
+            self.stream_processor = FlextTargetOracleWmsUtilitiesClient.StreamProcessor(
                 self.table_manager,
                 self.data_transformer,
             )
@@ -222,13 +223,13 @@ class _WmsClients:
             return r[bool].ok(value=True)
 
 
-# Public names — re-exported for auto-generated __init__.py and facade compatibility
-CatalogManager = _WmsClients.CatalogManager
-StreamProcessor = _WmsClients.StreamProcessor
-Target = _WmsClients.Target
+CatalogManager = FlextTargetOracleWmsUtilitiesClient.CatalogManager
+StreamProcessor = FlextTargetOracleWmsUtilitiesClient.StreamProcessor
+Target = FlextTargetOracleWmsUtilitiesClient.Target
 
 __all__: list[str] = [
     "CatalogManager",
+    "FlextTargetOracleWmsUtilitiesClient",
     "StreamProcessor",
     "Target",
 ]

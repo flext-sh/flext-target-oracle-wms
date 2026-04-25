@@ -12,13 +12,13 @@ from collections.abc import (
 )
 from typing import Annotated, Literal
 
-from flext_meltano import m as meltano_m, p, r, t, u
+from flext_meltano import FlextMeltanoModels, p, r, t, u
 from flext_oracle_wms import m
 
 from flext_target_oracle_wms.constants import c
 
 
-class FlextTargetOracleWmsModels(meltano_m, m):
+class FlextTargetOracleWmsModels(FlextMeltanoModels, m):
     """Pydantic model namespace for target Oracle WMS.
 
     Inherited namespaces:
@@ -32,7 +32,7 @@ class FlextTargetOracleWmsModels(meltano_m, m):
     class TargetOracleWms:
         """Target Oracle WMS model namespace — m.TargetOracleWms.*."""
 
-        class WmsAuthenticationConfig(meltano_m.ArbitraryTypesModel):
+        class WmsAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
             """Authentication and endpoint settings."""
 
             base_url: Annotated[
@@ -60,7 +60,7 @@ class FlextTargetOracleWmsModels(meltano_m, m):
                 "MAIN"
             )
 
-        class WmsTargetConfig(meltano_m.ArbitraryTypesModel):
+        class WmsTargetConfig(FlextMeltanoModels.ArbitraryTypesModel):
             """Top-level target configuration model."""
 
             wms_auth: Annotated[
@@ -128,7 +128,7 @@ class FlextTargetOracleWmsModels(meltano_m, m):
                     settings
                 )
 
-        class WmsTargetResult(meltano_m.ArbitraryTypesModel):
+        class WmsTargetResult(FlextMeltanoModels.ArbitraryTypesModel):
             """Execution summary for the target pipeline."""
 
             total_records_processed: Annotated[
@@ -167,14 +167,14 @@ class FlextTargetOracleWmsModels(meltano_m, m):
                     float(self.successful_records) / float(self.total_records_processed)
                 ) * 100.0
 
-        class SingerFieldSchema(meltano_m.FlexibleModel):
+        class SingerFieldSchema(FlextMeltanoModels.FlexibleModel):
             """Typed Singer field schema entry for target-side schema parsing."""
 
             type: Annotated[
                 str, u.Field(description="JSON schema type descriptor for the field.")
             ] = "string"
 
-        class SingerSchemaProperties(meltano_m.FlexibleModel):
+        class SingerSchemaProperties(FlextMeltanoModels.FlexibleModel):
             """Typed Singer schema properties block for target-side schema parsing."""
 
             properties: Annotated[
@@ -188,7 +188,7 @@ class FlextTargetOracleWmsModels(meltano_m, m):
                 ),
             ]
 
-        class TargetCreationRequest(meltano_m.ArbitraryTypesModel):
+        class TargetCreationRequest(FlextMeltanoModels.ArbitraryTypesModel):
             """Input object for target construction."""
 
             base_url: Annotated[

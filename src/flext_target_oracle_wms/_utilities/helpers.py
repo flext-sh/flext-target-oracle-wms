@@ -15,7 +15,7 @@ from flext_target_oracle_wms.models import FlextTargetOracleWmsModels as m
 from flext_target_oracle_wms.typings import FlextTargetOracleWmsTypes as t
 
 
-class _WmsHelpers:
+class FlextTargetOracleWmsUtilitiesHelpers:
     """Private namespace class wrapping all WMS helper implementations."""
 
     class Validation:
@@ -71,10 +71,14 @@ class _WmsHelpers:
 
         def __init__(
             self,
-            type_converter: _WmsHelpers.WMSTypeConverter | None = None,
+            type_converter: FlextTargetOracleWmsUtilitiesHelpers.WMSTypeConverter
+            | None = None,
         ) -> None:
             """Initialize data transformer with optional converter."""
-            self.type_converter = type_converter or _WmsHelpers.WMSTypeConverter()
+            self.type_converter = (
+                type_converter
+                or FlextTargetOracleWmsUtilitiesHelpers.WMSTypeConverter()
+            )
 
         def transform_record(
             self,
@@ -198,17 +202,17 @@ class _WmsHelpers:
         return {"type": "STATE", "value": state}
 
 
-# Public names — re-exported from namespace for backward compatibility with auto-generated __init__.py
-Validation = _WmsHelpers.Validation
-WMSTypeConverter = _WmsHelpers.WMSTypeConverter
-WMSDataTransformer = _WmsHelpers.WMSDataTransformer
-WMSSchemaMapper = _WmsHelpers.WMSSchemaMapper
-WMSTableManager = _WmsHelpers.WMSTableManager
-create_record_message = _WmsHelpers.create_record_message
-create_schema_message = _WmsHelpers.create_schema_message
-create_state_message = _WmsHelpers.create_state_message
+Validation = FlextTargetOracleWmsUtilitiesHelpers.Validation
+WMSTypeConverter = FlextTargetOracleWmsUtilitiesHelpers.WMSTypeConverter
+WMSDataTransformer = FlextTargetOracleWmsUtilitiesHelpers.WMSDataTransformer
+WMSSchemaMapper = FlextTargetOracleWmsUtilitiesHelpers.WMSSchemaMapper
+WMSTableManager = FlextTargetOracleWmsUtilitiesHelpers.WMSTableManager
+create_record_message = FlextTargetOracleWmsUtilitiesHelpers.create_record_message
+create_schema_message = FlextTargetOracleWmsUtilitiesHelpers.create_schema_message
+create_state_message = FlextTargetOracleWmsUtilitiesHelpers.create_state_message
 
 __all__: list[str] = [
+    "FlextTargetOracleWmsUtilitiesHelpers",
     "Validation",
     "WMSDataTransformer",
     "WMSSchemaMapper",
