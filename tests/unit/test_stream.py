@@ -6,12 +6,25 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock
+from typing import override
 
 from flext_target_oracle_wms import (
     StreamProcessor as FlextTargetOracleWmsStreamProcessor,
 )
-from tests import c, m, r, t, u
+from tests import c, m, p, r, t, u
+
+
+class _FailingTransformer(u.TargetOracleWms.WMSDataTransformer):
+    """Real transformer subclass forcing transform_record to fail (no Mock)."""
+
+    @override
+    def transform_record(
+        self,
+        record_message: m.Meltano.SingerRecordMessage | t.JsonMapping,
+        schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping | None = None,
+    ) -> p.Result[m.Meltano.SingerRecordMessage]:
+        _ = record_message, schema_message
+        return r[m.Meltano.SingerRecordMessage].fail("transformer error")
 
 
 def _schema_msg(
@@ -106,9 +119,7 @@ class TestsFlextTargetOracleWmsStream:
 
     def test_process_record_with_transformer_failure(self) -> None:
         tm = u.TargetOracleWms.WMSTableManager()
-        dt = MagicMock(spec=u.TargetOracleWms.WMSDataTransformer)
-        dt.transform_record.return_value = r.fail("transformer error")
-        proc = FlextTargetOracleWmsStreamProcessor(tm, dt)
+        proc = FlextTargetOracleWmsStreamProcessor(tm, _FailingTransformer())
         tm.register_stream("s")
         result = proc.process_record(_record_msg("s"), _schema_msg("s"))
         assert result.failure
