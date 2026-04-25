@@ -12,15 +12,19 @@ import importlib.util
 from flext_target_oracle_wms import Target as FlextTargetOracleWms
 
 
-def test_import_from_correct_module() -> None:
-    """Test that we can import from the correct module."""
-    assert FlextTargetOracleWms is not None
-    if FlextTargetOracleWms.name != "target-oracle-wms":
-        msg: str = f"Expected {'target-oracle-wms'}, got {FlextTargetOracleWms.name}"
-        raise AssertionError(msg)
+class TestsFlextTargetOracleWmsStructure:
+    """Behavior contract for test_structure."""
 
+    def test_import_from_correct_module(self) -> None:
+        """Test that we can import from the correct module."""
+        assert FlextTargetOracleWms is not None
+        if FlextTargetOracleWms.name != "target-oracle-wms":
+            msg: str = (
+                f"Expected {'target-oracle-wms'}, got {FlextTargetOracleWms.name}"
+            )
+            raise AssertionError(msg)
 
-def test_no_dual_structure() -> None:
-    """Test that flext_target_oracle_wms module exists correctly."""
-    spec = importlib.util.find_spec("flext_target_oracle_wms")
-    assert spec is not None, "flext_target_oracle_wms module should exist"
+    def test_no_dual_structure(self) -> None:
+        """Test that flext_target_oracle_wms module exists correctly."""
+        spec = importlib.util.find_spec("flext_target_oracle_wms")
+        assert spec is not None, "flext_target_oracle_wms module should exist"

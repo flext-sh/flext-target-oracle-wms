@@ -16,22 +16,17 @@ if _t.TYPE_CHECKING:
 
     from flext_target_oracle_wms import d, e, h, r, s, x
     from tests.constants import TestsFlextTargetOracleWmsConstants, c
-    from tests.examples.test_examples import (
-        TestExamplesCodeQuality,
-        TestExamplesFlextIntegration,
-        TestExamplesImportability,
-        TestExamplesStructure,
-    )
-    from tests.integration.test_oracle import (
-        TestMultiStreamIntegration,
-        TestTargetLifecycle,
-    )
+    from tests.examples.test_examples import TestsFlextTargetOracleWmsExamples
+    from tests.integration.test_oracle import TestsFlextTargetOracleWmsOracle
     from tests.models import TestsFlextTargetOracleWmsModels, m
     from tests.protocols import TestsFlextTargetOracleWmsProtocols, p
     from tests.typings import TestsFlextTargetOracleWmsTypes, t
     from tests.unit.test_benchmarks import TestsFlextTargetOracleWmsBenchmarks
     from tests.unit.test_catalog import TestsFlextTargetOracleWmsCatalog
     from tests.unit.test_features import TestsFlextTargetOracleWmsFeatures
+    from tests.unit.test_module_governance import (
+        TestsFlextTargetOracleWmsModuleGovernance,
+    )
     from tests.unit.test_oracle_wms_cli import TestsFlextTargetOracleWmsOracleWmsCli
     from tests.unit.test_oracle_wms_factory import (
         TestsFlextTargetOracleWmsOracleWmsFactory,
@@ -40,6 +35,7 @@ if _t.TYPE_CHECKING:
     from tests.unit.test_quality import TestsFlextTargetOracleWmsQuality
     from tests.unit.test_sinks import TestsFlextTargetOracleWmsSinks
     from tests.unit.test_stream import TestsFlextTargetOracleWmsStream
+    from tests.unit.test_structure import TestsFlextTargetOracleWmsStructure
     from tests.unit.test_target import TestsFlextTargetOracleWmsTarget
     from tests.unit.test_wms_patterns import TestsFlextTargetOracleWmsWmsPatterns
     from tests.unit.test_workflow import TestsFlextTargetOracleWmsWorkflow
@@ -56,16 +52,8 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "TestsFlextTargetOracleWmsConstants",
                 "c",
             ),
-            ".examples.test_examples": (
-                "TestExamplesCodeQuality",
-                "TestExamplesFlextIntegration",
-                "TestExamplesImportability",
-                "TestExamplesStructure",
-            ),
-            ".integration.test_oracle": (
-                "TestMultiStreamIntegration",
-                "TestTargetLifecycle",
-            ),
+            ".examples.test_examples": ("TestsFlextTargetOracleWmsExamples",),
+            ".integration.test_oracle": ("TestsFlextTargetOracleWmsOracle",),
             ".models": (
                 "TestsFlextTargetOracleWmsModels",
                 "m",
@@ -81,6 +69,9 @@ _LAZY_IMPORTS = merge_lazy_imports(
             ".unit.test_benchmarks": ("TestsFlextTargetOracleWmsBenchmarks",),
             ".unit.test_catalog": ("TestsFlextTargetOracleWmsCatalog",),
             ".unit.test_features": ("TestsFlextTargetOracleWmsFeatures",),
+            ".unit.test_module_governance": (
+                "TestsFlextTargetOracleWmsModuleGovernance",
+            ),
             ".unit.test_oracle_wms_cli": ("TestsFlextTargetOracleWmsOracleWmsCli",),
             ".unit.test_oracle_wms_factory": (
                 "TestsFlextTargetOracleWmsOracleWmsFactory",
@@ -89,6 +80,7 @@ _LAZY_IMPORTS = merge_lazy_imports(
             ".unit.test_quality": ("TestsFlextTargetOracleWmsQuality",),
             ".unit.test_sinks": ("TestsFlextTargetOracleWmsSinks",),
             ".unit.test_stream": ("TestsFlextTargetOracleWmsStream",),
+            ".unit.test_structure": ("TestsFlextTargetOracleWmsStructure",),
             ".unit.test_target": ("TestsFlextTargetOracleWmsTarget",),
             ".unit.test_wms_patterns": ("TestsFlextTargetOracleWmsWmsPatterns",),
             ".unit.test_workflow": ("TestsFlextTargetOracleWmsWorkflow",),
@@ -139,17 +131,14 @@ _LAZY_IMPORTS = merge_lazy_imports(
 install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)
 
 __all__: list[str] = [
-    "TestExamplesCodeQuality",
-    "TestExamplesFlextIntegration",
-    "TestExamplesImportability",
-    "TestExamplesStructure",
-    "TestMultiStreamIntegration",
-    "TestTargetLifecycle",
     "TestsFlextTargetOracleWmsBenchmarks",
     "TestsFlextTargetOracleWmsCatalog",
     "TestsFlextTargetOracleWmsConstants",
+    "TestsFlextTargetOracleWmsExamples",
     "TestsFlextTargetOracleWmsFeatures",
     "TestsFlextTargetOracleWmsModels",
+    "TestsFlextTargetOracleWmsModuleGovernance",
+    "TestsFlextTargetOracleWmsOracle",
     "TestsFlextTargetOracleWmsOracleWmsCli",
     "TestsFlextTargetOracleWmsOracleWmsFactory",
     "TestsFlextTargetOracleWmsOracleWmsInit",
@@ -157,6 +146,7 @@ __all__: list[str] = [
     "TestsFlextTargetOracleWmsQuality",
     "TestsFlextTargetOracleWmsSinks",
     "TestsFlextTargetOracleWmsStream",
+    "TestsFlextTargetOracleWmsStructure",
     "TestsFlextTargetOracleWmsTarget",
     "TestsFlextTargetOracleWmsTypes",
     "TestsFlextTargetOracleWmsUtilities",

@@ -16,7 +16,7 @@ from pathlib import Path
 import pytest
 
 
-class TestExamplesCodeQuality:
+class TestsFlextTargetOracleWmsExamples:
     """Test examples for code quality and real API usage."""
 
     @pytest.fixture(scope="class")
@@ -214,8 +214,6 @@ class TestExamplesCodeQuality:
                 f"{example_file.name} main block must execute examples"
             )
 
-
-class TestExamplesImportability:
     """Test that examples can be imported without errors."""
 
     def test_examples_are_importable(self) -> None:
@@ -244,8 +242,6 @@ class TestExamplesImportability:
             ) as e:
                 pytest.fail(f"Parse error in {example_file.name}: {e}")
 
-
-class TestExamplesStructure:
     """Test examples directory structure and organization."""
 
     def test_examples_readme_exists(self) -> None:
@@ -298,8 +294,6 @@ class TestExamplesStructure:
                 f"{example_file.name} must have MIT license notice"
             )
 
-
-class TestExamplesFlextIntegration:
     """Test that examples properly integrate with flext-* ecosystem."""
 
     def test_examples_use_flext_result_pattern(self) -> None:

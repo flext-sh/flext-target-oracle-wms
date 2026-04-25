@@ -51,7 +51,7 @@ def _state_line(value: t.JsonMapping) -> str:
 
 
 @pytest.mark.integration
-class TestTargetLifecycle:
+class TestsFlextTargetOracleWmsOracle:
     """Integration tests for full target lifecycle."""
 
     def test_setup_process_cleanup(self) -> None:
@@ -85,9 +85,6 @@ class TestTargetLifecycle:
         assert target.process_lines(batch2).success
         assert target.cleanup().success
 
-
-@pytest.mark.integration
-class TestMultiStreamIntegration:
     """Integration tests for multi-stream scenarios."""
 
     def test_three_streams_interleaved(self) -> None:
