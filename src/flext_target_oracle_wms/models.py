@@ -10,6 +10,7 @@ from collections.abc import (
     MutableMapping,
     MutableSequence,
 )
+from types import MappingProxyType
 from typing import Annotated, Literal
 
 from flext_meltano import FlextMeltanoModels, p, r, t, u
@@ -70,7 +71,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, m):
             stream_maps: Annotated[
                 MutableMapping[str, t.StrMapping],
                 u.Field(
-                    default_factory=dict,
+                    default_factory=lambda: MappingProxyType({}),
                     description="Singer stream map configurations.",
                 ),
             ]
@@ -153,7 +154,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, m):
             metrics: Annotated[
                 MutableMapping[str, t.JsonValue],
                 u.Field(
-                    default_factory=dict,
+                    default_factory=lambda: MappingProxyType({}),
                     description="Aggregate runtime metrics for this pipeline run.",
                 ),
             ]
@@ -183,7 +184,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, m):
                     FlextTargetOracleWmsModels.TargetOracleWms.SingerFieldSchema,
                 ],
                 u.Field(
-                    default_factory=dict,
+                    default_factory=lambda: MappingProxyType({}),
                     description="Singer schema field property definitions.",
                 ),
             ]
