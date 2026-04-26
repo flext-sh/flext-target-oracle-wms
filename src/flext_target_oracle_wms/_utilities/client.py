@@ -10,7 +10,6 @@ from typing import ClassVar
 
 from flext_core import p, r
 from flext_meltano import u
-
 from flext_target_oracle_wms._utilities.helpers import (
     FlextTargetOracleWmsUtilitiesHelpers,
 )

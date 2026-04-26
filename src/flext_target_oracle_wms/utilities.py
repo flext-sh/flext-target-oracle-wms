@@ -7,7 +7,6 @@ from __future__ import annotations
 
 from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_wms import u
-
 from flext_target_oracle_wms._utilities.client import (
     FlextTargetOracleWmsUtilitiesClient,
 )

@@ -13,7 +13,6 @@ from typing import Annotated, override
 
 from flext_core import u
 from flext_meltano import FlextMeltanoTargetServiceBase
-
 from flext_target_oracle_wms import (
     FlextTargetOracleWmsServiceRuntime,
     p,

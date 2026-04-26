@@ -15,7 +15,6 @@ from flext_observability import (
     FlextObservabilityMonitor,
     flext_monitor_function,
 )
-
 from flext_target_oracle_wms import c, t, u
 
 _ = core_u  # Anchor flext_core import for example validation.

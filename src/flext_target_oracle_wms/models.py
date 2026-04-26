@@ -15,7 +15,6 @@ from typing import Annotated, Literal
 
 from flext_meltano import FlextMeltanoModels, p, r, t, u
 from flext_oracle_wms import m
-
 from flext_target_oracle_wms.constants import c
 
 
