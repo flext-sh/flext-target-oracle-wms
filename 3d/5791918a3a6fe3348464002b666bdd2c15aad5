@@ -1,0 +1,35 @@
+tests/constants.py
+  afc29eb099521e6a 38-39
+src/flext_target_oracle_wms/factory.py
+  h_9db9d35f50cf33 91-92,98,101
+src/flext_target_oracle_wms/constants.py
+  afc29eb099521e6a 20-27
+tests/unit/test_oracle_wms_init.py
+  afc29eb099521e6a 33-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "3d5791918a3a6fe3348464002b666bdd2c15aad5",
+  "prompts": {
+    "afc29eb099521e6a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "491e2c5e-762d-4a28-a137-abf6db4cc57c",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "FLEXT Bot",
+      "messages": [],
+      "total_additions": 14,
+      "total_deletions": 4,
+      "accepted_lines": 12,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/d956c96b7fad35ca4646a4daea515eac2af6ad91a16ef38b2167d4cb860da80c"
+    }
+  },
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
