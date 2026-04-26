@@ -35,7 +35,8 @@ class TestsFlextTargetOracleWmsConstants(
             PERF_ITERATIONS: Final[int] = 500
             PERF_THRESHOLD_SEC: Final[float] = 5.0
             PATCH_TARGET: Final[str] = (
-                "flext_target_oracle_wms.factory.FlextTargetOracleWms"
+                "flext_target_oracle_wms.utilities."
+                "FlextTargetOracleWmsUtilities.TargetOracleWms.Target"
             )
 
 

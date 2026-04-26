@@ -29,8 +29,9 @@ class TestsFlextTargetOracleWmsOracleWmsInit:
         """Test that module exports are properly defined."""
         assert isinstance(flext_target_oracle_wms.__all__, (list, tuple))
         expected_exports = [
-            "Target",
             "FlextTargetOracleWmsUtilities",
+            "FlextTargetOracleWmsUtilitiesClient",
+            "FlextTargetFactory",
         ]
         for export in expected_exports:
             assert export in flext_target_oracle_wms.__all__

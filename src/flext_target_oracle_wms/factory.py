@@ -88,34 +88,17 @@ class FlextTargetMonitoringFactory:
         request: m.TargetOracleWms.MonitoredTargetCreationRequest,
     ) -> p.Result[u.TargetOracleWms.Target]:
         """Create monitored target using base factory."""
-        base_request = m.TargetOracleWms.TargetCreationRequest.model_validate({
-            "base_url": request.base_url,
-            "username": request.username,
-            "password": request.password,
-            "environment": request.environment,
-            "preset": request.preset,
-            "additional_config": request.additional_config,
-        })
+        base_request = m.TargetOracleWms.TargetCreationRequest.model_validate(
+            request.model_dump(exclude={"monitor_name"}),
+        )
         return FlextTargetFactory.create_target(base_request)
 
     @staticmethod
     def create_oracle_wms_target(
-        base_url: str,
-        username: str,
-        password: str,
-        environment: str = "development",
-        preset: str | None = None,
-        **settings: t.Scalar,
+        **kwargs: t.JsonValue,
     ) -> p.Result[u.TargetOracleWms.Target]:
         """Convenience method to create base target instance."""
-        request = m.TargetOracleWms.TargetCreationRequest.model_validate({
-            "base_url": base_url,
-            "username": username,
-            "password": password,
-            "environment": environment,
-            "preset": preset,
-            "additional_config": settings,
-        })
+        request = m.TargetOracleWms.TargetCreationRequest.model_validate(kwargs)
         return FlextTargetFactory.create_target(request)
 
     @staticmethod

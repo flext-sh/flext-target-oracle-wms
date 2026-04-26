@@ -17,6 +17,14 @@ class FlextTargetOracleWmsConstants(FlextMeltanoConstants, c):
 
         CLI_MIN_CONFIG_ARG_COUNT: Final[int] = 3
 
+        class Tests:
+            """Test fixture constants — patch paths and test-only literals."""
+
+            PATCH_TARGET: Final[str] = (
+                "flext_target_oracle_wms._utilities.client."
+                "FlextTargetOracleWmsUtilitiesClient.Target"
+            )
+
         class OracleWms:
             """Oracle WMS runtime defaults."""
 
