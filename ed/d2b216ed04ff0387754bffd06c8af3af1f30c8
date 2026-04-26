@@ -1,0 +1,14 @@
+src/flext_target_oracle_wms/_utilities/client.py
+  h_9db9d35f50cf33 191-194,196-198,200-202,204-207
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "edd2b216ed04ff0387754bffd06c8af3af1f30c8",
+  "prompts": {},
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
