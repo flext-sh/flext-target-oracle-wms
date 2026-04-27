@@ -11,7 +11,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from pathlib import Path
+from types import MappingProxyType
+from typing import Final
 
 from flext_core import t, u
 from flext_observability import (
@@ -24,12 +27,12 @@ logger = u.fetch_logger(__name__)
 monitor = FlextObservabilityMonitor()
 
 
-WMS_AUTH = {
+WMS_AUTH: Final[Mapping[str, str]] = MappingProxyType({
     "base_url": "https://wms.example.oraclecloud.com",
     "username": "wms_user",
     "password": "wms_pass",
-}
-BATCH_SIZE = 100
+})
+BATCH_SIZE: Final[int] = 100
 
 
 @flext_monitor_function(monitor)
