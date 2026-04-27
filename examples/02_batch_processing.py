@@ -10,6 +10,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from types import MappingProxyType
+from typing import Final
+
 from flext_core import t
 from flext_observability import (
     FlextObservabilityMonitor,
@@ -20,14 +23,15 @@ from flext_target_oracle_wms import FlextTargetOracleWmsUtilities, u
 logger = u.fetch_logger(__name__)
 monitor = FlextObservabilityMonitor()
 
-BATCH_CONFIG = {
-    "wms_auth": {
-        "base_url": "https://wms.example.oraclecloud.com",
-        "username": "wms_batch_user",
-        "password": "wms_batch_pass",
-    },
-    "batch_size": 500,
+_BATCH_WMS_AUTH: dict[str, t.JsonValue] = {
+    "base_url": "https://wms.example.oraclecloud.com",
+    "username": "wms_batch_user",
+    "password": "wms_batch_pass",
 }
+BATCH_CONFIG: Final[t.JsonMapping] = MappingProxyType({
+    "wms_auth": _BATCH_WMS_AUTH,
+    "batch_size": 500,
+})
 
 
 @flext_monitor_function(monitor)
