@@ -78,12 +78,18 @@ def _record_msg(
 def _state_msg(
     state: t.JsonMapping | None = None,
 ) -> m.Meltano.SingerStateMessage:
-    return m.Meltano.SingerStateMessage.model_validate(
-        {
-            "type": c.Meltano.SingerMessageType.STATE,
-            "value": state if state is not None else {"bookmarks": {}},
-        },
+    empty_bookmarks: dict[str, t.JsonValue] = {}
+    default_state: dict[str, t.JsonValue] = {"bookmarks": empty_bookmarks}
+    resolved_state: dict[str, t.JsonValue] = (
+        dict(state) if state is not None else default_state
     )
+    state_message: m.Meltano.SingerStateMessage = (
+        m.Meltano.SingerStateMessage.model_validate({
+            "type": c.Meltano.SingerMessageType.STATE,
+            "value": resolved_state,
+        })
+    )
+    return state_message
 
 
 class TestsFlextTargetOracleWmsTarget:

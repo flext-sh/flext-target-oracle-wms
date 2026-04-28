@@ -13,7 +13,6 @@ from flext_target_oracle_wms._utilities.client import (
 from flext_target_oracle_wms._utilities.helpers import (
     FlextTargetOracleWmsUtilitiesHelpers,
 )
-from flext_target_oracle_wms.typings import t
 
 
 class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, u):
@@ -34,40 +33,15 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, u):
         WMSSchemaMapper = FlextTargetOracleWmsUtilitiesHelpers.WMSSchemaMapper
         WMSTableManager = FlextTargetOracleWmsUtilitiesHelpers.WMSTableManager
         WMSTypeConverter = FlextTargetOracleWmsUtilitiesHelpers.WMSTypeConverter
-
-        @staticmethod
-        def create_record_message(
-            stream_name: str,
-            record: t.JsonMapping,
-        ) -> t.JsonMapping:
-            """Create a Singer RECORD message payload."""
-            return t.Cli.JSON_MAPPING_ADAPTER.validate_python(
-                FlextTargetOracleWmsUtilitiesHelpers.create_record_message(
-                    stream_name, record
-                ),
-            )
-
-        @staticmethod
-        def create_schema_message(
-            stream_name: str,
-            schema: t.JsonMapping,
-            key_properties: t.StrSequence | None = None,
-        ) -> t.JsonMapping:
-            """Create a Singer SCHEMA message payload."""
-            return t.Cli.JSON_MAPPING_ADAPTER.validate_python(
-                FlextTargetOracleWmsUtilitiesHelpers.create_schema_message(
-                    stream_name, schema, key_properties
-                ),
-            )
-
-        @staticmethod
-        def create_state_message(
-            state: t.JsonMapping,
-        ) -> t.JsonMapping:
-            """Create a Singer STATE message payload."""
-            return t.Cli.JSON_MAPPING_ADAPTER.validate_python(
-                FlextTargetOracleWmsUtilitiesHelpers.create_state_message(state),
-            )
+        create_record_message = staticmethod(
+            FlextTargetOracleWmsUtilitiesHelpers.create_record_message,
+        )
+        create_schema_message = staticmethod(
+            FlextTargetOracleWmsUtilitiesHelpers.create_schema_message,
+        )
+        create_state_message = staticmethod(
+            FlextTargetOracleWmsUtilitiesHelpers.create_state_message,
+        )
 
 
 __all__: list[str] = [

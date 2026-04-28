@@ -54,7 +54,7 @@ class FlextTargetOracleWmsServiceRuntime:
                 m.Meltano.SingerRecordMessage.model_validate({
                     "type": "RECORD",
                     "stream": self.stream_name,
-                    "record": u.Meltano.normalize_runtime_json_mapping(record),
+                    "record": u.normalize_to_json_mapping(record),
                 }),
             )
             if result.failure:
@@ -78,7 +78,7 @@ class FlextTargetOracleWmsServiceRuntime:
         target_config: t.JsonMapping,
     ) -> p.Meltano.SingerDrainSink:
         """Create the service-level Singer sink adapter."""
-        normalized_target_config = u.Meltano.normalize_runtime_json_mapping(
+        normalized_target_config = u.normalize_to_json_mapping(
             target_config,
         )
         runtime_target = u.TargetOracleWms.Target(normalized_target_config)

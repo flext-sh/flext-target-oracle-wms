@@ -21,8 +21,8 @@ class FlextTargetOracleWmsConstants(FlextMeltanoConstants, c):
             """Test fixture constants — patch paths and test-only literals."""
 
             PATCH_TARGET: Final[str] = (
-                "flext_target_oracle_wms._utilities.client."
-                "FlextTargetOracleWmsUtilitiesClient.Target"
+                "flext_target_oracle_wms.utilities."
+                "FlextTargetOracleWmsUtilities.TargetOracleWms.Target"
             )
 
         class OracleWms:

@@ -23,7 +23,10 @@ class TestsFlextTargetOracleWmsConstants(
     class TargetOracleWms(FlextTargetOracleWmsConstants.TargetOracleWms):
         """Target Oracle WMS domain test constants namespace."""
 
-        class Tests(FlextTestsConstants.Tests):
+        class Tests(
+            FlextTargetOracleWmsConstants.TargetOracleWms.Tests,
+            FlextTestsConstants.Tests,
+        ):
             """Target Oracle WMS-specific test constants."""
 
             PROJECT_ROOT_PARENT_DEPTH: Final[int] = 1
@@ -34,10 +37,6 @@ class TestsFlextTargetOracleWmsConstants(
             }
             PERF_ITERATIONS: Final[int] = 500
             PERF_THRESHOLD_SEC: Final[float] = 5.0
-            PATCH_TARGET: Final[str] = (
-                "flext_target_oracle_wms.utilities."
-                "FlextTargetOracleWmsUtilities.TargetOracleWms.Target"
-            )
 
 
 c = TestsFlextTargetOracleWmsConstants

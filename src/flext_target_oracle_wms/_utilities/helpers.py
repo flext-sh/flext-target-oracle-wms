@@ -51,7 +51,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
             if singer_type in {"object", "array"}:
                 return r[t.JsonValue].ok(
                     t.NV_ADAPTER.dump_json(
-                        u.Cli.normalize_json_value(value),
+                        u.normalize_to_json_value(value),
                     ).decode(c.DEFAULT_ENCODING),
                 )
             if singer_type in {"integer", "number"}:
@@ -172,33 +172,47 @@ class FlextTargetOracleWmsUtilitiesHelpers:
             return r[str].ok(table_name)
 
     @staticmethod
+    def _validate_message_payload(
+        payload: Mapping[str, t.JsonValue | t.JsonMapping | t.StrSequence],
+    ) -> t.JsonMapping:
+        """Validate Singer message payloads once at the helper owner."""
+        return t.Cli.JSON_MAPPING_ADAPTER.validate_python(payload)
+
+    @staticmethod
     def create_record_message(
         stream_name: str,
         record: t.JsonMapping,
-    ) -> Mapping[str, t.JsonValue | t.JsonMapping]:
+    ) -> t.JsonMapping:
         """Create a Singer RECORD message payload."""
-        return {"type": "RECORD", "stream": stream_name, "record": record}
+        return FlextTargetOracleWmsUtilitiesHelpers._validate_message_payload({
+            "type": "RECORD",
+            "stream": stream_name,
+            "record": record,
+        })
 
     @staticmethod
     def create_schema_message(
         stream_name: str,
         schema: t.JsonMapping,
         key_properties: t.StrSequence | None = None,
-    ) -> Mapping[str, t.JsonValue | t.JsonMapping | t.StrSequence]:
+    ) -> t.JsonMapping:
         """Create a Singer SCHEMA message payload."""
-        return {
+        return FlextTargetOracleWmsUtilitiesHelpers._validate_message_payload({
             "type": "SCHEMA",
             "stream": stream_name,
             "schema": schema,
             "key_properties": key_properties or [],
-        }
+        })
 
     @staticmethod
     def create_state_message(
         state: t.JsonMapping,
-    ) -> Mapping[str, t.JsonValue | t.JsonMapping]:
+    ) -> t.JsonMapping:
         """Create a Singer STATE message payload."""
-        return {"type": "STATE", "value": state}
+        return FlextTargetOracleWmsUtilitiesHelpers._validate_message_payload({
+            "type": "STATE",
+            "value": state,
+        })
 
 
 __all__: list[str] = [
