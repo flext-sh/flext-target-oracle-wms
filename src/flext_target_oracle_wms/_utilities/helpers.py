@@ -113,7 +113,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
                     return r[m.Meltano.SingerRecordMessage].fail(
                         converted.error or "Conversion failed",
                     )
-                transformed[str(key).upper()] = converted.value
+                transformed[key.upper()] = converted.value
             return r[m.Meltano.SingerRecordMessage].ok(
                 m.Meltano.SingerRecordMessage.model_validate({
                     "type": typed_record.type,
