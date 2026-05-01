@@ -6,10 +6,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    Mapping,
-)
-
 import orjson
 import pytest
 
@@ -28,7 +24,7 @@ def _valid_config() -> t.JsonMapping:
 
 def _schema_line(
     stream: str,
-    props: Mapping[str, t.StrMapping],
+    props: t.MappingKV[str, t.StrMapping],
     keys: t.StrSequence,
 ) -> str:
     return orjson.dumps({

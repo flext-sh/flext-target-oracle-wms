@@ -10,7 +10,6 @@ from __future__ import annotations
 import tempfile
 from collections.abc import (
     Generator,
-    Sequence,
 )
 from pathlib import Path
 
@@ -42,7 +41,7 @@ def temp_output_dir() -> Generator[Path]:
 
 
 @pytest.fixture
-def sample_inventory_records() -> Sequence[t.JsonMapping]:
+def sample_inventory_records() -> t.SequenceOf[t.JsonMapping]:
     """Return sample inventory records."""
     return [
         {
@@ -67,7 +66,7 @@ def sample_inventory_records() -> Sequence[t.JsonMapping]:
 
 
 @pytest.fixture
-def sample_order_records() -> Sequence[t.JsonMapping]:
+def sample_order_records() -> t.SequenceOf[t.JsonMapping]:
     """Return sample order records."""
     return [
         {
@@ -90,7 +89,7 @@ def sample_order_records() -> Sequence[t.JsonMapping]:
 
 
 @pytest.fixture
-def sample_task_records() -> Sequence[t.JsonMapping]:
+def sample_task_records() -> t.SequenceOf[t.JsonMapping]:
     """Return sample task records."""
     return [
         {

@@ -2,9 +2,6 @@
 
 from __future__ import annotations
 
-from collections.abc import (
-    Sequence,
-)
 from typing import Protocol, runtime_checkable
 
 from flext_meltano import FlextMeltanoProtocols
@@ -24,7 +21,7 @@ class FlextTargetOracleWmsProtocols(FlextMeltanoProtocols, p):
 
             def load_data(
                 self,
-                records: Sequence[t.JsonMapping],
+                records: t.SequenceOf[t.JsonMapping],
             ) -> FlextMeltanoProtocols.Result[bool]:
                 """Load a batch of records."""
                 ...

@@ -2,10 +2,6 @@
 
 from __future__ import annotations
 
-from collections.abc import (
-    Mapping,
-)
-
 from flext_cli import u
 from flext_core import p, r
 from flext_meltano import c as meltano_c, u as meltano_u
@@ -173,7 +169,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
 
     @staticmethod
     def _validate_message_payload(
-        payload: Mapping[str, t.JsonValue | t.JsonMapping | t.StrSequence],
+        payload: t.MappingKV[str, t.JsonValue | t.JsonMapping | t.StrSequence],
     ) -> t.JsonMapping:
         """Validate Singer message payloads once at the helper owner."""
         return t.Cli.JSON_MAPPING_ADAPTER.validate_python(payload)

@@ -6,10 +6,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    Mapping,
-)
-
 import pytest
 
 from tests import c, m, t, u
@@ -27,7 +23,7 @@ def _valid_config() -> t.JsonMapping:
 
 def _schema_line(
     stream: str = "test_stream",
-    properties: Mapping[str, t.StrMapping] | None = None,
+    properties: t.MappingKV[str, t.StrMapping] | None = None,
     key_properties: t.StrSequence | None = None,
 ) -> str:
     json_line: str = _schema_msg(stream, properties, key_properties).model_dump_json(
@@ -51,7 +47,7 @@ def _state_line(state: t.JsonMapping | None = None) -> str:
 
 def _schema_msg(
     stream: str = "test_stream",
-    properties: Mapping[str, t.StrMapping] | None = None,
+    properties: t.MappingKV[str, t.StrMapping] | None = None,
     key_properties: t.StrSequence | None = None,
 ) -> m.Meltano.SingerSchemaMessage:
     _ = properties

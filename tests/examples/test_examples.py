@@ -8,12 +8,11 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import ast
-from collections.abc import (
-    Sequence,
-)
 from pathlib import Path
 
 import pytest
+
+from tests import t
 
 
 class TestsFlextTargetOracleWmsExamples:
@@ -26,7 +25,7 @@ class TestsFlextTargetOracleWmsExamples:
         return project_root / "examples"
 
     @pytest.fixture(scope="class")
-    def example_files(self, examples_dir: Path) -> Sequence[Path]:
+    def example_files(self, examples_dir: Path) -> t.SequenceOf[Path]:
         """Get all Python example files (excluding __init__.py)."""
         return [f for f in examples_dir.glob("*.py") if f.name != "__init__.py"]
 
@@ -48,7 +47,7 @@ class TestsFlextTargetOracleWmsExamples:
                 f"Required example file {expected_file} must exist"
             )
 
-    def test_examples_use_real_imports(self, example_files: Sequence[Path]) -> None:
+    def test_examples_use_real_imports(self, example_files: t.SequenceOf[Path]) -> None:
         """Test that examples use REAL flext-* imports, not fallbacks."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
@@ -89,7 +88,7 @@ class TestsFlextTargetOracleWmsExamples:
 
     def test_examples_have_comprehensive_docstrings(
         self,
-        example_files: Sequence[Path],
+        example_files: t.SequenceOf[Path],
     ) -> None:
         """Test that examples have comprehensive docstrings."""
         for example_file in example_files:
@@ -120,7 +119,9 @@ class TestsFlextTargetOracleWmsExamples:
                     f"{example_file.name} must have 80%+ functions documented"
                 )
 
-    def test_examples_use_await_patterns(self, example_files: Sequence[Path]) -> None:
+    def test_examples_use_await_patterns(
+        self, example_files: t.SequenceOf[Path]
+    ) -> None:
         """Test that examples with async functions use proper await patterns."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
@@ -139,7 +140,7 @@ class TestsFlextTargetOracleWmsExamples:
 
     def test_examples_implement_error_handling(
         self,
-        example_files: Sequence[Path],
+        example_files: t.SequenceOf[Path],
     ) -> None:
         """Test that examples implement proper error handling."""
         for example_file in example_files:
@@ -164,7 +165,9 @@ class TestsFlextTargetOracleWmsExamples:
                     f"{example_file.name} mentions errors but has no error handling"
                 )
 
-    def test_examples_use_realistic_config(self, example_files: Sequence[Path]) -> None:
+    def test_examples_use_realistic_config(
+        self, example_files: t.SequenceOf[Path]
+    ) -> None:
         """Test that examples use realistic configuration patterns."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
@@ -196,7 +199,7 @@ class TestsFlextTargetOracleWmsExamples:
 
     def test_examples_have_main_execution_blocks(
         self,
-        example_files: Sequence[Path],
+        example_files: t.SequenceOf[Path],
     ) -> None:
         """Test that examples have proper main execution blocks."""
         for example_file in example_files:

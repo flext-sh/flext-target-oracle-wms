@@ -7,9 +7,6 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import json
-from collections.abc import (
-    Mapping,
-)
 from pathlib import Path
 from unittest.mock import patch
 
@@ -19,7 +16,7 @@ from flext_target_oracle_wms import FlextTargetOracleWmsCli, main
 from tests import c, t
 
 
-def _write_config_file(settings: Mapping[str, t.StrMapping], tmp_path: Path) -> str:
+def _write_config_file(settings: t.MappingKV[str, t.StrMapping], tmp_path: Path) -> str:
     config_file = tmp_path / "settings.json"
     config_file.write_text(
         json.dumps(settings),
@@ -28,7 +25,7 @@ def _write_config_file(settings: Mapping[str, t.StrMapping], tmp_path: Path) -> 
     return str(config_file)
 
 
-def _valid_config_dict() -> Mapping[str, t.StrMapping]:
+def _valid_config_dict() -> t.MappingKV[str, t.StrMapping]:
     return {
         "wms_auth": {
             "base_url": "https://test.wms.example.com",
