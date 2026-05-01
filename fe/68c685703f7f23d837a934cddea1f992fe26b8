@@ -1,0 +1,16 @@
+tests/examples/test_examples.py
+  h_9db9d35f50cf33 123
+docs/guides/troubleshooting.md
+  h_9db9d35f50cf33 797
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "fe68c685703f7f23d837a934cddea1f992fe26b8",
+  "prompts": {},
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
