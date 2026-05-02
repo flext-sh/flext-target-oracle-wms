@@ -8,7 +8,7 @@ from collections.abc import (
 )
 from typing import ClassVar
 
-from flext_core import p, r
+from flext_core import e, p, r
 from flext_meltano import u
 from flext_target_oracle_wms._utilities.helpers import (
     FlextTargetOracleWmsUtilitiesHelpers,
@@ -56,9 +56,7 @@ class FlextTargetOracleWmsUtilitiesClient:
             """Return catalog entry for a stream or a failure."""
             entry = self._catalog_entries.get(stream_name)
             if entry is None:
-                return r[m.Meltano.SingerCatalogEntry].fail(
-                    f"WMS stream not found: {stream_name}",
-                )
+                return e.fail_not_found("WMS stream", stream_name, result_type=r[m.Meltano.SingerCatalogEntry])
             return r[m.Meltano.SingerCatalogEntry].ok(entry)
 
     class StreamProcessor:
