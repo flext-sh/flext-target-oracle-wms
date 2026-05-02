@@ -56,7 +56,11 @@ class FlextTargetOracleWmsUtilitiesClient:
             """Return catalog entry for a stream or a failure."""
             entry = self._catalog_entries.get(stream_name)
             if entry is None:
-                return e.fail_not_found("WMS stream", stream_name, result_type=r[m.Meltano.SingerCatalogEntry])
+                return e.fail_not_found(
+                    "WMS stream",
+                    stream_name,
+                    result_type=r[m.Meltano.SingerCatalogEntry],
+                )
             return r[m.Meltano.SingerCatalogEntry].ok(entry)
 
     class StreamProcessor:
