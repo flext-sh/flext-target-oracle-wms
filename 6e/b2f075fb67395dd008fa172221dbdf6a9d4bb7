@@ -1,0 +1,16 @@
+tests/unit/test_oracle_wms_cli.py
+  h_9db9d35f50cf33 68,75,81,87,92,101
+tests/unit/test_workflow.py
+  h_9db9d35f50cf33 101
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "6eb2f075fb67395dd008fa172221dbdf6a9d4bb7",
+  "prompts": {},
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
