@@ -47,7 +47,6 @@ class FlextTargetOracleWmsConstants(FlextMeltanoConstants, c):
                 UPSERT = "UPSERT"
                 REPLACE = "REPLACE"
                 MERGE = "MERGE"
-                TRUNCATE_INSERT = "TRUNCATE_INSERT"
 
             VALID_LOAD_METHODS: Final[frozenset[str]] = frozenset(
                 member.value for member in Method
