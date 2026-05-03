@@ -98,7 +98,7 @@ class TestsFlextTargetOracleWmsWorkflow:
         result = target.process_lines(lines)
         assert result.success
 
-    @patch("flext_target_oracle_wms.cli.sys.stdin", [])
+    @patch("flext_target_oracle_wms.cli.sys.stdin", ())
     def test_cli_execute_empty_stdin(self) -> None:
         cli = FlextTargetOracleWmsCli()
         result = cli.execute()

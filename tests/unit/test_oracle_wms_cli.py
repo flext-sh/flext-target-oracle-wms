@@ -65,31 +65,31 @@ class TestsFlextTargetOracleWmsOracleWmsCli:
         with pytest.raises(c.ValidationError):
             cli._prepare_config(str(bad_file))
 
-    @patch("flext_target_oracle_wms.cli.sys.stdin", [])
+    @patch("flext_target_oracle_wms.cli.sys.stdin", ())
     def test_execute_with_config_file(self, tmp_path: Path) -> None:
         cli = FlextTargetOracleWmsCli()
         config_path = _write_config_file(_valid_config_dict(), tmp_path)
         result = cli.execute(settings=config_path)
         assert result.success
 
-    @patch("flext_target_oracle_wms.cli.sys.stdin", [])
+    @patch("flext_target_oracle_wms.cli.sys.stdin", ())
     def test_execute_without_config_uses_defaults(self) -> None:
         cli = FlextTargetOracleWmsCli()
         result = cli.execute()
         assert result.success
 
-    @patch("flext_target_oracle_wms.cli.sys.stdin", [])
+    @patch("flext_target_oracle_wms.cli.sys.stdin", ())
     def test_execute_with_none_config(self) -> None:
         cli = FlextTargetOracleWmsCli()
         result = cli.execute()
         assert result.success
 
-    @patch("flext_target_oracle_wms.cli.sys.stdin", [])
+    @patch("flext_target_oracle_wms.cli.sys.stdin", ())
     @patch("flext_target_oracle_wms.cli.sys.argv", ["target-oracle-wms"])
     def test_main_no_args_succeeds(self) -> None:
         main()
 
-    @patch("flext_target_oracle_wms.cli.sys.stdin", [])
+    @patch("flext_target_oracle_wms.cli.sys.stdin", ())
     def test_main_with_config_arg(self, tmp_path: Path) -> None:
         config_path = _write_config_file(_valid_config_dict(), tmp_path)
         with patch(
@@ -98,7 +98,7 @@ class TestsFlextTargetOracleWmsOracleWmsCli:
         ):
             main()
 
-    @patch("flext_target_oracle_wms.cli.sys.stdin", [])
+    @patch("flext_target_oracle_wms.cli.sys.stdin", ())
     @patch(
         "flext_target_oracle_wms.cli.sys.argv",
         ["target-oracle-wms", "--config", "/bad/path.json"],
