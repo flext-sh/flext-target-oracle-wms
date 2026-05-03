@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from collections.abc import (
     MutableMapping,
-    MutableSequence,
 )
 from types import MappingProxyType
 from typing import Annotated, Literal
@@ -127,45 +126,6 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, m):
                 return r[FlextTargetOracleWmsModels.TargetOracleWms.WmsTargetConfig].ok(
                     settings
                 )
-
-        class WmsTargetResult(FlextMeltanoModels.ArbitraryTypesModel):
-            """Execution summary for the target pipeline."""
-
-            total_records_processed: Annotated[
-                t.NonNegativeInt,
-                u.Field(description="Total number of records attempted."),
-            ] = 0
-            successful_records: Annotated[
-                t.NonNegativeInt,
-                u.Field(description="Number of records successfully written."),
-            ] = 0
-            failed_records: Annotated[
-                t.NonNegativeInt,
-                u.Field(description="Number of records that failed to write."),
-            ] = 0
-            error_messages: Annotated[
-                MutableSequence[str],
-                u.Field(
-                    default_factory=list,
-                    description="List of error messages from failed records.",
-                ),
-            ]
-            metrics: Annotated[
-                MutableMapping[str, t.JsonValue],
-                u.Field(
-                    default_factory=lambda: MappingProxyType({}),
-                    description="Aggregate runtime metrics for this pipeline run.",
-                ),
-            ]
-
-            @property
-            def success_rate(self) -> float:
-                """Calculate percentage of successful records."""
-                if self.total_records_processed == 0:
-                    return 0.0
-                return (
-                    float(self.successful_records) / float(self.total_records_processed)
-                ) * 100.0
 
         class SingerFieldSchema(FlextMeltanoModels.FlexibleModel):
             """Typed Singer field schema entry for target-side schema parsing."""
