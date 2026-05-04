@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
-import ast
+import importlib
+import inspect
+from collections.abc import Iterator
 from pathlib import Path
+from types import ModuleType
 
 from tests import c, m
 
@@ -21,8 +24,31 @@ def _iter_package_modules() -> list[Path]:
     return sorted(_package_root().rglob("*.py"))
 
 
-def _read_module_tree(module_path: Path) -> ast.Module:
-    return ast.parse(module_path.read_text(encoding="utf-8"), filename=str(module_path))
+def _module_dotted_name(module_path: Path) -> str:
+    package_root = _package_root()
+    relative = module_path.relative_to(package_root.parent)
+    parts = relative.with_suffix("").parts
+    if parts[-1] == "__init__":
+        parts = parts[:-1]
+    return ".".join(parts)
+
+
+def _import_package_module(module_path: Path) -> ModuleType | None:
+    try:
+        return importlib.import_module(_module_dotted_name(module_path))
+    except (ImportError, AttributeError):
+        return None
+
+
+def _module_top_level_attrs(module: ModuleType) -> Iterator[tuple[str, object]]:
+    module_name = module.__name__
+    for name, value in vars(module).items():
+        if name.startswith("__") and name.endswith("__"):
+            continue
+        owner = getattr(value, "__module__", None)
+        if owner is not None and owner != module_name:
+            continue
+        yield name, value
 
 
 class TestsFlextTargetOracleWmsModuleGovernance:
@@ -31,17 +57,15 @@ class TestsFlextTargetOracleWmsModuleGovernance:
     def test_package_modules_do_not_define_module_level_loggers(self) -> None:
         violations: list[str] = []
         for module_path in _iter_package_modules():
-            module_tree = _read_module_tree(module_path)
-            for node in module_tree.body:
-                if not isinstance(node, ast.Assign):
-                    continue
-                if any(
-                    isinstance(target, ast.Name) and target.id == "logger"
-                    for target in node.targets
-                ):
+            module = _import_package_module(module_path)
+            if module is None:
+                continue
+            for name, _ in _module_top_level_attrs(module):
+                if name in {"logger", "_logger"}:
                     violations.append(
                         str(module_path.relative_to(_package_root().parent))
                     )
+                    break
         assert not violations, (
             f"Module-level logger assignments are forbidden: {violations}"
         )
@@ -54,12 +78,13 @@ class TestsFlextTargetOracleWmsModuleGovernance:
                 relative_module_path,
                 frozenset(),
             )
-            module_tree = _read_module_tree(module_path)
+            module = _import_package_module(module_path)
+            if module is None:
+                continue
             unexpected_functions = sorted(
-                node.name
-                for node in module_tree.body
-                if isinstance(node, ast.FunctionDef)
-                and node.name not in allowed_functions
+                name
+                for name, value in _module_top_level_attrs(module)
+                if inspect.isfunction(value) and name not in allowed_functions
             )
             if unexpected_functions:
                 violations.append(

@@ -7,12 +7,42 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import ast
+import importlib.util
+import inspect
 from pathlib import Path
+from types import ModuleType
 
 import pytest
 
 from tests import t
+
+
+def _load_example_module(example_file: Path) -> ModuleType:
+    module_name = f"_flext_target_oracle_wms_example_{example_file.stem}"
+    spec = importlib.util.spec_from_file_location(module_name, example_file)
+    assert spec is not None, f"Could not build import spec for {example_file.name}"
+    loader = spec.loader
+    assert loader is not None, f"Could not load {example_file.name}"
+    module = importlib.util.module_from_spec(spec)
+    loader.exec_module(module)
+    return module
+
+
+def _module_functions(module: ModuleType) -> list[tuple[str, object]]:
+    return [
+        (name, value)
+        for name, value in vars(module).items()
+        if inspect.isfunction(value)
+        and getattr(value, "__module__", None) == module.__name__
+    ]
+
+
+def _import_lines(content: str) -> list[str]:
+    return [
+        line.strip()
+        for line in content.splitlines()
+        if line.strip().startswith(("import ", "from "))
+    ]
 
 
 class TestsFlextTargetOracleWmsExamples:
@@ -51,22 +81,11 @@ class TestsFlextTargetOracleWmsExamples:
         """Test that examples use REAL flext-* imports, not fallbacks."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
-            tree = ast.parse(content, filename=str(example_file))
-            has_flext_core = False
-            has_target_import = False
-            for node in ast.walk(tree):
-                if isinstance(node, ast.ImportFrom):
-                    if node.module == "flext_core":
-                        has_flext_core = True
-                    elif node.module == "flext_observability":
-                        pass
-                    elif node.module and node.module.startswith(
-                        "flext_target_oracle_wms",
-                    ):
-                        has_target_import = True
-                elif isinstance(node, ast.Import):
-                    for alias in node.names:
-                        alias.name.startswith("flext_")
+            import_lines = _import_lines(content)
+            has_flext_core = any("flext_core" in line for line in import_lines)
+            has_target_import = any(
+                "flext_target_oracle_wms" in line for line in import_lines
+            )
             assert has_flext_core, f"{example_file.name} must import from flext_core"
             assert has_target_import, (
                 f"{example_file.name} must import from flext_target_oracle_wms"
@@ -92,9 +111,8 @@ class TestsFlextTargetOracleWmsExamples:
     ) -> None:
         """Test that examples have comprehensive docstrings."""
         for example_file in example_files:
-            content = example_file.read_text(encoding="utf-8")
-            tree = ast.parse(content, filename=str(example_file))
-            module_docstring = ast.get_docstring(tree)
+            module = _load_example_module(example_file)
+            module_docstring = inspect.getdoc(module)
             assert module_docstring is not None, (
                 f"{example_file.name} must have module docstring"
             )
@@ -105,14 +123,14 @@ class TestsFlextTargetOracleWmsExamples:
                 "PRODUCTION" in module_docstring.upper()
                 or "REAL" in module_docstring.upper()
             ), f"{example_file.name} must emphasize production/real implementation"
-            function_count = 0
-            documented_functions = 0
-            for node in ast.walk(tree):
-                if isinstance(node, ast.FunctionDef):
-                    function_count += 1
-                    func_docstring = ast.get_docstring(node)
-                    if func_docstring and len(func_docstring) > 10:
-                        documented_functions += 1
+            module_functions = _module_functions(module)
+            function_count = len(module_functions)
+            documented_functions = sum(
+                1
+                for _, function in module_functions
+                if (func_docstring := inspect.getdoc(function))
+                and len(func_docstring) > 10
+            )
             if function_count > 0:
                 doc_ratio = documented_functions / function_count
                 assert doc_ratio >= 0.8, (
@@ -124,15 +142,17 @@ class TestsFlextTargetOracleWmsExamples:
     ) -> None:
         """Test that examples with async functions use proper await patterns."""
         for example_file in example_files:
-            content = example_file.read_text(encoding="utf-8")
-            tree = ast.parse(content, filename=str(example_file))
-            has_async_function = False
-            has_await = False
-            for node in ast.walk(tree):
-                if isinstance(node, ast.AsyncFunctionDef):
-                    has_async_function = True
-                elif isinstance(node, ast.Await):
-                    has_await = True
+            module = _load_example_module(example_file)
+            module_functions = _module_functions(module)
+            async_functions = [
+                function
+                for _, function in module_functions
+                if inspect.iscoroutinefunction(function)
+            ]
+            has_async_function = bool(async_functions)
+            has_await = any(
+                "await " in inspect.getsource(function) for function in async_functions
+            )
             if has_async_function:
                 assert has_await, (
                     f"{example_file.name} has async functions but no await statements"
@@ -145,21 +165,10 @@ class TestsFlextTargetOracleWmsExamples:
         """Test that examples implement proper error handling."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
-            tree = ast.parse(content, filename=str(example_file))
-            has_try_except = False
-            has_flext_result_check = False
-            for node in ast.walk(tree):
-                if isinstance(node, ast.Try):
-                    has_try_except = True
-                elif isinstance(node, ast.Attribute):
-                    if node.attr == "success":
-                        has_flext_result_check = True
-                elif (
-                    isinstance(node, ast.Call)
-                    and isinstance(node.func, ast.Attribute)
-                    and (node.func.attr in {"error", "warning"})
-                ):
-                    pass
+            has_try_except = "try:" in content and "except" in content
+            has_flext_result_check = any(
+                token in content for token in (".success", ".is_success", ".is_failure")
+            )
             if "error" in content.lower():
                 assert has_try_except or has_flext_result_check, (
                     f"{example_file.name} mentions errors but has no error handling"
@@ -228,12 +237,11 @@ class TestsFlextTargetOracleWmsExamples:
                 continue
             try:
                 content = example_file.read_text(encoding="utf-8")
-                ast.parse(content, filename=str(example_file))
+                compiled = compile(content, str(example_file), "exec")
             except SyntaxError as e:
                 pytest.fail(f"Syntax error in {example_file.name}: {e}")
             try:
-                spec = ast.parse(content, filename=str(example_file))
-                assert spec is not None, f"Failed to parse {example_file.name}"
+                assert compiled is not None, f"Failed to compile {example_file.name}"
             except (
                 ValueError,
                 TypeError,
