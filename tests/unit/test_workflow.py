@@ -6,10 +6,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_cli import u as cli_u
-
+import json as _stdlib_json
 from unittest.mock import MagicMock, patch
-
 
 from flext_target_oracle_wms import FlextTargetOracleWmsCli
 from tests import t, u
@@ -30,20 +28,25 @@ def _schema_line(
     props: t.MappingKV[str, t.StrMapping],
     keys: t.StrSequence,
 ) -> str:
-    return cli_u.Cli.json_dumps({
+    _ = props
+    return _stdlib_json.dumps({
         "type": "SCHEMA",
         "stream": stream,
         "schema": {"type": "object"},
-        "key_properties": keys,
-    }).unwrap()
+        "key_properties": list(keys),
+    })
 
 
 def _record_line(stream: str, record: t.JsonMapping) -> str:
-    return cli_u.Cli.json_dumps({"type": "RECORD", "stream": stream, "record": record}).unwrap()
+    return _stdlib_json.dumps({
+        "type": "RECORD",
+        "stream": stream,
+        "record": dict(record),
+    })
 
 
 def _state_line(value: t.JsonMapping) -> str:
-    return cli_u.Cli.json_dumps({"type": "STATE", "value": value}).unwrap()
+    return _stdlib_json.dumps({"type": "STATE", "value": dict(value)})
 
 
 class TestsFlextTargetOracleWmsWorkflow:
