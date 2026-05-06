@@ -29,7 +29,7 @@ class FlextTargetOracleWmsServiceRuntime:
             runtime_target: u.TargetOracleWms.Target,
             target: m.Meltano.SingerTargetBase,
             stream_name: str,
-            schema: dict[str, t.JsonValue],
+            schema: t.JsonDict,
             key_properties: t.StrSequence,
         ) -> FlextTargetOracleWmsServiceRuntime.Sink:
             """Create an adapter sink and attach the Oracle WMS runtime target."""

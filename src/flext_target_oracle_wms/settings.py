@@ -26,8 +26,7 @@ class FlextTargetOracleWmsSettings(FlextSettingsBase):
     ) -> p.Result[FlextTargetOracleWmsSettings]:
         """Create settings instance with optional override values."""
         try:
-            data: t.JsonMapping = dict(overrides) if overrides else {}
-            settings = FlextTargetOracleWmsSettings.model_validate(data)
+            settings = FlextTargetOracleWmsSettings.model_validate(overrides or {})
         except c.Meltano.SINGER_SAFE_EXCEPTIONS as exc:
             return r[FlextTargetOracleWmsSettings].fail(
                 f"Invalid settings overrides: {exc}",

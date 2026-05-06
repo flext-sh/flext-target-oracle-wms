@@ -6,7 +6,7 @@ from enum import StrEnum, unique
 from typing import Final
 
 from flext_meltano import FlextMeltanoConstants
-from flext_oracle_wms import c
+from flext_oracle_wms import c, t
 
 
 class FlextTargetOracleWmsConstants(FlextMeltanoConstants, c):
@@ -54,4 +54,4 @@ class FlextTargetOracleWmsConstants(FlextMeltanoConstants, c):
 
 
 c = FlextTargetOracleWmsConstants
-__all__: tuple[str, ...] = ("FlextTargetOracleWmsConstants", "c")
+__all__: t.StrSequence = ("FlextTargetOracleWmsConstants", "c")

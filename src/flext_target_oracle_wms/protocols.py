@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from typing import Protocol, runtime_checkable
 
-from flext_meltano import FlextMeltanoProtocols
+from flext_meltano import FlextMeltanoProtocols as meltano_p
 from flext_oracle_wms import p
 from flext_target_oracle_wms import t
 
 
-class FlextTargetOracleWmsProtocols(FlextMeltanoProtocols, p):
+class FlextTargetOracleWmsProtocols(meltano_p, p):
     """Namespace for target Oracle WMS protocol contracts."""
 
     class TargetOracleWms:
@@ -22,7 +22,7 @@ class FlextTargetOracleWmsProtocols(FlextMeltanoProtocols, p):
             def load_data(
                 self,
                 records: t.SequenceOf[t.JsonMapping],
-            ) -> FlextMeltanoProtocols.Result[bool]:
+            ) -> meltano_p.Result[bool]:
                 """Load a batch of records."""
                 ...
 
@@ -33,7 +33,7 @@ class FlextTargetOracleWmsProtocols(FlextMeltanoProtocols, p):
             def transform_to_wms(
                 self,
                 record: t.JsonMapping,
-            ) -> FlextMeltanoProtocols.Result[t.JsonMapping]:
+            ) -> meltano_p.Result[t.JsonMapping]:
                 """Transform one record to WMS shape."""
                 ...
 
