@@ -1,0 +1,41 @@
+src/flext_target_oracle_wms/settings.py
+  h_5cf852cc46bf92 29
+src/flext_target_oracle_wms/models.py
+  h_5cf852cc46bf92 111
+src/flext_target_oracle_wms/protocols.py
+  s_b15aa8dbf80823::t_ed5df4cb8fa39f 12,25,36
+  h_5cf852cc46bf92 7
+src/flext_target_oracle_wms/_utilities/service_runtime.py
+  h_5cf852cc46bf92 32
+src/flext_target_oracle_wms/constants.py
+  h_5cf852cc46bf92 9,57
+src/flext_target_oracle_wms/typings.py
+  s_b15aa8dbf80823::t_ac58cfd3e831a3 18
+  h_5cf852cc46bf92 17
+src/flext_target_oracle_wms/_utilities/helpers.py
+  h_5cf852cc46bf92 49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "1136c93adef4026e1fc1463c889e1be975dd3522",
+  "prompts": {},
+  "humans": {
+    "h_5cf852cc46bf92": {
+      "author": "FLEXT Bot <team@flext.sh>"
+    },
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  },
+  "sessions": {
+    "s_b15aa8dbf80823": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d896ab0f-dd16-4dca-9ad4-b3d924a501e7",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "FLEXT Bot <team@flext.sh>"
+    }
+  }
+}
