@@ -105,9 +105,7 @@ class FlextTargetOracleWmsServiceRuntime:
         )
 
     @staticmethod
-    def normalize_flat_schema(
-        schema: t.JsonMapping,
-    ) -> dict[str, t.JsonValue]:
+    def normalize_flat_schema(schema: t.JsonMapping) -> t.JsonDict:
         """Normalize a flat Singer schema to the WMS runtime contract."""
         return {
             key: (str(value) if isinstance(value, Path) else value)
