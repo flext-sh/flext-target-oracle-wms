@@ -1,0 +1,33 @@
+src/flext_target_oracle_wms/utilities.py
+  h_5cf852cc46bf92 8,16
+tests/models.py
+  h_5cf852cc46bf92 16,19,22
+tests/typings.py
+  h_5cf852cc46bf92 13,16
+tests/constants.py
+  h_5cf852cc46bf92 15
+src/flext_target_oracle_wms/constants.py
+  h_5cf852cc46bf92 8,12
+tests/utilities.py
+  h_5cf852cc46bf92 13,18
+tests/protocols.py
+  h_5cf852cc46bf92 16,21,25
+src/flext_target_oracle_wms/_utilities/service_runtime.py
+  h_5cf852cc46bf92 99
+src/flext_target_oracle_wms/models.py
+  h_5cf852cc46bf92 15,20,34,62,129,136,150
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "1ce561d8f830a41437a77b30b6887f8fd5885491",
+  "prompts": {},
+  "humans": {
+    "h_5cf852cc46bf92": {
+      "author": "FLEXT Bot <team@flext.sh>"
+    },
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
