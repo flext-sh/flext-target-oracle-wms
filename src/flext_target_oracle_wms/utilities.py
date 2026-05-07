@@ -5,7 +5,7 @@ Facade composing helpers from _utilities/ submodules into u.TargetOracleWms.* na
 
 from __future__ import annotations
 
-from flext_meltano import FlextMeltanoUtilities
+from flext_meltano import FlextMeltanoUtilities as meltano_u
 from flext_oracle_wms import u
 from flext_target_oracle_wms import (
     FlextTargetOracleWmsUtilitiesClient,
@@ -13,7 +13,7 @@ from flext_target_oracle_wms import (
 )
 
 
-class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, u):
+class FlextTargetOracleWmsUtilities(meltano_u, u):
     """Namespace exposing Singer-target Client and Helpers under TargetOracleWms.*."""
 
     class TargetOracleWms:

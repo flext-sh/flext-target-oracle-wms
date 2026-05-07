@@ -5,11 +5,11 @@ from __future__ import annotations
 from enum import StrEnum, unique
 from typing import Final
 
-from flext_meltano import FlextMeltanoConstants
+from flext_meltano import FlextMeltanoConstants as meltano_c
 from flext_oracle_wms import c, t
 
 
-class FlextTargetOracleWmsConstants(FlextMeltanoConstants, c):
+class FlextTargetOracleWmsConstants(meltano_c, c):
     """Typed constant namespace used by target Oracle WMS modules."""
 
     class TargetOracleWms:
@@ -28,12 +28,10 @@ class FlextTargetOracleWmsConstants(FlextMeltanoConstants, c):
         class OracleWms:
             """Oracle WMS runtime defaults."""
 
-            DEFAULT_TIMEOUT: Final[int] = (
-                FlextMeltanoConstants.Meltano.DEFAULT_TIMEOUT_SECONDS
-            )
+            DEFAULT_TIMEOUT: Final[int] = meltano_c.Meltano.DEFAULT_TIMEOUT_SECONDS
             DEFAULT_MAX_RETRIES: Final[int] = 3
             DEFAULT_BATCH_SIZE: Final[int] = (
-                FlextMeltanoConstants.Meltano.BATCH_DEFAULT_DEFAULT_BATCH_SIZE
+                meltano_c.Meltano.BATCH_DEFAULT_DEFAULT_BATCH_SIZE
             )
 
         class LoadMethods:

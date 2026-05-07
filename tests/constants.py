@@ -12,19 +12,17 @@ from typing import Final
 
 from flext_tests import FlextTestsConstants
 
-from flext_target_oracle_wms import FlextTargetOracleWmsConstants
+from flext_target_oracle_wms import c
 
 
-class TestsFlextTargetOracleWmsConstants(
-    FlextTestsConstants, FlextTargetOracleWmsConstants
-):
+class TestsFlextTargetOracleWmsConstants(c, FlextTestsConstants):
     """Test constants for flext-target-oracle-wms."""
 
-    class TargetOracleWms(FlextTargetOracleWmsConstants.TargetOracleWms):
+    class TargetOracleWms(c.TargetOracleWms):
         """Target Oracle WMS domain test constants namespace."""
 
         class Tests(
-            FlextTargetOracleWmsConstants.TargetOracleWms.Tests,
+            c.TargetOracleWms.Tests,
             FlextTestsConstants.Tests,
         ):
             """Target Oracle WMS-specific test constants."""
