@@ -14,12 +14,14 @@ from flext_core.lazy import (
 if _t.TYPE_CHECKING:
     from flext_tests import td, tf, tk, tm, tv
 
-    from flext_target_oracle_wms import d, e, h, r, s, x
+    from flext_target_oracle_wms import d, e, h, r, x
+    from tests.base import TestsFlextTargetOracleWmsServiceBase, s
     from tests.constants import TestsFlextTargetOracleWmsConstants, c
     from tests.examples.test_examples import TestsFlextTargetOracleWmsExamples
     from tests.integration.test_oracle import TestsFlextTargetOracleWmsOracle
     from tests.models import TestsFlextTargetOracleWmsModels, m
     from tests.protocols import TestsFlextTargetOracleWmsProtocols, p
+    from tests.settings import TestsFlextTargetOracleWmsSettings
     from tests.typings import TestsFlextTargetOracleWmsTypes, t
     from tests.unit.test_benchmarks import TestsFlextTargetOracleWmsBenchmarks
     from tests.unit.test_catalog import TestsFlextTargetOracleWmsCatalog
@@ -48,6 +50,10 @@ _LAZY_IMPORTS = merge_lazy_imports(
     ),
     build_lazy_import_map(
         {
+            ".base": (
+                "TestsFlextTargetOracleWmsServiceBase",
+                "s",
+            ),
             ".constants": (
                 "TestsFlextTargetOracleWmsConstants",
                 "c",
@@ -62,6 +68,7 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "TestsFlextTargetOracleWmsProtocols",
                 "p",
             ),
+            ".settings": ("TestsFlextTargetOracleWmsSettings",),
             ".typings": (
                 "TestsFlextTargetOracleWmsTypes",
                 "t",
@@ -93,7 +100,6 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "e",
                 "h",
                 "r",
-                "s",
                 "x",
             ),
             "flext_tests": (
@@ -144,6 +150,8 @@ __all__: list[str] = [
     "TestsFlextTargetOracleWmsOracleWmsInit",
     "TestsFlextTargetOracleWmsProtocols",
     "TestsFlextTargetOracleWmsQuality",
+    "TestsFlextTargetOracleWmsServiceBase",
+    "TestsFlextTargetOracleWmsSettings",
     "TestsFlextTargetOracleWmsSinks",
     "TestsFlextTargetOracleWmsStream",
     "TestsFlextTargetOracleWmsStructure",
