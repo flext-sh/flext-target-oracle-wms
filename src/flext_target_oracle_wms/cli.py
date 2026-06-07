@@ -12,6 +12,7 @@ from flext_target_oracle_wms import (
     p,
     r,
     t,
+    u,
 )
 
 
@@ -62,7 +63,7 @@ class FlextTargetOracleWmsCli:
         if not config_file.exists():
             msg = f"Configuration file not found: {config_path}"
             raise FileNotFoundError(msg)
-        return config_file.read_text(encoding=c.DEFAULT_ENCODING)
+        return u.Cli.files_read_text(config_file).unwrap()
 
     def _prepare_config(
         self,
