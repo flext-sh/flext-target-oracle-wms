@@ -21,8 +21,31 @@ _LAZY_IMPORTS = build_lazy_import_map(
         ".test_target": ("TestsFlextTargetOracleWmsTarget",),
         ".test_wms_patterns": ("TestsFlextTargetOracleWmsWmsPatterns",),
         ".test_workflow": ("TestsFlextTargetOracleWmsWorkflow",),
+        "flext_tests": (
+            "c",
+            "d",
+            "e",
+            "h",
+            "m",
+            "p",
+            "r",
+            "s",
+            "t",
+            "td",
+            "tf",
+            "tk",
+            "tm",
+            "tv",
+            "u",
+            "x",
+        ),
     },
 )
 
 
-install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, publish_all=False)
+install_lazy_exports(
+    __name__,
+    globals(),
+    _LAZY_IMPORTS,
+    publish_all=False,
+)
