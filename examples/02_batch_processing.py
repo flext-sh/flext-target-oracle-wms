@@ -14,7 +14,7 @@ from types import MappingProxyType
 from typing import Final
 
 from flext_core import t
-from flext_observability import (
+from flext_observability.services.monitoring import (
     FlextObservabilityMonitor,
     flext_monitor_function,
 )

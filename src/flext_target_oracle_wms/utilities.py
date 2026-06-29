@@ -7,8 +7,12 @@ from __future__ import annotations
 
 from flext_meltano import FlextMeltanoUtilities as meltano_u
 from flext_oracle_wms import u
-from flext_target_oracle_wms._utilities.client import FlextTargetOracleWmsUtilitiesClient
-from flext_target_oracle_wms._utilities.helpers import FlextTargetOracleWmsUtilitiesHelpers
+from flext_target_oracle_wms._utilities.client import (
+    FlextTargetOracleWmsUtilitiesClient,
+)
+from flext_target_oracle_wms._utilities.helpers import (
+    FlextTargetOracleWmsUtilitiesHelpers,
+)
 
 
 class FlextTargetOracleWmsUtilities(meltano_u, u):

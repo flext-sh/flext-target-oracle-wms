@@ -6,7 +6,9 @@ import sys
 from pathlib import Path
 
 from flext_target_oracle_wms import c, m, p, r, t, u
-from flext_target_oracle_wms._utilities.client import FlextTargetOracleWmsUtilitiesClient
+from flext_target_oracle_wms._utilities.client import (
+    FlextTargetOracleWmsUtilitiesClient,
+)
 
 
 class FlextTargetOracleWmsCli:

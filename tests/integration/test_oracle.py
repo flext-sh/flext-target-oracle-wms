@@ -10,7 +10,8 @@ import json as _stdlib_json
 
 import pytest
 
-from tests import t, u
+from tests.typings import t
+from tests.utilities import u
 
 
 def _valid_config() -> t.JsonMapping:

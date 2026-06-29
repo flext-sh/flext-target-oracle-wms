@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_core import t, u
-from flext_observability import (
+from flext_observability.services.monitoring import (
     FlextObservabilityMonitor,
     flext_monitor_function,
 )

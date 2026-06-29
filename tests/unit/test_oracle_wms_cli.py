@@ -12,8 +12,10 @@ from unittest.mock import patch
 
 import pytest
 
-from flext_target_oracle_wms import FlextTargetOracleWmsCli, main
-from tests import c, t
+from flext_target_oracle_wms import main
+from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
+from tests.constants import c
+from tests.typings import t
 
 
 def _write_config_file(settings: t.MappingKV[str, t.StrMapping], tmp_path: Path) -> str:

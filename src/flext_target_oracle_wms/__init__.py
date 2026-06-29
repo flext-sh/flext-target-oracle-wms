@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-import typing as _t
+from typing import TYPE_CHECKING
 
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 from flext_target_oracle_wms.__version__ import (
@@ -17,7 +17,7 @@ from flext_target_oracle_wms.__version__ import (
     __version_info__,
 )
 
-if _t.TYPE_CHECKING:
+if TYPE_CHECKING:
     from flext_oracle_wms import d as d, e as e, h as h, r as r, s as s, x as x
     from flext_target_oracle_wms.api import (
         FlextTargetOracleWmsService as FlextTargetOracleWmsService,
@@ -30,6 +30,10 @@ if _t.TYPE_CHECKING:
     from flext_target_oracle_wms.constants import (
         FlextTargetOracleWmsConstants as FlextTargetOracleWmsConstants,
         c as c,
+    )
+    from flext_target_oracle_wms.factory import (
+        FlextTargetFactory as FlextTargetFactory,
+        FlextTargetMonitoringFactory as FlextTargetMonitoringFactory,
     )
     from flext_target_oracle_wms.models import (
         FlextTargetOracleWmsModels as FlextTargetOracleWmsModels,
@@ -64,6 +68,10 @@ _LAZY_IMPORTS = build_lazy_import_map(
             "FlextTargetOracleWmsConstants",
             "c",
         ),
+        ".factory": (
+            "FlextTargetFactory",
+            "FlextTargetMonitoringFactory",
+        ),
         ".models": (
             "FlextTargetOracleWmsModels",
             "m",
@@ -94,6 +102,8 @@ _LAZY_IMPORTS = build_lazy_import_map(
 
 
 __all__: tuple[str, ...] = (
+    "FlextTargetFactory",
+    "FlextTargetMonitoringFactory",
     "FlextTargetOracleWmsCli",
     "FlextTargetOracleWmsConstants",
     "FlextTargetOracleWmsModels",

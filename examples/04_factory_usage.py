@@ -14,13 +14,17 @@ from collections.abc import Mapping
 from types import MappingProxyType
 from typing import Final
 
-from examples import t, u
 from flext_core import u as core_u
-from flext_observability import (
+from flext_observability.services.monitoring import (
     FlextObservabilityMonitor,
     flext_monitor_function,
 )
-from flext_target_oracle_wms import FlextTargetFactory, FlextTargetOracleWmsModels
+from flext_target_oracle_wms import (
+    FlextTargetFactory,
+    FlextTargetOracleWmsModels,
+    t,
+    u,
+)
 
 _ = core_u  # Anchor flext_core import for example validation.
 

@@ -14,7 +14,7 @@ from types import ModuleType
 
 import pytest
 
-from tests import t
+from tests.typings import t
 
 
 def _load_example_module(example_file: Path) -> ModuleType:

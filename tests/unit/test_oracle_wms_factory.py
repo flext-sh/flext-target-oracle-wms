@@ -8,11 +8,12 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
-from flext_target_oracle_wms import (
+from flext_target_oracle_wms.factory import (
     FlextTargetFactory,
     FlextTargetMonitoringFactory,
 )
-from tests import c, m
+from tests.constants import c
+from tests.models import m
 
 
 class TestsFlextTargetOracleWmsOracleWmsFactory:
