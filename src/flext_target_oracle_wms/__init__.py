@@ -167,6 +167,7 @@ __all__: list[str] = [
     "FlextTargetOracleWmsSettings",
     "FlextTargetOracleWmsTypes",
     "FlextTargetOracleWmsUtilities",
+    "FlextTargetOracleWmsUtilitiesClient",
     "__author__",
     "__author_email__",
     "__description__",

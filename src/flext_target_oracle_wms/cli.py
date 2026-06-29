@@ -63,7 +63,8 @@ class FlextTargetOracleWmsCli:
         if not config_file.exists():
             msg = f"Configuration file not found: {config_path}"
             raise FileNotFoundError(msg)
-        return u.Cli.files_read_text(config_file).unwrap()
+        content: str = u.Cli.files_read_text(config_file).unwrap()
+        return content
 
     def _prepare_config(
         self,
