@@ -37,8 +37,19 @@ _EAGER_EXPORTS = (
     x,
 )
 
+
 _PUBLIC_EXPORTS: tuple[str, ...] = (
-    *_LAZY_IMPORTS,
+    "FlextTargetFactory",
+    "FlextTargetMonitoringFactory",
+    "FlextTargetOracleWmsCli",
+    "FlextTargetOracleWmsConstants",
+    "FlextTargetOracleWmsModels",
+    "FlextTargetOracleWmsProtocols",
+    "FlextTargetOracleWmsService",
+    "FlextTargetOracleWmsSettings",
+    "FlextTargetOracleWmsTypes",
+    "FlextTargetOracleWmsUtilities",
+    "target_oracle_wms",
     "__author__",
     "__author_email__",
     "__description__",
@@ -47,11 +58,17 @@ _PUBLIC_EXPORTS: tuple[str, ...] = (
     "__url__",
     "__version__",
     "__version_info__",
+    "c",
     "d",
     "e",
     "h",
+    "m",
+    "main",
+    "p",
     "r",
     "s",
+    "t",
+    "u",
     "x",
 )
 

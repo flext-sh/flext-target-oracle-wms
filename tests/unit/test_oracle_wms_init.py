@@ -30,8 +30,11 @@ class TestsFlextTargetOracleWmsOracleWmsInit:
         assert isinstance(flext_target_oracle_wms.__all__, (list, tuple))
         expected_exports = [
             "FlextTargetOracleWmsUtilities",
-            "FlextTargetOracleWmsUtilitiesClient",
             "FlextTargetFactory",
+            "u",
         ]
         for export in expected_exports:
             assert export in flext_target_oracle_wms.__all__
+        assert flext_target_oracle_wms.u.TargetOracleWms.Client.__name__ == (
+            "FlextTargetOracleWmsUtilitiesClient"
+        )
