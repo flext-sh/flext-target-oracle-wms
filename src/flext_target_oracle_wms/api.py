@@ -1,5 +1,6 @@
 """FLEXT service orchestrator for target-oracle-wms.
 
+from flext_target_oracle_wms.utilities import u
 Thin facade — all infrastructure from ``FlextMeltanoTargetServiceBase`` via MRO.
 Only domain-specific sink creation defined here.
 
@@ -11,11 +12,10 @@ from __future__ import annotations
 
 from typing import Annotated, override
 
-from flext_core import u
 from flext_meltano.services.consumer_bases.target_service_base import (
     FlextMeltanoTargetServiceBase,
 )
-from flext_target_oracle_wms import p, t
+from flext_target_oracle_wms import p, t, u
 from flext_target_oracle_wms._utilities.service_runtime import (
     FlextTargetOracleWmsServiceRuntime,
 )

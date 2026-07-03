@@ -8,13 +8,14 @@ from collections.abc import (
 )
 from typing import ClassVar
 
-from flext_core import e, p, r
+from flext_core import e, r
 from flext_meltano import u
 from flext_target_oracle_wms._utilities.helpers import (
     FlextTargetOracleWmsUtilitiesHelpers,
 )
 from flext_target_oracle_wms.constants import c
 from flext_target_oracle_wms.models import m
+from flext_target_oracle_wms.protocols import p
 from flext_target_oracle_wms.typings import t
 
 

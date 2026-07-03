@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 from flext_cli import u
-from flext_core import p, r
+from flext_core import r
 from flext_meltano import c as meltano_c, u as meltano_u
 from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants as c
 from flext_target_oracle_wms.models import FlextTargetOracleWmsModels as m
+from flext_target_oracle_wms.protocols import p
 from flext_target_oracle_wms.typings import FlextTargetOracleWmsTypes as t
 
 
