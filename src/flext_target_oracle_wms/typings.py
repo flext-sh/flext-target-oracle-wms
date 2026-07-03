@@ -7,8 +7,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_meltano import m, t as meltano_t
-from flext_oracle_wms import t
+from flext_meltano.models import m
+from flext_meltano.typings import t as meltano_t
+from flext_oracle_wms.typings import t
 
 
 class FlextTargetOracleWmsTypes(meltano_t, t):
