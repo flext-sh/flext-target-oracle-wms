@@ -12,7 +12,11 @@ from collections.abc import (
 from types import MappingProxyType
 from typing import Annotated, Literal
 
-from flext_meltano import FlextMeltanoModels as meltano_m, p, r, t, u
+from flext_core import r
+from flext_meltano.models import FlextMeltanoModels as meltano_m
+from flext_meltano.protocols import p
+from flext_meltano.typings import t
+from flext_meltano.utilities import u
 from flext_oracle_wms import m
 from flext_target_oracle_wms.constants import c
 

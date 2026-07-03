@@ -8,8 +8,8 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from flext_core import FlextSettingsBase
-from flext_target_oracle_wms import c, m, p, r, t
+from flext_core import FlextSettingsBase, r
+from flext_target_oracle_wms import c, m, p, t
 
 
 class FlextTargetOracleWmsSettings(FlextSettingsBase):

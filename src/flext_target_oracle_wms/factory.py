@@ -2,42 +2,19 @@
 
 from __future__ import annotations
 
-from collections.abc import (
-    Mapping,
-)
 from typing import ClassVar
 
-from flext_target_oracle_wms import c, m, p, r, t, u
+from flext_core import r
+from flext_target_oracle_wms import c, m, p, t, u
+
+from ._constants import factory
 
 
 class FlextTargetFactory:
     """Factory for creating configured target instances."""
 
     logger: ClassVar[p.Logger] = u.fetch_logger(__name__)
-
-    PRESETS: ClassVar[Mapping[str, t.JsonMapping]] = {
-        "development": {
-            "batch_size": 100,
-            "timeout": 30,
-            "max_retries": 3,
-            "verify_ssl": False,
-            "enable_logging": True,
-        },
-        "production": {
-            "batch_size": 1000,
-            "timeout": 120,
-            "max_retries": 10,
-            "verify_ssl": True,
-            "enable_logging": True,
-        },
-        "testing": {
-            "batch_size": 10,
-            "timeout": 15,
-            "max_retries": 1,
-            "verify_ssl": False,
-            "enable_logging": False,
-        },
-    }
+    PRESETS: ClassVar[t.MappingKV[str, t.JsonMapping]] = factory.PRESETS
 
     @classmethod
     def create_from_config_dict(
@@ -68,8 +45,8 @@ class FlextTargetFactory:
             "password": request.password,
             "environment": request.environment,
         }
-        if request.preset is not None and request.preset in cls.PRESETS:
-            settings.update(cls.PRESETS[request.preset])
+        if request.preset is not None and request.preset in factory.PRESETS:
+            settings.update(factory.PRESETS[request.preset])
         if request.additional_config is not None:
             settings.update(request.additional_config)
         cls.logger.info("Created Oracle WMS target", environment=request.environment)
