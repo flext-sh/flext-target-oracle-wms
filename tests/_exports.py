@@ -4,10 +4,10 @@
 from __future__ import annotations
 
 from flext_core.lazy import merge_lazy_imports
-from flext_target_oracle_wms.tests._exports_lazy_part_01 import (
+from tests._exports_lazy_part_01 import (
     TESTS_FLEXT_TARGET_ORACLE_WMS_LAZY_IMPORTS_PART_01,
 )
-from flext_target_oracle_wms.tests._exports_lazy_part_02 import (
+from tests._exports_lazy_part_02 import (
     TESTS_FLEXT_TARGET_ORACLE_WMS_LAZY_IMPORTS_PART_02,
 )
 
@@ -42,7 +42,7 @@ TESTS_FLEXT_TARGET_ORACLE_WMS_LAZY_IMPORTS = merge_lazy_imports(
         "pytest_terminal_summary",
         "pytest_warning_recorded",
     ),
-    module_name="flext_target_oracle_wms.tests",
+    module_name="tests",
 )
 
 __all__: list[str] = ["TESTS_FLEXT_TARGET_ORACLE_WMS_LAZY_IMPORTS"]
