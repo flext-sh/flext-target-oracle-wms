@@ -54,33 +54,32 @@ Demonstrates fundamental Oracle WMS target usage with real configuration:
 
 **Key Patterns:**
 
-```python
+```python notest
 # DRY: Real flext-* imports
 from flext_core import FlextBus
 from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext
-from flext_core import FlextDecorators
+from flext_core import d
 from flext_core import FlextDispatcher
-from flext_core import FlextExceptions
+from flext_core import e
 from flext_core import h
-from flext_core import FlextLogger
 from flext_core import x
 from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
-from flext_core import FlextRuntime
-from flext_core import FlextService
+from flext_core import r, p
+from flext_core import u
+from flext_core import s
 from flext_core import t
 from flext_core import u
 from flext_observability import flext_monitor_function
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
 # Real configuration
-config = {
+settings = {
     "base_url": "https://example.wms.oracle.com",
     "username": "demo_user",
     "password": "demo_password",
@@ -90,7 +89,7 @@ config = {
 }
 
 # Real implementation with error handling
-target = SingerTargetOracleWMS(config)
+target = SingerTargetOracleWMS(settings)
 setup_result = target.setup()
 if not setup_result.success:
     logger.error(f"Setup failed: {setup_result.error}")
@@ -111,17 +110,19 @@ Shows sophisticated configuration and custom business logic:
 
 **Key Patterns:**
 
-```python
+```python notest
 # Custom business type converter
 class CustomWMSTypeConverter(WMSTypeConverter):
-    def convert_singer_to_oracle(self, singer_type: str, value: object) -> r[object]:
+    def convert_singer_to_oracle(
+        self, singer_type: str, value
+    ) -> p.Result[t.JsonValue]:
         if singer_type == "business_currency":
             return r[bool].ok(round(float(value), 2))
         return super().convert_singer_to_oracle(singer_type, value)
 
 
 # Advanced configuration
-config = {
+settings = {
     "batch_size": 2000,
     "enable_compression": True,
     "enable_encryption": True,
@@ -148,9 +149,9 @@ Demonstrates optimized batch processing for large-scale data:
 
 **Key Patterns:**
 
-```python
+```python notest
 # Performance optimization
-config = {
+settings = {
     "batch_size": 5000,
     "bulk_insert_mode": True,
     "parallel_processing": True,
@@ -179,9 +180,9 @@ Shows comprehensive error handling and recovery patterns:
 
 **Key Patterns:**
 
-```python
+```python notest
 # Error handling configuration
-config = {
+settings = {
     "max_retries": 3,
     "exponential_backoff": True,
     "circuit_breaker_enabled": True,
@@ -191,7 +192,7 @@ config = {
 
 
 # Retry with backoff
-def retry_with_backoff(operation: object, max_retries: int = 3) -> r[object]:
+def retry_with_backoff(operation, max_retries: int = 3) -> p.Result[t.JsonValue]:
     for attempt in range(max_retries):
         try:
             return operation()
@@ -260,7 +261,7 @@ All examples support both file-based and environment-based configuration:
 
 ### File-based Configuration
 
-Create `config.json` in the project root:
+Create `settings.json` in the project root:
 
 ```json
 {

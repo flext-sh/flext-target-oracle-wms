@@ -1,59 +1,97 @@
 """Domain models for target Oracle WMS.
 
-Inherits from FlextMeltanoModels (m.Meltano.*) and FlextOracleWmsModels (m.OracleWms.*).
+Inherits from the canonical Meltano models facade and m.
 Defines local TargetOracleWms namespace for target-specific models.
 """
 
 from __future__ import annotations
 
+from collections.abc import (
+    MutableMapping,
+)
+from types import MappingProxyType
 from typing import Annotated, Literal
 
-from flext_core import FlextModels, r, t
-from flext_meltano import FlextMeltanoModels
-from flext_oracle_wms.wms_models import FlextOracleWmsModels
-from pydantic import ConfigDict, Field, SecretStr
+from flext_core import r
+from flext_meltano.models import FlextMeltanoModels as meltano_m
+from flext_meltano.protocols import p
+from flext_meltano.typings import t
+from flext_meltano.utilities import u
+from flext_oracle_wms import m
+from flext_target_oracle_wms.constants import c
 
-from .constants import c
 
-
-class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
+class FlextTargetOracleWmsModels(meltano_m, m):
     """Pydantic model namespace for target Oracle WMS.
 
     Inherited namespaces:
-        m.Meltano.*    — Singer message types (from FlextMeltanoModels)
-        m.OracleWms.*  — WMS entity/API types (from FlextOracleWmsModels)
+        m.Meltano.*    — Singer message types (overridden with Container support)
+        m.OracleWms.*  — WMS entity/API types (from m)
 
     Local namespace:
-        m.TargetOracleWms.* — target-specific config, result, schema helpers
+        m.TargetOracleWms.* — target-specific settings, result, schema helpers
     """
 
     class TargetOracleWms:
         """Target Oracle WMS model namespace — m.TargetOracleWms.*."""
 
-        class WmsAuthenticationConfig(FlextModels.ArbitraryTypesModel):
+        class WmsAuthenticationConfig(meltano_m.ArbitraryTypesModel):
             """Authentication and endpoint settings."""
 
-            base_url: str
-            auth_method: Literal["oauth2", "basic", "api_key"] = "oauth2"
-            username: str | None = None
-            password: SecretStr | None = None
-            api_key: SecretStr | None = None
-            company_code: str = "DEFAULT"
-            facility_code: str = "MAIN"
+            base_url: Annotated[
+                str, u.Field(description="Oracle WMS REST API base URL.")
+            ]
+            auth_method: Annotated[
+                Literal["oauth2", "basic", "api_key"],
+                u.Field(description="WMS authentication method."),
+            ] = "oauth2"
+            username: Annotated[
+                str | None, u.Field(description="Optional authentication username.")
+            ] = None
+            password: Annotated[
+                t.SecretStr | None,
+                u.Field(description="Optional authentication password."),
+            ] = None
+            api_key: Annotated[
+                t.SecretStr | None,
+                u.Field(description="Optional API key for the selected auth method."),
+            ] = None
+            company_code: Annotated[str, u.Field(description="WMS company code.")] = (
+                "DEFAULT"
+            )
+            facility_code: Annotated[str, u.Field(description="WMS facility code.")] = (
+                "MAIN"
+            )
 
-        class WmsTargetConfig(FlextModels.ArbitraryTypesModel):
+        class WmsTargetConfig(meltano_m.ArbitraryTypesModel):
             """Top-level target configuration model."""
 
-            wms_auth: FlextTargetOracleWmsModels.TargetOracleWms.WmsAuthenticationConfig
-            stream_maps: Annotated[
-                dict[str, dict[str, str]], Field(default_factory=dict)
+            wms_auth: Annotated[
+                FlextTargetOracleWmsModels.TargetOracleWms.WmsAuthenticationConfig,
+                u.Field(description="WMS authentication and endpoint settings."),
             ]
-            batch_size: int = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
-            load_method: str = c.TargetOracleWms.LoadMethods.APPEND_ONLY
-            validate_records: bool = True
+            stream_maps: Annotated[
+                MutableMapping[str, t.StrMapping],
+                u.Field(
+                    default_factory=lambda: MappingProxyType({}),
+                    description="Singer stream map configurations.",
+                ),
+            ]
+            batch_size: Annotated[
+                t.BatchSize,
+                u.Field(description="Number of records per batch write."),
+            ] = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
+            load_method: Annotated[
+                str,
+                u.Field(description="Load strategy for writing records to WMS."),
+            ] = c.TargetOracleWms.LoadMethods.Method.APPEND_ONLY
+            validate_records: Annotated[
+                bool,
+                u.Field(description="Whether to validate records before writing."),
+            ] = True
 
-            def validate_business_rules(self) -> r[bool]:
-                """Validate basic config business rules."""
+            def validate_business_rules(self) -> p.Result[bool]:
+                """Validate basic settings business rules."""
                 if (
                     self.load_method
                     not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS
@@ -63,43 +101,87 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                     return r[bool].fail("Batch size must be positive")
                 return r[bool].ok(value=True)
 
-        class WmsTargetResult(FlextModels.ArbitraryTypesModel):
-            """Execution summary for the target pipeline."""
+            def validate_runtime(self) -> p.Result[bool]:
+                """Validate runtime constraints before processing starts."""
+                return self.validate_business_rules()
 
-            total_records_processed: int = 0
-            successful_records: int = 0
-            failed_records: int = 0
-            error_messages: Annotated[list[str], Field(default_factory=list)]
-            metrics: Annotated[dict[str, t.Scalar], Field(default_factory=dict)]
+            @classmethod
+            def create_config(
+                cls,
+                overrides: t.JsonMapping | None = None,
+            ) -> p.Result[FlextTargetOracleWmsModels.TargetOracleWms.WmsTargetConfig]:
+                """Create target settings instance with optional override values."""
+                try:
+                    settings = cls.model_validate(overrides or {})
+                except c.Meltano.SINGER_SAFE_EXCEPTIONS as exc:
+                    return r[
+                        FlextTargetOracleWmsModels.TargetOracleWms.WmsTargetConfig
+                    ].fail(
+                        f"Invalid settings overrides: {exc}",
+                    )
+                validation = settings.validate_runtime()
+                if validation.failure:
+                    return r[
+                        FlextTargetOracleWmsModels.TargetOracleWms.WmsTargetConfig
+                    ].fail(
+                        validation.error or "Runtime validation failed",
+                    )
+                return r[FlextTargetOracleWmsModels.TargetOracleWms.WmsTargetConfig].ok(
+                    settings
+                )
 
-            @property
-            def success_rate(self) -> float:
-                """Calculate percentage of successful records."""
-                if self.total_records_processed == 0:
-                    return 0.0
-                return (self.successful_records / self.total_records_processed) * 100.0
-
-        class SingerFieldSchema(FlextModels.ArbitraryTypesModel):
+        class SingerFieldSchema(meltano_m.FlexibleModel):
             """Typed Singer field schema entry for target-side schema parsing."""
 
-            model_config = ConfigDict(extra="ignore")
+            type: Annotated[
+                str, u.Field(description="JSON schema type descriptor for the field.")
+            ] = "string"
 
-            type: str = "string"
-
-        class SingerSchemaProperties(FlextModels.ArbitraryTypesModel):
+        class SingerSchemaProperties(meltano_m.FlexibleModel):
             """Typed Singer schema properties block for target-side schema parsing."""
 
-            model_config = ConfigDict(extra="ignore")
-
             properties: Annotated[
-                dict[
+                MutableMapping[
                     str,
                     FlextTargetOracleWmsModels.TargetOracleWms.SingerFieldSchema,
                 ],
-                Field(default_factory=dict),
+                u.Field(
+                    default_factory=lambda: MappingProxyType({}),
+                    description="Singer schema field property definitions.",
+                ),
             ]
+
+        class TargetCreationRequest(meltano_m.ArbitraryTypesModel):
+            """Input object for target construction."""
+
+            base_url: Annotated[
+                str, u.Field(description="Oracle WMS REST API base URL.")
+            ]
+            username: Annotated[
+                str, u.Field(description="Username used to authenticate against WMS.")
+            ]
+            password: Annotated[
+                str, u.Field(description="Password used to authenticate against WMS.")
+            ]
+            environment: Annotated[
+                str, u.Field(description="Target environment name.")
+            ] = "development"
+            preset: Annotated[
+                str | None, u.Field(description="Optional preset profile name.")
+            ] = None
+            additional_config: Annotated[
+                t.JsonMapping | None,
+                u.Field(default=None, description="Additional environment overrides."),
+            ]
+
+        class MonitoredTargetCreationRequest(TargetCreationRequest):
+            """Input object for monitored target creation."""
+
+            monitor_name: Annotated[
+                str, u.Field(description="Monitoring label for the created target.")
+            ] = "oracle_wms_target"
 
 
 m = FlextTargetOracleWmsModels
 
-__all__ = ["FlextTargetOracleWmsModels", "m"]
+__all__: list[str] = ["FlextTargetOracleWmsModels", "m"]

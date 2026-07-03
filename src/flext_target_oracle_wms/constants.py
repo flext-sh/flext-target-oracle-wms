@@ -2,55 +2,54 @@
 
 from __future__ import annotations
 
-from enum import StrEnum
+from enum import StrEnum, unique
 from typing import Final
 
+from flext_meltano.constants import FlextMeltanoConstants as meltano_c
+from flext_oracle_wms import c, t
 
-class FlextTargetOracleWmsConstants:
+
+class FlextTargetOracleWmsConstants(meltano_c, c):
     """Typed constant namespace used by target Oracle WMS modules."""
 
     class TargetOracleWms:
         """Target-specific defaults and limits."""
 
+        CLI_MIN_CONFIG_ARG_COUNT: Final[int] = 3
+
+        class Tests:
+            """Test fixture constants — patch paths and test-only literals."""
+
+            PATCH_TARGET: Final[str] = (
+                "flext_target_oracle_wms.utilities."
+                "FlextTargetOracleWmsUtilities.TargetOracleWms.Target"
+            )
+
         class OracleWms:
             """Oracle WMS runtime defaults."""
 
-            DEFAULT_TIMEOUT: Final[int] = 30
+            DEFAULT_TIMEOUT: Final[int] = meltano_c.Meltano.DEFAULT_TIMEOUT_SECONDS
             DEFAULT_MAX_RETRIES: Final[int] = 3
-            DEFAULT_BATCH_SIZE: Final[int] = 1000
-            DEFAULT_CONNECTION_POOL_SIZE: Final[int] = 5
-            DEFAULT_CONNECTION_POOL_MAX: Final[int] = 20
-            MIN_LOCATION_PARTS: Final[int] = 2
-            PROCESSING_TIME_TOLERANCE: Final[float] = 0.1
+            DEFAULT_BATCH_SIZE: Final[int] = (
+                meltano_c.Meltano.BATCH_DEFAULT_DEFAULT_BATCH_SIZE
+            )
 
         class LoadMethods:
             """Allowed load methods."""
 
-            APPEND_ONLY: Final[str] = "APPEND_ONLY"
-            UPSERT: Final[str] = "UPSERT"
-            REPLACE: Final[str] = "REPLACE"
-            MERGE: Final[str] = "MERGE"
-            TRUNCATE_INSERT: Final[str] = "TRUNCATE_INSERT"
-            VALID_LOAD_METHODS: Final[set[str]] = {
-                APPEND_ONLY,
-                UPSERT,
-                REPLACE,
-                MERGE,
-                TRUNCATE_INSERT,
-            }
+            @unique
+            class Method(StrEnum):
+                """Allowed target load methods."""
 
-    class ErrorType(StrEnum):
-        """Project error categories."""
+                APPEND_ONLY = "APPEND_ONLY"
+                UPSERT = "UPSERT"
+                REPLACE = "REPLACE"
+                MERGE = "MERGE"
 
-        WMS_CONNECTION = "WMS_CONNECTION"
-        WMS_AUTHENTICATION = "WMS_AUTHENTICATION"
-        WMS_BUSINESS_RULE = "WMS_BUSINESS_RULE"
-        WMS_VALIDATION = "WMS_VALIDATION"
-        SINGER_PROTOCOL = "SINGER_PROTOCOL"
-        DATA_TRANSFORMATION = "DATA_TRANSFORMATION"
-        PERFORMANCE = "PERFORMANCE"
-        CONFIGURATION = "CONFIGURATION"
+            VALID_LOAD_METHODS: Final[frozenset[str]] = frozenset(
+                member.value for member in Method
+            )
 
 
 c = FlextTargetOracleWmsConstants
-__all__ = ["FlextTargetOracleWmsConstants", "c"]
+__all__: t.StrSequence = ("FlextTargetOracleWmsConstants", "c")
