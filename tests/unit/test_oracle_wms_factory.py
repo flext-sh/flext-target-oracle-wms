@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
+from flext_target_oracle_wms._constants import factory as target_factory_constants
 from flext_target_oracle_wms.factory import (
     FlextTargetFactory,
     FlextTargetMonitoringFactory,
@@ -61,7 +62,7 @@ class TestsFlextTargetOracleWmsOracleWmsFactory:
         assert req.monitor_name == "custom"
 
     def test_presets_contain_expected_keys(self) -> None:
-        assert set(FlextTargetFactory.PRESETS.keys()) == {
+        assert set(target_factory_constants.PRESETS.keys()) == {
             "development",
             "production",
             "testing",

@@ -14,7 +14,6 @@ class FlextTargetFactory:
     """Factory for creating configured target instances."""
 
     logger: ClassVar[p.Logger] = u.fetch_logger(__name__)
-    PRESETS: ClassVar[t.MappingKV[str, t.JsonMapping]] = factory.PRESETS
 
     @classmethod
     def create_from_config_dict(
