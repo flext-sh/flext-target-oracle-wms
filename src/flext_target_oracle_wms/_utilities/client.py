@@ -179,6 +179,28 @@ class FlextTargetOracleWmsUtilitiesClient:
             self.logger.debug("Received state", state=str(typed_state.value))
             return r[bool].ok(value=True)
 
+        def _dispatch_message(
+            self,
+            message_type: str,
+            message: t.JsonMapping,
+        ) -> p.Result[bool]:
+            """Dispatch a single Singer message to the appropriate handler."""
+            match message_type:
+                case message_type if message_type == self._schema_type:
+                    return self.handle_schema_message(
+                        m.Meltano.SingerSchemaMessage.model_validate(message),
+                    )
+                case message_type if message_type == self._record_type:
+                    return self.handle_record_message(
+                        m.Meltano.SingerRecordMessage.model_validate(message),
+                    )
+                case message_type if message_type == self._state_type:
+                    return self.handle_state_message(
+                        m.Meltano.SingerStateMessage.model_validate(message),
+                    )
+                case _:
+                    return r[bool].ok(value=True)
+
         def process_lines(self, input_lines: t.StrSequence) -> p.Result[bool]:
             """Parse and process Singer JSON lines."""
             for raw_line in input_lines:
@@ -191,25 +213,11 @@ class FlextTargetOracleWmsUtilitiesClient:
                     return r[bool].fail(f"Invalid JSON message: {exc}")
                 message_type = str(message.get("type", ""))
                 try:
-                    match message_type:
-                        case message_type if message_type == self._schema_type:
-                            dispatch_result = self.handle_schema_message(
-                                m.Meltano.SingerSchemaMessage.model_validate(message),
-                            )
-                        case message_type if message_type == self._record_type:
-                            dispatch_result = self.handle_record_message(
-                                m.Meltano.SingerRecordMessage.model_validate(message),
-                            )
-                        case message_type if message_type == self._state_type:
-                            dispatch_result = self.handle_state_message(
-                                m.Meltano.SingerStateMessage.model_validate(message),
-                            )
-                        case _:
-                            continue
-                    if dispatch_result.failure:
-                        return dispatch_result
+                    dispatch_result = self._dispatch_message(message_type, message)
                 except c.ValidationError as exc:
                     return r[bool].fail(f"Invalid Singer message: {exc}")
+                if dispatch_result.failure:
+                    return dispatch_result
             return r[bool].ok(value=True)
 
         def run(self) -> p.Result[bool]:
