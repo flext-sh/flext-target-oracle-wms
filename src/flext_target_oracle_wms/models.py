@@ -6,19 +6,22 @@ Defines local TargetOracleWms namespace for target-specific models.
 
 from __future__ import annotations
 
-from collections.abc import (
-    MutableMapping,
-)
 from types import MappingProxyType
-from typing import Annotated, Literal
+from typing import TYPE_CHECKING, Annotated, Literal
 
 from flext_core import r
 from flext_meltano.models import FlextMeltanoModels as meltano_m
-from flext_meltano.protocols import p
-from flext_meltano.typings import t
 from flext_meltano.utilities import u
 from flext_oracle_wms import m
 from flext_target_oracle_wms.constants import c
+
+if TYPE_CHECKING:
+    from collections.abc import (
+        MutableMapping,
+    )
+
+    from flext_meltano.protocols import p
+    from flext_meltano.typings import t
 
 
 class FlextTargetOracleWmsModels(meltano_m, m):
@@ -39,14 +42,16 @@ class FlextTargetOracleWmsModels(meltano_m, m):
             """Authentication and endpoint settings."""
 
             base_url: Annotated[
-                str, u.Field(description="Oracle WMS REST API base URL.")
+                str,
+                u.Field(description="Oracle WMS REST API base URL."),
             ]
             auth_method: Annotated[
                 Literal["oauth2", "basic", "api_key"],
                 u.Field(description="WMS authentication method."),
             ] = "oauth2"
             username: Annotated[
-                str | None, u.Field(description="Optional authentication username.")
+                str | None,
+                u.Field(description="Optional authentication username."),
             ] = None
             password: Annotated[
                 t.SecretStr | None,
@@ -127,14 +132,15 @@ class FlextTargetOracleWmsModels(meltano_m, m):
                         validation.error or "Runtime validation failed",
                     )
                 return r[FlextTargetOracleWmsModels.TargetOracleWms.WmsTargetConfig].ok(
-                    settings
+                    settings,
                 )
 
         class SingerFieldSchema(meltano_m.FlexibleModel):
             """Typed Singer field schema entry for target-side schema parsing."""
 
             type: Annotated[
-                str, u.Field(description="JSON schema type descriptor for the field.")
+                str,
+                u.Field(description="JSON schema type descriptor for the field."),
             ] = "string"
 
         class SingerSchemaProperties(meltano_m.FlexibleModel):
@@ -155,19 +161,24 @@ class FlextTargetOracleWmsModels(meltano_m, m):
             """Input object for target construction."""
 
             base_url: Annotated[
-                str, u.Field(description="Oracle WMS REST API base URL.")
+                str,
+                u.Field(description="Oracle WMS REST API base URL."),
             ]
             username: Annotated[
-                str, u.Field(description="Username used to authenticate against WMS.")
+                str,
+                u.Field(description="Username used to authenticate against WMS."),
             ]
             password: Annotated[
-                str, u.Field(description="Password used to authenticate against WMS.")
+                str,
+                u.Field(description="Password used to authenticate against WMS."),
             ]
             environment: Annotated[
-                str, u.Field(description="Target environment name.")
+                str,
+                u.Field(description="Target environment name."),
             ] = "development"
             preset: Annotated[
-                str | None, u.Field(description="Optional preset profile name.")
+                str | None,
+                u.Field(description="Optional preset profile name."),
             ] = None
             additional_config: Annotated[
                 t.JsonMapping | None,
@@ -178,7 +189,8 @@ class FlextTargetOracleWmsModels(meltano_m, m):
             """Input object for monitored target creation."""
 
             monitor_name: Annotated[
-                str, u.Field(description="Monitoring label for the created target.")
+                str,
+                u.Field(description="Monitoring label for the created target."),
             ] = "oracle_wms_target"
 
 

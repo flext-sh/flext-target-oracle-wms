@@ -3,10 +3,7 @@
 from __future__ import annotations
 
 import sys
-from collections.abc import (
-    MutableMapping,
-)
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 from flext_core import e, r
 from flext_meltano import u
@@ -15,8 +12,14 @@ from flext_target_oracle_wms._utilities.helpers import (
 )
 from flext_target_oracle_wms.constants import c
 from flext_target_oracle_wms.models import m
-from flext_target_oracle_wms.protocols import p
 from flext_target_oracle_wms.typings import t
+
+if TYPE_CHECKING:
+    from collections.abc import (
+        MutableMapping,
+    )
+
+    from flext_target_oracle_wms.protocols import p
 
 
 class FlextTargetOracleWmsUtilitiesClient:
@@ -28,7 +31,8 @@ class FlextTargetOracleWmsUtilitiesClient:
         def __init__(self) -> None:
             """Initialize catalog storage for stream metadata."""
             self._catalog_entries: MutableMapping[
-                str, m.Meltano.SingerCatalogEntry
+                str,
+                m.Meltano.SingerCatalogEntry,
             ] = {}
 
         def add_stream(

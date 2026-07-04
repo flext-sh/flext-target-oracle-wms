@@ -2,13 +2,17 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from flext_cli import u
 from flext_core import r
 from flext_meltano import c as meltano_c, u as meltano_u
 from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants as c
 from flext_target_oracle_wms.models import FlextTargetOracleWmsModels as m
-from flext_target_oracle_wms.protocols import p
 from flext_target_oracle_wms.typings import FlextTargetOracleWmsTypes as t
+
+if TYPE_CHECKING:
+    from flext_target_oracle_wms.protocols import p
 
 
 class FlextTargetOracleWmsUtilitiesHelpers:
@@ -145,7 +149,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
             return r[m.Meltano.SingerCatalogEntry].ok(
                 entry_result.value.model_copy(
                     update={"table_name": typed_schema.stream.upper()},
-                )
+                ),
             )
 
     class WMSTableManager:

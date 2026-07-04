@@ -10,11 +10,14 @@ from __future__ import annotations
 import importlib.util
 import inspect
 from pathlib import Path
-from types import ModuleType
+from typing import TYPE_CHECKING
 
 import pytest
 
-from tests.typings import t
+if TYPE_CHECKING:
+    from types import ModuleType
+
+    from tests.typings import t
 
 
 def _load_example_module(example_file: Path) -> ModuleType:
@@ -138,7 +141,8 @@ class TestsFlextTargetOracleWmsExamples:
                 )
 
     def test_examples_use_await_patterns(
-        self, example_files: t.SequenceOf[Path]
+        self,
+        example_files: t.SequenceOf[Path],
     ) -> None:
         """Test that examples with async functions use proper await patterns."""
         for example_file in example_files:
@@ -175,7 +179,8 @@ class TestsFlextTargetOracleWmsExamples:
                 )
 
     def test_examples_use_realistic_config(
-        self, example_files: t.SequenceOf[Path]
+        self,
+        example_files: t.SequenceOf[Path],
     ) -> None:
         """Test that examples use realistic configuration patterns."""
         for example_file in example_files:

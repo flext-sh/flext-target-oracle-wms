@@ -23,7 +23,7 @@ class TestsFlextTargetOracleWmsServiceBase(tests_s):
     @override
     def _runtime_bootstrap_options(cls) -> m.RuntimeBootstrapOptions:
         return m.RuntimeBootstrapOptions(
-            settings_type=TestsFlextTargetOracleWmsSettings
+            settings_type=TestsFlextTargetOracleWmsSettings,
         )
 
 

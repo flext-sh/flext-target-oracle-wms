@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from typing import TYPE_CHECKING
 
-from flext_target_oracle_wms.typings import t
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+
+    from flext_target_oracle_wms.typings import t
 
 PRESETS: Mapping[str, t.JsonMapping] = {
     "development": {
