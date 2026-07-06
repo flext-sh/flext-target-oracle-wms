@@ -19,7 +19,10 @@ from flext_target_oracle_wms.__version__ import (
 
 if TYPE_CHECKING:
     from flext_meltano import d, e, h, r, s, x
-    from flext_target_oracle_wms.api import FlextTargetOracleWmsService
+    from flext_target_oracle_wms.api import (
+        FlextTargetOracleWmsService,
+        target_oracle_wms,
+    )
     from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli, main
     from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants, c
     from flext_target_oracle_wms.models import FlextTargetOracleWmsModels, m
