@@ -47,7 +47,7 @@ class FlextTargetOracleWmsUtilitiesClient:
                 schema=typed_schema.schema_definition,
                 key_properties=typed_schema.key_properties,
             )
-            if entry_result.failure or entry_result.value is None:
+            if entry_result.failure:
                 return r[bool].fail(
                     entry_result.error or f"Failed to register stream: {stream_name}",
                 )

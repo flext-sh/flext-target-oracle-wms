@@ -141,7 +141,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
                 schema=typed_schema.schema_definition,
                 key_properties=typed_schema.key_properties,
             )
-            if entry_result.failure or entry_result.value is None:
+            if entry_result.failure:
                 return r[m.Meltano.SingerCatalogEntry].fail(
                     entry_result.error
                     or f"Failed to map schema for stream: {typed_schema.stream}",
