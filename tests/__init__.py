@@ -12,35 +12,94 @@ from flext_core.lazy import (
 )
 
 if TYPE_CHECKING:
-    from flext_tests import d, e, h, r, td, tf, tk, tm, tv, x
+    from flext_tests import (
+        d as d,
+        e as e,
+        h as h,
+        r as r,
+        td as td,
+        tf as tf,
+        tk as tk,
+        tm as tm,
+        tv as tv,
+        x as x,
+    )
 
-    from tests.base import TestsFlextTargetOracleWmsServiceBase, s
-    from tests.constants import TestsFlextTargetOracleWmsConstants, c
-    from tests.examples.test_examples import TestsFlextTargetOracleWmsExamples
-    from tests.integration.test_oracle import TestsFlextTargetOracleWmsOracle
-    from tests.models import TestsFlextTargetOracleWmsModels, m
-    from tests.protocols import TestsFlextTargetOracleWmsProtocols, p
-    from tests.settings import TestsFlextTargetOracleWmsSettings
-    from tests.typings import TestsFlextTargetOracleWmsTypes, t
-    from tests.unit.test_benchmarks import TestsFlextTargetOracleWmsBenchmarks
-    from tests.unit.test_catalog import TestsFlextTargetOracleWmsCatalog
-    from tests.unit.test_features import TestsFlextTargetOracleWmsFeatures
+    from tests.base import (
+        TestsFlextTargetOracleWmsServiceBase as TestsFlextTargetOracleWmsServiceBase,
+        s as s,
+    )
+    from tests.constants import (
+        TestsFlextTargetOracleWmsConstants as TestsFlextTargetOracleWmsConstants,
+        c as c,
+    )
+    from tests.examples.test_examples import (
+        TestsFlextTargetOracleWmsExamples as TestsFlextTargetOracleWmsExamples,
+    )
+    from tests.integration.test_oracle import (
+        TestsFlextTargetOracleWmsOracle as TestsFlextTargetOracleWmsOracle,
+    )
+    from tests.models import (
+        TestsFlextTargetOracleWmsModels as TestsFlextTargetOracleWmsModels,
+        m as m,
+    )
+    from tests.protocols import (
+        TestsFlextTargetOracleWmsProtocols as TestsFlextTargetOracleWmsProtocols,
+        p as p,
+    )
+    from tests.settings import (
+        TestsFlextTargetOracleWmsSettings as TestsFlextTargetOracleWmsSettings,
+    )
+    from tests.typings import (
+        TestsFlextTargetOracleWmsTypes as TestsFlextTargetOracleWmsTypes,
+        t as t,
+    )
+    from tests.unit.test_benchmarks import (
+        TestsFlextTargetOracleWmsBenchmarks as TestsFlextTargetOracleWmsBenchmarks,
+    )
+    from tests.unit.test_catalog import (
+        TestsFlextTargetOracleWmsCatalog as TestsFlextTargetOracleWmsCatalog,
+    )
+    from tests.unit.test_features import (
+        TestsFlextTargetOracleWmsFeatures as TestsFlextTargetOracleWmsFeatures,
+    )
     from tests.unit.test_module_governance import (
-        TestsFlextTargetOracleWmsModuleGovernance,
+        TestsFlextTargetOracleWmsModuleGovernance as TestsFlextTargetOracleWmsModuleGovernance,
     )
-    from tests.unit.test_oracle_wms_cli import TestsFlextTargetOracleWmsOracleWmsCli
+    from tests.unit.test_oracle_wms_cli import (
+        TestsFlextTargetOracleWmsOracleWmsCli as TestsFlextTargetOracleWmsOracleWmsCli,
+    )
     from tests.unit.test_oracle_wms_factory import (
-        TestsFlextTargetOracleWmsOracleWmsFactory,
+        TestsFlextTargetOracleWmsOracleWmsFactory as TestsFlextTargetOracleWmsOracleWmsFactory,
     )
-    from tests.unit.test_oracle_wms_init import TestsFlextTargetOracleWmsOracleWmsInit
-    from tests.unit.test_quality import TestsFlextTargetOracleWmsQuality
-    from tests.unit.test_sinks import TestsFlextTargetOracleWmsSinks
-    from tests.unit.test_stream import TestsFlextTargetOracleWmsStream
-    from tests.unit.test_structure import TestsFlextTargetOracleWmsStructure
-    from tests.unit.test_target import TestsFlextTargetOracleWmsTarget
-    from tests.unit.test_wms_patterns import TestsFlextTargetOracleWmsWmsPatterns
-    from tests.unit.test_workflow import TestsFlextTargetOracleWmsWorkflow
-    from tests.utilities import TestsFlextTargetOracleWmsUtilities, u
+    from tests.unit.test_oracle_wms_init import (
+        TestsFlextTargetOracleWmsOracleWmsInit as TestsFlextTargetOracleWmsOracleWmsInit,
+    )
+    from tests.unit.test_quality import (
+        TestsFlextTargetOracleWmsQuality as TestsFlextTargetOracleWmsQuality,
+    )
+    from tests.unit.test_sinks import (
+        TestsFlextTargetOracleWmsSinks as TestsFlextTargetOracleWmsSinks,
+    )
+    from tests.unit.test_stream import (
+        TestsFlextTargetOracleWmsStream as TestsFlextTargetOracleWmsStream,
+    )
+    from tests.unit.test_structure import (
+        TestsFlextTargetOracleWmsStructure as TestsFlextTargetOracleWmsStructure,
+    )
+    from tests.unit.test_target import (
+        TestsFlextTargetOracleWmsTarget as TestsFlextTargetOracleWmsTarget,
+    )
+    from tests.unit.test_wms_patterns import (
+        TestsFlextTargetOracleWmsWmsPatterns as TestsFlextTargetOracleWmsWmsPatterns,
+    )
+    from tests.unit.test_workflow import (
+        TestsFlextTargetOracleWmsWorkflow as TestsFlextTargetOracleWmsWorkflow,
+    )
+    from tests.utilities import (
+        TestsFlextTargetOracleWmsUtilities as TestsFlextTargetOracleWmsUtilities,
+        u as u,
+    )
 _LAZY_IMPORTS = merge_lazy_imports(
     (
         ".examples",

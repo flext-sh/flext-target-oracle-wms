@@ -19,11 +19,11 @@ from flext_observability.services.monitoring import (
     flext_monitor_function,
 )
 from flext_target_oracle_wms import (
-    FlextTargetFactory,
     FlextTargetOracleWmsModels,
     t,
     u,
 )
+from flext_target_oracle_wms.factory import FlextTargetFactory
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
