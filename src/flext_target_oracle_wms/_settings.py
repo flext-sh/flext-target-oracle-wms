@@ -8,11 +8,11 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from flext_core import FlextSettingsBase, r
+from flext_core import FlextSettings, r
 from flext_target_oracle_wms import c, m, p, t
 
 
-class FlextTargetOracleWmsSettings(FlextSettingsBase):
+class FlextTargetOracleWmsSettings(FlextSettings):
     """Runtime configuration for target Oracle WMS."""
 
     model_config: ClassVar[m.SettingsConfigDict] = m.SettingsConfigDict(
@@ -35,4 +35,8 @@ class FlextTargetOracleWmsSettings(FlextSettingsBase):
         return r[FlextTargetOracleWmsSettings].ok(settings)
 
 
-__all__: list[str] = ["FlextTargetOracleWmsSettings"]
+
+settings: FlextTargetOracleWmsSettings = FlextTargetOracleWmsSettings.fetch_global()
+"""Pre-instantiated project settings singleton — ``from flext_target_oracle_wms import settings``."""
+
+__all__: list[str] = ["FlextTargetOracleWmsSettings", "settings"]

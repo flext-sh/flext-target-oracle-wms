@@ -125,7 +125,7 @@ class FlextTargetOracleWmsUtilitiesClient:
             settings: t.JsonMapping | m.TargetOracleWms.WmsTargetConfig,
         ) -> None:
             """Initialize target runtime with validated settings."""
-            self.settings = m.TargetOracleWms.WmsTargetConfig.model_validate(settings)
+            settings = m.TargetOracleWms.WmsTargetConfig.model_validate(settings)
             self.catalog_manager = FlextTargetOracleWmsUtilitiesClient.CatalogManager()
             self.table_manager = FlextTargetOracleWmsUtilitiesHelpers.WMSTableManager()
             self.data_transformer = (
