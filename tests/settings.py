@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from flext_tests.settings import FlextTestsSettings
+from flext_tests import FlextTestsSettings
 
 from flext_target_oracle_wms import FlextTargetOracleWmsSettings
 
