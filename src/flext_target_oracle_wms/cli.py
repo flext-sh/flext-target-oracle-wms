@@ -24,27 +24,44 @@ class FlextTargetOracleWmsCli:
         # hardcoded "0.9.0" was stale (real version is 0.12.0.dev0) — a silent version bug.
         self.version = __version__
 
-    def execute(self, **kwargs: t.Scalar) -> p.Result[bool]:
-        """Execute target run using optional settings path."""
-        config_arg = kwargs.get("settings")
-        config_path = str(config_arg) if config_arg is not None else None
+    def execute(
+        self,
+        message_lines: t.StrSequence | None = None,
+        settings: str | None = None,
+    ) -> p.Result[bool]:
+        """Execute target run.
+
+        Args:
+            message_lines: Singer message lines to process. When ``None`` the lines
+                are read from ``sys.stdin`` (dependency injection seam so callers and
+                tests supply input directly instead of patching stdin).
+            settings: optional path to a Singer settings JSON file. When ``None`` a
+                default configuration is used.
+
+        """
+        lines: t.StrSequence = (
+            message_lines if message_lines is not None else list(sys.stdin)
+        )
         return (
             self
-            ._prepare_config(config_path)
+            ._prepare_config(settings)
             .map_error(lambda e: e or "Configuration failed")
-            .flat_map(self._execute_target_pipeline)
+            .flat_map(
+                lambda config: self._execute_target_pipeline(config, lines),
+            )
         )
 
     def _execute_target_pipeline(
         self,
         settings: m.TargetOracleWms.WmsTargetConfig,
+        message_lines: t.StrSequence,
     ) -> p.Result[bool]:
-        """Setup, process stdin, and cleanup target runtime."""
+        """Setup, process the message lines, and cleanup target runtime."""
         target = FlextTargetOracleWmsUtilitiesClient.Target(settings)
         setup_result = target.setup().map_error(lambda e: e or "Setup failed")
         if setup_result.failure:
             return setup_result
-        process_result = self._process_stdin_messages(target)
+        process_result = target.process_lines(message_lines)
         if process_result.failure:
             return process_result
         return self._finalize_target(target)
@@ -86,28 +103,29 @@ class FlextTargetOracleWmsCli:
             }),
         )
 
-    def _process_stdin_messages(
-        self,
-        target: FlextTargetOracleWmsUtilitiesClient.Target,
-    ) -> p.Result[bool]:
-        """Read and process stdin message lines."""
-        return target.process_lines(list(sys.stdin))
 
+def main(
+    argv: t.StrSequence | None = None,
+    message_lines: t.StrSequence | None = None,
+) -> None:
+    """Run CLI command from process arguments.
 
-def main() -> None:
-    """Run CLI command from process arguments."""
+    Args:
+        argv: process arguments (excluding the program name is NOT assumed — mirrors
+            ``sys.argv``). Defaults to ``sys.argv`` when ``None`` (DI seam for tests).
+        message_lines: Singer message lines; forwarded to ``execute`` (reads stdin
+            when ``None``).
+
+    """
+    args: t.StrSequence = argv if argv is not None else sys.argv
     cli_instance = FlextTargetOracleWmsCli()
     config_path: str | None = None
     if (
-        len(sys.argv) >= c.TargetOracleWms.CLI_MIN_CONFIG_ARG_COUNT
-        and sys.argv[1] == "--config"
+        len(args) >= c.TargetOracleWms.CLI_MIN_CONFIG_ARG_COUNT
+        and args[1] == "--config"
     ):
-        config_path = sys.argv[2]
-    result = (
-        cli_instance.execute(settings=config_path)
-        if config_path is not None
-        else cli_instance.execute()
-    )
+        config_path = args[2]
+    result = cli_instance.execute(message_lines=message_lines, settings=config_path)
     if result.failure:
         msg = result.error or "Execution failed"
         raise RuntimeError(msg)

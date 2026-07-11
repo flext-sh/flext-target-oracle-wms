@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import json as _stdlib_json
 from typing import TYPE_CHECKING
-from unittest.mock import MagicMock, patch
 
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
 from tests.utilities import u
@@ -104,23 +103,21 @@ class TestsFlextTargetOracleWmsWorkflow:
         result = target.process_lines(lines)
         assert result.success
 
-    @patch("flext_target_oracle_wms.cli.sys.stdin", ())
     def test_cli_execute_empty_stdin(self) -> None:
+        # NOTE (multi-agent, bead mro-nwc.19): inject empty message lines via the CLI's
+        # public DI seam instead of patching sys.stdin (real behavior, no mock).
         cli = FlextTargetOracleWmsCli()
-        result = cli.execute()
+        result = cli.execute(message_lines=[])
         assert result.success
 
-    @patch("flext_target_oracle_wms.cli.sys.stdin")
-    def test_cli_execute_with_messages(self, mock_stdin: MagicMock) -> None:
+    def test_cli_execute_with_messages(self) -> None:
         lines = [
-            _schema_line("test", {"id": {"type": "string"}}, ["id"]) + "\n",
-            _record_line("test", {"id": "1"}) + "\n",
-            _state_line({"bookmarks": {}}) + "\n",
+            _schema_line("test", {"id": {"type": "string"}}, ["id"]),
+            _record_line("test", {"id": "1"}),
+            _state_line({"bookmarks": {}}),
         ]
-        mock_stdin.__iter__ = MagicMock(return_value=iter(lines))
-        mock_stdin.__next__ = MagicMock(side_effect=lines)
         cli = FlextTargetOracleWmsCli()
-        result = cli.execute()
+        result = cli.execute(message_lines=lines)
         assert result.success
 
     def test_malformed_json_stops_processing(self) -> None:
