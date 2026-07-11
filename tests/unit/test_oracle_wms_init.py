@@ -28,9 +28,12 @@ class TestsFlextTargetOracleWmsOracleWmsInit:
     def test_module_exports(self) -> None:
         """Test that module exports are properly defined."""
         assert isinstance(flext_target_oracle_wms.__all__, (list, tuple))
+        # NOTE (multi-agent, bead mro-nwc.19): canonical package surface only. The
+        # non-canonical FlextTargetFactory (parallel creation branch) was removed —
+        # creation is delivered by FlextTargetOracleWmsService (api.py) via MRO.
         expected_exports = [
             "FlextTargetOracleWmsUtilities",
-            "FlextTargetFactory",
+            "FlextTargetOracleWmsService",
             "u",
         ]
         for export in expected_exports:

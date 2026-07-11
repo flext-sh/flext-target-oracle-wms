@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
-"""Factory usage example for flext-target-oracle-wms - PRODUCTION REAL IMPLEMENTATION.
+"""Target creation example for flext-target-oracle-wms - PRODUCTION REAL IMPLEMENTATION.
 
-Demonstrates factory patterns for target creation in production.
+Demonstrates the canonical way to build and construct an Oracle WMS Singer target
+in production: validate a WmsTargetConfig model and construct the target through
+the ``u.TargetOracleWms`` utilities facade. The library delivers target creation
+through its canonical service/utilities surface — there is no separate factory
+module (a parallel creation branch was removed in favour of the MRO facade).
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -23,7 +27,6 @@ from flext_target_oracle_wms import (
     t,
     u,
 )
-from flext_target_oracle_wms.factory import FlextTargetFactory
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -33,30 +36,30 @@ _ = core_u  # Anchor flext_core import for example validation.
 logger = u.fetch_logger(__name__)
 monitor = FlextObservabilityMonitor()
 
-FACTORY_CONFIG: Final[Mapping[str, str]] = MappingProxyType({
+TARGET_CONFIG: Final[Mapping[str, str]] = MappingProxyType({
     "base_url": "https://wms.example.oraclecloud.com",
-    "username": "wms_factory_user",
-    "password": "wms_factory_pass",
+    "username": "wms_target_user",
+    "password": "wms_target_pass",
 })
 
 
 @flext_monitor_function(monitor)
-def run_factory_example() -> t.Scalar:
-    """Run factory usage example with Oracle WMS target creation."""
-    logger.info("Starting factory usage example")
-    request = FlextTargetOracleWmsModels.TargetOracleWms.TargetCreationRequest(
-        base_url=FACTORY_CONFIG["base_url"],
-        username=FACTORY_CONFIG["username"],
-        password=FACTORY_CONFIG["password"],
-        additional_config=None,
-    )
-    result = FlextTargetFactory.create_target(request)
-    if result.success:
-        logger.info("Created Oracle WMS target: %s", result.value.name)
-    logger.info("Factory usage example completed successfully")
+def run_target_creation_example() -> t.Scalar:
+    """Create an Oracle WMS target via the canonical utilities facade."""
+    logger.info("Starting Oracle WMS target creation example")
+    config = FlextTargetOracleWmsModels.TargetOracleWms.WmsTargetConfig.model_validate({
+        "wms_auth": {
+            "base_url": TARGET_CONFIG["base_url"],
+            "username": TARGET_CONFIG["username"],
+            "password": TARGET_CONFIG["password"],
+        },
+    })
+    target = u.TargetOracleWms.Target(config)
+    logger.info("Created Oracle WMS target: %s", target.name)
+    logger.info("Target creation example completed successfully")
     return True
 
 
 if __name__ == "__main__":
-    """Run the factory usage example."""
-    run_factory_example()
+    """Run the target creation example."""
+    run_target_creation_example()

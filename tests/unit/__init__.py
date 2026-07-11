@@ -12,7 +12,6 @@ _LAZY_IMPORTS = build_lazy_import_map(
         ".test_features": ("TestsFlextTargetOracleWmsFeatures",),
         ".test_module_governance": ("TestsFlextTargetOracleWmsModuleGovernance",),
         ".test_oracle_wms_cli": ("TestsFlextTargetOracleWmsOracleWmsCli",),
-        ".test_oracle_wms_factory": ("TestsFlextTargetOracleWmsOracleWmsFactory",),
         ".test_oracle_wms_init": ("TestsFlextTargetOracleWmsOracleWmsInit",),
         ".test_quality": ("TestsFlextTargetOracleWmsQuality",),
         ".test_sinks": ("TestsFlextTargetOracleWmsSinks",),

@@ -6,22 +6,22 @@ Defines local TargetOracleWms namespace for target-specific models.
 
 from __future__ import annotations
 
+from collections.abc import MutableMapping
 from types import MappingProxyType
-from typing import TYPE_CHECKING, Annotated, Literal
+from typing import Annotated, Literal
 
+# AGENT-COORDINATION (2026-07-11, bead mro-nwc.19): p / t / MutableMapping MUST stay
+# RUNTIME imports. `from __future__ import annotations` makes pydantic v2 resolve these
+# field annotations lazily at model-build time; hiding them under TYPE_CHECKING left
+# WmsTargetConfig / SingerSchemaProperties "not fully defined" (71 tests failed).
+# Canonical sibling flext-oracle-wms/models.py imports t/p at runtime. Do NOT move back.
 from flext_core import r
 from flext_meltano.models import FlextMeltanoModels as meltano_m
+from flext_meltano.protocols import p
+from flext_meltano.typings import t
 from flext_meltano.utilities import u
 from flext_oracle_wms import m
 from flext_target_oracle_wms.constants import c
-
-if TYPE_CHECKING:
-    from collections.abc import (
-        MutableMapping,
-    )
-
-    from flext_meltano.protocols import p
-    from flext_meltano.typings import t
 
 
 class FlextTargetOracleWmsModels(meltano_m, m):

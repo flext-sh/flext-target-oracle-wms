@@ -69,9 +69,6 @@ if TYPE_CHECKING:
     from tests.unit.test_oracle_wms_cli import (
         TestsFlextTargetOracleWmsOracleWmsCli as TestsFlextTargetOracleWmsOracleWmsCli,
     )
-    from tests.unit.test_oracle_wms_factory import (
-        TestsFlextTargetOracleWmsOracleWmsFactory as TestsFlextTargetOracleWmsOracleWmsFactory,
-    )
     from tests.unit.test_oracle_wms_init import (
         TestsFlextTargetOracleWmsOracleWmsInit as TestsFlextTargetOracleWmsOracleWmsInit,
     )
@@ -142,9 +139,6 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "TestsFlextTargetOracleWmsModuleGovernance",
             ),
             ".unit.test_oracle_wms_cli": ("TestsFlextTargetOracleWmsOracleWmsCli",),
-            ".unit.test_oracle_wms_factory": (
-                "TestsFlextTargetOracleWmsOracleWmsFactory",
-            ),
             ".unit.test_oracle_wms_init": ("TestsFlextTargetOracleWmsOracleWmsInit",),
             ".unit.test_quality": ("TestsFlextTargetOracleWmsQuality",),
             ".unit.test_sinks": ("TestsFlextTargetOracleWmsSinks",),
