@@ -108,6 +108,22 @@ class TestsFlextTargetOracleWmsTarget:
         with pytest.raises(Exception):
             u.TargetOracleWms.Target({"bad": "settings"})
 
+    def test_invalid_load_method_rejected(self) -> None:
+        # load_method is typed as the LoadMethods.Method enum, so an unknown value
+        # is rejected at construction (data-shape validation lives in the model).
+        with pytest.raises(c.ValidationError):
+            m.TargetOracleWms.WmsTargetConfig.model_validate({
+                **_valid_config(),
+                "load_method": "BOGUS",
+            })
+
+    def test_valid_load_method_accepted(self) -> None:
+        config = m.TargetOracleWms.WmsTargetConfig.model_validate({
+            **_valid_config(),
+            "load_method": c.TargetOracleWms.LoadMethods.Method.UPSERT,
+        })
+        assert config.load_method == c.TargetOracleWms.LoadMethods.Method.UPSERT
+
     def test_has_catalog_manager(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
         assert target.catalog_manager is not None

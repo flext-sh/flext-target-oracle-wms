@@ -58,6 +58,12 @@ class TestsFlextTargetOracleWmsQuality:
     def test_p_is_protocols_class(self) -> None:
         assert p is not None
 
+    def test_wms_data_loading_protocol_exists(self) -> None:
+        assert p.TargetOracleWms.WmsDataLoading is not None
+
+    def test_data_transformation_protocol_exists(self) -> None:
+        assert p.TargetOracleWms.DataTransformation is not None
+
     def test_target_creation_request_accessible(self) -> None:
         assert m.TargetOracleWms.TargetCreationRequest is not None
 

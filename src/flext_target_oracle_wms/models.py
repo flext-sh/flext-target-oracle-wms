@@ -10,14 +10,11 @@ from collections.abc import MutableMapping
 from types import MappingProxyType
 from typing import Annotated, Literal
 
-# AGENT-COORDINATION (2026-07-11, bead mro-nwc.19): p / t / MutableMapping MUST stay
-# RUNTIME imports. `from __future__ import annotations` makes pydantic v2 resolve these
-# field annotations lazily at model-build time; hiding them under TYPE_CHECKING left
-# WmsTargetConfig / SingerSchemaProperties "not fully defined" (71 tests failed).
-# Canonical sibling flext-oracle-wms/models.py imports t/p at runtime. Do NOT move back.
-from flext_core import r
+# NOTE (multi-agent, bead mro-nwc.19): t / MutableMapping MUST stay RUNTIME imports.
+# `from __future__ import annotations` makes pydantic v2 resolve these field annotation
+# types lazily at model-build time; hiding them under TYPE_CHECKING left WmsTargetConfig /
+# SingerSchemaProperties "not fully defined". Do NOT move them under TYPE_CHECKING.
 from flext_meltano.models import FlextMeltanoModels as meltano_m
-from flext_meltano.protocols import p
 from flext_meltano.typings import t
 from flext_meltano.utilities import u
 from flext_oracle_wms import m
@@ -87,53 +84,13 @@ class FlextTargetOracleWmsModels(meltano_m, m):
                 u.Field(description="Number of records per batch write."),
             ] = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
             load_method: Annotated[
-                str,
+                c.TargetOracleWms.LoadMethods.Method,
                 u.Field(description="Load strategy for writing records to WMS."),
             ] = c.TargetOracleWms.LoadMethods.Method.APPEND_ONLY
             validate_records: Annotated[
                 bool,
                 u.Field(description="Whether to validate records before writing."),
             ] = True
-
-            def validate_business_rules(self) -> p.Result[bool]:
-                """Validate basic settings business rules."""
-                if (
-                    self.load_method
-                    not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS
-                ):
-                    return r[bool].fail("Invalid load method")
-                if self.batch_size <= 0:
-                    return r[bool].fail("Batch size must be positive")
-                return r[bool].ok(value=True)
-
-            def validate_runtime(self) -> p.Result[bool]:
-                """Validate runtime constraints before processing starts."""
-                return self.validate_business_rules()
-
-            @classmethod
-            def create_config(
-                cls,
-                overrides: t.JsonMapping | None = None,
-            ) -> p.Result[FlextTargetOracleWmsModels.TargetOracleWms.WmsTargetConfig]:
-                """Create target settings instance with optional override values."""
-                try:
-                    settings = cls.model_validate(overrides or {})
-                except c.Meltano.SINGER_SAFE_EXCEPTIONS as exc:
-                    return r[
-                        FlextTargetOracleWmsModels.TargetOracleWms.WmsTargetConfig
-                    ].fail(
-                        f"Invalid settings overrides: {exc}",
-                    )
-                validation = settings.validate_runtime()
-                if validation.failure:
-                    return r[
-                        FlextTargetOracleWmsModels.TargetOracleWms.WmsTargetConfig
-                    ].fail(
-                        validation.error or "Runtime validation failed",
-                    )
-                return r[FlextTargetOracleWmsModels.TargetOracleWms.WmsTargetConfig].ok(
-                    settings,
-                )
 
         class SingerFieldSchema(meltano_m.FlexibleModel):
             """Typed Singer field schema entry for target-side schema parsing."""
