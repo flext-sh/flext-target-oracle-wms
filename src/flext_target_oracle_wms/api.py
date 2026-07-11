@@ -1,6 +1,5 @@
 """FLEXT service orchestrator for target-oracle-wms.
 
-from flext_target_oracle_wms.utilities import u
 Thin facade — all infrastructure from ``FlextMeltanoTargetServiceBase`` via MRO.
 Only domain-specific sink creation defined here.
 

@@ -7,6 +7,7 @@ from pathlib import Path
 
 from flext_core import r
 from flext_target_oracle_wms import c, m, p, t, u
+from flext_target_oracle_wms.__version__ import __version__
 from flext_target_oracle_wms._utilities.client import (
     FlextTargetOracleWmsUtilitiesClient,
 )
@@ -19,7 +20,9 @@ class FlextTargetOracleWmsCli:
         """Initialize CLI metadata."""
         self.name = "target-oracle-wms"
         self.description = "Oracle WMS Singer Target"
-        self.version = "0.9.0"
+        # NOTE (multi-agent, bead mro-nwc.19): derive from __version__ SSOT; the prior
+        # hardcoded "0.9.0" was stale (real version is 0.12.0.dev0) — a silent version bug.
+        self.version = __version__
 
     def execute(self, **kwargs: t.Scalar) -> p.Result[bool]:
         """Execute target run using optional settings path."""

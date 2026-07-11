@@ -13,6 +13,7 @@ from unittest.mock import patch
 import pytest
 
 from flext_target_oracle_wms import main
+from flext_target_oracle_wms.__version__ import __version__ as _pkg_version
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
 from tests.constants import c
 
@@ -48,7 +49,9 @@ class TestsFlextTargetOracleWmsOracleWmsCli:
         cli = FlextTargetOracleWmsCli()
         assert cli.name == "target-oracle-wms"
         assert cli.description == "Oracle WMS Singer Target"
-        assert cli.version == "0.9.0"
+        # NOTE (multi-agent, bead mro-nwc.19): version derives from the __version__ SSOT
+        # (was a stale hardcoded "0.9.0"). Assert it matches the package version.
+        assert cli.version == _pkg_version
 
     def test_load_valid_config(self, tmp_path: Path) -> None:
         cli = FlextTargetOracleWmsCli()

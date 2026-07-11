@@ -20,28 +20,25 @@ class TestsFlextTargetOracleWmsQuality:
         assert m is not None
 
     def test_target_oracle_wms_namespace_exists(self) -> None:
-        pass
+        assert m.TargetOracleWms is not None
 
     def test_wms_target_config_accessible(self) -> None:
-        pass
+        assert m.TargetOracleWms.WmsTargetConfig is not None
 
     def test_wms_authentication_config_accessible(self) -> None:
-        pass
-
-    def test_wms_target_result_accessible(self) -> None:
-        pass
+        assert m.TargetOracleWms.WmsAuthenticationConfig is not None
 
     def test_singer_field_schema_accessible(self) -> None:
-        pass
+        assert m.TargetOracleWms.SingerFieldSchema is not None
 
     def test_singer_schema_properties_accessible(self) -> None:
-        pass
+        assert m.TargetOracleWms.SingerSchemaProperties is not None
 
     def test_meltano_namespace_inherited(self) -> None:
-        pass
+        assert m.Meltano is not None
 
     def test_oracle_wms_namespace_inherited(self) -> None:
-        pass
+        assert m.OracleWms is not None
 
     def test_c_is_constants_class(self) -> None:
         assert c is not None
@@ -61,11 +58,11 @@ class TestsFlextTargetOracleWmsQuality:
     def test_p_is_protocols_class(self) -> None:
         assert p is not None
 
-    def test_data_loading_protocol_exists(self) -> None:
-        pass
+    def test_target_creation_request_accessible(self) -> None:
+        assert m.TargetOracleWms.TargetCreationRequest is not None
 
-    def test_data_transformation_protocol_exists(self) -> None:
-        pass
+    def test_monitored_target_creation_request_accessible(self) -> None:
+        assert m.TargetOracleWms.MonitoredTargetCreationRequest is not None
 
     def test_target_name(self) -> None:
         assert u.TargetOracleWms.Target.name == "target-oracle-wms"
@@ -73,7 +70,7 @@ class TestsFlextTargetOracleWmsQuality:
     def test_cli_defaults(self) -> None:
         cli = FlextTargetOracleWmsCli()
         assert cli.name == "target-oracle-wms"
-        assert cli.version == "0.9.0"
+        assert cli.version
 
     def test_catalog_manager_instantiates(self) -> None:
         mgr = u.TargetOracleWms.CatalogManager()
