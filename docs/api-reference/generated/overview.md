@@ -9,9 +9,9 @@
 - Keywords: `data-loading`, `enterprise`, `etl`, `flext`, `singer`, `target`, `typed`
 - Main facades: _none_
 - Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
-- Public symbol exports: `FlextTargetOracleWmsService`, `FlextTargetOracleWmsTypes`, `FlextTargetOracleWmsConstants`, `target_oracle_wms`, `FlextTargetOracleWmsUtilitiesHelpers`, `FlextTargetOracleWmsUtilities`, `FlextTargetOracleWmsServiceRuntime`, `FlextTargetOracleWmsProtocols`, `FlextTargetOracleWmsCli`, `main` (+5 more)
+- Public symbol exports: `FlextTargetOracleWmsService`, `FlextTargetOracleWmsCli`, `FlextTargetOracleWmsModels`, `FlextTargetOracleWmsProtocols`, `FlextTargetOracleWmsSettings`, `FlextTargetOracleWmsUtilities`, `settings`, `main`, `FlextTargetOracleWmsTypes`, `target_oracle_wms` (+1 more)
 - Exported module shortcuts: _none_
-- Generated module pages: `9`
+- Generated module pages: `7`
 
 ## Next Pages
 
