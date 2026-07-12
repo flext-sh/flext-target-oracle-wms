@@ -56,7 +56,7 @@ class FlextTargetOracleWmsCli:
         settings: m.TargetOracleWms.WmsTargetConfig,
         message_lines: t.StrSequence,
     ) -> p.Result[bool]:
-        """Setup, process the message lines, and cleanup target runtime."""
+        """Set up, process the message lines, and clean up the target runtime."""
         target = FlextTargetOracleWmsUtilitiesClient.Target(settings)
         setup_result = target.setup().map_error(lambda e: e or "Setup failed")
         if setup_result.failure:
