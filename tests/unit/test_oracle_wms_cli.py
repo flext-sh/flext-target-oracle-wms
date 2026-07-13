@@ -17,7 +17,7 @@ import pytest
 from flext_target_oracle_wms import main
 from flext_target_oracle_wms.__version__ import __version__ as _pkg_version
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
-from tests.constants import c
+from tests import c
 
 if TYPE_CHECKING:
     from pathlib import Path

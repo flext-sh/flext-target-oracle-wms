@@ -17,7 +17,7 @@ import pytest
 if TYPE_CHECKING:
     from types import ModuleType
 
-    from tests.typings import t
+    from tests import t
 
 
 def _load_example_module(example_file: Path) -> ModuleType:

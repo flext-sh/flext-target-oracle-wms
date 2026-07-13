@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import importlib.util
 
-from tests.utilities import u
+from tests import u
 
 
 class TestsFlextTargetOracleWmsStructure:

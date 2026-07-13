@@ -8,8 +8,7 @@ import warnings
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from tests.constants import c
-from tests.models import m
+from tests import c, m
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

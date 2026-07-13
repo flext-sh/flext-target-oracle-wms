@@ -8,10 +8,7 @@ from __future__ import annotations
 
 import math
 
-from tests.constants import c
-from tests.models import m
-from tests.typings import t
-from tests.utilities import u
+from tests import c, m, t, u
 
 
 def _schema_msg(

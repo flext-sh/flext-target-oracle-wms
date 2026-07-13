@@ -10,9 +10,7 @@ from __future__ import annotations
 
 import time
 
-from tests.constants import c
-from tests.models import m
-from tests.utilities import u
+from tests import c, m, u
 
 
 def _schema_msg(stream: str = "bench") -> m.Meltano.SingerSchemaMessage:

@@ -11,10 +11,10 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from tests.utilities import u
+from tests import u
 
 if TYPE_CHECKING:
-    from tests.typings import t
+    from tests import t
 
 
 def _valid_config() -> t.JsonMapping:

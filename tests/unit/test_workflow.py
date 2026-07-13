@@ -10,10 +10,10 @@ import json as _stdlib_json
 from typing import TYPE_CHECKING
 
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
-from tests.utilities import u
+from tests import u
 
 if TYPE_CHECKING:
-    from tests.typings import t
+    from tests import t
 
 
 def _valid_config() -> t.JsonMapping:

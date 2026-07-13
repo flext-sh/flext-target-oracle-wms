@@ -7,12 +7,14 @@ from typing import TYPE_CHECKING
 from flext_cli import u
 from flext_core import r
 from flext_meltano import c as meltano_c, u as meltano_u
-from flext_target_oracle_wms.constants import FlextTargetOracleWmsConstants as c
-from flext_target_oracle_wms.models import FlextTargetOracleWmsModels as m
-from flext_target_oracle_wms.typings import FlextTargetOracleWmsTypes as t
+from flext_target_oracle_wms import (
+    FlextTargetOracleWmsConstants as c,
+    FlextTargetOracleWmsModels as m,
+    FlextTargetOracleWmsTypes as t,
+)
 
 if TYPE_CHECKING:
-    from flext_target_oracle_wms.protocols import p
+    from flext_target_oracle_wms import p
 
 
 class FlextTargetOracleWmsUtilitiesHelpers:

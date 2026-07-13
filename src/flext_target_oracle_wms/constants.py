@@ -5,7 +5,7 @@ from __future__ import annotations
 from enum import StrEnum, unique
 from typing import TYPE_CHECKING, Final
 
-from flext_meltano.constants import FlextMeltanoConstants as meltano_c
+from flext_meltano import FlextMeltanoConstants as meltano_c
 from flext_oracle_wms import c
 
 if TYPE_CHECKING:
