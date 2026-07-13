@@ -13,6 +13,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
+from flext_tests import tm
 
 from flext_target_oracle_wms import main
 from flext_target_oracle_wms.__version__ import __version__ as _pkg_version
@@ -41,20 +42,20 @@ class TestsFlextTargetOracleWmsOracleWmsCli:
 
     def test_default_attributes(self) -> None:
         cli = FlextTargetOracleWmsCli()
-        assert cli.name == "target-oracle-wms"
-        assert cli.description == "Oracle WMS Singer Target"
-        assert cli.version == _pkg_version
+        tm.that(cli.name, eq="target-oracle-wms")
+        tm.that(cli.description, eq="Oracle WMS Singer Target")
+        tm.that(cli.version, eq=_pkg_version)
 
     def test_execute_with_config_file(self, tmp_path: Path) -> None:
         cli = FlextTargetOracleWmsCli()
         config_path = _write_config_file(_valid_config_json(), tmp_path)
         result = cli.execute(message_lines=[], settings=config_path)
-        assert result.success
+        tm.ok(result)
 
     def test_execute_without_config_uses_defaults(self) -> None:
         cli = FlextTargetOracleWmsCli()
         result = cli.execute(message_lines=[])
-        assert result.success
+        tm.ok(result)
 
     def test_execute_with_nonexistent_config_fails(self) -> None:
         cli = FlextTargetOracleWmsCli()
