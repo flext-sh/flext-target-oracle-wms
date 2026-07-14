@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import math
 
+from flext_tests import tm
+
 from tests import c, m, t, u
 
 
@@ -44,32 +46,32 @@ class TestsFlextTargetOracleWmsWmsPatterns:
             "string",
             "hello",
         )
-        assert result.success
-        assert result.value == "hello"
+        tm.ok(result)
+        tm.that(result.value, eq="hello")
 
     def test_integer_type(self) -> None:
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
             "integer",
             42,
         )
-        assert result.success
-        assert result.value == 42
+        tm.ok(result)
+        tm.that(result.value, eq=42)
 
     def test_number_type_float(self) -> None:
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
             "number",
             math.pi,
         )
-        assert result.success
-        assert result.value == math.pi
+        tm.ok(result)
+        tm.that(result.value, eq=math.pi)
 
     def test_none_value(self) -> None:
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
             "string",
             "",
         )
-        assert result.success
-        assert result.value == ""
+        tm.ok(result)
+        tm.that(result.value, eq="")
 
     def test_object_type_serializes_to_json(self) -> None:
         data = '{"nested": "value"}'
@@ -77,9 +79,9 @@ class TestsFlextTargetOracleWmsWmsPatterns:
             "object",
             data,
         )
-        assert result.success
-        assert result.value is not None
-        assert m.TypeAdapter(t.StrictStr).validate_json(str(result.value)) == data
+        tm.ok(result)
+        tm.that(result.value, none=False)
+        tm.that(m.TypeAdapter(t.StrictStr).validate_json(str(result.value)), eq=data)
 
     def test_array_type_serializes_to_json(self) -> None:
         data = "[1, 2, 3]"
@@ -87,17 +89,17 @@ class TestsFlextTargetOracleWmsWmsPatterns:
             "array",
             data,
         )
-        assert result.success
-        assert result.value is not None
-        assert m.TypeAdapter(t.StrictStr).validate_json(str(result.value)) == data
+        tm.ok(result)
+        tm.that(result.value, none=False)
+        tm.that(m.TypeAdapter(t.StrictStr).validate_json(str(result.value)), eq=data)
 
     def test_boolean_type_becomes_string(self) -> None:
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
             "boolean",
             True,
         )
-        assert result.success
-        assert result.value == "True"
+        tm.ok(result)
+        tm.that(result.value, eq="True")
 
     def test_uppercases_record_keys(self) -> None:
         transformer = u.TargetOracleWms.WMSDataTransformer()
@@ -105,10 +107,10 @@ class TestsFlextTargetOracleWmsWmsPatterns:
             _record_msg("s", {"name": "alice", "age": "30"}),
             _schema_msg("s"),
         )
-        assert result.success
-        assert result.value is not None
-        assert "NAME" in result.value.record
-        assert "AGE" in result.value.record
+        tm.ok(result)
+        tm.that(result.value, none=False)
+        tm.that(result.value.record, has="NAME")
+        tm.that(result.value.record, has="AGE")
 
     def test_preserves_stream_name(self) -> None:
         transformer = u.TargetOracleWms.WMSDataTransformer()
@@ -116,9 +118,9 @@ class TestsFlextTargetOracleWmsWmsPatterns:
             _record_msg("orders", {"id": "1"}),
             _schema_msg("orders"),
         )
-        assert result.success
-        assert result.value is not None
-        assert result.value.stream == "orders"
+        tm.ok(result)
+        tm.that(result.value, none=False)
+        tm.that(result.value.stream, eq="orders")
 
     def test_uses_custom_type_converter(self) -> None:
         converter = u.TargetOracleWms.WMSTypeConverter()
@@ -127,60 +129,60 @@ class TestsFlextTargetOracleWmsWmsPatterns:
             _record_msg("s", {"qty": 10}),
             _schema_msg("s"),
         )
-        assert result.success
-        assert result.value is not None
-        assert "QTY" in result.value.record
+        tm.ok(result)
+        tm.that(result.value, none=False)
+        tm.that(result.value.record, has="QTY")
 
     def test_transform_without_schema(self) -> None:
         transformer = u.TargetOracleWms.WMSDataTransformer()
         result = transformer.transform_record(_record_msg("s", {"name": "bob"}), None)
-        assert result.success
-        assert result.value is not None
-        assert "NAME" in result.value.record
+        tm.ok(result)
+        tm.that(result.value, none=False)
+        tm.that(result.value.record, has="NAME")
 
     def test_returns_catalog_entry(self) -> None:
         mapper = u.TargetOracleWms.WMSSchemaMapper()
         result = mapper.map_stream_schema(_schema_msg("inventory"))
-        assert result.success
-        assert result.value is not None
+        tm.ok(result)
+        tm.that(result.value, none=False)
         entry = result.value
-        assert entry.stream == "inventory"
-        assert entry.tap_stream_id == "inventory"
-        assert entry.table_name == "INVENTORY"
+        tm.that(entry.stream, eq="inventory")
+        tm.that(entry.tap_stream_id, eq="inventory")
+        tm.that(entry.table_name, eq="INVENTORY")
 
     def test_preserves_key_properties(self) -> None:
         mapper = u.TargetOracleWms.WMSSchemaMapper()
         result = mapper.map_stream_schema(_schema_msg("s", key_properties=["a", "b"]))
-        assert result.value is not None
-        assert result.value.key_properties == ["a", "b"]
+        tm.that(result.value, none=False)
+        tm.that(result.value.key_properties, eq=["a", "b"])
 
     def test_register_stream_returns_uppercase(self) -> None:
         tm = u.TargetOracleWms.WMSTableManager()
         result = tm.register_stream("orders")
-        assert result.success
-        assert result.value == "ORDERS"
+        tm.ok(result)
+        tm.that(result.value, eq="ORDERS")
 
     def test_get_registered_table(self) -> None:
         tm = u.TargetOracleWms.WMSTableManager()
         tm.register_stream("items")
         result = tm.get_table_name("items")
-        assert result.success
-        assert result.value == "ITEMS"
+        tm.ok(result)
+        tm.that(result.value, eq="ITEMS")
 
     def test_get_unregistered_fails(self) -> None:
         tm = u.TargetOracleWms.WMSTableManager()
         result = tm.get_table_name("nope")
-        assert result.failure
+        tm.fail(result)
 
     def test_multiple_streams(self) -> None:
         tm = u.TargetOracleWms.WMSTableManager()
         tm.register_stream("a")
         tm.register_stream("b")
         result_a = tm.get_table_name("a")
-        assert result_a.success
-        assert result_a.value is not None
+        tm.ok(result_a)
+        tm.that(result_a.value, none=False)
         result_b = tm.get_table_name("b")
-        assert result_b.success
-        assert result_b.value is not None
-        assert result_a.value == "A"
-        assert result_b.value == "B"
+        tm.ok(result_b)
+        tm.that(result_b.value, none=False)
+        tm.that(result_a.value, eq="A")
+        tm.that(result_b.value, eq="B")

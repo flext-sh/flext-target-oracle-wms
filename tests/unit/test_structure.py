@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import importlib.util
 
+from flext_tests import tm
+
 from tests import u
 
 
@@ -17,7 +19,7 @@ class TestsFlextTargetOracleWmsStructure:
 
     def test_import_from_correct_module(self) -> None:
         """Test that we can import from the correct module."""
-        assert u.TargetOracleWms.Target is not None
+        tm.that(u.TargetOracleWms.Target, none=False)
         if u.TargetOracleWms.Target.name != "target-oracle-wms":
             msg: str = (
                 f"Expected {'target-oracle-wms'}, got {u.TargetOracleWms.Target.name}"
@@ -27,4 +29,4 @@ class TestsFlextTargetOracleWmsStructure:
     def test_no_dual_structure(self) -> None:
         """Test that flext_target_oracle_wms module exists correctly."""
         spec = importlib.util.find_spec("flext_target_oracle_wms")
-        assert spec is not None, "flext_target_oracle_wms module should exist"
+        tm.that(spec, none=False)

@@ -10,22 +10,20 @@ from __future__ import annotations
 import importlib.util
 import inspect
 from pathlib import Path
-from typing import TYPE_CHECKING
+from types import ModuleType
 
 import pytest
+from flext_tests import tm
 
-if TYPE_CHECKING:
-    from types import ModuleType
-
-    from tests import t
+from tests import t
 
 
 def _load_example_module(example_file: Path) -> ModuleType:
     module_name = f"_flext_target_oracle_wms_example_{example_file.stem}"
     spec = importlib.util.spec_from_file_location(module_name, example_file)
-    assert spec is not None, f"Could not build import spec for {example_file.name}"
+    assert spec is not None
     loader = spec.loader
-    assert loader is not None, f"Could not load {example_file.name}"
+    assert loader is not None
     module = importlib.util.module_from_spec(spec)
     loader.exec_module(module)
     return module
@@ -104,9 +102,7 @@ class TestsFlextTargetOracleWmsExamples:
                 "HACK:",
             ]
             for pattern in forbidden_patterns:
-                assert pattern not in content, (
-                    f"{example_file.name} contains forbidden pattern: {pattern}"
-                )
+                tm.that(content, lacks=pattern)
 
     def test_examples_have_comprehensive_docstrings(
         self,
@@ -116,9 +112,7 @@ class TestsFlextTargetOracleWmsExamples:
         for example_file in example_files:
             module = _load_example_module(example_file)
             module_docstring = inspect.getdoc(module)
-            assert module_docstring is not None, (
-                f"{example_file.name} must have module docstring"
-            )
+            assert module_docstring is not None
             assert len(module_docstring) > 50, (
                 f"{example_file.name} docstring too short"
             )
@@ -218,9 +212,7 @@ class TestsFlextTargetOracleWmsExamples:
         """Test that examples have proper main execution blocks."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
-            assert 'if __name__ == "__main__":' in content, (
-                f"{example_file.name} must have main execution block"
-            )
+            tm.that(content, has='if __name__ == "__main__":')
             main_patterns = ["print(", "run(", "run_", "demonstrate_"]
             has_main_execution = False
             for pattern in main_patterns:
@@ -246,7 +238,7 @@ class TestsFlextTargetOracleWmsExamples:
             except SyntaxError as e:
                 pytest.fail(f"Syntax error in {example_file.name}: {e}")
             try:
-                assert compiled is not None, f"Failed to compile {example_file.name}"
+                tm.that(compiled, none=False)
             except (
                 ValueError,
                 TypeError,
@@ -275,7 +267,7 @@ class TestsFlextTargetOracleWmsExamples:
             "Security",
         ]
         for section in required_sections:
-            assert section in readme_content, f"README must contain '{section}' section"
+            tm.that(readme_content, has=section)
 
     def test_examples_follow_naming_convention(self) -> None:
         """Test that examples follow proper naming conventions."""
@@ -333,9 +325,7 @@ class TestsFlextTargetOracleWmsExamples:
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
             if "FlextLogger" in content:
-                assert "logger = u.fetch_logger(__name__)" in content, (
-                    f"{example_file.name} must use u.fetch_logger(__name__) pattern"
-                )
+                tm.that(content, has="logger = u.fetch_logger(__name__)")
                 assert "logger.info(" in content or "logger.error(" in content, (
                     f"{example_file.name} must actually use the logger"
                 )
@@ -347,9 +337,5 @@ class TestsFlextTargetOracleWmsExamples:
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
             if "flext_monitor_function" in content:
-                assert "@flext_monitor_function(" in content, (
-                    f"{example_file.name} must use @flext_monitor_function decorator"
-                )
-                assert "FlextObservabilityMonitor" in content, (
-                    f"{example_file.name} should create monitor instance"
-                )
+                tm.that(content, has="@flext_monitor_function(")
+                tm.that(content, has="FlextObservabilityMonitor")

@@ -9,6 +9,8 @@ from __future__ import annotations
 import json as _stdlib_json
 from typing import TYPE_CHECKING
 
+from flext_tests import tm
+
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
 from tests import u
 
@@ -68,7 +70,7 @@ class TestsFlextTargetOracleWmsWorkflow:
             _state_line({"bookmarks": {"inventory": "2"}}),
         ]
         result = target.process_lines(lines)
-        assert result.success
+        tm.ok(result)
 
     def test_multiple_stream_workflow(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
@@ -80,7 +82,7 @@ class TestsFlextTargetOracleWmsWorkflow:
             _state_line({"bookmarks": {}}),
         ]
         result = target.process_lines(lines)
-        assert result.success
+        tm.ok(result)
 
     def test_schema_update_mid_stream(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
@@ -95,20 +97,20 @@ class TestsFlextTargetOracleWmsWorkflow:
             _record_line("s", {"id": "2", "name": "updated"}),
         ]
         result = target.process_lines(lines)
-        assert result.success
+        tm.ok(result)
 
     def test_state_only_workflow(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
         lines = [_state_line({"bookmarks": {}})]
         result = target.process_lines(lines)
-        assert result.success
+        tm.ok(result)
 
     def test_cli_execute_empty_stdin(self) -> None:
         # NOTE (multi-agent, bead mro-nwc.19): inject empty message lines via the CLI's
         # public DI seam instead of patching sys.stdin (real behavior, no mock).
         cli = FlextTargetOracleWmsCli()
         result = cli.execute(message_lines=[])
-        assert result.success
+        tm.ok(result)
 
     def test_cli_execute_with_messages(self) -> None:
         lines = [
@@ -118,7 +120,7 @@ class TestsFlextTargetOracleWmsWorkflow:
         ]
         cli = FlextTargetOracleWmsCli()
         result = cli.execute(message_lines=lines)
-        assert result.success
+        tm.ok(result)
 
     def test_malformed_json_stops_processing(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
@@ -127,10 +129,10 @@ class TestsFlextTargetOracleWmsWorkflow:
             "NOT VALID JSON",
         ]
         result = target.process_lines(lines)
-        assert result.failure
+        tm.fail(result)
 
     def test_record_for_unknown_stream_fails(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
         lines = [_record_line("unknown_stream", {"id": "1"})]
         result = target.process_lines(lines)
-        assert result.failure
+        tm.fail(result)

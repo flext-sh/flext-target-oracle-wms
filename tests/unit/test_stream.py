@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, override
 
-from flext_tests import r
+from flext_tests import r, tm
 
 from tests import c, m, u
 
@@ -62,8 +62,8 @@ class TestsFlextTargetOracleWmsStream:
             u.TargetOracleWms.WMSDataTransformer(),
         )
         result = proc.initialize_stream(_schema_msg("orders"))
-        assert result.success
-        assert result.value is True
+        tm.ok(result)
+        tm.that(result.value, eq=True)
 
     def test_initialize_registers_table(self) -> None:
         tm = u.TargetOracleWms.WMSTableManager()
@@ -73,8 +73,8 @@ class TestsFlextTargetOracleWmsStream:
         )
         proc.initialize_stream(_schema_msg("items"))
         table_result = tm.get_table_name("items")
-        assert table_result.success
-        assert table_result.value == "ITEMS"
+        tm.ok(table_result)
+        tm.that(table_result.value, eq="ITEMS")
 
     def test_process_record_after_init(self) -> None:
         proc = u.TargetOracleWms.StreamProcessor(
@@ -84,7 +84,7 @@ class TestsFlextTargetOracleWmsStream:
         schema = _schema_msg("orders")
         proc.initialize_stream(schema)
         result = proc.process_record(_record_msg("orders", {"id": "1"}), schema)
-        assert result.success
+        tm.ok(result)
 
     def test_process_record_without_init_fails(self) -> None:
         proc = u.TargetOracleWms.StreamProcessor(
@@ -95,8 +95,8 @@ class TestsFlextTargetOracleWmsStream:
             _record_msg("orders", {"id": "1"}),
             _schema_msg("orders"),
         )
-        assert result.failure
-        assert result.error is not None
+        tm.fail(result)
+        tm.that(result.error, none=False)
         assert (
             "not registered" in result.error.lower() or "lookup" in result.error.lower()
         )
@@ -114,17 +114,17 @@ class TestsFlextTargetOracleWmsStream:
         )
         proc.initialize_stream(schema)
         result = proc.process_record(_record_msg("s", {"name": "hello"}), schema)
-        assert result.success
-        assert result.value is not None
+        tm.ok(result)
+        tm.that(result.value, none=False)
         transformed = result.value
-        assert "NAME" in transformed.record
+        tm.that(transformed.record, has="NAME")
 
     def test_process_record_with_transformer_failure(self) -> None:
         tm = u.TargetOracleWms.WMSTableManager()
         proc = u.TargetOracleWms.StreamProcessor(tm, _FailingTransformer())
         tm.register_stream("s")
         result = proc.process_record(_record_msg("s"), _schema_msg("s"))
-        assert result.failure
+        tm.fail(result)
 
     def test_two_independent_streams(self) -> None:
         proc = u.TargetOracleWms.StreamProcessor(
@@ -137,5 +137,5 @@ class TestsFlextTargetOracleWmsStream:
         proc.initialize_stream(schema_b)
         r_a = proc.process_record(_record_msg("alpha", {"id": "1"}), schema_a)
         r_b = proc.process_record(_record_msg("beta", {"id": "2"}), schema_b)
-        assert r_a.success
-        assert r_b.success
+        tm.ok(r_a)
+        tm.ok(r_b)

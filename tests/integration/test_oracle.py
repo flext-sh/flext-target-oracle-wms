@@ -10,6 +10,7 @@ import json as _stdlib_json
 from typing import TYPE_CHECKING
 
 import pytest
+from flext_tests import tm
 
 from tests import u
 
@@ -58,7 +59,7 @@ class TestsFlextTargetOracleWmsOracle:
 
     def test_setup_process_cleanup(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
-        assert target.setup().success
+        tm.ok(target.setup())
         lines = [
             _schema_line(
                 "items",
@@ -68,8 +69,8 @@ class TestsFlextTargetOracleWmsOracle:
             _record_line("items", {"id": "1", "name": "Widget"}),
             _state_line({"bookmarks": {"items": "1"}}),
         ]
-        assert target.process_lines(lines).success
-        assert target.cleanup().success
+        tm.ok(target.process_lines(lines))
+        tm.ok(target.cleanup())
 
     def test_multiple_batches(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
@@ -79,13 +80,13 @@ class TestsFlextTargetOracleWmsOracle:
             _record_line("orders", {"order_id": "ORD001"}),
             _record_line("orders", {"order_id": "ORD002"}),
         ]
-        assert target.process_lines(batch1).success
+        tm.ok(target.process_lines(batch1))
         batch2 = [
             _record_line("orders", {"order_id": "ORD003"}),
             _state_line({"bookmarks": {"orders": "3"}}),
         ]
-        assert target.process_lines(batch2).success
-        assert target.cleanup().success
+        tm.ok(target.process_lines(batch2))
+        tm.ok(target.cleanup())
 
     """Integration tests for multi-stream scenarios."""
 
@@ -102,5 +103,5 @@ class TestsFlextTargetOracleWmsOracle:
             _record_line("orders", {"id": "O2"}),
             _state_line({"bookmarks": {}}),
         ]
-        assert target.process_lines(lines).success
-        assert target.cleanup().success
+        tm.ok(target.process_lines(lines))
+        tm.ok(target.cleanup())
