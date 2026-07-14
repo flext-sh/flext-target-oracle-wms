@@ -10,23 +10,20 @@ from __future__ import annotations
 import importlib.util
 import inspect
 from pathlib import Path
-from typing import TYPE_CHECKING
+from types import ModuleType
 
 import pytest
 from flext_tests import tm
 
-if TYPE_CHECKING:
-    from types import ModuleType
-
-    from tests import t
+from tests import t
 
 
 def _load_example_module(example_file: Path) -> ModuleType:
     module_name = f"_flext_target_oracle_wms_example_{example_file.stem}"
     spec = importlib.util.spec_from_file_location(module_name, example_file)
-    tm.that(spec, none=False)
+    assert spec is not None
     loader = spec.loader
-    tm.that(loader, none=False)
+    assert loader is not None
     module = importlib.util.module_from_spec(spec)
     loader.exec_module(module)
     return module
@@ -115,7 +112,7 @@ class TestsFlextTargetOracleWmsExamples:
         for example_file in example_files:
             module = _load_example_module(example_file)
             module_docstring = inspect.getdoc(module)
-            tm.that(module_docstring, none=False)
+            assert module_docstring is not None
             assert len(module_docstring) > 50, (
                 f"{example_file.name} docstring too short"
             )
