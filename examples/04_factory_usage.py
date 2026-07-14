@@ -17,13 +17,12 @@ from __future__ import annotations
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
-from flext_core import u as core_u
 from flext_observability.services.monitoring import (
     FlextObservabilityMonitor,
     flext_monitor_function,
 )
 from flext_target_oracle_wms import (
-    FlextTargetOracleWmsModels,
+    m,
     t,
     u,
 )
@@ -31,7 +30,7 @@ from flext_target_oracle_wms import (
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
-_ = core_u  # Anchor flext_core import for example validation.
+_ = u  # Anchor flext_core import for example validation.
 
 logger = u.fetch_logger(__name__)
 monitor = FlextObservabilityMonitor()
@@ -47,7 +46,7 @@ TARGET_CONFIG: Final[Mapping[str, str]] = MappingProxyType({
 def run_target_creation_example() -> t.Scalar:
     """Create an Oracle WMS target via the canonical utilities facade."""
     logger.info("Starting Oracle WMS target creation example")
-    config = FlextTargetOracleWmsModels.TargetOracleWms.WmsTargetConfig.model_validate({
+    config = m.TargetOracleWms.WmsTargetConfig.model_validate({
         "wms_auth": {
             "base_url": TARGET_CONFIG["base_url"],
             "username": TARGET_CONFIG["username"],
