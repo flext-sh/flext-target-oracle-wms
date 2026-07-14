@@ -14,8 +14,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from types import MappingProxyType
-from typing import TYPE_CHECKING, Final
+from typing import Final
 
 from flext_observability.services.monitoring import (
     FlextObservabilityMonitor,
@@ -26,9 +27,6 @@ from flext_target_oracle_wms import (
     t,
     u,
 )
-
-if TYPE_CHECKING:
-    from collections.abc import Mapping
 
 _ = u  # Anchor flext_core import for example validation.
 

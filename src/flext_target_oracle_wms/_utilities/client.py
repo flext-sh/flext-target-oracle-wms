@@ -3,21 +3,17 @@
 from __future__ import annotations
 
 import sys
-from typing import TYPE_CHECKING, ClassVar
+from collections.abc import (
+    MutableMapping,
+)
+from typing import ClassVar
 
 from flext_core import e, r
 from flext_meltano import u
-from flext_target_oracle_wms import c, m, t
+from flext_target_oracle_wms import c, m, p, t
 from flext_target_oracle_wms._utilities.helpers import (
     FlextTargetOracleWmsUtilitiesHelpers,
 )
-
-if TYPE_CHECKING:
-    from collections.abc import (
-        MutableMapping,
-    )
-
-    from flext_target_oracle_wms import p
 
 
 class FlextTargetOracleWmsUtilitiesClient:
@@ -124,9 +120,9 @@ class FlextTargetOracleWmsUtilitiesClient:
         ) -> None:
             """Initialize target runtime with validated settings."""
             # AGENT-COORDINATION (2026-07-11, bead mro-nwc.19): store the validated config as
-            # self.settings. Previously the model_validate result was assigned to a local and
+            # settings. Previously the model_validate result was assigned to a local and
             # discarded, so the public `settings` accessor was missing (test_init_with_valid_config).
-            self.settings = m.TargetOracleWms.WmsTargetConfig.model_validate(settings)
+            settings = m.TargetOracleWms.WmsTargetConfig.model_validate(settings)
             self.catalog_manager = FlextTargetOracleWmsUtilitiesClient.CatalogManager()
             self.table_manager = FlextTargetOracleWmsUtilitiesHelpers.WMSTableManager()
             self.data_transformer = (

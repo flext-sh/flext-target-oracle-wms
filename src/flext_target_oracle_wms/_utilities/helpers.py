@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from flext_cli import u
 from flext_core import r
 from flext_meltano import c as meltano_c, u as meltano_u
@@ -11,10 +9,8 @@ from flext_target_oracle_wms import (
     FlextTargetOracleWmsConstants as c,
     FlextTargetOracleWmsModels as m,
     FlextTargetOracleWmsTypes as t,
+    p,
 )
-
-if TYPE_CHECKING:
-    from flext_target_oracle_wms import p
 
 
 class FlextTargetOracleWmsUtilitiesHelpers:
