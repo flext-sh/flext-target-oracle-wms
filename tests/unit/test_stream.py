@@ -66,13 +66,13 @@ class TestsFlextTargetOracleWmsStream:
         tm.that(result.value, eq=True)
 
     def test_initialize_registers_table(self) -> None:
-        tm = u.TargetOracleWms.WMSTableManager()
+        manager = u.TargetOracleWms.WMSTableManager()
         proc = u.TargetOracleWms.StreamProcessor(
-            tm,
+            manager,
             u.TargetOracleWms.WMSDataTransformer(),
         )
         proc.initialize_stream(_schema_msg("items"))
-        table_result = tm.get_table_name("items")
+        table_result = manager.get_table_name("items")
         tm.ok(table_result)
         tm.that(table_result.value, eq="ITEMS")
 
@@ -120,9 +120,9 @@ class TestsFlextTargetOracleWmsStream:
         tm.that(transformed.record, has="NAME")
 
     def test_process_record_with_transformer_failure(self) -> None:
-        tm = u.TargetOracleWms.WMSTableManager()
-        proc = u.TargetOracleWms.StreamProcessor(tm, _FailingTransformer())
-        tm.register_stream("s")
+        manager = u.TargetOracleWms.WMSTableManager()
+        proc = u.TargetOracleWms.StreamProcessor(manager, _FailingTransformer())
+        manager.register_stream("s")
         result = proc.process_record(_record_msg("s"), _schema_msg("s"))
         tm.fail(result)
 
