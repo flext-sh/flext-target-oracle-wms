@@ -157,31 +157,31 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         tm.that(result.value.key_properties, eq=["a", "b"])
 
     def test_register_stream_returns_uppercase(self) -> None:
-        tm = u.TargetOracleWms.WMSTableManager()
-        result = tm.register_stream("orders")
+        manager = u.TargetOracleWms.WMSTableManager()
+        result = manager.register_stream("orders")
         tm.ok(result)
         tm.that(result.value, eq="ORDERS")
 
     def test_get_registered_table(self) -> None:
-        tm = u.TargetOracleWms.WMSTableManager()
-        tm.register_stream("items")
-        result = tm.get_table_name("items")
+        manager = u.TargetOracleWms.WMSTableManager()
+        manager.register_stream("items")
+        result = manager.get_table_name("items")
         tm.ok(result)
         tm.that(result.value, eq="ITEMS")
 
     def test_get_unregistered_fails(self) -> None:
-        tm = u.TargetOracleWms.WMSTableManager()
-        result = tm.get_table_name("nope")
+        manager = u.TargetOracleWms.WMSTableManager()
+        result = manager.get_table_name("nope")
         tm.fail(result)
 
     def test_multiple_streams(self) -> None:
-        tm = u.TargetOracleWms.WMSTableManager()
-        tm.register_stream("a")
-        tm.register_stream("b")
-        result_a = tm.get_table_name("a")
+        manager = u.TargetOracleWms.WMSTableManager()
+        manager.register_stream("a")
+        manager.register_stream("b")
+        result_a = manager.get_table_name("a")
         tm.ok(result_a)
         tm.that(result_a.value, none=False)
-        result_b = tm.get_table_name("b")
+        result_b = manager.get_table_name("b")
         tm.ok(result_b)
         tm.that(result_b.value, none=False)
         tm.that(result_a.value, eq="A")

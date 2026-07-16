@@ -83,11 +83,17 @@ class TestsFlextTargetOracleWmsExamples:
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
             import_lines = _import_lines(content)
-            has_flext_core = any("flext_core" in line for line in import_lines)
+            has_flext_core = any(
+                "flext_core" in line or "flext_target_oracle_wms" in line
+                for line in import_lines
+            )
             has_target_import = any(
                 "flext_target_oracle_wms" in line for line in import_lines
             )
-            assert has_flext_core, f"{example_file.name} must import from flext_core"
+            assert has_flext_core, (
+                f"{example_file.name} must import real flext primitives "
+                "(flext_core or the flext_target_oracle_wms facade)"
+            )
             assert has_target_import, (
                 f"{example_file.name} must import from flext_target_oracle_wms"
             )

@@ -82,8 +82,8 @@ class TestsFlextTargetOracleWmsQuality:
         tm.that(mgr, none=False)
 
     def test_table_manager_instantiates(self) -> None:
-        tm = u.TargetOracleWms.WMSTableManager()
-        tm.that(tm, none=False)
+        manager = u.TargetOracleWms.WMSTableManager()
+        tm.that(manager, none=False)
 
     def test_type_converter_instantiates(self) -> None:
         tc = u.TargetOracleWms.WMSTypeConverter()
