@@ -19,8 +19,8 @@ class _FailingTransformer(u.TargetOracleWms.WMSDataTransformer):
     @override
     def transform_record(
         self,
-        record_message: m.Meltano.SingerRecordMessage | t.JsonMapping,
-        schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping | None = None,
+        record_message: p.Meltano.SingerRecordMessage | t.JsonMapping,
+        schema_message: p.Meltano.SingerSchemaMessage | t.JsonMapping | None = None,
     ) -> p.Result[p.Meltano.SingerRecordMessage]:
         _ = record_message, schema_message
         return r[p.Meltano.SingerRecordMessage].fail("transformer error")

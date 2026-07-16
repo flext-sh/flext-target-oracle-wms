@@ -10,7 +10,7 @@ import math
 
 from flext_tests import tm
 
-from tests import c, m, t, u
+from tests import c, m, p, t, u
 
 
 def _schema_msg(

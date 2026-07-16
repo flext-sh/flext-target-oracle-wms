@@ -27,7 +27,7 @@ class FlextTargetOracleWmsServiceRuntime:
             cls,
             *,
             runtime_target: u.TargetOracleWms.Target,
-            target: m.Meltano.SingerTargetBase,
+            target: p.Meltano.SingerTargetBase,
             stream_name: str,
             schema: t.JsonDict,
             key_properties: t.StrSequence,

@@ -53,7 +53,7 @@ class FlextTargetOracleWmsCli:
 
     def _execute_target_pipeline(
         self,
-        settings: m.TargetOracleWms.WmsTargetConfig,
+        settings: p.TargetOracleWms.WmsTargetConfig,
         message_lines: t.StrSequence,
     ) -> p.Result[bool]:
         """Set up, process the message lines, and clean up the target runtime."""

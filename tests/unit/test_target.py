@@ -9,7 +9,7 @@ from __future__ import annotations
 import pytest
 from flext_tests import tm
 
-from tests import c, m, t, u
+from tests import c, m, p, t, u
 
 
 def _valid_config() -> t.JsonMapping:
@@ -81,7 +81,7 @@ def _state_msg(
     resolved_state: dict[str, t.JsonValue] = (
         dict(state) if state is not None else default_state
     )
-    state_message: m.Meltano.SingerStateMessage = (
+    state_message: p.Meltano.SingerStateMessage = (
         m.Meltano.SingerStateMessage.model_validate({
             "type": c.Meltano.SingerMessageType.STATE,
             "value": resolved_state,

@@ -31,7 +31,7 @@ class FlextTargetOracleWmsUtilitiesClient:
 
         def add_stream(
             self,
-            schema_message: m.Meltano.SingerSchemaMessage,
+            schema_message: p.Meltano.SingerSchemaMessage,
         ) -> p.Result[bool]:
             """Register one stream schema entry."""
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
@@ -79,7 +79,7 @@ class FlextTargetOracleWmsUtilitiesClient:
 
         def initialize_stream(
             self,
-            schema_message: m.Meltano.SingerSchemaMessage,
+            schema_message: p.Meltano.SingerSchemaMessage,
         ) -> p.Result[bool]:
             """Register stream metadata in table manager."""
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
@@ -90,8 +90,8 @@ class FlextTargetOracleWmsUtilitiesClient:
 
         def process_record(
             self,
-            record_message: m.Meltano.SingerRecordMessage,
-            schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping,
+            record_message: p.Meltano.SingerRecordMessage,
+            schema_message: p.Meltano.SingerSchemaMessage | t.JsonMapping,
         ) -> p.Result[p.Meltano.SingerRecordMessage]:
             """Transform one typed Singer record."""
             typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
@@ -140,7 +140,7 @@ class FlextTargetOracleWmsUtilitiesClient:
 
         def handle_record_message(
             self,
-            message: m.Meltano.SingerRecordMessage,
+            message: p.Meltano.SingerRecordMessage,
         ) -> p.Result[bool]:
             """Handle one RECORD message."""
             typed_record = m.Meltano.SingerRecordMessage.model_validate(message)
@@ -159,7 +159,7 @@ class FlextTargetOracleWmsUtilitiesClient:
 
         def handle_schema_message(
             self,
-            message: m.Meltano.SingerSchemaMessage,
+            message: p.Meltano.SingerSchemaMessage,
         ) -> p.Result[bool]:
             """Handle one SCHEMA message."""
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(message)
@@ -173,7 +173,7 @@ class FlextTargetOracleWmsUtilitiesClient:
 
         def handle_state_message(
             self,
-            message: m.Meltano.SingerStateMessage,
+            message: p.Meltano.SingerStateMessage,
         ) -> p.Result[bool]:
             """Handle one STATE message."""
             typed_state = m.Meltano.SingerStateMessage.model_validate(message)

@@ -80,8 +80,8 @@ class FlextTargetOracleWmsUtilitiesHelpers:
 
         def transform_record(
             self,
-            record_message: m.Meltano.SingerRecordMessage | t.JsonMapping,
-            schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping | None = None,
+            record_message: p.Meltano.SingerRecordMessage | t.JsonMapping,
+            schema_message: p.Meltano.SingerSchemaMessage | t.JsonMapping | None = None,
         ) -> p.Result[p.Meltano.SingerRecordMessage]:
             """Transform one typed Singer RECORD payload with optional typed schema."""
             typed_record = m.Meltano.SingerRecordMessage.model_validate(
@@ -128,7 +128,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
 
         def map_stream_schema(
             self,
-            schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping,
+            schema_message: p.Meltano.SingerSchemaMessage | t.JsonMapping,
         ) -> p.Result[p.Meltano.SingerCatalogEntry]:
             """Build normalized schema map for table creation."""
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(
