@@ -50,7 +50,7 @@ def _schema_msg(
     stream: str = "test_stream",
     properties: t.MappingKV[str, t.StrMapping] | None = None,
     key_properties: t.StrSequence | None = None,
-) -> m.Meltano.SingerSchemaMessage:
+) -> p.Meltano.SingerSchemaMessage:
     _ = properties
     return m.Meltano.SingerSchemaMessage(
         type=c.Meltano.SingerMessageType.SCHEMA,
@@ -65,7 +65,7 @@ def _schema_msg(
 def _record_msg(
     stream: str = "test_stream",
     record: t.JsonMapping | None = None,
-) -> m.Meltano.SingerRecordMessage:
+) -> p.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage(
         type=c.Meltano.SingerMessageType.RECORD,
         stream=stream,
@@ -75,7 +75,7 @@ def _record_msg(
 
 def _state_msg(
     state: t.JsonMapping | None = None,
-) -> m.Meltano.SingerStateMessage:
+) -> p.Meltano.SingerStateMessage:
     empty_bookmarks: dict[str, t.JsonValue] = {}
     default_state: dict[str, t.JsonValue] = {"bookmarks": empty_bookmarks}
     resolved_state: dict[str, t.JsonValue] = (

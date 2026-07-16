@@ -51,16 +51,16 @@ class FlextTargetOracleWmsUtilitiesClient:
         def get_stream(
             self,
             stream_name: str,
-        ) -> p.Result[m.Meltano.SingerCatalogEntry]:
+        ) -> p.Result[p.Meltano.SingerCatalogEntry]:
             """Return catalog entry for a stream or a failure."""
             entry = self._catalog_entries.get(stream_name)
             if entry is None:
                 return e.fail_not_found(
                     "WMS stream",
                     stream_name,
-                    result_type=r[m.Meltano.SingerCatalogEntry],
+                    result_type=r[p.Meltano.SingerCatalogEntry],
                 )
-            return r[m.Meltano.SingerCatalogEntry].ok(entry)
+            return r[p.Meltano.SingerCatalogEntry].ok(entry)
 
     class StreamProcessor:
         """Process Singer records using table and transform helpers.
@@ -92,12 +92,12 @@ class FlextTargetOracleWmsUtilitiesClient:
             self,
             record_message: m.Meltano.SingerRecordMessage,
             schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping,
-        ) -> p.Result[m.Meltano.SingerRecordMessage]:
+        ) -> p.Result[p.Meltano.SingerRecordMessage]:
             """Transform one typed Singer record."""
             typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
             table_lookup = self.table_manager.get_table_name(typed_record.stream)
             if table_lookup.failure:
-                return r[m.Meltano.SingerRecordMessage].fail(
+                return r[p.Meltano.SingerRecordMessage].fail(
                     table_lookup.error or "Table lookup failed",
                 )
             return self.data_transformer.transform_record(typed_record, schema_message)

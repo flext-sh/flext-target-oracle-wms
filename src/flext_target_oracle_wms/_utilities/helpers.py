@@ -82,7 +82,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
             self,
             record_message: m.Meltano.SingerRecordMessage | t.JsonMapping,
             schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping | None = None,
-        ) -> p.Result[m.Meltano.SingerRecordMessage]:
+        ) -> p.Result[p.Meltano.SingerRecordMessage]:
             """Transform one typed Singer RECORD payload with optional typed schema."""
             typed_record = m.Meltano.SingerRecordMessage.model_validate(
                 record_message,
@@ -109,11 +109,11 @@ class FlextTargetOracleWmsUtilitiesHelpers:
                     value,
                 )
                 if converted.failure:
-                    return r[m.Meltano.SingerRecordMessage].fail(
+                    return r[p.Meltano.SingerRecordMessage].fail(
                         converted.error or "Conversion failed",
                     )
                 transformed[key.upper()] = converted.value
-            return r[m.Meltano.SingerRecordMessage].ok(
+            return r[p.Meltano.SingerRecordMessage].ok(
                 m.Meltano.SingerRecordMessage.model_validate({
                     "type": typed_record.type,
                     "stream": typed_record.stream,
@@ -129,7 +129,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
         def map_stream_schema(
             self,
             schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping,
-        ) -> p.Result[m.Meltano.SingerCatalogEntry]:
+        ) -> p.Result[p.Meltano.SingerCatalogEntry]:
             """Build normalized schema map for table creation."""
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(
                 schema_message,
@@ -140,11 +140,11 @@ class FlextTargetOracleWmsUtilitiesHelpers:
                 key_properties=typed_schema.key_properties,
             )
             if entry_result.failure:
-                return r[m.Meltano.SingerCatalogEntry].fail(
+                return r[p.Meltano.SingerCatalogEntry].fail(
                     entry_result.error
                     or f"Failed to map schema for stream: {typed_schema.stream}",
                 )
-            return r[m.Meltano.SingerCatalogEntry].ok(
+            return r[p.Meltano.SingerCatalogEntry].ok(
                 entry_result.value.model_copy(
                     update={"table_name": typed_schema.stream.upper()},
                 ),

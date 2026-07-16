@@ -16,7 +16,7 @@ def _make_schema_message(
     stream_name: str = "test_stream",
     schema: t.JsonMapping | None = None,
     key_properties: t.StrSequence | None = None,
-) -> m.Meltano.SingerSchemaMessage:
+) -> p.Meltano.SingerSchemaMessage:
     """Build a valid SingerSchemaMessage dict."""
     return m.Meltano.SingerSchemaMessage(
         type=c.Meltano.SingerMessageType.SCHEMA,

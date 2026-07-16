@@ -21,16 +21,16 @@ class _FailingTransformer(u.TargetOracleWms.WMSDataTransformer):
         self,
         record_message: m.Meltano.SingerRecordMessage | t.JsonMapping,
         schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping | None = None,
-    ) -> p.Result[m.Meltano.SingerRecordMessage]:
+    ) -> p.Result[p.Meltano.SingerRecordMessage]:
         _ = record_message, schema_message
-        return r[m.Meltano.SingerRecordMessage].fail("transformer error")
+        return r[p.Meltano.SingerRecordMessage].fail("transformer error")
 
 
 def _schema_msg(
     stream: str = "test_stream",
     schema: t.JsonMapping | None = None,
     key_properties: t.StrSequence | None = None,
-) -> m.Meltano.SingerSchemaMessage:
+) -> p.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage(
         type=c.Meltano.SingerMessageType.SCHEMA,
         stream=stream,
@@ -42,7 +42,7 @@ def _schema_msg(
 def _record_msg(
     stream: str = "test_stream",
     record: t.JsonMapping | None = None,
-) -> m.Meltano.SingerRecordMessage:
+) -> p.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage(
         type=c.Meltano.SingerMessageType.RECORD,
         stream=stream,
