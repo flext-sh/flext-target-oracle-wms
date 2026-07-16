@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from typing import override
 
-from flext_tests import s as tests_s
+from flext_tests import s
 
-from flext_target_oracle_wms import m
+from flext_target_oracle_wms import m, p
 from tests.settings import TestsFlextTargetOracleWmsSettings
 
 
-class TestsFlextTargetOracleWmsServiceBase(tests_s):
+class TestsFlextTargetOracleWmsServiceBase(s):
     """Target Oracle WMS test service base with source and test settings namespaces."""
 
     # NOTE (multi-agent, bead mro-nwc.19): fetch_settings is delivered by the flext_tests
