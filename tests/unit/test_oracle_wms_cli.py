@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 from flext_tests import tm
@@ -19,6 +19,9 @@ from flext_target_oracle_wms import main
 from flext_target_oracle_wms.__version__ import __version__ as _pkg_version
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
 from tests import c
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def _valid_config_json() -> str:

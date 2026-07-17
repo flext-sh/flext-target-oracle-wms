@@ -6,9 +6,8 @@ Defines local TargetOracleWms namespace for target-specific models.
 
 from __future__ import annotations
 
-from collections.abc import MutableMapping
 from types import MappingProxyType
-from typing import Annotated, Literal
+from typing import TYPE_CHECKING, Annotated, Literal
 
 # NOTE (multi-agent, bead mro-nwc.19): t / MutableMapping MUST stay RUNTIME imports.
 # `from __future__ import annotations` makes pydantic v2 resolve these field annotation
@@ -17,6 +16,9 @@ from typing import Annotated, Literal
 from flext_meltano import FlextMeltanoModels as meltano_m, t, u
 from flext_oracle_wms import m
 from flext_target_oracle_wms import c
+
+if TYPE_CHECKING:
+    from collections.abc import MutableMapping
 
 
 class FlextTargetOracleWmsModels(meltano_m, m):

@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
-from typing import Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 from flext_meltano import FlextMeltanoProtocols
 from flext_oracle_wms import p
-from flext_target_oracle_wms import t
+
+if TYPE_CHECKING:
+    from flext_target_oracle_wms import t
 
 
 class FlextTargetOracleWmsProtocols(FlextMeltanoProtocols, p):

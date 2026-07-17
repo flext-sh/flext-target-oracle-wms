@@ -10,12 +10,15 @@ from __future__ import annotations
 import importlib.util
 import inspect
 from pathlib import Path
-from types import ModuleType
+from typing import TYPE_CHECKING
 
 import pytest
 from flext_tests import tm
 
-from tests import t
+if TYPE_CHECKING:
+    from types import ModuleType
+
+    from tests import t
 
 
 def _load_example_module(example_file: Path) -> ModuleType:
