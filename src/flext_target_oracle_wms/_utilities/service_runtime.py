@@ -75,7 +75,7 @@ class FlextTargetOracleWmsServiceRuntime:
         *,
         stream_name: str,
         schema: t.JsonMapping,
-        target_config: t.JsonMapping,
+        target_config: t.ScalarMapping,
     ) -> p.Meltano.SingerDrainSink:
         """Create the service-level Singer sink adapter."""
         normalized_target_config = u.normalize_to_json_mapping(

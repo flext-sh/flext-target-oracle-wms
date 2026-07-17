@@ -155,8 +155,9 @@ class TestsFlextTargetOracleWmsTarget:
         msg = _record_msg("orphan", {"id": "1"})
         result = target.handle_record_message(msg)
         tm.fail(result)
-        tm.that(result.error, none=False)
-        tm.that(result.error.lower(), has="schema not registered")
+        error = result.error
+        assert error is not None
+        tm.that(error.lower(), has="schema not registered")
 
     def test_record_after_schema_succeeds(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
@@ -186,8 +187,9 @@ class TestsFlextTargetOracleWmsTarget:
         target = u.TargetOracleWms.Target(_valid_config())
         result = target.process_lines(["not json"])
         tm.fail(result)
-        tm.that(result.error, none=False)
-        tm.that(result.error.lower(), has="invalid json")
+        error = result.error
+        assert error is not None
+        tm.that(error.lower(), has="invalid json")
 
     def test_schema_then_record_then_state(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())

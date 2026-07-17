@@ -93,10 +93,9 @@ class TestsFlextTargetOracleWmsStream:
             _schema_msg("orders"),
         )
         tm.fail(result)
-        tm.that(result.error, none=False)
-        assert (
-            "not registered" in result.error.lower() or "lookup" in result.error.lower()
-        )
+        error = result.error
+        assert error is not None
+        assert "not registered" in error.lower() or "lookup" in error.lower()
 
     def test_process_record_uppercases_keys(self) -> None:
         proc = u.TargetOracleWms.StreamProcessor(

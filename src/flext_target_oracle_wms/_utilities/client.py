@@ -116,7 +116,7 @@ class FlextTargetOracleWmsUtilitiesClient:
 
         def __init__(
             self,
-            settings: t.JsonMapping | m.TargetOracleWms.WmsTargetConfig,
+            settings: t.JsonMapping | p.TargetOracleWms.WmsTargetConfig,
         ) -> None:
             """Initialize target runtime with validated settings."""
             # AGENT-COORDINATION (2026-07-11, bead mro-nwc.19): store the validated config as
