@@ -21,16 +21,16 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-    "flext-cli @ git+https://github.com/flext-sh/flext-cli.git@0.12.0-dev",
-    "flext-core @ git+https://github.com/flext-sh/flext-core.git@0.12.0-dev",
-    "flext-db-oracle @ git+https://github.com/flext-sh/flext-db-oracle.git@0.12.0-dev",
-    "flext-meltano @ git+https://github.com/flext-sh/flext-meltano.git@0.12.0-dev",
-    "flext-observability @ git+https://github.com/flext-sh/flext-observability.git@0.12.0-dev",
-    "flext-oracle-wms @ git+https://github.com/flext-sh/flext-oracle-wms.git@0.12.0-dev",
-    "pydantic-core>=2.46.3",
-    "pydantic-settings>=2.14.0",
-    "pydantic>=2.13.3",
-    "sqlalchemy>=2.0.49",
+  "flext-cli @ git+https://github.com/flext-sh/flext-cli.git@0.12.0-dev",
+  "flext-core @ git+https://github.com/flext-sh/flext-core.git@0.12.0-dev",
+  "flext-db-oracle @ git+https://github.com/flext-sh/flext-db-oracle.git@0.12.0-dev",
+  "flext-meltano @ git+https://github.com/flext-sh/flext-meltano.git@0.12.0-dev",
+  "flext-observability @ git+https://github.com/flext-sh/flext-observability.git@0.12.0-dev",
+  "flext-oracle-wms @ git+https://github.com/flext-sh/flext-oracle-wms.git@0.12.0-dev",
+  "pydantic-core>=2.46.3",
+  "pydantic-settings>=2.14.0",
+  "pydantic>=2.13.3",
+  "sqlalchemy>=2.0.49",
 ]
 description = "FLEXT Target Oracle WMS - Singer Target for Oracle WMS Data"
 keywords = [ "data-loading", "enterprise", "etl", "flext", "singer", "target", "typed" ]
@@ -221,7 +221,6 @@ project-excludes = [
   "**/typings/**",
   "**/vendor/**",
   "**/venv/**",
-  ".flext-deps/**",
   ".venv/**",
   "typings/**",
   "vendor/**",
@@ -231,22 +230,16 @@ python-interpreter-path = "../.venv/bin/python"
 python-version = "3.13"
 search-path = [
   ".",
-  "../flext-cli/examples",
+  "../flext-api/src",
   "../flext-cli/src",
-  "../flext-core/examples",
-  "../flext-core/scripts",
   "../flext-core/src",
-  "../flext-db-oracle/examples",
   "../flext-db-oracle/src",
   "../flext-infra/src",
-  "../flext-infra/tmp_flow_test",
-  "../flext-meltano/examples",
   "../flext-meltano/src",
-  "../flext-observability/examples",
   "../flext-observability/src",
-  "../flext-oracle-wms/examples",
   "../flext-oracle-wms/src",
   "../flext-tests/src",
+  "../flext-web/src",
   "src",
 ]
 use-ignore-files = false
