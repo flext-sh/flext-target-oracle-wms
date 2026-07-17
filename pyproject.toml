@@ -21,16 +21,16 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "flext-cli",
-  "flext-core",
-  "flext-db-oracle",
-  "flext-meltano",
-  "flext-observability",
-  "flext-oracle-wms",
-  "pydantic-core>=2.46.3",
-  "pydantic-settings>=2.14.0",
-  "pydantic>=2.13.3",
-  "sqlalchemy>=2.0.49",
+    "flext-cli @ git+https://github.com/flext-sh/flext-cli.git@0.12.0-dev",
+    "flext-core @ git+https://github.com/flext-sh/flext-core.git@0.12.0-dev",
+    "flext-db-oracle @ git+https://github.com/flext-sh/flext-db-oracle.git@0.12.0-dev",
+    "flext-meltano @ git+https://github.com/flext-sh/flext-meltano.git@0.12.0-dev",
+    "flext-observability @ git+https://github.com/flext-sh/flext-observability.git@0.12.0-dev",
+    "flext-oracle-wms @ git+https://github.com/flext-sh/flext-oracle-wms.git@0.12.0-dev",
+    "pydantic-core>=2.46.3",
+    "pydantic-settings>=2.14.0",
+    "pydantic>=2.13.3",
+    "sqlalchemy>=2.0.49",
 ]
 description = "FLEXT Target Oracle WMS - Singer Target for Oracle WMS Data"
 keywords = [ "data-loading", "enterprise", "etl", "flext", "singer", "target", "typed" ]
@@ -38,7 +38,7 @@ license = "MIT"
 name = "flext-target-oracle-wms"
 readme = "README.md"
 requires-python = ">=3.13,<3.14"
-version = "0.12.0"
+version = "0.12.0.rc0"
 
 [[project.authors]]
 email = "team@flext.sh"
@@ -763,25 +763,6 @@ all = true
 in_place = true
 sort_first = [ "build-system", "dependency-groups", "project", "tool" ]
 
-[tool.uv.sources.flext-cli]
-workspace = true
-
-[tool.uv.sources.flext-core]
-workspace = true
-
-[tool.uv.sources.flext-db-oracle]
-workspace = true
-
-[tool.uv.sources.flext-meltano]
-workspace = true
-
-[tool.uv.sources.flext-observability]
-workspace = true
-
-[tool.uv.sources.flext-oracle-wms]
-workspace = true
-
-# [MANAGED] yamlfix
 [tool.yamlfix]
 explicit_start = false
 line_length = 88
