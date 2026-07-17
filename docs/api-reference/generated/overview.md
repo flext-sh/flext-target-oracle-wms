@@ -3,7 +3,7 @@
 # flext-target-oracle-wms API Overview
 
 - Package: `flext_target_oracle_wms`
-- Version: `0.12.0`
+- Version: `0.20.0`
 - Description: FLEXT Target Oracle WMS - Singer Target for Oracle WMS Data
 - Doc summary: Flext Target Oracle Wms package.
 - Classifiers: `Development Status :: 3 - Alpha`, `Intended Audience :: Developers`, `Operating System :: OS Independent`, `Programming Language :: Python :: 3 :: Only`, `Programming Language :: Python :: 3.13`, `Topic :: Database` (+3 more)

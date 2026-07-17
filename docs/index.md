@@ -2,7 +2,7 @@
 
 # flext-target-oracle-wms Documentation
 
-- Version: `0.12.0`
+- Version: `0.20.0`
 - Project class: `integration`
 - Package: `flext_target_oracle_wms`
 - Description: FLEXT Target Oracle WMS - Singer Target for Oracle WMS Data
