@@ -1,0 +1,697 @@
+"""WMS helper classes — u.TargetOracleWms.{WMSTableManager,WMSDataTransformer,...}."""
+
+from __future__ import annotations
+
+from collections.abc import (
+    Mapping,
+)
+
+from flext_target_oracle_wms import c, m, p, r, t
+
+
+class _WmsHelpers:
+    """Private namespace class wrapping all WMS helper implementations."""
+
+    class Validation:
+        """Validation helpers for runtime target configuration."""
+
+        @staticmethod
+        def validate_wms_target_config(
+            settings: t.ContainerValueMapping,
+        ) -> p.Result[bool]:
+            """Validate minimal required target configuration fields."""
+            required = {"base_url", "username", "password"}
+            missing = sorted(key for key in required if key not in settings)
+            if missing:
+                return r[bool].fail(
+                    f"Missing required configuration fields: {missing}",
+                )
+            load_method = settings.get(
+                "load_method",
+                c.TargetOracleWms.LoadMethods.APPEND_ONLY,
+            )
+            if load_method not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS:
+                return r[bool].fail("Invalid load_method")
+            return r[bool].ok(value=True)
+
+    class WMSTypeConverter:
+        """Convert source scalar values to Oracle-friendly payload values."""
+
+        def convert_singer_to_oracle(
+            self,
+            singer_type: str,
+            value: t.Container | t.ContainerValue,
+        ) -> p.Result[t.Container]:
+            """Convert a single source value according to Singer type."""
+            if singer_type in {"object", "array"}:
+                return r[t.Container].ok(
+                    t.NV_ADAPTER.dump_json(value).decode("utf-8"),
+                )
+            if singer_type in {"integer", "number"}:
+                try:
+                    as_text = str(value)
+                    converted: t.Container = (
+                        float(as_text) if "." in as_text else int(as_text)
+                    )
+                    return r[t.Container].ok(converted)
+                except c.Meltano.SINGER_SAFE_EXCEPTIONS:
+                    return r[t.Container].ok(str(value))
+            return r[t.Container].ok(str(value))
+
+    class WMSDataTransformer:
+        """Transform incoming Singer record payloads for loading."""
+
+        def __init__(
+            self,
+            type_converter: _WmsHelpers.WMSTypeConverter | None = None,
+        ) -> None:
+            """Initialize data transformer with optional converter."""
+            self.type_converter = type_converter or _WmsHelpers.WMSTypeConverter()
+
+        def transform_record(
+            self,
+            record_message: m.Meltano.SingerRecordMessage | t.ContainerValueMapping,
+            schema_message: m.Meltano.SingerSchemaMessage
+            | t.ContainerValueMapping
+            | None = None,
+        ) -> p.Result[m.Meltano.SingerRecordMessage]:
+            """Transform one typed Singer RECORD payload with optional typed schema."""
+            typed_record = m.Meltano.SingerRecordMessage.model_validate(
+                record_message,
+            )
+            transformed: t.MutableFlatContainerMapping = {}
+            empty_schema: t.MutableFlatContainerMapping = {}
+            schema_definition = (
+                m.Meltano.SingerSchemaMessage.model_validate(
+                    schema_message,
+                ).schema_definition
+                if schema_message is not None
+                else empty_schema
+            )
+            schema_props = m.TargetOracleWms.SingerSchemaProperties.model_validate(
+                schema_definition,
+            )
+            for key, value in typed_record.record.items():
+                prop_schema = schema_props.properties.get(key)
+                resolved_type = (
+                    prop_schema.type if prop_schema is not None else "string"
+                )
+                converted = self.type_converter.convert_singer_to_oracle(
+                    resolved_type,
+                    value,
+                )
+                if converted.failure:
+                    return r[m.Meltano.SingerRecordMessage].fail(
+                        converted.error or "Conversion failed",
+                    )
+                transformed[str(key).upper()] = converted.value
+            return r[m.Meltano.SingerRecordMessage].ok(
+                m.Meltano.SingerRecordMessage.model_validate({
+                    "type": typed_record.type,
+                    "stream": typed_record.stream,
+                    "record": transformed,
+                    "time_extracted": typed_record.time_extracted,
+                    "version": typed_record.version,
+                }),
+            )
+
+    class WMSSchemaMapper:
+        """Map Singer schema payloads to Oracle DDL-friendly structures."""
+
+        def map_stream_schema(
+            self,
+            schema_message: m.Meltano.SingerSchemaMessage | t.ContainerValueMapping,
+        ) -> p.Result[m.Meltano.SingerCatalogEntry]:
+            """Build normalized schema map for table creation."""
+            typed_schema = m.Meltano.SingerSchemaMessage.model_validate(
+                schema_message,
+            )
+            return r[m.Meltano.SingerCatalogEntry].ok(
+                m.Meltano.SingerCatalogEntry.model_validate({
+                    "tap_stream_id": typed_schema.stream,
+                    "stream": typed_schema.stream,
+                    "schema": typed_schema.schema_definition,
+                    "key_properties": typed_schema.key_properties,
+                    "table_name": typed_schema.stream.upper(),
+                }),
+            )
+
+    class WMSTableManager:
+        """Maintain in-memory stream-to-table mappings for the target run."""
+
+        def __init__(self) -> None:
+            """Initialize table manager map."""
+            self._stream_tables: t.MutableStrMapping = {}
+
+        def get_table_name(self, stream_name: str) -> p.Result[str]:
+            """Get registered table name for stream."""
+            table_name = self._stream_tables.get(stream_name)
+            if table_name is None:
+                return r[str].fail(f"Stream not registered: {stream_name}")
+            return r[str].ok(table_name)
+
+        def register_stream(self, stream_name: str) -> p.Result[str]:
+            """Register a stream and return table name."""
+            table_name = stream_name.upper()
+            self._stream_tables[stream_name] = table_name
+            return r[str].ok(table_name)
+
+    @staticmethod
+    def create_record_message(
+        stream_name: str,
+        record: t.ContainerValueMapping,
+    ) -> Mapping[str, t.ContainerValue | t.ContainerValueMapping]:
+        """Create a Singer RECORD message payload."""
+        return {"type": "RECORD", "stream": stream_name, "record": record}
+
+    @staticmethod
+    def create_schema_message(
+        stream_name: str,
+        schema: t.ContainerValueMapping,
+        key_properties: t.StrSequence | None = None,
+    ) -> Mapping[str, t.ContainerValue | t.ContainerValueMapping | t.StrSequence]:
+        """Create a Singer SCHEMA message payload."""
+        return {
+            "type": "SCHEMA",
+            "stream": stream_name,
+            "schema": schema,
+            "key_properties": key_properties or [],
+        }
+
+    @staticmethod
+    def create_state_message(
+        state: t.ContainerValueMapping,
+    ) -> Mapping[str, t.ContainerValue | t.ContainerValueMapping]:
+        """Create a Singer STATE message payload."""
+        return {"type": "STATE", "value": state}
+
+
+# Public names — re-exported from namespace for backward compatibility with auto-generated __init__.py
+Validation = _WmsHelpers.Validation
+WMSTypeConverter = _WmsHelpers.WMSTypeConverter
+WMSDataTransformer = _WmsHelpers.WMSDataTransformer
+WMSSchemaMapper = _WmsHelpers.WMSSchemaMapper
+WMSTableManager = _WmsHelpers.WMSTableManager
+create_record_message = _WmsHelpers.create_record_message
+create_schema_message = _WmsHelpers.create_schema_message
+create_state_message = _WmsHelpers.create_state_message
+
+__all__: list[str] = [
+    "Validation",
+    "WMSDataTransformer",
+    "WMSSchemaMapper",
+    "WMSTableManager",
+    "WMSTypeConverter",
+    "create_record_message",
+    "create_schema_message",
+    "create_state_message",
+]
+"""Internal runtime adapters for the target-oracle-wms service facade."""
+
+from __future__ import annotations
+
+from collections.abc import (
+    Mapping,
+)
+from pathlib import Path
+from typing import override
+
+from flext_meltano import u
+from flext_target_oracle_wms import (
+    Target as FlextTargetOracleWmsTarget,
+    m,
+    p,
+    t,
+)
+
+
+class FlextTargetOracleWmsServiceRuntime:
+    """Service-runtime adapters used by the target-oracle-wms facade."""
+
+    class Target(m.Meltano.SingerTargetBase):
+        """Minimal Singer target used by the service facade."""
+
+        name = "target-oracle-wms"
+
+    class Sink(m.Meltano.SingerSinkBase):
+        """Singer sink adapter delegating records to the Oracle WMS runtime."""
+
+        name = "target-oracle-wms-sink"
+        _runtime_target: FlextTargetOracleWmsTarget
+
+        @classmethod
+        def create(
+            cls,
+            *,
+            runtime_target: FlextTargetOracleWmsTarget,
+            target: m.Meltano.SingerTargetBase,
+            stream_name: str,
+            schema: dict[str, t.ContainerValue],
+            key_properties: t.StrSequence,
+        ) -> FlextTargetOracleWmsServiceRuntime.Sink:
+            """Create an adapter sink and attach the Oracle WMS runtime target."""
+            service_sink = cls(
+                target=target,
+                stream_name=stream_name,
+                schema=schema,
+                key_properties=key_properties,
+            )
+            service_sink._runtime_target = runtime_target
+            return service_sink
+
+        @override
+        def process_record(
+            self,
+            record: Mapping[str, t.Container],
+            context: Mapping[str, t.Container],
+        ) -> None:
+            """Process a single record through the Oracle WMS runtime."""
+            _ = context
+            result = self._runtime_target.handle_record_message(
+                m.Meltano.SingerRecordMessage.model_validate({
+                    "type": "RECORD",
+                    "stream": self.stream_name,
+                    "record": FlextTargetOracleWmsServiceRuntime.normalize_singer_mapping(
+                        record,
+                    ),
+                }),
+            )
+            if result.failure:
+                msg = result.error or "Oracle WMS runtime rejected the record"
+                raise RuntimeError(msg)
+
+        @override
+        def process_batch(
+            self,
+            context: Mapping[str, t.Container],
+        ) -> None:
+            """Process a batch through the service adapter."""
+            _ = context
+
+    @classmethod
+    def create_sink(
+        cls,
+        *,
+        stream_name: str,
+        schema: t.FlatContainerMapping,
+        target_config: Mapping[str, t.Container],
+    ) -> p.Meltano.SingerDrainSink:
+        """Create the service-level Singer sink adapter."""
+        normalized_target_config = cls.normalize_singer_mapping(target_config)
+        runtime_target = FlextTargetOracleWmsTarget(normalized_target_config)
+        normalized_schema = cls.normalize_flat_schema(schema)
+        schema_message = m.Meltano.SingerSchemaMessage.model_validate({
+            "type": "SCHEMA",
+            "stream": stream_name,
+            "schema": normalized_schema,
+            "key_properties": [],
+        })
+        schema_result = runtime_target.handle_schema_message(schema_message)
+        if schema_result.failure:
+            msg = schema_result.error or "Oracle WMS runtime rejected the schema"
+            raise RuntimeError(msg)
+        return cls.Sink.create(
+            runtime_target=runtime_target,
+            target=cls.Target(config=normalized_target_config, validate_config=False),
+            stream_name=stream_name,
+            schema=normalized_schema,
+            key_properties=[],
+        )
+
+    @classmethod
+    def normalize_singer_mapping(
+        cls,
+        source: Mapping[str, t.Container],
+    ) -> dict[str, t.ContainerValue]:
+        """Normalize a Singer payload mapping to the WMS runtime contract."""
+        normalized: dict[str, t.ContainerValue] = {}
+        for key, value in source.items():
+            normalized_value = cls.normalize_singer_value(value)
+            if normalized_value is not None:
+                normalized[str(key)] = normalized_value
+        return normalized
+
+    @classmethod
+    def normalize_singer_value(
+        cls,
+        value: t.Container,
+    ) -> t.ContainerValue | None:
+        """Normalize a Singer payload value to the WMS runtime contract."""
+        if value is None:
+            return None
+        if isinstance(value, Path):
+            return str(value)
+        if u.scalar(value):
+            return value
+        if u.mapping(value):
+            return cls.normalize_singer_mapping(value)
+        normalized_sequence: list[t.ContainerValue] = []
+        for item in value:
+            normalized_item = cls.normalize_singer_value(item)
+            if normalized_item is not None:
+                normalized_sequence.append(normalized_item)
+        return normalized_sequence
+
+    @staticmethod
+    def normalize_flat_schema(
+        schema: t.FlatContainerMapping,
+    ) -> dict[str, t.ContainerValue]:
+        """Normalize a flat Singer schema to the WMS runtime contract."""
+        return {
+            key: (str(value) if isinstance(value, Path) else value)
+            for key, value in schema.items()
+        }
+
+
+__all__: list[str] = ["FlextTargetOracleWmsServiceRuntime"]
+"""Domain models for target Oracle WMS.
+
+Inherits from FlextMeltanoModels (m.Meltano.*) and FlextOracleWmsModels (m.OracleWms.*).
+Defines local TargetOracleWms namespace for target-specific models.
+"""
+
+from __future__ import annotations
+
+from collections.abc import (
+    Mapping,
+)
+from typing import Annotated, ClassVar, Literal
+
+from flext_meltano import FlextMeltanoModels, m, p, r, t, u
+from flext_oracle_wms import FlextOracleWmsModels
+from flext_target_oracle_wms import c
+
+
+class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
+    """Pydantic model namespace for target Oracle WMS.
+
+    Inherited namespaces:
+        m.Meltano.*    — Singer message types (overridden with ContainerValue support)
+        m.OracleWms.*  — WMS entity/API types (from FlextOracleWmsModels)
+
+    Local namespace:
+        m.TargetOracleWms.* — target-specific settings, result, schema helpers
+    """
+
+    class TargetOracleWms:
+        """Target Oracle WMS model namespace — m.TargetOracleWms.*."""
+
+        class WmsAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
+            """Authentication and endpoint settings."""
+
+            base_url: Annotated[
+                str, u.Field(description="Oracle WMS REST API base URL.")
+            ]
+            auth_method: Annotated[
+                Literal["oauth2", "basic", "api_key"],
+                u.Field(description="WMS authentication method."),
+            ] = "oauth2"
+            username: Annotated[
+                str | None, u.Field(description="Optional authentication username.")
+            ] = None
+            password: Annotated[
+                t.SecretStr | None,
+                u.Field(description="Optional authentication password."),
+            ] = None
+            api_key: Annotated[
+                t.SecretStr | None,
+                u.Field(description="Optional API key for the selected auth method."),
+            ] = None
+            company_code: Annotated[str, u.Field(description="WMS company code.")] = (
+                "DEFAULT"
+            )
+            facility_code: Annotated[str, u.Field(description="WMS facility code.")] = (
+                "MAIN"
+            )
+
+        class WmsTargetConfig(FlextMeltanoModels.ArbitraryTypesModel):
+            """Top-level target configuration model."""
+
+            _flext_enforcement_exempt: ClassVar[bool] = True
+
+            wms_auth: FlextTargetOracleWmsModels.TargetOracleWms.WmsAuthenticationConfig
+            stream_maps: Mapping[str, t.StrMapping] = u.Field(default_factory=dict)
+            batch_size: t.BatchSize = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
+            load_method: str = c.TargetOracleWms.LoadMethods.APPEND_ONLY
+            validate_records: bool = True
+
+            def validate_business_rules(self) -> p.Result[bool]:
+                """Validate basic settings business rules."""
+                if (
+                    self.load_method
+                    not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS
+                ):
+                    return r[bool].fail("Invalid load method")
+                if self.batch_size <= 0:
+                    return r[bool].fail("Batch size must be positive")
+                return r[bool].ok(value=True)
+
+        class WmsTargetResult(FlextMeltanoModels.ArbitraryTypesModel):
+            """Execution summary for the target pipeline."""
+
+            _flext_enforcement_exempt: ClassVar[bool] = True
+
+            total_records_processed: t.NonNegativeInt = 0
+            successful_records: t.NonNegativeInt = 0
+            failed_records: t.NonNegativeInt = 0
+            error_messages: t.StrSequence = u.Field(default_factory=list)
+            metrics: t.ConfigurationMapping = u.Field(default_factory=dict)
+
+            @property
+            def success_rate(self) -> float:
+                """Calculate percentage of successful records."""
+                if self.total_records_processed == 0:
+                    return 0.0
+                return (self.successful_records / self.total_records_processed) * 100.0
+
+        class SingerFieldSchema(FlextMeltanoModels.ArbitraryTypesModel):
+            """Typed Singer field schema entry for target-side schema parsing."""
+
+            _flext_enforcement_exempt: ClassVar[bool] = True
+
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(extra="ignore")
+
+            type: Annotated[
+                str, u.Field(description="JSON schema type descriptor for the field.")
+            ] = "string"
+
+        class SingerSchemaProperties(FlextMeltanoModels.ArbitraryTypesModel):
+            """Typed Singer schema properties block for target-side schema parsing."""
+
+            _flext_enforcement_exempt: ClassVar[bool] = True
+
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(extra="ignore")
+
+            properties: Mapping[
+                str,
+                FlextTargetOracleWmsModels.TargetOracleWms.SingerFieldSchema,
+            ] = u.Field(default_factory=dict)
+
+        class TargetCreationRequest(FlextMeltanoModels.ArbitraryTypesModel):
+            """Input object for target construction."""
+
+            base_url: Annotated[
+                str, u.Field(description="Oracle WMS REST API base URL.")
+            ]
+            username: Annotated[
+                str, u.Field(description="Username used to authenticate against WMS.")
+            ]
+            password: Annotated[
+                str, u.Field(description="Password used to authenticate against WMS.")
+            ]
+            environment: Annotated[
+                str, u.Field(description="Target environment name.")
+            ] = "development"
+            preset: Annotated[
+                str | None, u.Field(description="Optional preset profile name.")
+            ] = None
+            additional_config: Annotated[
+                t.ConfigurationMapping | None,
+                u.Field(default=None, description="Additional environment overrides."),
+            ]
+
+        class MonitoredTargetCreationRequest(TargetCreationRequest):
+            """Input object for monitored target creation."""
+
+            monitor_name: Annotated[
+                str, u.Field(description="Monitoring label for the created target.")
+            ] = "oracle_wms_target"
+
+        class SingerSchemaMessage(FlextMeltanoModels.ArbitraryTypesModel):
+            """Singer SCHEMA message with ContainerValue schema support."""
+
+            _flext_enforcement_exempt: ClassVar[bool] = True
+
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
+                populate_by_name=True,
+            )
+
+            type: Annotated[
+                Literal["SCHEMA"], u.Field(description="Singer message discriminator")
+            ] = "SCHEMA"
+            stream: Annotated[
+                t.NonEmptyStr,
+                u.Field(description="Singer stream name"),
+            ]
+            schema_definition: Annotated[
+                t.ContainerValueMapping,
+                u.Field(
+                    alias="schema",
+                    serialization_alias="schema",
+                    validation_alias="schema",
+                    description="Singer JSON schema payload",
+                ),
+            ]
+            key_properties: Annotated[
+                t.StrSequence,
+                u.Field(
+                    description="Singer stream key properties",
+                ),
+            ] = u.Field(default_factory=list)
+            bookmark_properties: Annotated[
+                t.StrSequence,
+                u.Field(
+                    description="Singer bookmark columns for incremental replication",
+                ),
+            ] = u.Field(default_factory=list)
+
+        class SingerRecordMessage(FlextMeltanoModels.ArbitraryTypesModel):
+            """Singer RECORD message with ContainerValue record support."""
+
+            type: Annotated[
+                Literal["RECORD"], u.Field(description="Singer message discriminator")
+            ] = "RECORD"
+            stream: Annotated[
+                str,
+                u.Field(description="Singer stream name"),
+            ]
+            record: Annotated[
+                t.ContainerValueMapping,
+                u.Field(description="Singer record payload"),
+            ]
+            time_extracted: Annotated[
+                str | None,
+                u.Field(
+                    description="ISO 8601 timestamp when the record was extracted",
+                ),
+            ] = None
+            version: Annotated[
+                int | None,
+                u.Field(
+                    description="Stream version for activate_version protocol",
+                ),
+            ] = None
+
+        class SingerCatalogEntry(FlextMeltanoModels.ArbitraryTypesModel):
+            """Singer catalog entry with ContainerValue schema support."""
+
+            _flext_enforcement_exempt: ClassVar[bool] = True
+
+            model_config: ClassVar[m.ConfigDict] = m.ConfigDict(
+                populate_by_name=True,
+            )
+
+            tap_stream_id: Annotated[
+                str,
+                u.Field(description="Tap stream identifier"),
+            ]
+            stream: Annotated[
+                str,
+                u.Field(description="Singer stream name"),
+            ]
+            schema_definition: Annotated[
+                t.ContainerValueMapping,
+                u.Field(
+                    alias="schema",
+                    serialization_alias="schema",
+                    validation_alias="schema",
+                    description="Singer stream schema payload",
+                ),
+            ]
+            key_properties: Annotated[
+                t.StrSequence,
+                u.Field(
+                    description="Singer stream key properties",
+                ),
+            ] = u.Field(default_factory=list)
+            table_name: str | None = None
+
+
+m = FlextTargetOracleWmsModels
+
+__all__: list[str] = ["FlextTargetOracleWmsModels", "m"]
+"""Utility helpers for target Oracle WMS operations.
+
+Facade composing helpers from _utilities/ submodules into u.TargetOracleWms.* namespace.
+"""
+
+from __future__ import annotations
+
+from collections.abc import (
+    Mapping,
+)
+
+from flext_meltano import FlextMeltanoUtilities
+from flext_oracle_wms import FlextOracleWmsUtilities
+from flext_target_oracle_wms import (
+    CatalogManager,
+    StreamProcessor,
+    Target,
+    Validation,
+    WMSDataTransformer,
+    WMSSchemaMapper,
+    WMSTableManager,
+    WMSTypeConverter,
+    create_record_message,
+    create_schema_message,
+    create_state_message,
+    t,
+)
+
+
+class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtilities):
+    """Namespace with Singer-target utility helpers."""
+
+    class TargetOracleWms:
+        """Helpers for Singer message shape handling."""
+
+        # Nested class bindings — private _utilities classes exposed through the facade
+        CatalogManager = CatalogManager
+        StreamProcessor = StreamProcessor
+        Target = Target
+        Validation = Validation
+        WMSDataTransformer = WMSDataTransformer
+        WMSSchemaMapper = WMSSchemaMapper
+        WMSTableManager = WMSTableManager
+        WMSTypeConverter = WMSTypeConverter
+
+        @staticmethod
+        def create_record_message(
+            stream_name: str,
+            record: t.ContainerValueMapping,
+        ) -> Mapping[str, t.ContainerValue | t.ContainerValueMapping]:
+            """Create a Singer RECORD message payload."""
+            return create_record_message(stream_name, record)
+
+        @staticmethod
+        def create_schema_message(
+            stream_name: str,
+            schema: t.ContainerValueMapping,
+            key_properties: t.StrSequence | None = None,
+        ) -> Mapping[str, t.ContainerValue | t.ContainerValueMapping | t.StrSequence]:
+            """Create a Singer SCHEMA message payload."""
+            return create_schema_message(stream_name, schema, key_properties)
+
+        @staticmethod
+        def create_state_message(
+            state: t.ContainerValueMapping,
+        ) -> Mapping[str, t.ContainerValue | t.ContainerValueMapping]:
+            """Create a Singer STATE message payload."""
+            return create_state_message(state)
+
+
+__all__: list[str] = [
+    "FlextTargetOracleWmsUtilities",
+    "u",
+]
+u = FlextTargetOracleWmsUtilities
