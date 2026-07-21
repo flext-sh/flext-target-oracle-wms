@@ -13,9 +13,7 @@ from flext_target_oracle_wms._utilities.helpers import (
 )
 
 if TYPE_CHECKING:
-    from collections.abc import (
-        MutableMapping,
-    )
+    from collections.abc import MutableMapping
 
 
 class FlextTargetOracleWmsUtilitiesClient:

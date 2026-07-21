@@ -21,11 +21,7 @@ from flext_observability.services.monitoring import (
     FlextObservabilityMonitor,
     flext_monitor_function,
 )
-from flext_target_oracle_wms import (
-    m,
-    t,
-    u,
-)
+from flext_target_oracle_wms import m, t, u
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
