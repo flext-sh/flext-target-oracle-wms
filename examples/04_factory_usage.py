@@ -21,11 +21,7 @@ from flext_observability.services.monitoring import (
     FlextObservabilityMonitor,
     flext_monitor_function,
 )
-from flext_target_oracle_wms import (
-    m,
-    t,
-    u,
-)
+from flext_target_oracle_wms import m, t, u
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -51,7 +47,7 @@ def run_target_creation_example() -> t.Scalar:
             "base_url": TARGET_CONFIG["base_url"],
             "username": TARGET_CONFIG["username"],
             "password": TARGET_CONFIG["password"],
-        },
+        }
     })
     target = u.TargetOracleWms.Target(config)
     logger.info("Created Oracle WMS target: %s", target.name)

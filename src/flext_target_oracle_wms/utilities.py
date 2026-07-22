@@ -34,18 +34,15 @@ class FlextTargetOracleWmsUtilities(meltano_u, u):
         WMSTableManager = FlextTargetOracleWmsUtilitiesHelpers.WMSTableManager
         WMSTypeConverter = FlextTargetOracleWmsUtilitiesHelpers.WMSTypeConverter
         create_record_message = staticmethod(
-            FlextTargetOracleWmsUtilitiesHelpers.create_record_message,
+            FlextTargetOracleWmsUtilitiesHelpers.create_record_message
         )
         create_schema_message = staticmethod(
-            FlextTargetOracleWmsUtilitiesHelpers.create_schema_message,
+            FlextTargetOracleWmsUtilitiesHelpers.create_schema_message
         )
         create_state_message = staticmethod(
-            FlextTargetOracleWmsUtilitiesHelpers.create_state_message,
+            FlextTargetOracleWmsUtilitiesHelpers.create_state_message
         )
 
 
-__all__: list[str] = [
-    "FlextTargetOracleWmsUtilities",
-    "u",
-]
+__all__: list[str] = ["FlextTargetOracleWmsUtilities", "u"]
 u = FlextTargetOracleWmsUtilities

@@ -10,7 +10,6 @@ import math
 from typing import TYPE_CHECKING
 
 from flext_tests import tm
-
 from tests import c, m, u
 
 if TYPE_CHECKING:
@@ -23,7 +22,7 @@ def _valid_config() -> t.JsonMapping:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        },
+        }
     }
 
 
@@ -66,16 +65,12 @@ class TestsFlextTargetOracleWmsFeatures:
     def test_transformer_uppercases_keys(self) -> None:
         transformer = u.TargetOracleWms.WMSDataTransformer()
         record = m.Meltano.SingerRecordMessage(
-            type=c.Meltano.SingerMessageType.RECORD,
-            stream="s",
-            record={"name": "test"},
+            type=c.Meltano.SingerMessageType.RECORD, stream="s", record={"name": "test"}
         )
         schema = m.Meltano.SingerSchemaMessage(
             type=c.Meltano.SingerMessageType.SCHEMA,
             stream="s",
-            schema_definition={
-                "type": "object",
-            },
+            schema_definition={"type": "object"},
             key_properties=["name"],
         )
         result = transformer.transform_record(record, schema)
@@ -84,25 +79,17 @@ class TestsFlextTargetOracleWmsFeatures:
         tm.that(result.value.record, has="NAME")
 
     def test_create_schema_message(self) -> None:
-        msg = u.TargetOracleWms.create_schema_message(
-            "test",
-            {"type": "object"},
-        )
+        msg = u.TargetOracleWms.create_schema_message("test", {"type": "object"})
         tm.that(msg["type"], eq="SCHEMA")
         tm.that(msg["stream"], eq="test")
 
     def test_create_record_message(self) -> None:
-        msg = u.TargetOracleWms.create_record_message(
-            "test",
-            {"id": "1"},
-        )
+        msg = u.TargetOracleWms.create_record_message("test", {"id": "1"})
         tm.that(msg["type"], eq="RECORD")
         tm.that(msg["stream"], eq="test")
 
     def test_create_state_message(self) -> None:
-        msg = u.TargetOracleWms.create_state_message({
-            "pos": 42,
-        })
+        msg = u.TargetOracleWms.create_state_message({"pos": 42})
         tm.that(msg["type"], eq="STATE")
         tm.that(msg["value"], eq={"pos": 42})
 

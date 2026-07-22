@@ -20,7 +20,7 @@ def _package_root() -> Path:
     return Path(
         Path(__file__).resolve().parents[parent_depth]
         / c.TargetOracleWms.Tests.SRC_DIR
-        / c.TargetOracleWms.Tests.PACKAGE_DIR,
+        / c.TargetOracleWms.Tests.PACKAGE_DIR
     )
 
 
@@ -71,7 +71,7 @@ class TestsFlextTargetOracleWmsModuleGovernance:
             for name, _ in _module_top_level_attrs(module):
                 if name in {"logger", "_logger"}:
                     violations.append(
-                        str(module_path.relative_to(_package_root().parent)),
+                        str(module_path.relative_to(_package_root().parent))
                     )
                     break
         assert not violations, (
@@ -83,8 +83,7 @@ class TestsFlextTargetOracleWmsModuleGovernance:
         for module_path in _iter_package_modules():
             relative_module_path = str(module_path.relative_to(_package_root()))
             allowed_functions = c.TargetOracleWms.Tests.ALLOWED_MODULE_FUNCTIONS.get(
-                relative_module_path,
-                frozenset(),
+                relative_module_path, frozenset()
             )
             module = _import_package_module(module_path)
             if module is None:
@@ -96,7 +95,7 @@ class TestsFlextTargetOracleWmsModuleGovernance:
             )
             if unexpected_functions:
                 violations.append(
-                    f"{module_path.relative_to(_package_root().parent)}: {unexpected_functions}",
+                    f"{module_path.relative_to(_package_root().parent)}: {unexpected_functions}"
                 )
         assert not violations, (
             f"Top-level functions are forbidden outside approved entrypoints: {violations}"

@@ -13,11 +13,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from flext_tests import tm
 
 from flext_target_oracle_wms import main
 from flext_target_oracle_wms.__version__ import __version__ as _pkg_version
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
+from flext_tests import tm
 from tests import c
 
 if TYPE_CHECKING:
@@ -73,10 +73,7 @@ class TestsFlextTargetOracleWmsOracleWmsCli:
 
     def test_main_with_config_arg(self, tmp_path: Path) -> None:
         config_path = _write_config_file(_valid_config_json(), tmp_path)
-        main(
-            argv=["target-oracle-wms", "--config", config_path],
-            message_lines=[],
-        )
+        main(argv=["target-oracle-wms", "--config", config_path], message_lines=[])
 
     def test_main_with_bad_config_raises(self) -> None:
         with pytest.raises(FileNotFoundError):

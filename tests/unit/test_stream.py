@@ -9,7 +9,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, override
 
 from flext_tests import r, tm
-
 from tests import c, m, u
 
 if TYPE_CHECKING:
@@ -43,8 +42,7 @@ def _schema_msg(
 
 
 def _record_msg(
-    stream: str = "test_stream",
-    record: t.JsonMapping | None = None,
+    stream: str = "test_stream", record: t.JsonMapping | None = None
 ) -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage(
         type=c.Meltano.SingerMessageType.RECORD,
@@ -58,8 +56,7 @@ class TestsFlextTargetOracleWmsStream:
 
     def test_initialize_stream_success(self) -> None:
         proc = u.TargetOracleWms.StreamProcessor(
-            u.TargetOracleWms.WMSTableManager(),
-            u.TargetOracleWms.WMSDataTransformer(),
+            u.TargetOracleWms.WMSTableManager(), u.TargetOracleWms.WMSDataTransformer()
         )
         result = proc.initialize_stream(_schema_msg("orders"))
         tm.ok(result)
@@ -68,8 +65,7 @@ class TestsFlextTargetOracleWmsStream:
     def test_initialize_registers_table(self) -> None:
         manager = u.TargetOracleWms.WMSTableManager()
         proc = u.TargetOracleWms.StreamProcessor(
-            manager,
-            u.TargetOracleWms.WMSDataTransformer(),
+            manager, u.TargetOracleWms.WMSDataTransformer()
         )
         proc.initialize_stream(_schema_msg("items"))
         table_result = manager.get_table_name("items")
@@ -78,8 +74,7 @@ class TestsFlextTargetOracleWmsStream:
 
     def test_process_record_after_init(self) -> None:
         proc = u.TargetOracleWms.StreamProcessor(
-            u.TargetOracleWms.WMSTableManager(),
-            u.TargetOracleWms.WMSDataTransformer(),
+            u.TargetOracleWms.WMSTableManager(), u.TargetOracleWms.WMSDataTransformer()
         )
         schema = _schema_msg("orders")
         proc.initialize_stream(schema)
@@ -88,12 +83,10 @@ class TestsFlextTargetOracleWmsStream:
 
     def test_process_record_without_init_fails(self) -> None:
         proc = u.TargetOracleWms.StreamProcessor(
-            u.TargetOracleWms.WMSTableManager(),
-            u.TargetOracleWms.WMSDataTransformer(),
+            u.TargetOracleWms.WMSTableManager(), u.TargetOracleWms.WMSDataTransformer()
         )
         result = proc.process_record(
-            _record_msg("orders", {"id": "1"}),
-            _schema_msg("orders"),
+            _record_msg("orders", {"id": "1"}), _schema_msg("orders")
         )
         tm.fail(result)
         error = result.error
@@ -102,15 +95,9 @@ class TestsFlextTargetOracleWmsStream:
 
     def test_process_record_uppercases_keys(self) -> None:
         proc = u.TargetOracleWms.StreamProcessor(
-            u.TargetOracleWms.WMSTableManager(),
-            u.TargetOracleWms.WMSDataTransformer(),
+            u.TargetOracleWms.WMSTableManager(), u.TargetOracleWms.WMSDataTransformer()
         )
-        schema = _schema_msg(
-            "s",
-            schema={
-                "type": "object",
-            },
-        )
+        schema = _schema_msg("s", schema={"type": "object"})
         proc.initialize_stream(schema)
         result = proc.process_record(_record_msg("s", {"name": "hello"}), schema)
         tm.ok(result)
@@ -127,8 +114,7 @@ class TestsFlextTargetOracleWmsStream:
 
     def test_two_independent_streams(self) -> None:
         proc = u.TargetOracleWms.StreamProcessor(
-            u.TargetOracleWms.WMSTableManager(),
-            u.TargetOracleWms.WMSDataTransformer(),
+            u.TargetOracleWms.WMSTableManager(), u.TargetOracleWms.WMSDataTransformer()
         )
         schema_a = _schema_msg("alpha")
         schema_b = _schema_msg("beta")

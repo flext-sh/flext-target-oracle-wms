@@ -11,7 +11,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from flext_tests import tm
-
 from tests import c, m, u
 
 if TYPE_CHECKING:
@@ -24,7 +23,7 @@ def _valid_config() -> t.JsonMapping:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        },
+        }
     }
 
 
@@ -32,16 +31,13 @@ def _schema_msg(stream: str = "items") -> m.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage(
         type=c.Meltano.SingerMessageType.SCHEMA,
         stream=stream,
-        schema_definition={
-            "type": "object",
-        },
+        schema_definition={"type": "object"},
         key_properties=["id"],
     )
 
 
 def _record_msg(
-    stream: str = "items",
-    record: t.JsonMapping | None = None,
+    stream: str = "items", record: t.JsonMapping | None = None
 ) -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage(
         type=c.Meltano.SingerMessageType.RECORD,

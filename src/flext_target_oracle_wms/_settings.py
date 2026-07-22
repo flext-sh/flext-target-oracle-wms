@@ -20,8 +20,7 @@ class FlextTargetOracleWmsSettings(FlextMeltanoSettings):
     """Runtime configuration for target Oracle WMS (fields inherited from base)."""
 
     model_config = SettingsConfigDict(
-        env_prefix="FLEXT_TARGET_ORACLE_WMS_",
-        extra="ignore",
+        env_prefix="FLEXT_TARGET_ORACLE_WMS_", extra="ignore"
     )
 
 

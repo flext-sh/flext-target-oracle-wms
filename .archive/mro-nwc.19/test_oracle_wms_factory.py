@@ -8,13 +8,14 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
+from tests.constants import c
+from tests.models import m
+
 from flext_target_oracle_wms._constants import factory as target_factory_constants
 from flext_target_oracle_wms.factory import (
     FlextTargetFactory,
     FlextTargetMonitoringFactory,
 )
-from tests.constants import c
-from tests.models import m
 
 
 class TestsFlextTargetOracleWmsOracleWmsFactory:
@@ -22,10 +23,7 @@ class TestsFlextTargetOracleWmsOracleWmsFactory:
 
     def test_required_fields(self) -> None:
         req = m.TargetOracleWms.TargetCreationRequest(
-            base_url="https://x",
-            username="u",
-            password="p",
-            additional_config=None,
+            base_url="https://x", username="u", password="p", additional_config=None
         )
         assert req.base_url == "https://x"
         assert req.environment == "development"
@@ -44,10 +42,7 @@ class TestsFlextTargetOracleWmsOracleWmsFactory:
 
     def test_default_monitor_name(self) -> None:
         req = m.TargetOracleWms.MonitoredTargetCreationRequest(
-            base_url="https://x",
-            username="u",
-            password="p",
-            additional_config=None,
+            base_url="https://x", username="u", password="p", additional_config=None
         )
         assert req.monitor_name == "oracle_wms_target"
 
@@ -71,10 +66,7 @@ class TestsFlextTargetOracleWmsOracleWmsFactory:
     @patch(c.TargetOracleWms.Tests.PATCH_TARGET)
     def test_create_target_success(self, _mock_cls: MagicMock) -> None:
         req = m.TargetOracleWms.TargetCreationRequest(
-            base_url="https://x",
-            username="u",
-            password="p",
-            additional_config=None,
+            base_url="https://x", username="u", password="p", additional_config=None
         )
         result = FlextTargetFactory.create_target(req)
         assert result.success
@@ -142,10 +134,7 @@ class TestsFlextTargetOracleWmsOracleWmsFactory:
     def test_create_monitored_target_success(self, _mock_cls: MagicMock) -> None:
         factory = FlextTargetMonitoringFactory()
         req = m.TargetOracleWms.MonitoredTargetCreationRequest(
-            base_url="https://x",
-            username="u",
-            password="p",
-            additional_config=None,
+            base_url="https://x", username="u", password="p", additional_config=None
         )
         result = factory.create_monitored_target(req)
         assert result.success
@@ -153,29 +142,21 @@ class TestsFlextTargetOracleWmsOracleWmsFactory:
     @patch(c.TargetOracleWms.Tests.PATCH_TARGET)
     def test_create_oracle_wms_target(self, _mock_cls: MagicMock) -> None:
         result = FlextTargetMonitoringFactory.create_oracle_wms_target(
-            base_url="https://x",
-            username="u",
-            password="p",
+            base_url="https://x", username="u", password="p"
         )
         assert result.success
 
     @patch(c.TargetOracleWms.Tests.PATCH_TARGET)
     def test_create_oracle_wms_target_with_preset(self, _mock_cls: MagicMock) -> None:
         result = FlextTargetMonitoringFactory.create_oracle_wms_target(
-            base_url="https://x",
-            username="u",
-            password="p",
-            preset="production",
+            base_url="https://x", username="u", password="p", preset="production"
         )
         assert result.success
 
     @patch(c.TargetOracleWms.Tests.PATCH_TARGET)
     def test_create_monitored_oracle_wms_target(self, _mock_cls: MagicMock) -> None:
         req = m.TargetOracleWms.MonitoredTargetCreationRequest(
-            base_url="https://x",
-            username="u",
-            password="p",
-            additional_config=None,
+            base_url="https://x", username="u", password="p", additional_config=None
         )
         result = FlextTargetMonitoringFactory.create_monitored_oracle_wms_target(req)
         assert result.success

@@ -9,9 +9,8 @@ from __future__ import annotations
 import json as _stdlib_json
 from typing import TYPE_CHECKING
 
-from flext_tests import tm
-
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
+from flext_tests import tm
 from tests import u
 
 if TYPE_CHECKING:
@@ -24,14 +23,12 @@ def _valid_config() -> t.JsonMapping:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        },
+        }
     }
 
 
 def _schema_line(
-    stream: str,
-    props: t.MappingKV[str, t.StrMapping],
-    keys: t.StrSequence,
+    stream: str, props: t.MappingKV[str, t.StrMapping], keys: t.StrSequence
 ) -> str:
     _ = props
     return _stdlib_json.dumps({
@@ -90,9 +87,7 @@ class TestsFlextTargetOracleWmsWorkflow:
             _schema_line("s", {"id": {"type": "string"}}, ["id"]),
             _record_line("s", {"id": "1"}),
             _schema_line(
-                "s",
-                {"id": {"type": "string"}, "name": {"type": "string"}},
-                ["id"],
+                "s", {"id": {"type": "string"}, "name": {"type": "string"}}, ["id"]
             ),
             _record_line("s", {"id": "2", "name": "updated"}),
         ]

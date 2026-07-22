@@ -10,8 +10,8 @@ import json as _stdlib_json
 from typing import TYPE_CHECKING
 
 import pytest
-from flext_tests import tm
 
+from flext_tests import tm
 from tests import u
 
 if TYPE_CHECKING:
@@ -24,14 +24,12 @@ def _valid_config() -> t.JsonMapping:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        },
+        }
     }
 
 
 def _schema_line(
-    stream: str,
-    props: t.MappingKV[str, t.StrMapping],
-    keys: t.StrSequence,
+    stream: str, props: t.MappingKV[str, t.StrMapping], keys: t.StrSequence
 ) -> str:
     return _stdlib_json.dumps({
         "type": "SCHEMA",
@@ -62,9 +60,7 @@ class TestsFlextTargetOracleWmsOracle:
         tm.ok(target.setup())
         lines = [
             _schema_line(
-                "items",
-                {"id": {"type": "string"}, "name": {"type": "string"}},
-                ["id"],
+                "items", {"id": {"type": "string"}, "name": {"type": "string"}}, ["id"]
             ),
             _record_line("items", {"id": "1", "name": "Widget"}),
             _state_line({"bookmarks": {"items": "1"}}),

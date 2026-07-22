@@ -13,8 +13,8 @@ from pathlib import Path
 from types import ModuleType
 
 import pytest
-from flext_tests import tm
 
+from flext_tests import tm
 from tests import t
 
 
@@ -111,8 +111,7 @@ class TestsFlextTargetOracleWmsExamples:
                 tm.that(content, lacks=pattern)
 
     def test_examples_have_comprehensive_docstrings(
-        self,
-        example_files: t.SequenceOf[Path],
+        self, example_files: t.SequenceOf[Path]
     ) -> None:
         """Test that examples have comprehensive docstrings."""
         for example_file in example_files:
@@ -141,8 +140,7 @@ class TestsFlextTargetOracleWmsExamples:
                 )
 
     def test_examples_use_await_patterns(
-        self,
-        example_files: t.SequenceOf[Path],
+        self, example_files: t.SequenceOf[Path]
     ) -> None:
         """Test that examples with async functions use proper await patterns."""
         for example_file in example_files:
@@ -163,8 +161,7 @@ class TestsFlextTargetOracleWmsExamples:
                 )
 
     def test_examples_implement_error_handling(
-        self,
-        example_files: t.SequenceOf[Path],
+        self, example_files: t.SequenceOf[Path]
     ) -> None:
         """Test that examples implement proper error handling."""
         for example_file in example_files:
@@ -179,8 +176,7 @@ class TestsFlextTargetOracleWmsExamples:
                 )
 
     def test_examples_use_realistic_config(
-        self,
-        example_files: t.SequenceOf[Path],
+        self, example_files: t.SequenceOf[Path]
     ) -> None:
         """Test that examples use realistic configuration patterns."""
         for example_file in example_files:
@@ -212,8 +208,7 @@ class TestsFlextTargetOracleWmsExamples:
             )
 
     def test_examples_have_main_execution_blocks(
-        self,
-        example_files: t.SequenceOf[Path],
+        self, example_files: t.SequenceOf[Path]
     ) -> None:
         """Test that examples have proper main execution blocks."""
         for example_file in example_files:
