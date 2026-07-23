@@ -15,7 +15,7 @@ from types import ModuleType
 import pytest
 
 from flext_tests import tm
-from tests import t
+from tests import c, t
 
 
 def _load_example_module(example_file: Path) -> ModuleType:
@@ -54,7 +54,9 @@ class TestsFlextTargetOracleWmsExamples:
         assert examples_dir.exists(), "Examples directory must exist"
         assert examples_dir.is_dir(), "Examples path must be a directory"
         python_files = list(examples_dir.glob("*.py"))
-        assert len(python_files) >= 4, "Must have at least 4 example files"
+        assert len(python_files) >= c.TargetOracleWms.Tests.MIN_EXAMPLE_FILE_COUNT, (
+            "Must have at least 4 example files"
+        )
         expected_files = [
             "01_basic_usage.py",
             "05_advanced_configuration.py",
@@ -107,9 +109,10 @@ class TestsFlextTargetOracleWmsExamples:
             module = _load_example_module(example_file)
             module_docstring = inspect.getdoc(module)
             assert module_docstring is not None
-            assert len(module_docstring) > 50, (
-                f"{example_file.name} docstring too short"
-            )
+            assert (
+                len(module_docstring)
+                > c.TargetOracleWms.Tests.MIN_MODULE_DOCSTRING_LENGTH
+            ), f"{example_file.name} docstring too short"
             assert (
                 "PRODUCTION" in module_docstring.upper()
                 or "REAL" in module_docstring.upper()
@@ -120,13 +123,14 @@ class TestsFlextTargetOracleWmsExamples:
                 1
                 for _, function in module_functions
                 if (func_docstring := inspect.getdoc(function))
-                and len(func_docstring) > 10
+                and len(func_docstring)
+                > c.TargetOracleWms.Tests.MIN_FUNCTION_DOCSTRING_LENGTH
             )
             if function_count > 0:
                 doc_ratio = documented_functions / function_count
-                assert doc_ratio >= 0.8, (
-                    f"{example_file.name} must have 80%+ functions documented"
-                )
+                assert (
+                    doc_ratio >= c.TargetOracleWms.Tests.MIN_DOCUMENTED_FUNCTION_RATIO
+                ), f"{example_file.name} must have 80%+ functions documented"
 
     def test_examples_use_await_patterns(
         self, example_files: t.SequenceOf[Path]
@@ -248,7 +252,9 @@ class TestsFlextTargetOracleWmsExamples:
         readme_path = examples_dir / "README.md"
         assert readme_path.exists(), "Examples directory must have README.md"
         readme_content = readme_path.read_text(encoding="utf-8")
-        assert len(readme_content) > 1000, "README must be comprehensive (>1000 chars)"
+        assert len(readme_content) > c.TargetOracleWms.Tests.MIN_README_LENGTH, (
+            "README must be comprehensive (>1000 chars)"
+        )
         required_sections = [
             "Examples Overview",
             "Running the Examples",
@@ -271,7 +277,9 @@ class TestsFlextTargetOracleWmsExamples:
             assert "_" in name or name.isalpha(), (
                 f"Example {example_file.name} must use snake_case"
             )
-            assert len(name) >= 5, f"Example {example_file.name} name too short"
+            assert len(name) >= c.TargetOracleWms.Tests.MIN_EXAMPLE_STEM_LENGTH, (
+                f"Example {example_file.name} name too short"
+            )
 
     def test_examples_have_proper_headers(self) -> None:
         """Test that examples have proper file headers."""

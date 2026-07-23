@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import flext_target_oracle_wms
 from flext_tests import tm
+from tests import c
 
 
 class TestsFlextTargetOracleWmsOracleWmsInit:
@@ -24,7 +25,7 @@ class TestsFlextTargetOracleWmsOracleWmsInit:
         tm.that(flext_target_oracle_wms.__version__, is_=str)
         version = flext_target_oracle_wms.__version__
         assert version
-        assert version.count(".") >= 2
+        assert version.count(".") >= c.TargetOracleWms.Tests.MIN_SEMVER_SEPARATOR_COUNT
 
     def test_module_exports(self) -> None:
         """Test that module exports are properly defined."""
