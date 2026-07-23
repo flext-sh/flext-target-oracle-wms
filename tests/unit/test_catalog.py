@@ -32,6 +32,8 @@ def _make_schema_message(
 
 
 class TestsFlextTargetOracleWmsCatalog:
+    """Tests for u.TargetOracleWms.CatalogManager stream registration."""
+
     def test_add_stream_returns_success(self) -> None:
         mgr = u.TargetOracleWms.CatalogManager()
         result = mgr.add_stream(_make_schema_message())
