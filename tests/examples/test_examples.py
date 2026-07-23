@@ -49,17 +49,6 @@ def _import_lines(content: str) -> list[str]:
 class TestsFlextTargetOracleWmsExamples:
     """Test examples for code quality and real API usage."""
 
-    @pytest.fixture(scope="class")
-    def examples_dir(self) -> Path:
-        """Get examples directory path."""
-        project_root = Path(__file__).parents[2]
-        return project_root / "examples"
-
-    @pytest.fixture(scope="class")
-    def example_files(self, examples_dir: Path) -> t.SequenceOf[Path]:
-        """Get all Python example files (excluding __init__.py)."""
-        return [f for f in examples_dir.glob("*.py") if f.name != "__init__.py"]
-
     def test_examples_directory_exists(self, examples_dir: Path) -> None:
         """Test that examples directory exists and contains files."""
         assert examples_dir.exists(), "Examples directory must exist"
