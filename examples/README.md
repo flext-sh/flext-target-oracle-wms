@@ -55,7 +55,9 @@ Demonstrates fundamental Oracle WMS target usage with real configuration:
 
 **Key Patterns:**
 
-```python notest
+```python
+from __future__ import annotations
+
 # DRY: Real flext-* imports
 from flext_cli import u
 from flext_core import FlextSettings
@@ -94,7 +96,10 @@ Shows sophisticated configuration and custom business logic:
 
 **Key Patterns:**
 
-```python notest
+```python
+from __future__ import annotations
+
+
 # Custom business type converter
 class CustomWMSTypeConverter(WMSTypeConverter):
     def convert_singer_to_oracle(
@@ -133,7 +138,9 @@ Demonstrates optimized batch processing for large-scale data:
 
 **Key Patterns:**
 
-```python notest
+```python
+from __future__ import annotations
+
 # Performance optimization
 settings = {
     "batch_size": 5000,
@@ -164,7 +171,9 @@ Shows comprehensive error handling and recovery patterns:
 
 **Key Patterns:**
 
-```python notest
+```python
+from __future__ import annotations
+
 # Error handling configuration
 settings = {
     "max_retries": 3,
