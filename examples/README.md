@@ -2,27 +2,28 @@
 
 <!-- TOC START -->
 
-- [🎯 Examples Overview](#-examples-overview)
-- [📚 Available Examples](#-available-examples)
-  - \[1. [basic_usage.py](./basic_usage.py)\](#1-basicusagepybasicusagepy)
-  - \[2. [advanced_configuration.py](./advanced_configuration.py)\](#2-advancedconfigurationpyadvancedconfigurationpy)
-  - \[3. [batch_processing.py](./batch_processing.py)\](#3-batchprocessingpybatchprocessingpy)
-  - \[4. [error_handling.py](./error_handling.py)\](#4-errorhandlingpyerrorhandlingpy)
-- [🚀 Running the Examples](#-running-the-examples)
-  - [Prerequisites](#prerequisites)
-  - [Running Individual Examples](#running-individual-examples)
-  - [Running All Examples](#running-all-examples)
-- [🔧 Configuration Options](#-configuration-options)
-  - [File-based Configuration](#file-based-configuration)
-  - [Environment Variables](#environment-variables)
-- [📊 Performance Benchmarks](#-performance-benchmarks)
-  - [Batch Processing Performance](#batch-processing-performance)
-  - [Memory Usage](#memory-usage)
-- [🛡️ Security Considerations](#-security-considerations)
-- [🧪 Testing the Examples](#-testing-the-examples)
-- [📖 Related Documentation](#-related-documentation)
-- [🤝 Contributing](#-contributing)
-- [📝 License](#-license)
+- [Oracle WMS Target - Examples](#oracle-wms-target---examples)
+  - [🎯 Examples Overview](#-examples-overview)
+  - [📚 Available Examples](#-available-examples)
+    - [1. basic\_usage.py](#1-basic_usagepy)
+    - [2. advanced\_configuration.py](#2-advanced_configurationpy)
+    - [3. batch\_processing.py](#3-batch_processingpy)
+    - [4. error\_handling.py](#4-error_handlingpy)
+  - [🚀 Running the Examples](#-running-the-examples)
+    - [Prerequisites](#prerequisites)
+    - [Running Individual Examples](#running-individual-examples)
+    - [Running All Examples](#running-all-examples)
+  - [🔧 Configuration Options](#-configuration-options)
+    - [File-based Configuration](#file-based-configuration)
+    - [Environment Variables](#environment-variables)
+  - [📊 Performance Benchmarks](#-performance-benchmarks)
+    - [Batch Processing Performance](#batch-processing-performance)
+    - [Memory Usage](#memory-usage)
+  - [🛡️ Security Considerations](#️-security-considerations)
+  - [🧪 Testing the Examples](#-testing-the-examples)
+  - [📖 Related Documentation](#-related-documentation)
+  - [🤝 Contributing](#-contributing)
+  - [📝 License](#-license)
 
 <!-- TOC END -->
 
@@ -56,25 +57,8 @@ Demonstrates fundamental Oracle WMS target usage with real configuration:
 
 ```python notest
 # DRY: Real flext-* imports
-from flext_core import FlextBus
+from flext_cli import u
 from flext_core import FlextSettings
-from flext_core import FlextConstants
-from flext_core import FlextContainer
-from flext_core import FlextContext
-from flext_core import d
-from flext_core import FlextDispatcher
-from flext_core import e
-from flext_core import h
-from flext_core import x
-from flext_core import FlextModels
-from flext_core import FlextProcessors
-from flext_core import p
-from flext_core import FlextRegistry
-from flext_core import r, p
-from flext_core import u
-from flext_core import s
-from flext_core import t
-from flext_core import u
 from flext_observability import flext_monitor_function
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
