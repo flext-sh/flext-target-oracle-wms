@@ -207,7 +207,7 @@ class TestsFlextTargetOracleWmsExamples:
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
             tm.that(content, has='if __name__ == "__main__":')
-            main_patterns = ["print(", "run(", "run_", "demonstrate_"]
+            main_patterns = ["u.Cli.print(", "run(", "run_", "demonstrate_"]
             has_main_execution = False
             for pattern in main_patterns:
                 if pattern in content:
