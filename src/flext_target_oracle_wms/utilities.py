@@ -5,8 +5,8 @@ Facade composing helpers from _utilities/ submodules into u.TargetOracleWms.* na
 
 from __future__ import annotations
 
-from flext_meltano.utilities import FlextMeltanoUtilities as meltano_u
-from flext_oracle_wms.utilities import u
+from flext_meltano import FlextMeltanoUtilities as meltano_u
+from flext_oracle_wms import u
 from flext_target_oracle_wms._utilities.client import (
     FlextTargetOracleWmsUtilitiesClient,
 )
@@ -34,18 +34,15 @@ class FlextTargetOracleWmsUtilities(meltano_u, u):
         WMSTableManager = FlextTargetOracleWmsUtilitiesHelpers.WMSTableManager
         WMSTypeConverter = FlextTargetOracleWmsUtilitiesHelpers.WMSTypeConverter
         create_record_message = staticmethod(
-            FlextTargetOracleWmsUtilitiesHelpers.create_record_message,
+            FlextTargetOracleWmsUtilitiesHelpers.create_record_message
         )
         create_schema_message = staticmethod(
-            FlextTargetOracleWmsUtilitiesHelpers.create_schema_message,
+            FlextTargetOracleWmsUtilitiesHelpers.create_schema_message
         )
         create_state_message = staticmethod(
-            FlextTargetOracleWmsUtilitiesHelpers.create_state_message,
+            FlextTargetOracleWmsUtilitiesHelpers.create_state_message
         )
 
 
-__all__: list[str] = [
-    "FlextTargetOracleWmsUtilities",
-    "u",
-]
+__all__: list[str] = ["FlextTargetOracleWmsUtilities", "u"]
 u = FlextTargetOracleWmsUtilities

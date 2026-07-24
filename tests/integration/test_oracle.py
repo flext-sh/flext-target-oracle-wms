@@ -7,11 +7,15 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import json as _stdlib_json
+from typing import TYPE_CHECKING
 
 import pytest
 
-from tests.typings import t
-from tests.utilities import u
+from flext_tests import tm
+from tests import u
+
+if TYPE_CHECKING:
+    from tests import t
 
 
 def _valid_config() -> t.JsonMapping:
@@ -20,14 +24,12 @@ def _valid_config() -> t.JsonMapping:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        },
+        }
     }
 
 
 def _schema_line(
-    stream: str,
-    props: t.MappingKV[str, t.StrMapping],
-    keys: t.StrSequence,
+    stream: str, props: t.MappingKV[str, t.StrMapping], keys: t.StrSequence
 ) -> str:
     return _stdlib_json.dumps({
         "type": "SCHEMA",
@@ -55,18 +57,16 @@ class TestsFlextTargetOracleWmsOracle:
 
     def test_setup_process_cleanup(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
-        assert target.setup().success
+        tm.ok(target.setup())
         lines = [
             _schema_line(
-                "items",
-                {"id": {"type": "string"}, "name": {"type": "string"}},
-                ["id"],
+                "items", {"id": {"type": "string"}, "name": {"type": "string"}}, ["id"]
             ),
             _record_line("items", {"id": "1", "name": "Widget"}),
             _state_line({"bookmarks": {"items": "1"}}),
         ]
-        assert target.process_lines(lines).success
-        assert target.cleanup().success
+        tm.ok(target.process_lines(lines))
+        tm.ok(target.cleanup())
 
     def test_multiple_batches(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
@@ -76,13 +76,13 @@ class TestsFlextTargetOracleWmsOracle:
             _record_line("orders", {"order_id": "ORD001"}),
             _record_line("orders", {"order_id": "ORD002"}),
         ]
-        assert target.process_lines(batch1).success
+        tm.ok(target.process_lines(batch1))
         batch2 = [
             _record_line("orders", {"order_id": "ORD003"}),
             _state_line({"bookmarks": {"orders": "3"}}),
         ]
-        assert target.process_lines(batch2).success
-        assert target.cleanup().success
+        tm.ok(target.process_lines(batch2))
+        tm.ok(target.cleanup())
 
     """Integration tests for multi-stream scenarios."""
 
@@ -99,5 +99,5 @@ class TestsFlextTargetOracleWmsOracle:
             _record_line("orders", {"id": "O2"}),
             _state_line({"bookmarks": {}}),
         ]
-        assert target.process_lines(lines).success
-        assert target.cleanup().success
+        tm.ok(target.process_lines(lines))
+        tm.ok(target.cleanup())

@@ -3,7 +3,9 @@
 
 from __future__ import annotations
 
-from flext_core.lazy import install_lazy_exports
+from typing import TYPE_CHECKING
+
+from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 from flext_target_oracle_wms.__version__ import (
     __author__,
     __author_email__,
@@ -14,26 +16,55 @@ from flext_target_oracle_wms.__version__ import (
     __version__,
     __version_info__,
 )
-from flext_target_oracle_wms._exports_lazy import FLEXT_TARGET_ORACLE_WMS_LAZY_IMPORTS
 
-_LAZY_IMPORTS = FLEXT_TARGET_ORACLE_WMS_LAZY_IMPORTS
+if TYPE_CHECKING:
+    from flext_meltano import d as d, e as e, h as h, r as r, s as s, x as x
+    from flext_target_oracle_wms._settings import (
+        FlextTargetOracleWmsSettings as FlextTargetOracleWmsSettings,
+        settings as settings,
+    )
+    from flext_target_oracle_wms.api import (
+        FlextTargetOracleWmsService as FlextTargetOracleWmsService,
+        target_oracle_wms as target_oracle_wms,
+    )
+    from flext_target_oracle_wms.cli import (
+        FlextTargetOracleWmsCli as FlextTargetOracleWmsCli,
+        main as main,
+    )
+    from flext_target_oracle_wms.constants import (
+        FlextTargetOracleWmsConstants as FlextTargetOracleWmsConstants,
+        c as c,
+    )
+    from flext_target_oracle_wms.models import (
+        FlextTargetOracleWmsModels as FlextTargetOracleWmsModels,
+        m as m,
+    )
+    from flext_target_oracle_wms.protocols import (
+        FlextTargetOracleWmsProtocols as FlextTargetOracleWmsProtocols,
+        p,
+    )
+    from flext_target_oracle_wms.typings import (
+        FlextTargetOracleWmsTypes as FlextTargetOracleWmsTypes,
+        t as t,
+    )
+    from flext_target_oracle_wms.utilities import (
+        FlextTargetOracleWmsUtilities as FlextTargetOracleWmsUtilities,
+        u,
+    )
+_LAZY_IMPORTS = build_lazy_import_map({
+    "._settings": ("FlextTargetOracleWmsSettings", "settings"),
+    ".api": ("FlextTargetOracleWmsService", "target_oracle_wms"),
+    ".cli": ("FlextTargetOracleWmsCli", "main"),
+    ".constants": ("FlextTargetOracleWmsConstants", "c"),
+    ".models": ("FlextTargetOracleWmsModels", "m"),
+    ".protocols": ("FlextTargetOracleWmsProtocols", "p"),
+    ".typings": ("FlextTargetOracleWmsTypes", "t"),
+    ".utilities": ("FlextTargetOracleWmsUtilities", "u"),
+    "flext_meltano": ("d", "e", "h", "r", "s", "x"),
+})
 
 
-_EAGER_EXPORTS = (
-    __author__,
-    __author_email__,
-    __description__,
-    __license__,
-    __title__,
-    __url__,
-    __version__,
-    __version_info__,
-)
-
-
-_PUBLIC_EXPORTS: tuple[str, ...] = (
-    "FlextTargetFactory",
-    "FlextTargetMonitoringFactory",
+__all__: tuple[str, ...] = (
     "FlextTargetOracleWmsCli",
     "FlextTargetOracleWmsConstants",
     "FlextTargetOracleWmsModels",
@@ -42,7 +73,6 @@ _PUBLIC_EXPORTS: tuple[str, ...] = (
     "FlextTargetOracleWmsSettings",
     "FlextTargetOracleWmsTypes",
     "FlextTargetOracleWmsUtilities",
-    "target_oracle_wms",
     "__author__",
     "__author_email__",
     "__description__",
@@ -52,17 +82,20 @@ _PUBLIC_EXPORTS: tuple[str, ...] = (
     "__version__",
     "__version_info__",
     "c",
+    "d",
+    "e",
+    "h",
     "m",
     "main",
     "p",
+    "r",
+    "s",
+    "settings",
     "t",
+    "target_oracle_wms",
     "u",
+    "x",
 )
 
 
-install_lazy_exports(
-    __name__,
-    globals(),
-    _LAZY_IMPORTS,
-    public_exports=_PUBLIC_EXPORTS,
-)
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)

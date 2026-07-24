@@ -8,6 +8,8 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import flext_target_oracle_wms
+from flext_tests import tm
+from tests import c
 
 
 class TestsFlextTargetOracleWmsOracleWmsInit:
@@ -15,26 +17,30 @@ class TestsFlextTargetOracleWmsOracleWmsInit:
 
     def test_version_import_success(self) -> None:
         """Test successful version import from importlib.metadata."""
-        assert isinstance(flext_target_oracle_wms.__version__, str)
+        tm.that(flext_target_oracle_wms.__version__, is_=str)
         assert flext_target_oracle_wms.__version__
 
     def test_version_import_fallback(self) -> None:
         """Test fallback version logic - simplified approach."""
-        assert isinstance(flext_target_oracle_wms.__version__, str)
+        tm.that(flext_target_oracle_wms.__version__, is_=str)
         version = flext_target_oracle_wms.__version__
         assert version
-        assert version.count(".") >= 2
+        assert version.count(".") >= c.TargetOracleWms.Tests.MIN_SEMVER_SEPARATOR_COUNT
 
     def test_module_exports(self) -> None:
         """Test that module exports are properly defined."""
-        assert isinstance(flext_target_oracle_wms.__all__, (list, tuple))
+        tm.that(flext_target_oracle_wms.__all__, is_=(list, tuple))
+        # NOTE (multi-agent, bead mro-nwc.19): canonical package surface only. The
+        # non-canonical FlextTargetFactory (parallel creation branch) was removed —
+        # creation is delivered by FlextTargetOracleWmsService (api.py) via MRO.
         expected_exports = [
             "FlextTargetOracleWmsUtilities",
-            "FlextTargetFactory",
+            "FlextTargetOracleWmsService",
             "u",
         ]
         for export in expected_exports:
-            assert export in flext_target_oracle_wms.__all__
-        assert flext_target_oracle_wms.u.TargetOracleWms.Client.__name__ == (
-            "FlextTargetOracleWmsUtilitiesClient"
+            tm.that(flext_target_oracle_wms.__all__, has=export)
+        tm.that(
+            flext_target_oracle_wms.u.TargetOracleWms.Client.__name__,
+            eq=("FlextTargetOracleWmsUtilitiesClient"),
         )

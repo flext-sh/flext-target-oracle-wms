@@ -14,15 +14,16 @@ from types import ModuleType
 
 import pytest
 
-from tests.typings import t
+from flext_tests import tm
+from tests import c, t
 
 
 def _load_example_module(example_file: Path) -> ModuleType:
     module_name = f"_flext_target_oracle_wms_example_{example_file.stem}"
     spec = importlib.util.spec_from_file_location(module_name, example_file)
-    assert spec is not None, f"Could not build import spec for {example_file.name}"
+    assert spec is not None
     loader = spec.loader
-    assert loader is not None, f"Could not load {example_file.name}"
+    assert loader is not None
     module = importlib.util.module_from_spec(spec)
     loader.exec_module(module)
     return module
@@ -48,23 +49,14 @@ def _import_lines(content: str) -> list[str]:
 class TestsFlextTargetOracleWmsExamples:
     """Test examples for code quality and real API usage."""
 
-    @pytest.fixture(scope="class")
-    def examples_dir(self) -> Path:
-        """Get examples directory path."""
-        project_root = Path(__file__).parents[2]
-        return project_root / "examples"
-
-    @pytest.fixture(scope="class")
-    def example_files(self, examples_dir: Path) -> t.SequenceOf[Path]:
-        """Get all Python example files (excluding __init__.py)."""
-        return [f for f in examples_dir.glob("*.py") if f.name != "__init__.py"]
-
     def test_examples_directory_exists(self, examples_dir: Path) -> None:
         """Test that examples directory exists and contains files."""
         assert examples_dir.exists(), "Examples directory must exist"
         assert examples_dir.is_dir(), "Examples path must be a directory"
         python_files = list(examples_dir.glob("*.py"))
-        assert len(python_files) >= 4, "Must have at least 4 example files"
+        assert len(python_files) >= c.TargetOracleWms.Tests.MIN_EXAMPLE_FILE_COUNT, (
+            "Must have at least 4 example files"
+        )
         expected_files = [
             "01_basic_usage.py",
             "05_advanced_configuration.py",
@@ -82,11 +74,17 @@ class TestsFlextTargetOracleWmsExamples:
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
             import_lines = _import_lines(content)
-            has_flext_core = any("flext_core" in line for line in import_lines)
+            has_flext_core = any(
+                "flext_core" in line or "flext_target_oracle_wms" in line
+                for line in import_lines
+            )
             has_target_import = any(
                 "flext_target_oracle_wms" in line for line in import_lines
             )
-            assert has_flext_core, f"{example_file.name} must import from flext_core"
+            assert has_flext_core, (
+                f"{example_file.name} must import real flext primitives "
+                "(flext_core or the flext_target_oracle_wms facade)"
+            )
             assert has_target_import, (
                 f"{example_file.name} must import from flext_target_oracle_wms"
             )
@@ -101,24 +99,20 @@ class TestsFlextTargetOracleWmsExamples:
                 "HACK:",
             ]
             for pattern in forbidden_patterns:
-                assert pattern not in content, (
-                    f"{example_file.name} contains forbidden pattern: {pattern}"
-                )
+                tm.that(content, lacks=pattern)
 
     def test_examples_have_comprehensive_docstrings(
-        self,
-        example_files: t.SequenceOf[Path],
+        self, example_files: t.SequenceOf[Path]
     ) -> None:
         """Test that examples have comprehensive docstrings."""
         for example_file in example_files:
             module = _load_example_module(example_file)
             module_docstring = inspect.getdoc(module)
-            assert module_docstring is not None, (
-                f"{example_file.name} must have module docstring"
-            )
-            assert len(module_docstring) > 50, (
-                f"{example_file.name} docstring too short"
-            )
+            assert module_docstring is not None
+            assert (
+                len(module_docstring)
+                > c.TargetOracleWms.Tests.MIN_MODULE_DOCSTRING_LENGTH
+            ), f"{example_file.name} docstring too short"
             assert (
                 "PRODUCTION" in module_docstring.upper()
                 or "REAL" in module_docstring.upper()
@@ -129,13 +123,14 @@ class TestsFlextTargetOracleWmsExamples:
                 1
                 for _, function in module_functions
                 if (func_docstring := inspect.getdoc(function))
-                and len(func_docstring) > 10
+                and len(func_docstring)
+                > c.TargetOracleWms.Tests.MIN_FUNCTION_DOCSTRING_LENGTH
             )
             if function_count > 0:
                 doc_ratio = documented_functions / function_count
-                assert doc_ratio >= 0.8, (
-                    f"{example_file.name} must have 80%+ functions documented"
-                )
+                assert (
+                    doc_ratio >= c.TargetOracleWms.Tests.MIN_DOCUMENTED_FUNCTION_RATIO
+                ), f"{example_file.name} must have 80%+ functions documented"
 
     def test_examples_use_await_patterns(
         self, example_files: t.SequenceOf[Path]
@@ -159,8 +154,7 @@ class TestsFlextTargetOracleWmsExamples:
                 )
 
     def test_examples_implement_error_handling(
-        self,
-        example_files: t.SequenceOf[Path],
+        self, example_files: t.SequenceOf[Path]
     ) -> None:
         """Test that examples implement proper error handling."""
         for example_file in example_files:
@@ -207,16 +201,13 @@ class TestsFlextTargetOracleWmsExamples:
             )
 
     def test_examples_have_main_execution_blocks(
-        self,
-        example_files: t.SequenceOf[Path],
+        self, example_files: t.SequenceOf[Path]
     ) -> None:
         """Test that examples have proper main execution blocks."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
-            assert 'if __name__ == "__main__":' in content, (
-                f"{example_file.name} must have main execution block"
-            )
-            main_patterns = ["print(", "run(", "run_", "demonstrate_"]
+            tm.that(content, has='if __name__ == "__main__":')
+            main_patterns = ["u.Cli.print(", "run(", "run_", "demonstrate_"]
             has_main_execution = False
             for pattern in main_patterns:
                 if pattern in content:
@@ -241,7 +232,7 @@ class TestsFlextTargetOracleWmsExamples:
             except SyntaxError as e:
                 pytest.fail(f"Syntax error in {example_file.name}: {e}")
             try:
-                assert compiled is not None, f"Failed to compile {example_file.name}"
+                tm.that(compiled, none=False)
             except (
                 ValueError,
                 TypeError,
@@ -261,7 +252,9 @@ class TestsFlextTargetOracleWmsExamples:
         readme_path = examples_dir / "README.md"
         assert readme_path.exists(), "Examples directory must have README.md"
         readme_content = readme_path.read_text(encoding="utf-8")
-        assert len(readme_content) > 1000, "README must be comprehensive (>1000 chars)"
+        assert len(readme_content) > c.TargetOracleWms.Tests.MIN_README_LENGTH, (
+            "README must be comprehensive (>1000 chars)"
+        )
         required_sections = [
             "Examples Overview",
             "Running the Examples",
@@ -270,7 +263,7 @@ class TestsFlextTargetOracleWmsExamples:
             "Security",
         ]
         for section in required_sections:
-            assert section in readme_content, f"README must contain '{section}' section"
+            tm.that(readme_content, has=section)
 
     def test_examples_follow_naming_convention(self) -> None:
         """Test that examples follow proper naming conventions."""
@@ -284,7 +277,9 @@ class TestsFlextTargetOracleWmsExamples:
             assert "_" in name or name.isalpha(), (
                 f"Example {example_file.name} must use snake_case"
             )
-            assert len(name) >= 5, f"Example {example_file.name} name too short"
+            assert len(name) >= c.TargetOracleWms.Tests.MIN_EXAMPLE_STEM_LENGTH, (
+                f"Example {example_file.name} name too short"
+            )
 
     def test_examples_have_proper_headers(self) -> None:
         """Test that examples have proper file headers."""
@@ -328,9 +323,7 @@ class TestsFlextTargetOracleWmsExamples:
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
             if "FlextLogger" in content:
-                assert "logger = u.fetch_logger(__name__)" in content, (
-                    f"{example_file.name} must use u.fetch_logger(__name__) pattern"
-                )
+                tm.that(content, has="logger = u.fetch_logger(__name__)")
                 assert "logger.info(" in content or "logger.error(" in content, (
                     f"{example_file.name} must actually use the logger"
                 )
@@ -342,9 +335,5 @@ class TestsFlextTargetOracleWmsExamples:
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
             if "flext_monitor_function" in content:
-                assert "@flext_monitor_function(" in content, (
-                    f"{example_file.name} must use @flext_monitor_function decorator"
-                )
-                assert "FlextObservabilityMonitor" in content, (
-                    f"{example_file.name} should create monitor instance"
-                )
+                tm.that(content, has="@flext_monitor_function(")
+                tm.that(content, has="FlextObservabilityMonitor")

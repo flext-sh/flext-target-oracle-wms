@@ -4,21 +4,17 @@ from __future__ import annotations
 
 from typing import override
 
-from flext_tests import s as tests_s
-
 from flext_target_oracle_wms import m
+from flext_tests import s as tests_s
 from tests.settings import TestsFlextTargetOracleWmsSettings
 
 
 class TestsFlextTargetOracleWmsServiceBase(tests_s):
     """Target Oracle WMS test service base with source and test settings namespaces."""
 
-    @classmethod
-    @override
-    def fetch_settings(cls) -> TestsFlextTargetOracleWmsSettings:
-        """Return the typed Target Oracle WMS+Tests settings singleton."""
-        return TestsFlextTargetOracleWmsSettings.fetch_global()
-
+    # NOTE (multi-agent, bead mro-nwc.19): fetch_settings is delivered by the flext_tests
+    # base via MRO (resolves test_settings_type() from _runtime_bootstrap_options below).
+    # The prior empty override shadowed it and returned None (silent bug, pyrefly bad-return).
     @classmethod
     @override
     def _runtime_bootstrap_options(cls) -> m.RuntimeBootstrapOptions:

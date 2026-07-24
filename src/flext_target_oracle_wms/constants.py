@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 from enum import StrEnum, unique
-from typing import Final
+from typing import TYPE_CHECKING, Final
 
-from flext_meltano.constants import FlextMeltanoConstants as meltano_c
-from flext_oracle_wms import c, t
+from flext_meltano import FlextMeltanoConstants as meltano_c
+from flext_oracle_wms import c
+
+if TYPE_CHECKING:
+    from flext_oracle_wms import t
 
 
 class FlextTargetOracleWmsConstants(meltano_c, c):
@@ -16,14 +19,6 @@ class FlextTargetOracleWmsConstants(meltano_c, c):
         """Target-specific defaults and limits."""
 
         CLI_MIN_CONFIG_ARG_COUNT: Final[int] = 3
-
-        class Tests:
-            """Test fixture constants — patch paths and test-only literals."""
-
-            PATCH_TARGET: Final[str] = (
-                "flext_target_oracle_wms.utilities."
-                "FlextTargetOracleWmsUtilities.TargetOracleWms.Target"
-            )
 
         class OracleWms:
             """Oracle WMS runtime defaults."""

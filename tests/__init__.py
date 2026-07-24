@@ -3,15 +3,151 @@
 
 from __future__ import annotations
 
-from flext_core.lazy import install_lazy_exports
-from tests._exports import TESTS_FLEXT_TARGET_ORACLE_WMS_LAZY_IMPORTS
+from typing import TYPE_CHECKING
 
-_LAZY_IMPORTS = TESTS_FLEXT_TARGET_ORACLE_WMS_LAZY_IMPORTS
-
-
-install_lazy_exports(
-    __name__,
-    globals(),
-    _LAZY_IMPORTS,
-    publish_all=False,
+from flext_core.lazy import (
+    build_lazy_import_map,
+    install_lazy_exports,
+    merge_lazy_imports,
 )
+
+if TYPE_CHECKING:
+    from flext_tests import (
+        d as d,
+        e as e,
+        h as h,
+        r as r,
+        td as td,
+        tf as tf,
+        tk as tk,
+        tm as tm,
+        tv as tv,
+        x as x,
+    )
+    from tests.base import (
+        TestsFlextTargetOracleWmsServiceBase as TestsFlextTargetOracleWmsServiceBase,
+        s as s,
+    )
+    from tests.constants import (
+        TestsFlextTargetOracleWmsConstants as TestsFlextTargetOracleWmsConstants,
+        c as c,
+    )
+    from tests.examples.test_examples import (
+        TestsFlextTargetOracleWmsExamples as TestsFlextTargetOracleWmsExamples,
+    )
+    from tests.integration.test_oracle import (
+        TestsFlextTargetOracleWmsOracle as TestsFlextTargetOracleWmsOracle,
+    )
+    from tests.models import (
+        TestsFlextTargetOracleWmsModels as TestsFlextTargetOracleWmsModels,
+        m as m,
+    )
+    from tests.protocols import (
+        TestsFlextTargetOracleWmsProtocols as TestsFlextTargetOracleWmsProtocols,
+        p as p,
+    )
+    from tests.settings import (
+        TestsFlextTargetOracleWmsSettings as TestsFlextTargetOracleWmsSettings,
+    )
+    from tests.typings import (
+        TestsFlextTargetOracleWmsTypes as TestsFlextTargetOracleWmsTypes,
+        t as t,
+    )
+    from tests.unit.test_benchmarks import (
+        TestsFlextTargetOracleWmsBenchmarks as TestsFlextTargetOracleWmsBenchmarks,
+    )
+    from tests.unit.test_catalog import (
+        TestsFlextTargetOracleWmsCatalog as TestsFlextTargetOracleWmsCatalog,
+    )
+    from tests.unit.test_features import (
+        TestsFlextTargetOracleWmsFeatures as TestsFlextTargetOracleWmsFeatures,
+    )
+    from tests.unit.test_module_governance import (
+        TestsFlextTargetOracleWmsModuleGovernance as TestsFlextTargetOracleWmsModuleGovernance,
+    )
+    from tests.unit.test_oracle_wms_cli import (
+        TestsFlextTargetOracleWmsOracleWmsCli as TestsFlextTargetOracleWmsOracleWmsCli,
+    )
+    from tests.unit.test_oracle_wms_init import (
+        TestsFlextTargetOracleWmsOracleWmsInit as TestsFlextTargetOracleWmsOracleWmsInit,
+    )
+    from tests.unit.test_quality import (
+        TestsFlextTargetOracleWmsQuality as TestsFlextTargetOracleWmsQuality,
+    )
+    from tests.unit.test_sinks import (
+        TestsFlextTargetOracleWmsSinks as TestsFlextTargetOracleWmsSinks,
+    )
+    from tests.unit.test_stream import (
+        TestsFlextTargetOracleWmsStream as TestsFlextTargetOracleWmsStream,
+    )
+    from tests.unit.test_structure import (
+        TestsFlextTargetOracleWmsStructure as TestsFlextTargetOracleWmsStructure,
+    )
+    from tests.unit.test_target import (
+        TestsFlextTargetOracleWmsTarget as TestsFlextTargetOracleWmsTarget,
+    )
+    from tests.unit.test_wms_patterns import (
+        TestsFlextTargetOracleWmsWmsPatterns as TestsFlextTargetOracleWmsWmsPatterns,
+    )
+    from tests.unit.test_workflow import (
+        TestsFlextTargetOracleWmsWorkflow as TestsFlextTargetOracleWmsWorkflow,
+    )
+    from tests.utilities import (
+        TestsFlextTargetOracleWmsUtilities as TestsFlextTargetOracleWmsUtilities,
+        u as u,
+    )
+_LAZY_IMPORTS = merge_lazy_imports(
+    (".examples", ".integration", ".unit"),
+    build_lazy_import_map({
+        ".base": ("TestsFlextTargetOracleWmsServiceBase", "s"),
+        ".conftest": ("conftest",),
+        ".constants": ("TestsFlextTargetOracleWmsConstants", "c"),
+        ".examples": ("examples",),
+        ".examples.test_examples": ("TestsFlextTargetOracleWmsExamples",),
+        ".integration": ("integration",),
+        ".integration.test_oracle": ("TestsFlextTargetOracleWmsOracle",),
+        ".models": ("TestsFlextTargetOracleWmsModels", "m"),
+        ".protocols": ("TestsFlextTargetOracleWmsProtocols", "p"),
+        ".settings": ("TestsFlextTargetOracleWmsSettings",),
+        ".typings": ("TestsFlextTargetOracleWmsTypes", "t"),
+        ".unit": ("unit",),
+        ".unit.test_benchmarks": ("TestsFlextTargetOracleWmsBenchmarks",),
+        ".unit.test_catalog": ("TestsFlextTargetOracleWmsCatalog",),
+        ".unit.test_features": ("TestsFlextTargetOracleWmsFeatures",),
+        ".unit.test_module_governance": ("TestsFlextTargetOracleWmsModuleGovernance",),
+        ".unit.test_oracle_wms_cli": ("TestsFlextTargetOracleWmsOracleWmsCli",),
+        ".unit.test_oracle_wms_init": ("TestsFlextTargetOracleWmsOracleWmsInit",),
+        ".unit.test_quality": ("TestsFlextTargetOracleWmsQuality",),
+        ".unit.test_sinks": ("TestsFlextTargetOracleWmsSinks",),
+        ".unit.test_stream": ("TestsFlextTargetOracleWmsStream",),
+        ".unit.test_structure": ("TestsFlextTargetOracleWmsStructure",),
+        ".unit.test_target": ("TestsFlextTargetOracleWmsTarget",),
+        ".unit.test_wms_patterns": ("TestsFlextTargetOracleWmsWmsPatterns",),
+        ".unit.test_workflow": ("TestsFlextTargetOracleWmsWorkflow",),
+        ".utilities": ("TestsFlextTargetOracleWmsUtilities", "u"),
+        "flext_tests": ("d", "e", "h", "r", "td", "tf", "tk", "tm", "tv", "x"),
+    }),
+    exclude_names=(
+        "cleanup_submodule_namespace",
+        "install_lazy_exports",
+        "lazy_getattr",
+        "logger",
+        "merge_lazy_imports",
+        "output",
+        "output_reporting",
+        "pytest_addoption",
+        "pytest_collect_file",
+        "pytest_collection_modifyitems",
+        "pytest_configure",
+        "pytest_runtest_setup",
+        "pytest_runtest_teardown",
+        "pytest_sessionfinish",
+        "pytest_sessionstart",
+        "pytest_terminal_summary",
+        "pytest_warning_recorded",
+    ),
+    module_name=__name__,
+)
+
+
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, publish_all=False)
