@@ -528,11 +528,11 @@ def debug_ldif_processing(content: str):
 
 ### LDIF Processing Errors
 
-| Error Code | Description                | Solution                                  |
-| ---------- | -------------------------- | ----------------------------------------- |
-| `LDIF_001` | Invalid LDIF format        | Check LDIF syntax and structure           |
+| Error Code | Description                | Solution                                   |
+| ---------- | -------------------------- | ------------------------------------------ |
+| `LDIF_001` | Invalid LDIF format        | Check LDIF syntax and structure            |
 | `LDIF_002` | Server compatibility error | Enable server servers or check server type |
-| `LDIF_003` | Schema validation failed   | Verify schema definitions and attributes  |
+| `LDIF_003` | Schema validation failed   | Verify schema definitions and attributes   |
 
 ### API Errors
 
