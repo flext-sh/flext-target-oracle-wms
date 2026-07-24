@@ -73,10 +73,7 @@ class TestsFlextTargetOracleWmsOracleWmsCli:
 
     def test_main_with_config_arg(self, tmp_path: Path) -> None:
         config_path = _write_config_file(_valid_config_json(), tmp_path)
-        main(
-            argv=["target-oracle-wms", "--config", config_path],
-            message_lines=[],
-        )
+        main(argv=["target-oracle-wms", "--config", config_path], message_lines=[])
 
     def test_main_with_bad_config_raises(self) -> None:
         with pytest.raises(FileNotFoundError):

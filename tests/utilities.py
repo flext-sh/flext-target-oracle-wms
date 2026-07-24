@@ -13,10 +13,7 @@ from flext_tests import FlextTestsUtilities
 from flext_target_oracle_wms import u
 
 
-class TestsFlextTargetOracleWmsUtilities(
-    FlextTestsUtilities,
-    u,
-):
+class TestsFlextTargetOracleWmsUtilities(FlextTestsUtilities, u):
     """Test utilities for flext-target-oracle-wms."""
 
 

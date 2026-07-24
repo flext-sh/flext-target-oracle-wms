@@ -24,24 +24,19 @@ class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
     """Orchestrator for target-oracle-wms. All behavior from base via MRO."""
 
     target_name: Annotated[
-        t.NonEmptyStr,
-        u.Field(description="Canonical Singer target identifier."),
+        t.NonEmptyStr, u.Field(description="Canonical Singer target identifier.")
     ] = "target-oracle-wms"
 
     @override
     def create_sink(
-        self,
-        stream_name: str,
-        schema: t.JsonMapping,
+        self, stream_name: str, schema: t.JsonMapping
     ) -> p.Meltano.SingerDrainSink:
         """Create an Oracle WMS sink for a stream."""
         target_config: t.ScalarMapping = (
             self.settings_overrides if self.settings_overrides is not None else {}
         )
         return FlextTargetOracleWmsServiceRuntime.create_sink(
-            stream_name=stream_name,
-            schema=schema,
-            target_config=target_config,
+            stream_name=stream_name, schema=schema, target_config=target_config
         )
 
 

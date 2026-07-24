@@ -47,7 +47,7 @@ def run_target_creation_example() -> t.Scalar:
             "base_url": TARGET_CONFIG["base_url"],
             "username": TARGET_CONFIG["username"],
             "password": TARGET_CONFIG["password"],
-        },
+        }
     })
     target = u.TargetOracleWms.Target(config)
     logger.info("Created Oracle WMS target: %s", target.name)

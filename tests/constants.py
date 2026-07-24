@@ -32,7 +32,7 @@ class TestsFlextTargetOracleWmsConstants(c, FlextTestsConstants):
             SRC_DIR: Final[str] = "src"
             PACKAGE_DIR: Final[str] = "flext_target_oracle_wms"
             ALLOWED_MODULE_FUNCTIONS: Final[dict[str, frozenset[str]]] = {
-                "cli.py": frozenset({"main"}),
+                "cli.py": frozenset({"main"})
             }
             PERF_ITERATIONS: Final[int] = 500
             PERF_THRESHOLD_SEC: Final[float] = 5.0

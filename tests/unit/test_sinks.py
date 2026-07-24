@@ -19,7 +19,7 @@ def _valid_config() -> t.JsonMapping:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        },
+        }
     }
 
 
@@ -27,16 +27,13 @@ def _schema_msg(stream: str = "items") -> p.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage(
         type=c.Meltano.SingerMessageType.SCHEMA,
         stream=stream,
-        schema_definition={
-            "type": "object",
-        },
+        schema_definition={"type": "object"},
         key_properties=["id"],
     )
 
 
 def _record_msg(
-    stream: str = "items",
-    record: t.JsonMapping | None = None,
+    stream: str = "items", record: t.JsonMapping | None = None
 ) -> p.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage(
         type=c.Meltano.SingerMessageType.RECORD,

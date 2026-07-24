@@ -14,22 +14,18 @@ from tests import c, m, p, t, u
 
 
 def _schema_msg(
-    stream: str = "test_stream",
-    key_properties: t.StrSequence | None = None,
+    stream: str = "test_stream", key_properties: t.StrSequence | None = None
 ) -> p.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage(
         type=c.Meltano.SingerMessageType.SCHEMA,
         stream=stream,
-        schema_definition={
-            "type": "object",
-        },
+        schema_definition={"type": "object"},
         key_properties=key_properties or ["id"],
     )
 
 
 def _record_msg(
-    stream: str = "test_stream",
-    record: t.JsonMapping | None = None,
+    stream: str = "test_stream", record: t.JsonMapping | None = None
 ) -> p.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage(
         type=c.Meltano.SingerMessageType.RECORD,
@@ -43,32 +39,28 @@ class TestsFlextTargetOracleWmsWmsPatterns:
 
     def test_string_type(self) -> None:
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "string",
-            "hello",
+            "string", "hello"
         )
         tm.ok(result)
         tm.that(result.value, eq="hello")
 
     def test_integer_type(self) -> None:
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "integer",
-            42,
+            "integer", 42
         )
         tm.ok(result)
         tm.that(result.value, eq=42)
 
     def test_number_type_float(self) -> None:
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "number",
-            math.pi,
+            "number", math.pi
         )
         tm.ok(result)
         tm.that(result.value, eq=math.pi)
 
     def test_none_value(self) -> None:
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "string",
-            "",
+            "string", ""
         )
         tm.ok(result)
         tm.that(result.value, eq="")
@@ -76,8 +68,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
     def test_object_type_serializes_to_json(self) -> None:
         data = '{"nested": "value"}'
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "object",
-            data,
+            "object", data
         )
         tm.ok(result)
         tm.that(result.value, none=False)
@@ -86,8 +77,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
     def test_array_type_serializes_to_json(self) -> None:
         data = "[1, 2, 3]"
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "array",
-            data,
+            "array", data
         )
         tm.ok(result)
         tm.that(result.value, none=False)
@@ -95,8 +85,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
 
     def test_boolean_type_becomes_string(self) -> None:
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "boolean",
-            True,
+            "boolean", True
         )
         tm.ok(result)
         tm.that(result.value, eq="True")
@@ -104,8 +93,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
     def test_uppercases_record_keys(self) -> None:
         transformer = u.TargetOracleWms.WMSDataTransformer()
         result = transformer.transform_record(
-            _record_msg("s", {"name": "alice", "age": "30"}),
-            _schema_msg("s"),
+            _record_msg("s", {"name": "alice", "age": "30"}), _schema_msg("s")
         )
         tm.ok(result)
         tm.that(result.value, none=False)
@@ -115,8 +103,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
     def test_preserves_stream_name(self) -> None:
         transformer = u.TargetOracleWms.WMSDataTransformer()
         result = transformer.transform_record(
-            _record_msg("orders", {"id": "1"}),
-            _schema_msg("orders"),
+            _record_msg("orders", {"id": "1"}), _schema_msg("orders")
         )
         tm.ok(result)
         tm.that(result.value, none=False)
@@ -126,8 +113,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         converter = u.TargetOracleWms.WMSTypeConverter()
         transformer = u.TargetOracleWms.WMSDataTransformer(type_converter=converter)
         result = transformer.transform_record(
-            _record_msg("s", {"qty": 10}),
-            _schema_msg("s"),
+            _record_msg("s", {"qty": 10}), _schema_msg("s")
         )
         tm.ok(result)
         tm.that(result.value, none=False)

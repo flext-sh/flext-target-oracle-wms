@@ -25,9 +25,7 @@ class FlextTargetOracleWmsCli:
         self.version = __version__
 
     def execute(
-        self,
-        message_lines: t.StrSequence | None = None,
-        settings: str | None = None,
+        self, message_lines: t.StrSequence | None = None, settings: str | None = None
     ) -> p.Result[bool]:
         """Execute target run.
 
@@ -46,15 +44,11 @@ class FlextTargetOracleWmsCli:
             self
             ._prepare_config(settings)
             .map_error(lambda e: e or "Configuration failed")
-            .flat_map(
-                lambda config: self._execute_target_pipeline(config, lines),
-            )
+            .flat_map(lambda config: self._execute_target_pipeline(config, lines))
         )
 
     def _execute_target_pipeline(
-        self,
-        settings: p.TargetOracleWms.WmsTargetConfig,
-        message_lines: t.StrSequence,
+        self, settings: p.TargetOracleWms.WmsTargetConfig, message_lines: t.StrSequence
     ) -> p.Result[bool]:
         """Set up, process the message lines, and clean up the target runtime."""
         target = FlextTargetOracleWmsUtilitiesClient.Target(settings)
@@ -67,8 +61,7 @@ class FlextTargetOracleWmsCli:
         return self._finalize_target(target)
 
     def _finalize_target(
-        self,
-        target: FlextTargetOracleWmsUtilitiesClient.Target,
+        self, target: FlextTargetOracleWmsUtilitiesClient.Target
     ) -> p.Result[bool]:
         """Finalize target processing."""
         return target.cleanup()
@@ -83,15 +76,14 @@ class FlextTargetOracleWmsCli:
         return content
 
     def _prepare_config(
-        self,
-        config_path: str | None,
+        self, config_path: str | None
     ) -> p.Result[p.TargetOracleWms.WmsTargetConfig]:
         """Load settings from file or build defaults."""
         if config_path is not None:
             return r[p.TargetOracleWms.WmsTargetConfig].ok(
                 m.TargetOracleWms.WmsTargetConfig.model_validate_json(
-                    self._load_config(config_path),
-                ),
+                    self._load_config(config_path)
+                )
             )
         return r[p.TargetOracleWms.WmsTargetConfig].ok(
             m.TargetOracleWms.WmsTargetConfig.model_validate({
@@ -99,14 +91,13 @@ class FlextTargetOracleWmsCli:
                     "base_url": "https://invalid.wms.ocs.oraclecloud.com",
                     "username": "oracle",
                     "password": "oracle",
-                },
-            }),
+                }
+            })
         )
 
 
 def main(
-    argv: t.StrSequence | None = None,
-    message_lines: t.StrSequence | None = None,
+    argv: t.StrSequence | None = None, message_lines: t.StrSequence | None = None
 ) -> None:
     """Run CLI command from process arguments.
 

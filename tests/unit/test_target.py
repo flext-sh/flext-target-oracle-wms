@@ -18,7 +18,7 @@ def _valid_config() -> t.JsonMapping:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        },
+        }
     }
 
 
@@ -28,14 +28,13 @@ def _schema_line(
     key_properties: t.StrSequence | None = None,
 ) -> str:
     json_line: str = _schema_msg(stream, properties, key_properties).model_dump_json(
-        by_alias=True,
+        by_alias=True
     )
     return json_line
 
 
 def _record_line(
-    stream: str = "test_stream",
-    record: t.JsonMapping | None = None,
+    stream: str = "test_stream", record: t.JsonMapping | None = None
 ) -> str:
     json_line: str = _record_msg(stream, record).model_dump_json()
     return json_line
@@ -55,16 +54,13 @@ def _schema_msg(
     return m.Meltano.SingerSchemaMessage(
         type=c.Meltano.SingerMessageType.SCHEMA,
         stream=stream,
-        schema_definition={
-            "type": "object",
-        },
+        schema_definition={"type": "object"},
         key_properties=key_properties or ["id"],
     )
 
 
 def _record_msg(
-    stream: str = "test_stream",
-    record: t.JsonMapping | None = None,
+    stream: str = "test_stream", record: t.JsonMapping | None = None
 ) -> p.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage(
         type=c.Meltano.SingerMessageType.RECORD,
@@ -73,9 +69,7 @@ def _record_msg(
     )
 
 
-def _state_msg(
-    state: t.JsonMapping | None = None,
-) -> p.Meltano.SingerStateMessage:
+def _state_msg(state: t.JsonMapping | None = None) -> p.Meltano.SingerStateMessage:
     empty_bookmarks: dict[str, t.JsonValue] = {}
     default_state: dict[str, t.JsonValue] = {"bookmarks": empty_bookmarks}
     resolved_state: dict[str, t.JsonValue] = (
@@ -195,8 +189,7 @@ class TestsFlextTargetOracleWmsTarget:
         target = u.TargetOracleWms.Target(_valid_config())
         lines = [
             _schema_line(
-                "orders",
-                {"id": {"type": "string"}, "name": {"type": "string"}},
+                "orders", {"id": {"type": "string"}, "name": {"type": "string"}}
             ),
             _record_line("orders", {"id": "1", "name": "test"}),
             _state_line({"bookmarks": {"orders": "1"}}),

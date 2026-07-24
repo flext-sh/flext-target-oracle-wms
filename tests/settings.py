@@ -8,8 +8,7 @@ from flext_target_oracle_wms import FlextTargetOracleWmsSettings
 
 
 class TestsFlextTargetOracleWmsSettings(
-    FlextTargetOracleWmsSettings,
-    FlextTestsSettings,
+    FlextTargetOracleWmsSettings, FlextTestsSettings
 ):
     """Target Oracle WMS settings extended with the shared test namespace."""
 

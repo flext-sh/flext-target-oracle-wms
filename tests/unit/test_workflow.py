@@ -20,14 +20,12 @@ def _valid_config() -> t.JsonMapping:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        },
+        }
     }
 
 
 def _schema_line(
-    stream: str,
-    props: t.MappingKV[str, t.StrMapping],
-    keys: t.StrSequence,
+    stream: str, props: t.MappingKV[str, t.StrMapping], keys: t.StrSequence
 ) -> str:
     _ = props
     return _stdlib_json.dumps({
@@ -86,9 +84,7 @@ class TestsFlextTargetOracleWmsWorkflow:
             _schema_line("s", {"id": {"type": "string"}}, ["id"]),
             _record_line("s", {"id": "1"}),
             _schema_line(
-                "s",
-                {"id": {"type": "string"}, "name": {"type": "string"}},
-                ["id"],
+                "s", {"id": {"type": "string"}, "name": {"type": "string"}}, ["id"]
             ),
             _record_line("s", {"id": "2", "name": "updated"}),
         ]
