@@ -55,7 +55,7 @@ Demonstrates fundamental Oracle WMS target usage with real configuration:
 
 **Key Patterns:**
 
-```python
+```text
 from __future__ import annotations
 
 # DRY: Real flext-* imports
@@ -96,7 +96,7 @@ Shows sophisticated configuration and custom business logic:
 
 **Key Patterns:**
 
-```python
+```text
 from __future__ import annotations
 
 
@@ -138,7 +138,7 @@ Demonstrates optimized batch processing for large-scale data:
 
 **Key Patterns:**
 
-```python
+```text
 from __future__ import annotations
 
 # Performance optimization
