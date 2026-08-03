@@ -5,12 +5,14 @@ from __future__ import annotations
 import importlib
 import inspect
 import warnings
-from collections.abc import Iterator
 from pathlib import Path
-from types import ModuleType
+from typing import TYPE_CHECKING
 
-from tests.constants import c
-from tests.models import m
+from tests import c, m
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+    from types import ModuleType
 
 
 def _package_root() -> Path:
@@ -81,8 +83,7 @@ class TestsFlextTargetOracleWmsModuleGovernance:
         for module_path in _iter_package_modules():
             relative_module_path = str(module_path.relative_to(_package_root()))
             allowed_functions = c.TargetOracleWms.Tests.ALLOWED_MODULE_FUNCTIONS.get(
-                relative_module_path,
-                frozenset(),
+                relative_module_path, frozenset()
             )
             module = _import_package_module(module_path)
             if module is None:
@@ -94,7 +95,7 @@ class TestsFlextTargetOracleWmsModuleGovernance:
             )
             if unexpected_functions:
                 violations.append(
-                    f"{module_path.relative_to(_package_root().parent)}: {unexpected_functions}",
+                    f"{module_path.relative_to(_package_root().parent)}: {unexpected_functions}"
                 )
         assert not violations, (
             f"Top-level functions are forbidden outside approved entrypoints: {violations}"

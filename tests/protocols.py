@@ -11,15 +11,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from flext_target_oracle_wms import p
 from flext_tests import FlextTestsProtocols
 
-from flext_target_oracle_wms import p
 
-
-class TestsFlextTargetOracleWmsProtocols(
-    FlextTestsProtocols,
-    p,
-):
+class TestsFlextTargetOracleWmsProtocols(FlextTestsProtocols, p):
     """Test protocols combining TestsFlextProtocols and project-specific protocols."""
 
     class TargetOracleWms(p.TargetOracleWms):

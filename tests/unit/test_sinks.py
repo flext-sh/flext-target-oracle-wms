@@ -8,10 +8,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from tests.constants import c
-from tests.models import m
-from tests.typings import t
-from tests.utilities import u
+from typing import TYPE_CHECKING
+
+from flext_tests import tm
+from tests import c, m, u
+
+if TYPE_CHECKING:
+    from tests import t
 
 
 def _valid_config() -> t.JsonMapping:
@@ -20,7 +23,7 @@ def _valid_config() -> t.JsonMapping:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        },
+        }
     }
 
 
@@ -28,16 +31,13 @@ def _schema_msg(stream: str = "items") -> m.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage(
         type=c.Meltano.SingerMessageType.SCHEMA,
         stream=stream,
-        schema_definition={
-            "type": "object",
-        },
+        schema_definition={"type": "object"},
         key_properties=["id"],
     )
 
 
 def _record_msg(
-    stream: str = "items",
-    record: t.JsonMapping | None = None,
+    stream: str = "items", record: t.JsonMapping | None = None
 ) -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage(
         type=c.Meltano.SingerMessageType.RECORD,
@@ -51,19 +51,19 @@ class TestsFlextTargetOracleWmsSinks:
 
     def test_target_has_catalog_manager(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
-        assert isinstance(target.catalog_manager, u.TargetOracleWms.CatalogManager)
+        tm.that(target.catalog_manager, is_=u.TargetOracleWms.CatalogManager)
 
     def test_target_has_table_manager(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
-        assert isinstance(target.table_manager, u.TargetOracleWms.WMSTableManager)
+        tm.that(target.table_manager, is_=u.TargetOracleWms.WMSTableManager)
 
     def test_target_has_data_transformer(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
-        assert isinstance(target.data_transformer, u.TargetOracleWms.WMSDataTransformer)
+        tm.that(target.data_transformer, is_=u.TargetOracleWms.WMSDataTransformer)
 
     def test_target_has_stream_processor(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
-        assert isinstance(target.stream_processor, u.TargetOracleWms.StreamProcessor)
+        tm.that(target.stream_processor, is_=u.TargetOracleWms.StreamProcessor)
 
     def test_stream_processor_uses_table_manager(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
@@ -77,17 +77,17 @@ class TestsFlextTargetOracleWmsSinks:
         target = u.TargetOracleWms.Target(_valid_config())
         schema = _schema_msg("items")
         target.handle_schema_message(schema)
-        assert target.catalog_manager.get_stream("items").success
-        assert target.table_manager.get_table_name("items").success
+        tm.ok(target.catalog_manager.get_stream("items"))
+        tm.ok(target.table_manager.get_table_name("items"))
 
     def test_table_name_is_uppercased_stream(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
         schema = _schema_msg("orders")
         target.handle_schema_message(schema)
         table_result = target.table_manager.get_table_name("orders")
-        assert table_result.success
-        assert table_result.value is not None
-        assert table_result.value == "ORDERS"
+        tm.ok(table_result)
+        tm.that(table_result.value, none=False)
+        tm.that(table_result.value, eq="ORDERS")
 
     def test_record_keys_uppercased(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
@@ -95,4 +95,4 @@ class TestsFlextTargetOracleWmsSinks:
         target.handle_schema_message(schema)
         record = _record_msg("s", {"name": "test"})
         result = target.handle_record_message(record)
-        assert result.success
+        tm.ok(result)

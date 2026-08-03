@@ -14,12 +14,10 @@ class FlextTargetFactory:
     """Factory for creating configured target instances."""
 
     logger: ClassVar[p.Logger] = u.fetch_logger(__name__)
-    PRESETS: ClassVar[t.MappingKV[str, t.JsonMapping]] = factory.PRESETS
 
     @classmethod
     def create_from_config_dict(
-        cls,
-        settings: t.JsonMapping,
+        cls, settings: t.JsonMapping
     ) -> p.Result[u.TargetOracleWms.Target]:
         """Create target from plain dictionary settings via Pydantic validation."""
         known_keys = {"base_url", "username", "password", "environment", "preset"}
@@ -35,8 +33,7 @@ class FlextTargetFactory:
 
     @classmethod
     def create_target(
-        cls,
-        request: m.TargetOracleWms.TargetCreationRequest,
+        cls, request: m.TargetOracleWms.TargetCreationRequest
     ) -> p.Result[u.TargetOracleWms.Target]:
         """Create target instance from validated request."""
         settings: t.MutableJsonMapping = {
@@ -61,12 +58,11 @@ class FlextTargetMonitoringFactory:
         self.monitor_name = monitor_name
 
     def create_monitored_target(
-        self,
-        request: m.TargetOracleWms.MonitoredTargetCreationRequest,
+        self, request: m.TargetOracleWms.MonitoredTargetCreationRequest
     ) -> p.Result[u.TargetOracleWms.Target]:
         """Create monitored target using base factory."""
         base_request = m.TargetOracleWms.TargetCreationRequest.model_validate(
-            request.model_dump(exclude={"monitor_name"}),
+            request.model_dump(exclude={"monitor_name"})
         )
         return FlextTargetFactory.create_target(base_request)
 
@@ -87,7 +83,4 @@ class FlextTargetMonitoringFactory:
         return factory.create_monitored_target(request)
 
 
-__all__: list[str] = [
-    "FlextTargetFactory",
-    "FlextTargetMonitoringFactory",
-]
+__all__: list[str] = ["FlextTargetFactory", "FlextTargetMonitoringFactory"]

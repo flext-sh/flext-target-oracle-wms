@@ -7,11 +7,14 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import json as _stdlib_json
-from unittest.mock import MagicMock, patch
+from typing import TYPE_CHECKING
 
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
-from tests.typings import t
-from tests.utilities import u
+from flext_tests import tm
+from tests import u
+
+if TYPE_CHECKING:
+    from tests import t
 
 
 def _valid_config() -> t.JsonMapping:
@@ -20,14 +23,12 @@ def _valid_config() -> t.JsonMapping:
             "base_url": "https://test.wms.example.com",
             "username": "user",
             "password": "pass",
-        },
+        }
     }
 
 
 def _schema_line(
-    stream: str,
-    props: t.MappingKV[str, t.StrMapping],
-    keys: t.StrSequence,
+    stream: str, props: t.MappingKV[str, t.StrMapping], keys: t.StrSequence
 ) -> str:
     _ = props
     return _stdlib_json.dumps({
@@ -66,7 +67,7 @@ class TestsFlextTargetOracleWmsWorkflow:
             _state_line({"bookmarks": {"inventory": "2"}}),
         ]
         result = target.process_lines(lines)
-        assert result.success
+        tm.ok(result)
 
     def test_multiple_stream_workflow(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
@@ -78,7 +79,7 @@ class TestsFlextTargetOracleWmsWorkflow:
             _state_line({"bookmarks": {}}),
         ]
         result = target.process_lines(lines)
-        assert result.success
+        tm.ok(result)
 
     def test_schema_update_mid_stream(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
@@ -86,39 +87,35 @@ class TestsFlextTargetOracleWmsWorkflow:
             _schema_line("s", {"id": {"type": "string"}}, ["id"]),
             _record_line("s", {"id": "1"}),
             _schema_line(
-                "s",
-                {"id": {"type": "string"}, "name": {"type": "string"}},
-                ["id"],
+                "s", {"id": {"type": "string"}, "name": {"type": "string"}}, ["id"]
             ),
             _record_line("s", {"id": "2", "name": "updated"}),
         ]
         result = target.process_lines(lines)
-        assert result.success
+        tm.ok(result)
 
     def test_state_only_workflow(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
         lines = [_state_line({"bookmarks": {}})]
         result = target.process_lines(lines)
-        assert result.success
+        tm.ok(result)
 
-    @patch("flext_target_oracle_wms.cli.sys.stdin", ())
     def test_cli_execute_empty_stdin(self) -> None:
+        # NOTE (multi-agent, bead mro-nwc.19): inject empty message lines via the CLI's
+        # public DI seam instead of patching sys.stdin (real behavior, no mock).
         cli = FlextTargetOracleWmsCli()
-        result = cli.execute()
-        assert result.success
+        result = cli.execute(message_lines=[])
+        tm.ok(result)
 
-    @patch("flext_target_oracle_wms.cli.sys.stdin")
-    def test_cli_execute_with_messages(self, mock_stdin: MagicMock) -> None:
+    def test_cli_execute_with_messages(self) -> None:
         lines = [
-            _schema_line("test", {"id": {"type": "string"}}, ["id"]) + "\n",
-            _record_line("test", {"id": "1"}) + "\n",
-            _state_line({"bookmarks": {}}) + "\n",
+            _schema_line("test", {"id": {"type": "string"}}, ["id"]),
+            _record_line("test", {"id": "1"}),
+            _state_line({"bookmarks": {}}),
         ]
-        mock_stdin.__iter__ = MagicMock(return_value=iter(lines))
-        mock_stdin.__next__ = MagicMock(side_effect=lines)
         cli = FlextTargetOracleWmsCli()
-        result = cli.execute()
-        assert result.success
+        result = cli.execute(message_lines=lines)
+        tm.ok(result)
 
     def test_malformed_json_stops_processing(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
@@ -127,10 +124,10 @@ class TestsFlextTargetOracleWmsWorkflow:
             "NOT VALID JSON",
         ]
         result = target.process_lines(lines)
-        assert result.failure
+        tm.fail(result)
 
     def test_record_for_unknown_stream_fails(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
         lines = [_record_line("unknown_stream", {"id": "1"})]
         result = target.process_lines(lines)
-        assert result.failure
+        tm.fail(result)

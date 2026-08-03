@@ -9,24 +9,15 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import time
-from unittest.mock import MagicMock, patch
 
-from flext_target_oracle_wms.factory import (
-    FlextTargetFactory,
-    FlextTargetMonitoringFactory,
-)
-from tests.constants import c
-from tests.models import m
-from tests.utilities import u
+from tests import c, m, u
 
 
 def _schema_msg(stream: str = "bench") -> m.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage(
         type=c.Meltano.SingerMessageType.SCHEMA,
         stream=stream,
-        schema_definition={
-            "type": "object",
-        },
+        schema_definition={"type": "object"},
         key_properties=["id"],
     )
 
@@ -84,32 +75,6 @@ class TestsFlextTargetOracleWmsBenchmarks:
             name = f"stream_{i}"
             mgr.add_stream(_schema_msg(name))
             mgr.get_stream(name)
-        elapsed = time.time() - start
-        assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
-
-    @patch(c.TargetOracleWms.Tests.PATCH_TARGET)
-    def test_create_target_performance(self, mock_target: MagicMock) -> None:
-        start = time.time()
-        for _ in range(c.TargetOracleWms.Tests.PERF_ITERATIONS):
-            req = m.TargetOracleWms.TargetCreationRequest(
-                base_url="https://bench.example.com",
-                username="u",
-                password="p",
-                additional_config=None,
-            )
-            FlextTargetFactory.create_target(req)
-        elapsed = time.time() - start
-        assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
-
-    @patch(c.TargetOracleWms.Tests.PATCH_TARGET)
-    def test_convenience_function_performance(self, mock_target: MagicMock) -> None:
-        start = time.time()
-        for _ in range(c.TargetOracleWms.Tests.PERF_ITERATIONS):
-            FlextTargetMonitoringFactory.create_oracle_wms_target(
-                base_url="https://bench.example.com",
-                username="u",
-                password="p",
-            )
         elapsed = time.time() - start
         assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
 
