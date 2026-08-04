@@ -2,6 +2,10 @@
 
 # flext_target_oracle_wms.api
 
+<!-- TOC START -->
+- No sections found
+<!-- TOC END -->
+
 ::: flext_target_oracle_wms.api
     options:
       show_root_heading: true
