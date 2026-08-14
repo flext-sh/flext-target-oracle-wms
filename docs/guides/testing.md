@@ -28,7 +28,7 @@
   - [Load Testing](#load-testing)
   - [Memory Testing](#memory-testing)
 - [Test Data Management](#test-data-management)
-  - [Test Fixtures Directory](#test-fixtures-directory)
+  - [Test Fixtures Directory```](#test-fixtures-directory)
   - [Loading Test Data](#loading-test-data)
 - [Continuous Integration](#continuous-integration)
   - [GitHub Actions Workflow](#github-actions-workflow)
@@ -217,9 +217,7 @@ pytest tests/e2e/         # End-to-end tests only
 # Run with markers
 pytest -m unit           # Unit tests
 pytest -m integration    # Integration tests
-pytest -m "not slow"     # Skip slow tests
-```
-
+pytest -m "not slow"     # Skip slow tests```
 ### Coverage Analysis
 
 Coverage thresholds and source directories are configured in each project's `pyproject.toml` under `[tool.coverage]`.
@@ -230,9 +228,7 @@ Use `make test` which reads these automatically.
 make test
 
 # HTML coverage report
-pytest --cov --cov-report=html
-```
-
+pytest --cov --cov-report=html```
 ### Parallel Test Execution
 
 ```bash
@@ -410,9 +406,7 @@ def test_memory_usage():
     assert memory_used < 100 * 1024 * 1024  # 100MB```
 ## Test Data Management
 
-### Test Fixtures Directory
-
-```
+### Test Fixtures Directory```
 tests/
 ├── fixtures/
 │   ├── ldif/
@@ -424,9 +418,7 @@ tests/
 │   │   └── prod.yaml
 │   └── data/
 │       ├── users.json
-│       └── schema.json
-```
-
+│       └── schema.json```
 ### Loading Test Data
 
 ```python
@@ -492,9 +484,7 @@ jobs:
       - name: Upload coverage
         uses: codecov/codecov-action@v3
         with:
-          file: ./coverage.xml
-```
-
+          file: ./coverage.xml```
 ## Best Practices
 
 ### 1. Test Naming
