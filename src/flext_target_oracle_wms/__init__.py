@@ -1,9 +1,11 @@
-# @generated AUTO-GENERATED FILE — Regenerate with: make gen
+# AUTO-GENERATED FILE — Regenerate with: make gen
 """Flext Target Oracle Wms package."""
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+
+from types import MappingProxyType
 
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
@@ -17,65 +19,27 @@ from .__version__ import __version__ as __version__
 from .__version__ import __version_info__ as __version_info__
 
 if TYPE_CHECKING:
-    from flext_meltano import d as d
-    from flext_meltano import e as e
-    from flext_meltano import h as h
-    from flext_meltano import r as r
-    from flext_meltano import s as s
-    from flext_meltano import x as x
+    from flext_meltano import d, e, h, r, s, x
 
-    from ._config import FlextTargetOracleWmsConfig as FlextTargetOracleWmsConfig
-    from ._config import config as config
-    from ._settings import FlextTargetOracleWmsSettings as FlextTargetOracleWmsSettings
-    from ._settings import settings as settings
-    from .api import FlextTargetOracleWmsService as FlextTargetOracleWmsService
-    from .api import target_oracle_wms as target_oracle_wms
-    from .cli import FlextTargetOracleWmsCli as FlextTargetOracleWmsCli
-    from .cli import main as main
+    from ._config import FlextTargetOracleWmsConfig, config
+    from ._settings import FlextTargetOracleWmsSettings, settings
+    from .api import FlextTargetOracleWmsService, target_oracle_wms
+    from .cli import FlextTargetOracleWmsCli, main
     from .constants import (
-        FlextTargetOracleWmsConstants as FlextTargetOracleWmsConstants,
+        FlextTargetOracleWmsConstants,
+        FlextTargetOracleWmsConstants as c,
     )
-
-    c: type[FlextTargetOracleWmsConstants]
-    from .models import FlextTargetOracleWmsModels as FlextTargetOracleWmsModels
-
-    m: type[FlextTargetOracleWmsModels]
+    from .models import FlextTargetOracleWmsModels, FlextTargetOracleWmsModels as m
     from .protocols import (
-        FlextTargetOracleWmsProtocols as FlextTargetOracleWmsProtocols,
+        FlextTargetOracleWmsProtocols,
+        FlextTargetOracleWmsProtocols as p,
     )
-
-    p: type[FlextTargetOracleWmsProtocols]
-    from .typings import FlextTargetOracleWmsTypes as FlextTargetOracleWmsTypes
-
-    t: type[FlextTargetOracleWmsTypes]
+    from .typings import FlextTargetOracleWmsTypes, FlextTargetOracleWmsTypes as t
     from .utilities import (
-        FlextTargetOracleWmsUtilities as FlextTargetOracleWmsUtilities,
+        FlextTargetOracleWmsUtilities,
+        FlextTargetOracleWmsUtilities as u,
     )
-
-    u: type[FlextTargetOracleWmsUtilities]
-
-_LAZY_MODULES: dict[str, tuple[str, ...]] = {
-    "._config": ("FlextTargetOracleWmsConfig", "config"),
-    "._settings": ("FlextTargetOracleWmsSettings", "settings"),
-    ".api": ("FlextTargetOracleWmsService", "target_oracle_wms"),
-    ".cli": ("FlextTargetOracleWmsCli", "main"),
-    ".constants": ("FlextTargetOracleWmsConstants", "c"),
-    ".models": ("FlextTargetOracleWmsModels", "m"),
-    ".protocols": ("FlextTargetOracleWmsProtocols", "p"),
-    ".typings": ("FlextTargetOracleWmsTypes", "t"),
-    ".utilities": ("FlextTargetOracleWmsUtilities", "u"),
-    "flext_meltano": ("d", "e", "h", "r", "s", "x"),
-}
-
-
-_LAZY_ALIAS_GROUPS: dict[str, tuple[tuple[str, str], ...]] = {}
-
-
-_LAZY_IMPORTS = build_lazy_import_map(
-    _LAZY_MODULES, alias_groups=_LAZY_ALIAS_GROUPS, sort_keys=False
-)
-
-_PUBLIC_EXPORTS: tuple[str, ...] = (
+__all__: tuple[str, ...] = (
     "FlextTargetOracleWmsCli",
     "FlextTargetOracleWmsConfig",
     "FlextTargetOracleWmsConstants",
@@ -110,6 +74,26 @@ _PUBLIC_EXPORTS: tuple[str, ...] = (
     "x",
 )
 
-__all__: tuple[str, ...] = tuple(_PUBLIC_EXPORTS)
-
-install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)
+install_lazy_exports(
+    __name__,
+    globals(),
+    MappingProxyType(
+        build_lazy_import_map(
+            MappingProxyType({
+                "._config": ("FlextTargetOracleWmsConfig", "config"),
+                "._settings": ("FlextTargetOracleWmsSettings", "settings"),
+                ".api": ("FlextTargetOracleWmsService", "target_oracle_wms"),
+                ".cli": ("FlextTargetOracleWmsCli", "main"),
+                ".constants": ("FlextTargetOracleWmsConstants", "c"),
+                ".models": ("FlextTargetOracleWmsModels", "m"),
+                ".protocols": ("FlextTargetOracleWmsProtocols", "p"),
+                ".typings": ("FlextTargetOracleWmsTypes", "t"),
+                ".utilities": ("FlextTargetOracleWmsUtilities", "u"),
+                "flext_meltano": ("d", "e", "h", "r", "s", "x"),
+            }),
+            alias_groups=MappingProxyType({}),
+            sort_keys=False,
+        )
+    ),
+    public_exports=__all__,
+)
