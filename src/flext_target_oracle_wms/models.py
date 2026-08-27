@@ -7,7 +7,6 @@ Defines local TargetOracleWms namespace for target-specific models.
 from __future__ import annotations
 
 from collections.abc import MutableMapping
-from types import MappingProxyType
 from typing import Annotated, Literal
 
 # NOTE (multi-agent, bead mro-nwc.19): t / MutableMapping MUST stay RUNTIME imports.
@@ -71,7 +70,7 @@ class FlextTargetOracleWmsModels(meltano_m, m):
             stream_maps: Annotated[
                 MutableMapping[str, t.StrMapping],
                 u.Field(
-                    default_factory=lambda: MappingProxyType({}),
+                    default_factory=dict,
                     description="Singer stream map configurations.",
                 ),
             ]
@@ -101,7 +100,7 @@ class FlextTargetOracleWmsModels(meltano_m, m):
                     str, FlextTargetOracleWmsModels.TargetOracleWms.SingerFieldSchema
                 ],
                 u.Field(
-                    default_factory=lambda: MappingProxyType({}),
+                    default_factory=dict,
                     description="Singer schema field property definitions.",
                 ),
             ]
