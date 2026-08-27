@@ -67,11 +67,13 @@ class TestsFlextTargetOracleWmsFeatures:
         record = m.Meltano.SingerRecordMessage(
             type=c.Meltano.SingerMessageType.RECORD, stream="s", record={"name": "test"}
         )
-        schema = m.Meltano.SingerSchemaMessage(
-            type=c.Meltano.SingerMessageType.SCHEMA,
-            stream="s",
-            schema_definition={"type": "object"},
-            key_properties=["name"],
+        schema: m.Meltano.SingerSchemaMessage = (
+            m.Meltano.SingerSchemaMessage.model_validate({
+                "type": c.Meltano.SingerMessageType.SCHEMA,
+                "stream": "s",
+                "schema": {"type": "object"},
+                "key_properties": ["name"],
+            })
         )
         result = transformer.transform_record(record, schema)
         tm.ok(result)
