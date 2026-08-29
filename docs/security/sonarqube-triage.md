@@ -44,7 +44,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        22  concurrency:
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 2 · 🟡 MAJOR · VULNERABILITY · `githubactions:S8233`
 **Local**: `.github/workflows/docs.yml:19` · **Effort**: 5min
@@ -63,7 +63,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        23    group: pages
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 3 · 🟡 MAJOR · VULNERABILITY · `githubactions:S8233`
 **Local**: `.github/workflows/docs.yml:20` · **Effort**: 5min
@@ -82,7 +82,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        24    cancel-in-progress: false
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 4 · 🟡 MAJOR · VULNERABILITY · `text:S8565`
 **Local**: `pyproject.toml:-` · **Effort**: 5min
@@ -90,7 +90,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
 > Dependency versions are not predictable if the lock file (uv.lock, poetry.lock, pdm.lock or pylock.toml) is missing.
 
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 5 · 🟡 MAJOR · VULNERABILITY · `python:S2068`
 **Local**: `src/flext_target_oracle_wms/cli.py:93` · **Effort**: 30min
@@ -109,7 +109,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        97  
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 6 · 🟡 MAJOR · CODE_SMELL · `python:S5778`
 **Local**: `tests/unit/test_target.py:107` · **Effort**: 5min
@@ -128,7 +128,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       111              })
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 7 · ⚪ MINOR · CODE_SMELL · `python:S7504`
 **Local**: `conftest.py:20` · **Effort**: 5min
@@ -147,7 +147,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        24                  sys.modules.pop(module_name, None)
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 8 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_target_oracle_wms/utilities.py:24` · **Effort**: 2min
@@ -166,7 +166,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        28          CatalogManager = FlextTargetOracleWmsUtilitiesClient.CatalogManager
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 9 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_target_oracle_wms/utilities.py:25` · **Effort**: 2min
@@ -185,7 +185,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        29          StreamProcessor = FlextTargetOracleWmsUtilitiesClient.StreamProcessor
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 10 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_target_oracle_wms/utilities.py:28` · **Effort**: 2min
@@ -204,7 +204,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        32          WMSDataTransformer = FlextTargetOracleWmsUtilitiesHelpers.WMSDataTransformer
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 11 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_target_oracle_wms/utilities.py:29` · **Effort**: 2min
@@ -223,7 +223,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        33          WMSSchemaMapper = FlextTargetOracleWmsUtilitiesHelpers.WMSSchemaMapper
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 12 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_target_oracle_wms/utilities.py:30` · **Effort**: 2min
@@ -242,7 +242,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        34          WMSTableManager = FlextTargetOracleWmsUtilitiesHelpers.WMSTableManager
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 13 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_target_oracle_wms/utilities.py:31` · **Effort**: 2min
@@ -261,7 +261,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        35          WMSTypeConverter = FlextTargetOracleWmsUtilitiesHelpers.WMSTypeConverter
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 14 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_target_oracle_wms/utilities.py:32` · **Effort**: 2min
@@ -280,7 +280,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        36          create_record_message = staticmethod(
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 15 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_target_oracle_wms/utilities.py:33` · **Effort**: 2min
@@ -299,7 +299,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        37              FlextTargetOracleWmsUtilitiesHelpers.create_record_message
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 16 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_target_oracle_wms/utilities.py:34` · **Effort**: 2min
@@ -318,7 +318,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        38          )
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 17 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_target_oracle_wms/utilities.py:35` · **Effort**: 2min
@@ -337,7 +337,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        39          create_schema_message = staticmethod(
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 18 · ⚪ MINOR · CODE_SMELL · `python:S8714`
 **Local**: `tests/examples/test_examples.py:229` · **Effort**: 5min
@@ -356,7 +356,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       233                  pytest.fail(f"Syntax error in {example_file.name}: {e}")
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 19 · ⚪ MINOR · CODE_SMELL · `python:S8714`
 **Local**: `tests/examples/test_examples.py:234` · **Effort**: 5min
@@ -375,5 +375,4 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       238                  TypeError,
 ```
 
-**Decisão**: 
-
+**Decisão**: pendente
