@@ -42,9 +42,7 @@ class FlextTargetOracleWmsUtilitiesClient:
                 key_properties=typed_schema.key_properties,
             )
             if entry_result.failure:
-                return r[bool].fail(
-                    entry_result.error or f"Failed to register stream: {stream_name}"
-                )
+                return r[bool].from_failure(entry_result)
             self._catalog_entries[stream_name] = entry_result.value
             return r[bool].ok(value=True)
 
@@ -83,7 +81,7 @@ class FlextTargetOracleWmsUtilitiesClient:
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
             registration = self.table_manager.register_stream(typed_schema.stream)
             if registration.failure:
-                return r[bool].fail(registration.error or "Table registration failed")
+                return r[bool].from_failure(registration)
             return r[bool].ok(value=True)
 
         def process_record(
@@ -95,9 +93,7 @@ class FlextTargetOracleWmsUtilitiesClient:
             typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
             table_lookup = self.table_manager.get_table_name(typed_record.stream)
             if table_lookup.failure:
-                return r[m.Meltano.SingerRecordMessage].fail(
-                    table_lookup.error or "Table lookup failed"
-                )
+                return r[m.Meltano.SingerRecordMessage].from_failure(table_lookup)
             return self.data_transformer.transform_record(typed_record, schema_message)
 
     class Target:
@@ -148,7 +144,7 @@ class FlextTargetOracleWmsUtilitiesClient:
                 typed_record, schema_message
             )
             if process_result.failure:
-                return r[bool].fail(process_result.error or "Record processing failed")
+                return r[bool].from_failure(process_result)
             return r[bool].ok(value=True)
 
         def handle_schema_message(
@@ -201,12 +197,12 @@ class FlextTargetOracleWmsUtilitiesClient:
                 try:
                     message = t.CONTAINER_MAP_ADAPTER.validate_json(line)
                 except c.ValidationError as exc:
-                    return r[bool].fail(f"Invalid JSON message: {exc}")
+                    return r[bool].fail(f"Invalid JSON message: {exc}", exception=exc)
                 message_type = str(message.get("type", ""))
                 try:
                     dispatch_result = self._dispatch_message(message_type, message)
                 except c.ValidationError as exc:
-                    return r[bool].fail(f"Invalid Singer message: {exc}")
+                    return r[bool].fail(f"Invalid Singer message: {exc}", exception=exc)
                 if dispatch_result.failure:
                     return dispatch_result
             return r[bool].ok(value=True)

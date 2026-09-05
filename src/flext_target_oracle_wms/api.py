@@ -39,7 +39,4 @@ class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
             stream_name=stream_name, schema=schema, target_config=target_config
         )
 
-
-target_oracle_wms = FlextTargetOracleWmsService
-
-__all__: list[str] = ["FlextTargetOracleWmsService", "target_oracle_wms"]
+__all__: list[str] = ["FlextTargetOracleWmsService", ]
