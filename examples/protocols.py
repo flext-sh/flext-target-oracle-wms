@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from flext_core import FlextTargetOracleWmsProtocols
 
+
 class ExamplesFlextTargetOracleWmsProtocols(FlextTargetOracleWmsProtocols):
     """Protocol definitions for flexttargetoraclewms."""
 

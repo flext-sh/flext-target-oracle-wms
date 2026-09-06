@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from flext_core import FlextTargetOracleWmsTypes
 
+
 class ExamplesFlextTargetOracleWmsTypes(FlextTargetOracleWmsTypes):
     """Type aliases for flexttargetoraclewms."""
 
