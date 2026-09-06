@@ -33,12 +33,15 @@ def _schema_msg(
     schema: t.JsonMapping | None = None,
     key_properties: t.StrSequence | None = None,
 ) -> m.Meltano.SingerSchemaMessage:
-    return m.Meltano.SingerSchemaMessage(
-        type=c.Meltano.SingerMessageType.SCHEMA,
-        stream=stream,
-        schema_definition=schema or {"type": "object"},
-        key_properties=key_properties or ["id"],
+    message: m.Meltano.SingerSchemaMessage = (
+        m.Meltano.SingerSchemaMessage.model_validate({
+            "type": c.Meltano.SingerMessageType.SCHEMA,
+            "stream": stream,
+            "schema": schema or {"type": "object"},
+            "key_properties": key_properties or ["id"],
+        })
     )
+    return message
 
 
 def _record_msg(

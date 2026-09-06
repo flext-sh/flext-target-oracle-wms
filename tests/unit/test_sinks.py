@@ -28,12 +28,15 @@ def _valid_config() -> t.JsonMapping:
 
 
 def _schema_msg(stream: str = "items") -> m.Meltano.SingerSchemaMessage:
-    return m.Meltano.SingerSchemaMessage(
-        type=c.Meltano.SingerMessageType.SCHEMA,
-        stream=stream,
-        schema_definition={"type": "object"},
-        key_properties=["id"],
+    message: m.Meltano.SingerSchemaMessage = (
+        m.Meltano.SingerSchemaMessage.model_validate({
+            "type": c.Meltano.SingerMessageType.SCHEMA,
+            "stream": stream,
+            "schema": {"type": "object"},
+            "key_properties": ["id"],
+        })
     )
+    return message
 
 
 def _record_msg(

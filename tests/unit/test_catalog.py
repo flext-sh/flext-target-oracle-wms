@@ -23,12 +23,15 @@ def _make_schema_message(
     key_properties: t.StrSequence | None = None,
 ) -> m.Meltano.SingerSchemaMessage:
     """Build a valid SingerSchemaMessage dict."""
-    return m.Meltano.SingerSchemaMessage(
-        type=c.Meltano.SingerMessageType.SCHEMA,
-        stream=stream_name,
-        schema_definition=schema or {"type": "object"},
-        key_properties=key_properties or ["id"],
+    message: m.Meltano.SingerSchemaMessage = (
+        m.Meltano.SingerSchemaMessage.model_validate({
+            "type": c.Meltano.SingerMessageType.SCHEMA,
+            "stream": stream_name,
+            "schema": schema or {"type": "object"},
+            "key_properties": key_properties or ["id"],
+        })
     )
+    return message
 
 
 class TestsFlextTargetOracleWmsCatalog:
