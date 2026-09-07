@@ -103,9 +103,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
                     resolved_type, value
                 )
                 if converted.failure:
-                    return r[m.Meltano.SingerRecordMessage].fail(
-                        converted.error or "Conversion failed"
-                    )
+                    return r[m.Meltano.SingerRecordMessage].from_failure(converted)
                 transformed[key.upper()] = converted.value
             return r[m.Meltano.SingerRecordMessage].ok(
                 m.Meltano.SingerRecordMessage.model_validate({
@@ -131,10 +129,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
                 key_properties=typed_schema.key_properties,
             )
             if entry_result.failure:
-                return r[m.Meltano.SingerCatalogEntry].fail(
-                    entry_result.error
-                    or f"Failed to map schema for stream: {typed_schema.stream}"
-                )
+                return r[m.Meltano.SingerCatalogEntry].from_failure(entry_result)
             return r[m.Meltano.SingerCatalogEntry].ok(
                 entry_result.value.model_copy(
                     update={"table_name": typed_schema.stream.upper()}
