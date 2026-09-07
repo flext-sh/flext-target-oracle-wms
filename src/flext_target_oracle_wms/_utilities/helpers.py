@@ -46,9 +46,10 @@ class FlextTargetOracleWmsUtilitiesHelpers:
             """Convert a single source value according to Singer type."""
             if singer_type in {"object", "array"}:
                 return r[t.JsonValue].ok(
-                    t.json_value_adapter.dump_json(
-                        u.normalize_to_json_value(value)
-                    ).decode(c.DEFAULT_ENCODING)
+                    t
+                    .json_value_adapter()
+                    .dump_json(u.normalize_to_json_value(value))
+                    .decode(c.DEFAULT_ENCODING)
                 )
             if singer_type in {"integer", "number"}:
                 try:
