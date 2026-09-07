@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from flext_core import FlextTargetOracleWmsProtocols
+from flext_target_oracle_wms import FlextTargetOracleWmsProtocols
 
 
 class ExamplesFlextTargetOracleWmsProtocols(FlextTargetOracleWmsProtocols):

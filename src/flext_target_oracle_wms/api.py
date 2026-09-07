@@ -40,4 +40,6 @@ class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
         )
 
 
-__all__: list[str] = ["FlextTargetOracleWmsService"]
+target_oracle_wms = FlextTargetOracleWmsService
+
+__all__: list[str] = ["FlextTargetOracleWmsService", "target_oracle_wms"]

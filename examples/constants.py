@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from flext_core import FlextTargetOracleWmsConstants
+from flext_target_oracle_wms import FlextTargetOracleWmsConstants
 
 
 class ExamplesFlextTargetOracleWmsConstants(FlextTargetOracleWmsConstants):
