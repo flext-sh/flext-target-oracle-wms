@@ -17,18 +17,19 @@
 - Project class: `integration`
 - Keywords: `data-loading`, `enterprise`, `etl`, `flext`, `singer`, `target`,
   `typed`
-- Main facades: `FlextTargetOracleWmsConfig`, `FlextTargetOracleWmsConstants`,
-  `FlextTargetOracleWmsModels`, `FlextTargetOracleWmsProtocols`,
-  `FlextTargetOracleWmsService`, `FlextTargetOracleWmsSettings`,
-  `FlextTargetOracleWmsTypes`, `FlextTargetOracleWmsUtilities`
-- Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
-- Public symbol exports: `FlextTargetOracleWmsConfig`,
+- Main facades: `FlextTargetOracleWmsCli`, `FlextTargetOracleWmsConfig`,
   `FlextTargetOracleWmsConstants`, `FlextTargetOracleWmsModels`,
   `FlextTargetOracleWmsProtocols`, `FlextTargetOracleWmsService`,
-  `FlextTargetOracleWmsSettings`, `FlextTargetOracleWmsTypes`,
-  `FlextTargetOracleWmsUtilities`, `config`, `settings` (+1 more)
+  `FlextTargetOracleWmsSettings`, `FlextTargetOracleWmsTypes` (+1 more)
+- Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
+- Public symbol exports: `FlextTargetOracleWmsCli`,
+  `FlextTargetOracleWmsConfig`, `FlextTargetOracleWmsConstants`,
+  `FlextTargetOracleWmsModels`, `FlextTargetOracleWmsProtocols`,
+  `FlextTargetOracleWmsService`, `FlextTargetOracleWmsSettings`,
+  `FlextTargetOracleWmsTypes`, `FlextTargetOracleWmsUtilities`, `config` (+3
+  more)
 - Exported module shortcuts: _none_
-- Generated module pages: `6`
+- Generated module pages: `7`
 
 ## Next Pages
 
