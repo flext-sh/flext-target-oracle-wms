@@ -26,7 +26,7 @@
   `FlextTargetOracleWmsConstants`, `FlextTargetOracleWmsModels`,
   `FlextTargetOracleWmsProtocols`, `FlextTargetOracleWmsService`,
   `FlextTargetOracleWmsSettings`, `FlextTargetOracleWmsTypes`,
-  `FlextTargetOracleWmsUtilities`, `config`, `settings` (+1 more)
+  `FlextTargetOracleWmsUtilities`, `config`, `settings`
 - Exported module shortcuts: _none_
 - Generated module pages: `6`
 
