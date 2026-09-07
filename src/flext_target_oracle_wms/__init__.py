@@ -20,9 +20,6 @@ from .__version__ import (
 )
 
 if TYPE_CHECKING:
-    from enum import StrEnum, unique
-    from typing import TYPE_CHECKING, Final
-
     from flext_meltano import FlextMeltanoConstants as meltano_c, d, e, h, r, s, x
 
     from ._config import FlextTargetOracleWmsConfig, config
@@ -43,8 +40,6 @@ if TYPE_CHECKING:
         FlextTargetOracleWmsUtilities as u,
     )
 __all__: tuple[str, ...] = (
-    "TYPE_CHECKING",
-    "Final",
     "FlextTargetOracleWmsConfig",
     "FlextTargetOracleWmsConstants",
     "FlextTargetOracleWmsModels",
@@ -53,7 +48,6 @@ __all__: tuple[str, ...] = (
     "FlextTargetOracleWmsSettings",
     "FlextTargetOracleWmsTypes",
     "FlextTargetOracleWmsUtilities",
-    "StrEnum",
     "__author__",
     "__author_email__",
     "__description__",
@@ -76,7 +70,6 @@ __all__: tuple[str, ...] = (
     "t",
     "target_oracle_wms",
     "u",
-    "unique",
     "x",
 )
 
@@ -91,9 +84,7 @@ _LAZY_IMPORTS = MappingProxyType(
             ".protocols": ("FlextTargetOracleWmsProtocols", "p"),
             ".typings": ("FlextTargetOracleWmsTypes", "t"),
             ".utilities": ("FlextTargetOracleWmsUtilities", "u"),
-            "enum": ("StrEnum", "unique"),
             "flext_meltano": ("d", "e", "h", "r", "s", "x"),
-            "typing": ("Final", "TYPE_CHECKING"),
         }),
         alias_groups=MappingProxyType({
             "flext_meltano": (("meltano_c", "FlextMeltanoConstants"),)
