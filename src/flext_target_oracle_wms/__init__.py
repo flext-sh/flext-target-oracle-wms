@@ -25,6 +25,7 @@ if TYPE_CHECKING:
     from ._config import FlextTargetOracleWmsConfig, config
     from ._settings import FlextTargetOracleWmsSettings, settings
     from .api import FlextTargetOracleWmsService, target_oracle_wms
+    from .cli import FlextTargetOracleWmsCli, main
     from .constants import (
         FlextTargetOracleWmsConstants,
         FlextTargetOracleWmsConstants as c,
@@ -40,6 +41,7 @@ if TYPE_CHECKING:
         FlextTargetOracleWmsUtilities as u,
     )
 __all__: tuple[str, ...] = (
+    "FlextTargetOracleWmsCli",
     "FlextTargetOracleWmsConfig",
     "FlextTargetOracleWmsConstants",
     "FlextTargetOracleWmsModels",
@@ -62,6 +64,7 @@ __all__: tuple[str, ...] = (
     "e",
     "h",
     "m",
+    "main",
     "meltano_c",
     "p",
     "r",
@@ -79,6 +82,7 @@ _LAZY_IMPORTS = MappingProxyType(
             "._config": ("FlextTargetOracleWmsConfig", "config"),
             "._settings": ("FlextTargetOracleWmsSettings", "settings"),
             ".api": ("FlextTargetOracleWmsService", "target_oracle_wms"),
+            ".cli": ("FlextTargetOracleWmsCli", "main"),
             ".constants": ("FlextTargetOracleWmsConstants", "c"),
             ".models": ("FlextTargetOracleWmsModels", "m"),
             ".protocols": ("FlextTargetOracleWmsProtocols", "p"),

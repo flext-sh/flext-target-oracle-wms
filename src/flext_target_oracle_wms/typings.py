@@ -19,7 +19,6 @@ if TYPE_CHECKING:
 class FlextTargetOracleWmsTypes(meltano_t, t):
     """MRO facade composing Meltano + OracleWms type namespaces."""
 
-    json_value_adapter: m.TypeAdapter[t.JsonValue] = t.json_value_adapter()
     CONTAINER_MAP_ADAPTER: m.TypeAdapter[t.JsonMapping] = t.json_mapping_adapter()
 
 
