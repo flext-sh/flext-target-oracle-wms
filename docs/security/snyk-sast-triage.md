@@ -21,24 +21,24 @@ Preencha **Decisão**: `corrigir` / `falso-positivo` (registrar em `.snyk`) / `r
 **Local**: `examples/01_basic_usage.py:35` · **CWE**: -
 
 ```python
-       31  
+       31
        32  WMS_AUTH: Final[Mapping[str, str]] = MappingProxyType({
        33      "base_url": "https://wms.example.oraclecloud.com",
        34      "username": "wms_user",
 >>>    35      "password": "wms_pass",
        36  })
        37  BATCH_SIZE: Final[int] = 100
-       38  
-       39  
+       38
+       39
 ```
 
-**Decisão**: 
+**Decisão**:
 
 ### 2 · 🟡 MEDIUM · Use of Hardcoded Passwords
 **Local**: `examples/02_batch_processing.py:31` · **CWE**: -
 
 ```python
-       27  
+       27
        28  _BATCH_WMS_AUTH: dict[str, t.JsonValue] = {
        29      "base_url": "https://wms.example.oraclecloud.com",
        30      "username": "wms_batch_user",
@@ -49,24 +49,24 @@ Preencha **Decisão**: `corrigir` / `falso-positivo` (registrar em `.snyk`) / `r
        35      "batch_size": 500,
 ```
 
-**Decisão**: 
+**Decisão**:
 
 ### 3 · 🟡 MEDIUM · Use of Hardcoded Passwords
 **Local**: `examples/04_factory_usage.py:37` · **CWE**: -
 
 ```python
-       33  
+       33
        34  TARGET_CONFIG: Final[Mapping[str, str]] = MappingProxyType({
        35      "base_url": "https://wms.example.oraclecloud.com",
        36      "username": "wms_target_user",
 >>>    37      "password": "wms_target_pass",
        38  })
-       39  
-       40  
+       39
+       40
        41  @flext_monitor_function(monitor)
 ```
 
-**Decisão**: 
+**Decisão**:
 
 ### 4 · 🟡 MEDIUM · Use of Hardcoded Passwords
 **Local**: `src/flext_target_oracle_wms/cli.py:93` · **CWE**: -
@@ -80,8 +80,7 @@ Preencha **Decisão**: `corrigir` / `falso-positivo` (registrar em `.snyk`) / `r
        94                  }
        95              })
        96          )
-       97  
+       97
 ```
 
-**Decisão**: 
-
+**Decisão**:
