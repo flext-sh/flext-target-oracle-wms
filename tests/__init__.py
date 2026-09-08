@@ -11,7 +11,7 @@ from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 if TYPE_CHECKING:
     from flext_tests import FlextTestsConstants, d, e, h, r, td, tf, tk, tm, tv, x
 
-    from . import examples as examples, integration as integration, unit as unit
+    from . import examples, integration, unit
     from .base import (
         TestsFlextTargetOracleWmsServiceBase,
         TestsFlextTargetOracleWmsServiceBase as s,
