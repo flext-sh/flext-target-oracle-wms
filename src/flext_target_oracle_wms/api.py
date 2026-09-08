@@ -15,9 +15,8 @@ from flext_meltano.services.consumer_bases.target_service_base import (
     FlextMeltanoTargetServiceBase,
 )
 from flext_target_oracle_wms import p, t, u
-from flext_target_oracle_wms._utilities.service_runtime import (
-    FlextTargetOracleWmsServiceRuntime,
-)
+
+from ._utilities.service_runtime import FlextTargetOracleWmsServiceRuntime
 
 
 class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
@@ -40,6 +39,8 @@ class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
         )
 
 
-target_oracle_wms = FlextTargetOracleWmsService
+target_oracle_wms: FlextTargetOracleWmsService = (
+    FlextTargetOracleWmsService.fetch_global()
+)
 
 __all__: list[str] = ["FlextTargetOracleWmsService", "target_oracle_wms"]

@@ -8,9 +8,8 @@ from pathlib import Path
 from flext_core import r
 from flext_target_oracle_wms import c, m, p, t, u
 from flext_target_oracle_wms.__version__ import __version__
-from flext_target_oracle_wms._utilities.client import (
-    FlextTargetOracleWmsUtilitiesClient,
-)
+
+from ._utilities.client import FlextTargetOracleWmsUtilitiesClient
 
 
 class FlextTargetOracleWmsCli:
@@ -88,7 +87,7 @@ class FlextTargetOracleWmsCli:
         return r[m.TargetOracleWms.WmsTargetConfig].ok(
             m.TargetOracleWms.WmsTargetConfig.model_validate({
                 "wms_auth": {
-                    "base_url": "https://invalid.wms.ocs.oraclecloud.com",
+                    "base_url": c.TargetOracleWms.CLI_PLACEHOLDER_BASE_URL,
                     "username": "oracle",
                     "password": "oracle",
                 }

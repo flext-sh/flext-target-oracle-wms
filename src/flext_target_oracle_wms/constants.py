@@ -19,6 +19,7 @@ class FlextTargetOracleWmsConstants(meltano_c, c):
         """Target-specific defaults and limits."""
 
         CLI_MIN_CONFIG_ARG_COUNT: Final[int] = 3
+        CLI_PLACEHOLDER_BASE_URL: Final[str] = "https://invalid.wms.ocs.oraclecloud.com"
 
         class OracleWms:
             """Oracle WMS runtime defaults."""
