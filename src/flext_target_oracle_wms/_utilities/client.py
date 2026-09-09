@@ -5,8 +5,9 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING, ClassVar
 
-from flext_core import e, r
 from flext_meltano import u
+
+from flext_core import e, r
 from flext_target_oracle_wms import c, m, t
 
 from .helpers import FlextTargetOracleWmsUtilitiesHelpers

@@ -10,8 +10,8 @@ import json as _stdlib_json
 from typing import TYPE_CHECKING
 
 import pytest
-
 from flext_tests import tm
+
 from tests import u
 
 if TYPE_CHECKING:

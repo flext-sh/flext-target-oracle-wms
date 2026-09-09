@@ -11,9 +11,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from pydantic_settings import SettingsConfigDict
-
 from flext_meltano import FlextMeltanoSettings
+from pydantic_settings import SettingsConfigDict
 
 
 class FlextTargetOracleWmsSettings(FlextMeltanoSettings):
