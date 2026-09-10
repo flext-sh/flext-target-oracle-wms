@@ -91,7 +91,7 @@ _LAZY_IMPORTS = MappingProxyType(
             "flext_meltano": ("d", "e", "h", "r", "s", "x"),
         }),
         alias_groups=MappingProxyType({
-            "flext_meltano": (("meltano_c", "FlextMeltanoConstants"),),
+            "flext_meltano": (("meltano_c", "FlextMeltanoConstants"),)
         }),
         sort_keys=False,
     )
