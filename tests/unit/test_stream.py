@@ -6,14 +6,12 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from typing import override
 
 from flext_tests import r, tm
 
-from tests import c, m, u
-
-if TYPE_CHECKING:
-    from tests import p, t
+from tests import m, p, t, u
+from tests._helpers import _record_msg, _schema_msg
 
 
 class _FailingTransformer(u.TargetOracleWms.WMSDataTransformer):
@@ -29,34 +27,11 @@ class _FailingTransformer(u.TargetOracleWms.WMSDataTransformer):
         return r[m.Meltano.SingerRecordMessage].fail("transformer error")
 
 
-def _schema_msg(
-    stream: str = "test_stream",
-    schema: t.JsonMapping | None = None,
-    key_properties: t.StrSequence | None = None,
-) -> m.Meltano.SingerSchemaMessage:
-    message: m.Meltano.SingerSchemaMessage = (
-        m.Meltano.SingerSchemaMessage.model_validate({
-            "type": c.Meltano.SingerMessageType.SCHEMA,
-            "stream": stream,
-            "schema": schema or {"type": "object"},
-            "key_properties": key_properties or ["id"],
-        })
-    )
-    return message
-
-
-def _record_msg(
-    stream: str = "test_stream", record: t.JsonMapping | None = None
-) -> m.Meltano.SingerRecordMessage:
-    return m.Meltano.SingerRecordMessage(
-        type=c.Meltano.SingerMessageType.RECORD,
-        stream=stream,
-        record=record or {"id": "1"},
-    )
-
-
 class TestsFlextTargetOracleWmsStream:
-    """Tests for u.TargetOracleWms.StreamProcessor.initialize_stream."""
+    """Tests for u.TargetOracleWms.StreamProcessor.initialize_stream.
+
+    Stream lifecycle: init, register, process, failure handling.
+    """
 
     def test_initialize_stream_success(self) -> None:
         proc = u.TargetOracleWms.StreamProcessor(

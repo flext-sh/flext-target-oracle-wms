@@ -7,28 +7,18 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING
 
 from flext_tests import tm
 
-from tests import c, m, u
-
-if TYPE_CHECKING:
-    from tests import t
-
-
-def _valid_config() -> t.JsonMapping:
-    return {
-        "wms_auth": {
-            "base_url": "https://test.wms.example.com",
-            "username": "user",
-            "password": "pass",
-        }
-    }
+from tests import c, m, t, u
+from tests._helpers import _valid_config
 
 
 class TestsFlextTargetOracleWmsFeatures:
-    """Verify core target features."""
+    """Verify core target features.
+
+    Feature coverage: init, lifecycle, type conversion, message creation.
+    """
 
     def test_target_initialization(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
