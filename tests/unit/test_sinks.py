@@ -8,46 +8,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from flext_tests import tm
 
-from tests import c, m, u
-
-if TYPE_CHECKING:
-    from tests import t
-
-
-def _valid_config() -> t.JsonMapping:
-    return {
-        "wms_auth": {
-            "base_url": "https://test.wms.example.com",
-            "username": "user",
-            "password": "pass",
-        }
-    }
-
-
-def _schema_msg(stream: str = "items") -> m.Meltano.SingerSchemaMessage:
-    message: m.Meltano.SingerSchemaMessage = (
-        m.Meltano.SingerSchemaMessage.model_validate({
-            "type": c.Meltano.SingerMessageType.SCHEMA,
-            "stream": stream,
-            "schema": {"type": "object"},
-            "key_properties": ["id"],
-        })
-    )
-    return message
-
-
-def _record_msg(
-    stream: str = "items", record: t.JsonMapping | None = None
-) -> m.Meltano.SingerRecordMessage:
-    return m.Meltano.SingerRecordMessage(
-        type=c.Meltano.SingerMessageType.RECORD,
-        stream=stream,
-        record=record or {"id": "1"},
-    )
+from tests import u
+from tests._helpers import _record_msg, _schema_msg, _valid_config
 
 
 class TestsFlextTargetOracleWmsSinks:

@@ -13,19 +13,10 @@ from flext_tests import tm
 
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
 from tests import u
+from tests._helpers import _valid_config
 
 if TYPE_CHECKING:
     from tests import t
-
-
-def _valid_config() -> t.JsonMapping:
-    return {
-        "wms_auth": {
-            "base_url": "https://test.wms.example.com",
-            "username": "user",
-            "password": "pass",
-        }
-    }
 
 
 def _schema_line(
