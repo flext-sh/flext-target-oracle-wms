@@ -15,6 +15,7 @@ from typing import Annotated, Literal
 # SingerSchemaProperties "not fully defined". Do NOT move them under TYPE_CHECKING.
 from flext_meltano import FlextMeltanoModels as meltano_m, t, u
 from flext_oracle_wms import m
+
 from flext_target_oracle_wms import c
 
 

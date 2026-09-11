@@ -5,8 +5,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from flext_cli import u
-from flext_core import r
 from flext_meltano import c as meltano_c, u as meltano_u
+
+from flext_core import r
 from flext_target_oracle_wms import (
     FlextTargetOracleWmsConstants as c,
     FlextTargetOracleWmsModels as m,
@@ -46,9 +47,10 @@ class FlextTargetOracleWmsUtilitiesHelpers:
             """Convert a single source value according to Singer type."""
             if singer_type in {"object", "array"}:
                 return r[t.JsonValue].ok(
-                    t.json_value_adapter.dump_json(
-                        u.normalize_to_json_value(value)
-                    ).decode(c.DEFAULT_ENCODING)
+                    t
+                    .json_value_adapter()
+                    .dump_json(u.normalize_to_json_value(value))
+                    .decode(c.DEFAULT_ENCODING)
                 )
             if singer_type in {"integer", "number"}:
                 try:
@@ -103,9 +105,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
                     resolved_type, value
                 )
                 if converted.failure:
-                    return r[m.Meltano.SingerRecordMessage].fail(
-                        converted.error or "Conversion failed"
-                    )
+                    return r[m.Meltano.SingerRecordMessage].from_failure(converted)
                 transformed[key.upper()] = converted.value
             return r[m.Meltano.SingerRecordMessage].ok(
                 m.Meltano.SingerRecordMessage.model_validate({
@@ -131,10 +131,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
                 key_properties=typed_schema.key_properties,
             )
             if entry_result.failure:
-                return r[m.Meltano.SingerCatalogEntry].fail(
-                    entry_result.error
-                    or f"Failed to map schema for stream: {typed_schema.stream}"
-                )
+                return r[m.Meltano.SingerCatalogEntry].from_failure(entry_result)
             return r[m.Meltano.SingerCatalogEntry].ok(
                 entry_result.value.model_copy(
                     update={"table_name": typed_schema.stream.upper()}
