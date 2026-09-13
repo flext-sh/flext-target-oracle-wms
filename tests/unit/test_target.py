@@ -163,7 +163,7 @@ class TestsFlextTargetOracleWmsTarget:
         target = u.TargetOracleWms.Target(_valid_config())
         lines = [
             _schema_line(
-                "orders", {"id": {"type": "string"}, "name": {"type": "string"}}
+                "orders", {"id": {"type": "string"}, "name": {"type": "string"}}, ["id"]
             ),
             _record_line("orders", {"id": "1", "name": "test"}),
             _state_line({"bookmarks": {"orders": "1"}}),
