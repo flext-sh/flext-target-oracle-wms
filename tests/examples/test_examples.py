@@ -29,6 +29,15 @@ def _load_example_module(example_file: Path) -> ModuleType:
     return module
 
 
+_AUTO_GENERATED_FACETS: frozenset[str] = frozenset({
+    "constants.py",
+    "models.py",
+    "protocols.py",
+    "typings.py",
+    "utilities.py",
+})
+
+
 def _module_functions(module: ModuleType) -> list[tuple[str, object]]:
     return [
         (name, value)
@@ -287,6 +296,8 @@ class TestsFlextTargetOracleWmsExamples:
         example_files = list(examples_dir.glob("*.py"))
         for example_file in example_files:
             if example_file.name == "__init__.py":
+                continue
+            if example_file.name in _AUTO_GENERATED_FACETS:
                 continue
             content = example_file.read_text(encoding="utf-8")
             lines = content.split("\n")
