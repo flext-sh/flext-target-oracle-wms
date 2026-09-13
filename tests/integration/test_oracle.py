@@ -13,37 +13,33 @@ import pytest
 from flext_tests import tm
 
 from tests import u
+from tests._helpers import _valid_config
 
 if TYPE_CHECKING:
     from tests import t
 
 
-def _valid_config() -> t.JsonMapping:
-    return {
-        "wms_auth": {
-            "base_url": "https://test.wms.example.com",
-            "username": "user",
-            "password": "pass",
-        }
-    }
-
-
 def _schema_line(
-    stream: str, props: t.MappingKV[str, t.StrMapping], keys: t.StrSequence
+    stream_name: str,
+    field_defs: t.MappingKV[str, t.StrMapping],
+    key_fields: t.StrSequence,
 ) -> str:
+    schema_fields = dict(field_defs.items())
     return _stdlib_json.dumps({
         "type": "SCHEMA",
-        "stream": stream,
-        "schema": {"type": "object", "properties": dict(props)},
-        "key_properties": list(keys),
+        "stream": stream_name,
+        "schema": {"type": "object", "properties": schema_fields},
+        "key_properties": list(key_fields),
+        "schema_version": 1,
     })
 
 
-def _record_line(stream: str, record: t.JsonMapping) -> str:
+def _record_line(stream_name: str, record_data: t.JsonMapping) -> str:
     return _stdlib_json.dumps({
         "type": "RECORD",
-        "stream": stream,
-        "record": dict(record),
+        "stream": stream_name,
+        "record": dict(record_data),
+        "_meta": {"version": 1},
     })
 
 
@@ -53,7 +49,10 @@ def _state_line(value: t.JsonMapping) -> str:
 
 @pytest.mark.integration
 class TestsFlextTargetOracleWmsOracle:
-    """Integration tests for full target lifecycle."""
+    """Integration tests for full target lifecycle.
+
+    WMS-oracle integration: tests end-to-end target process_lines flow.
+    """
 
     def test_setup_process_cleanup(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())

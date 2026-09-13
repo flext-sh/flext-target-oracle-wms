@@ -6,36 +6,26 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+import json
 from typing import TYPE_CHECKING
 
 import pytest
 from flext_tests import tm
 
 from tests import c, m, u
+from tests._helpers import _record_msg, _schema_msg, _valid_config
 
 if TYPE_CHECKING:
     from tests import t
 
 
-def _valid_config() -> t.JsonMapping:
-    return {
-        "wms_auth": {
-            "base_url": "https://test.wms.example.com",
-            "username": "user",
-            "password": "pass",
-        }
-    }
-
-
 def _schema_line(
-    stream: str = "test_stream",
-    properties: t.MappingKV[str, t.StrMapping] | None = None,
-    key_properties: t.StrSequence | None = None,
+    stream: str, props: t.MappingKV[str, t.StrMapping], keys: t.StrSequence
 ) -> str:
-    json_line: str = _schema_msg(stream, properties, key_properties).model_dump_json(
-        by_alias=True
-    )
-    return json_line
+    msg = _schema_msg(stream, key_properties=keys)
+    schema_dict = msg.model_dump(by_alias=True)
+    schema_dict["properties"] = dict(props.items())
+    return json.dumps(schema_dict)
 
 
 def _record_line(
@@ -48,33 +38,6 @@ def _record_line(
 def _state_line(state: t.JsonMapping | None = None) -> str:
     json_line: str = _state_msg(state).model_dump_json()
     return json_line
-
-
-def _schema_msg(
-    stream: str = "test_stream",
-    properties: t.MappingKV[str, t.StrMapping] | None = None,
-    key_properties: t.StrSequence | None = None,
-) -> m.Meltano.SingerSchemaMessage:
-    _ = properties
-    message: m.Meltano.SingerSchemaMessage = (
-        m.Meltano.SingerSchemaMessage.model_validate({
-            "type": c.Meltano.SingerMessageType.SCHEMA,
-            "stream": stream,
-            "schema": {"type": "object"},
-            "key_properties": key_properties or ["id"],
-        })
-    )
-    return message
-
-
-def _record_msg(
-    stream: str = "test_stream", record: t.JsonMapping | None = None
-) -> m.Meltano.SingerRecordMessage:
-    return m.Meltano.SingerRecordMessage(
-        type=c.Meltano.SingerMessageType.RECORD,
-        stream=stream,
-        record=record or {"id": "1"},
-    )
 
 
 def _state_msg(state: t.JsonMapping | None = None) -> m.Meltano.SingerStateMessage:
@@ -93,7 +56,10 @@ def _state_msg(state: t.JsonMapping | None = None) -> m.Meltano.SingerStateMessa
 
 
 class TestsFlextTargetOracleWmsTarget:
-    """Tests for FlextTargetOracleWms initialization."""
+    """Tests for FlextTargetOracleWms initialization.
+
+    WMS-specific: targets Oracle WMS singer protocol directly.
+    """
 
     def test_init_with_valid_config(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())

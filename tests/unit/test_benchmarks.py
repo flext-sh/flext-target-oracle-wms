@@ -14,15 +14,12 @@ from tests import c, m, u
 
 
 def _schema_msg(stream: str = "bench") -> m.Meltano.SingerSchemaMessage:
-    message: m.Meltano.SingerSchemaMessage = (
-        m.Meltano.SingerSchemaMessage.model_validate({
-            "type": c.Meltano.SingerMessageType.SCHEMA,
-            "stream": stream,
-            "schema": {"type": "object"},
-            "key_properties": ["id"],
-        })
+    return m.Meltano.SingerSchemaMessage(
+        type=c.Meltano.SingerMessageType.SCHEMA,
+        stream=stream,
+        schema={"type": "object"},
+        key_properties=["id"],
     )
-    return message
 
 
 def _record_msg(stream: str = "bench") -> m.Meltano.SingerRecordMessage:
