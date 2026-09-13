@@ -11,7 +11,7 @@ import math
 from flext_tests import tm
 
 from tests import c, m, t, u
-from tests._helpers import _valid_config
+from .._helpers import _valid_config
 
 
 class TestsFlextTargetOracleWmsFeatures:

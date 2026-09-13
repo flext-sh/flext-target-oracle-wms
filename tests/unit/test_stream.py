@@ -11,7 +11,7 @@ from typing import override
 from flext_tests import r, tm
 
 from tests import m, p, t, u
-from tests._helpers import _record_msg, _schema_msg
+from .._helpers import _record_msg, _schema_msg
 
 
 class _FailingTransformer(u.TargetOracleWms.WMSDataTransformer):
