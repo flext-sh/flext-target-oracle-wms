@@ -10,31 +10,8 @@ import math
 
 from flext_tests import tm
 
-from tests import c, m, t, u
-
-
-def _schema_msg(
-    stream: str = "test_stream", key_properties: t.StrSequence | None = None
-) -> m.Meltano.SingerSchemaMessage:
-    message: m.Meltano.SingerSchemaMessage = (
-        m.Meltano.SingerSchemaMessage.model_validate({
-            "type": c.Meltano.SingerMessageType.SCHEMA,
-            "stream": stream,
-            "schema": {"type": "object"},
-            "key_properties": key_properties or ["id"],
-        })
-    )
-    return message
-
-
-def _record_msg(
-    stream: str = "test_stream", record: t.JsonMapping | None = None
-) -> m.Meltano.SingerRecordMessage:
-    return m.Meltano.SingerRecordMessage(
-        type=c.Meltano.SingerMessageType.RECORD,
-        stream=stream,
-        record=record or {"id": "1"},
-    )
+from tests import m, t, u
+from tests._helpers import _record_msg, _schema_msg
 
 
 class TestsFlextTargetOracleWmsWmsPatterns:

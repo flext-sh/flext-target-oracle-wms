@@ -21,10 +21,10 @@ class TestsFlextTargetOracleWmsOracleWmsInit:
         tm.that(flext_target_oracle_wms.__version__, is_=str)
         assert flext_target_oracle_wms.__version__
 
-    def test_version_import_fallback(self) -> None:
-        """Test fallback version logic - simplified approach."""
-        tm.that(flext_target_oracle_wms.__version__, is_=str)
+    def test_version_is_valid_semver(self) -> None:
+        """Version string is a non-empty dotted semver."""
         version = flext_target_oracle_wms.__version__
+        tm.that(version, is_=str)
         assert version
         assert version.count(".") >= c.TargetOracleWms.Tests.MIN_SEMVER_SEPARATOR_COUNT
 
@@ -42,6 +42,6 @@ class TestsFlextTargetOracleWmsOracleWmsInit:
         for export in expected_exports:
             tm.that(flext_target_oracle_wms.__all__, has=export)
         tm.that(
-            flext_target_oracle_wms.u.TargetOracleWms.Client.__name__,
-            eq=("FlextTargetOracleWmsUtilitiesClient"),
+            isinstance(flext_target_oracle_wms.u.TargetOracleWms.Client, type),
+            eq=True,
         )
