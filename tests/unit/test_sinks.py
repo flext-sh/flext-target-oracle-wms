@@ -11,7 +11,7 @@ from __future__ import annotations
 from flext_tests import tm
 
 from tests import u
-from tests._helpers import _record_msg, _schema_msg, _valid_config
+from .._helpers import _record_msg, _schema_msg, _valid_config
 
 
 class TestsFlextTargetOracleWmsSinks:
