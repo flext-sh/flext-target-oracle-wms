@@ -13,7 +13,8 @@ import pytest
 from flext_tests import tm
 
 from tests import u
-from tests._helpers import _valid_config
+
+from .._helpers import _valid_config
 
 if TYPE_CHECKING:
     from tests import t
