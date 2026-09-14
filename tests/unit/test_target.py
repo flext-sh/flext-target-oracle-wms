@@ -13,7 +13,8 @@ import pytest
 from flext_tests import tm
 
 from tests import c, m, u
-from tests._helpers import _record_msg, _schema_msg, _valid_config
+
+from .._helpers import _record_msg, _schema_msg, _valid_config
 
 if TYPE_CHECKING:
     from tests import t

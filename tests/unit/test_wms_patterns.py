@@ -11,7 +11,8 @@ import math
 from flext_tests import tm
 
 from tests import m, t, u
-from tests._helpers import _record_msg, _schema_msg
+
+from .._helpers import _record_msg, _schema_msg
 
 
 class TestsFlextTargetOracleWmsWmsPatterns:
