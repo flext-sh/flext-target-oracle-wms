@@ -25,7 +25,9 @@ def _schema_line(
 ) -> str:
     msg = _schema_msg(stream, key_properties=keys)
     schema_dict = msg.model_dump(by_alias=True)
-    schema_dict["properties"] = dict(props.items())
+    schema_payload = dict(schema_dict["schema"])
+    schema_payload["properties"] = dict(props.items())
+    schema_dict["schema"] = schema_payload
     return json.dumps(schema_dict)
 
 
