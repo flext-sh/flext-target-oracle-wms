@@ -57,7 +57,7 @@ class TestsFlextTargetOracleWmsCatalog:
         mgr.add_stream(schema_v2)
         result = mgr.get_stream("s")
         tm.ok(result)
-        tm.that(result.value, none=False)
+        tm.ok(result)
         entry = result.value
         tm.that(entry.key_properties, eq=["id", "name"])
 
@@ -65,7 +65,6 @@ class TestsFlextTargetOracleWmsCatalog:
         mgr = u.TargetOracleWms.CatalogManager()
         result = mgr.get_stream("nope")
         tm.fail(result)
-        tm.that(result.error, none=False)
         tm.that(result.error, has="nope")
 
     def test_get_existing_stream_returns_catalog_entry(self) -> None:
