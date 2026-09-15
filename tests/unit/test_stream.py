@@ -77,7 +77,7 @@ class TestsFlextTargetOracleWmsStream:
         proc = u.TargetOracleWms.StreamProcessor(
             u.TargetOracleWms.WMSTableManager(), u.TargetOracleWms.WMSDataTransformer()
         )
-        schema = _schema_msg("s", schema={"type": "object"})
+        schema = _schema_msg("s")
         proc.initialize_stream(schema)
         result = proc.process_record(_record_msg("s", {"name": "hello"}), schema)
         tm.ok(result)

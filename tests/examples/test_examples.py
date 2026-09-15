@@ -113,11 +113,14 @@ class TestsFlextTargetOracleWmsExamples:
     def test_examples_have_comprehensive_docstrings(
         self, example_files: t.SequenceOf[Path]
     ) -> None:
-        """Test that examples have comprehensive docstrings."""
+        """Require module docs everywhere and comprehensive docs in runnable examples."""
         for example_file in example_files:
             module = _load_example_module(example_file)
             module_docstring = inspect.getdoc(module)
             assert module_docstring is not None
+            assert module_docstring.strip(), f"{example_file.name} docstring is empty"
+            if example_file.name in _AUTO_GENERATED_FACETS:
+                continue
             assert (
                 len(module_docstring)
                 > c.TargetOracleWms.Tests.MIN_MODULE_DOCSTRING_LENGTH
@@ -212,8 +215,10 @@ class TestsFlextTargetOracleWmsExamples:
     def test_examples_have_main_execution_blocks(
         self, example_files: t.SequenceOf[Path]
     ) -> None:
-        """Test that examples have proper main execution blocks."""
+        """Require main blocks in runnable examples, not imported support facades."""
         for example_file in example_files:
+            if example_file.name in _AUTO_GENERATED_FACETS:
+                continue
             content = example_file.read_text(encoding="utf-8")
             tm.that(content, has='if __name__ == "__main__":')
             main_patterns = ["u.Cli.print(", "run(", "run_", "demonstrate_"]
