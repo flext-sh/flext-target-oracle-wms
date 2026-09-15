@@ -2,6 +2,6 @@
   "database": "dolt",
   "backend": "dolt",
   "dolt_mode": "server",
-  "dolt_database": "flext_target_oracle_wms",
+  "dolt_database": "flext",
   "project_id": "5ea46184-76f8-4868-95db-ddd7208f3f34"
 }
