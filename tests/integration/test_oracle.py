@@ -34,9 +34,7 @@ def _schema_line(
 
 def _record_line(stream_name: str, record_data: t.JsonMapping) -> str:
     return m.Meltano.SingerRecordMessage(
-        stream=stream_name,
-        record=record_data,
-        version=1,
+        stream=stream_name, record=record_data, version=1
     ).model_dump_json(by_alias=True, exclude_none=True)
 
 
