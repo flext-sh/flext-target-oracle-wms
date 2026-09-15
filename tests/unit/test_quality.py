@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from flext_tests import tm
 
+from flext_meltano import c as meltano_c
+
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
 from tests import c, m, p, u
 
@@ -50,9 +52,16 @@ class TestsFlextTargetOracleWmsQuality:
         tm.that(c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS, has="APPEND_ONLY")
         tm.that(c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS, has="MERGE")
 
-    def test_oracle_wms_defaults(self) -> None:
-        assert c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE > 0
-        assert c.TargetOracleWms.OracleWms.DEFAULT_TIMEOUT > 0
+    def test_oracle_wms_defaults_derive_from_meltano_ssot(self) -> None:
+        """Target defaults mirror the flext-meltano constants SSOT they derive from."""
+        tm.that(
+            c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE,
+            eq=meltano_c.Meltano.BATCH_DEFAULT_DEFAULT_BATCH_SIZE,
+        )
+        tm.that(
+            c.TargetOracleWms.OracleWms.DEFAULT_TIMEOUT,
+            eq=meltano_c.Meltano.DEFAULT_TIMEOUT_SECONDS,
+        )
 
     def test_p_is_protocols_class(self) -> None:
         tm.that(p, none=False)
