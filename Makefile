@@ -1107,11 +1107,11 @@ _builtin_fmt_all: _builtin_require_environment
 		if $(UV_RUN) ruff check --preview --fix --unsafe-fixes $(RUFF_PATHS); then \
 			printf 'INFO: fmt lint clean\n'; \
 		else \
-			stamprc=$$?; \
-			if [ $$stamprc -le 1 ]; then \
+			rc=$$?; \
+			if [ $$rc -le 1 ]; then \
 				printf 'INFO: fmt diagnostics remain (report-only, repair belongs to fix)\n'; \
 			else \
-				exit $$stamprc; \
+				exit $$rc; \
 			fi; \
 		fi
 
