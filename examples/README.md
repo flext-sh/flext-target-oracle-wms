@@ -5,10 +5,10 @@
 - [Oracle WMS Target - Examples](#oracle-wms-target---examples)
   - [🎯 Examples Overview](#-examples-overview)
   - [📚 Available Examples](#-available-examples)
-    - [1. basic\_usage.py](#1-basic_usagepy)
-    - [2. advanced\_configuration.py](#2-advanced_configurationpy)
-    - [3. batch\_processing.py](#3-batch_processingpy)
-    - [4. error\_handling.py](#4-error_handlingpy)
+    - [1. basic_usage.py](#1-basic_usagepy)
+    - [2. advanced_configuration.py](#2-advanced_configurationpy)
+    - [3. batch_processing.py](#3-batch_processingpy)
+    - [4. error_handling.py](#4-error_handlingpy)
   - [🚀 Running the Examples](#-running-the-examples)
     - [Prerequisites](#prerequisites)
     - [Running Individual Examples](#running-individual-examples)
@@ -340,6 +340,6 @@ When adding new examples:
 
 All examples are provided under the MIT License. See [LICENSE](../LICENSE) for details.
 
-______________________________________________________________________
+---
 
 **Note**: These examples use real Oracle WMS Cloud SaaS API patterns and production-grade flext-\* implementations. They are designed for mission-critical applications and follow enterprise security and performance standards.

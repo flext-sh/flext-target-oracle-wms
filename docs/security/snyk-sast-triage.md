@@ -6,9 +6,9 @@ Gerado do scan Snyk (dump 2026-08-06). Bead: `mro-qmmv`
 
 **4 achados** — critical 0, high 0, medium 4, low 0
 
-| categoria | achados |
-|---|---|
-| Use of Hardcoded Passwords | 4 |
+| categoria                  | achados |
+| -------------------------- | ------- |
+| Use of Hardcoded Passwords | 4       |
 
 ## Como usar este documento
 
@@ -18,6 +18,7 @@ Preencha **Decisão**: `corrigir` / `falso-positivo` (registrar em `.snyk`) / `r
 ## Achados
 
 ### 1 · 🟡 MEDIUM · Use of Hardcoded Passwords
+
 **Local**: `examples/01_basic_usage.py:35` · **CWE**: -
 
 ```python
@@ -35,6 +36,7 @@ Preencha **Decisão**: `corrigir` / `falso-positivo` (registrar em `.snyk`) / `r
 **Decisão**:
 
 ### 2 · 🟡 MEDIUM · Use of Hardcoded Passwords
+
 **Local**: `examples/02_batch_processing.py:31` · **CWE**: -
 
 ```python
@@ -52,6 +54,7 @@ Preencha **Decisão**: `corrigir` / `falso-positivo` (registrar em `.snyk`) / `r
 **Decisão**:
 
 ### 3 · 🟡 MEDIUM · Use of Hardcoded Passwords
+
 **Local**: `examples/04_factory_usage.py:37` · **CWE**: -
 
 ```python
@@ -69,6 +72,7 @@ Preencha **Decisão**: `corrigir` / `falso-positivo` (registrar em `.snyk`) / `r
 **Decisão**:
 
 ### 4 · 🟡 MEDIUM · Use of Hardcoded Passwords
+
 **Local**: `src/flext_target_oracle_wms/cli.py:93` · **CWE**: -
 
 ```python
