@@ -202,13 +202,7 @@ def retry_with_backoff(operation, max_retries: int = 3) -> p.Result[t.JsonValue]
 
    ```bash
    cd /path/to/flext-target-oracle-wms
-   poetry install
-   ```
-
-1. **Activate virtual environment:**
-
-   ```bash
-   poetry shell
+   make setup
    ```
 
 1. **Set environment variables (optional):**
