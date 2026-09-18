@@ -11,6 +11,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
@@ -32,7 +33,7 @@ monitor = FlextObservabilityMonitor()
 WMS_AUTH: Final[Mapping[str, str]] = MappingProxyType({
     "base_url": "https://wms.example.oraclecloud.com",
     "username": "wms_user",
-    "password": "wms_pass",
+    "password": os.environ.get("FLEXT_DEMO_WMS_PASSWORD", "<demo>"),
 })
 BATCH_SIZE: Final[int] = 100
 
