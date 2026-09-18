@@ -10,15 +10,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_observability.services.monitoring import (
-    FlextObservabilityMonitor,
-    flext_monitor_function,
-)
+from flext_observability.services.monitoring import FlextObservabilityMonitor
 
 from flext_target_oracle_wms import FlextTargetOracleWmsUtilities, t, u
 
 logger = u.fetch_logger(__name__)
 monitor = FlextObservabilityMonitor()
+flext_monitor_function = FlextObservabilityMonitor.flext_monitor_function
 
 
 @flext_monitor_function(monitor)

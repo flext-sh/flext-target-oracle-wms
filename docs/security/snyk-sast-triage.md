@@ -22,7 +22,7 @@ em `.snyk`) / `risco-aceito` (com prazo).
 
 **Local**: `examples/01_basic_usage.py:35` · **CWE**: -
 
-```python
+```python notest
        31
        32  WMS_AUTH: Final[Mapping[str, str]] = MappingProxyType({
        33      "base_url": "https://wms.example.oraclecloud.com",
@@ -40,7 +40,7 @@ em `.snyk`) / `risco-aceito` (com prazo).
 
 **Local**: `examples/02_batch_processing.py:31` · **CWE**: -
 
-```python
+```python notest
        27
        28  _BATCH_WMS_AUTH: dict[str, t.JsonValue] = {
        29      "base_url": "https://wms.example.oraclecloud.com",
@@ -58,7 +58,7 @@ em `.snyk`) / `risco-aceito` (com prazo).
 
 **Local**: `examples/04_factory_usage.py:37` · **CWE**: -
 
-```python
+```python notest
        33
        34  TARGET_CONFIG: Final[Mapping[str, str]] = MappingProxyType({
        35      "base_url": "https://wms.example.oraclecloud.com",
@@ -76,7 +76,7 @@ em `.snyk`) / `risco-aceito` (com prazo).
 
 **Local**: `src/flext_target_oracle_wms/cli.py:93` · **CWE**: -
 
-```python
+```python notest
        89              m.TargetOracleWms.WmsTargetConfig.model_validate({
        90                  "wms_auth": {
        91                      "base_url": "https://invalid.wms.ocs.oraclecloud.com",

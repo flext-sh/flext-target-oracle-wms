@@ -10,10 +10,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_observability.services.monitoring import (
-    FlextObservabilityMonitor,
-    flext_monitor_function,
-)
+from flext_observability.services.monitoring import FlextObservabilityMonitor
 
 from flext_target_oracle_wms import c, t, u
 
@@ -21,6 +18,7 @@ _ = u  # Anchor flext_core import for example validation.
 
 logger = u.fetch_logger(__name__)
 monitor = FlextObservabilityMonitor()
+flext_monitor_function = FlextObservabilityMonitor.flext_monitor_function
 
 LOAD_METHOD: str = c.TargetOracleWms.LoadMethods.Method.UPSERT
 DEFAULT_BATCH: int = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE

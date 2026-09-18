@@ -14,10 +14,7 @@ import os
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
-from flext_observability.services.monitoring import (
-    FlextObservabilityMonitor,
-    flext_monitor_function,
-)
+from flext_observability.services.monitoring import FlextObservabilityMonitor
 
 from flext_target_oracle_wms import FlextTargetOracleWmsUtilities, u
 
@@ -26,6 +23,7 @@ if TYPE_CHECKING:
 
 logger = u.fetch_logger(__name__)
 monitor = FlextObservabilityMonitor()
+flext_monitor_function = FlextObservabilityMonitor.flext_monitor_function
 
 _BATCH_WMS_AUTH: dict[str, t.JsonValue] = {
     "base_url": "https://wms.example.oraclecloud.com",
