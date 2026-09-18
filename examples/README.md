@@ -27,11 +27,13 @@
 
 <!-- TOC END -->
 
-This directory contains comprehensive examples demonstrating production-grade usage of the flext-target-oracle-wms with REAL flext-\* APIs and mission-critical patterns.
+This directory contains comprehensive examples demonstrating production-grade usage of
+the flext-target-oracle-wms with REAL flext-\* APIs and mission-critical patterns.
 
 ## 🎯 Examples Overview
 
-All examples follow DRY (Don't Repeat Yourself) principles and use REAL implementations from the flext-\* ecosystem:
+All examples follow DRY (Don't Repeat Yourself) principles and use REAL implementations
+from the flext-\* ecosystem:
 
 - **flext-core**: r, FlextLogger, dependency injection patterns
 - **flext-observability**: FlextObservabilityMonitor, flext_monitor_function
@@ -241,10 +243,10 @@ python examples/03_error_handling.py
 ```bash
 # Run all examples in sequence
 for example in examples/*.py; do
-    echo "Running $example..."
-    python "$example"
-    echo "Completed $example"
-    echo "---"
+  echo "Running $example..."
+  python "$example"
+  echo "Completed $example"
+  echo "---"
 done
 ```
 
@@ -292,7 +294,8 @@ export WMS_ENV="production"
 - **Batch Processing**: ~200-500 MB
 - **Concurrent Processing**: ~500-1000 MB
 
-_Performance varies based on record complexity, network latency, and Oracle WMS Cloud configuration._
+_Performance varies based on record complexity, network latency, and Oracle WMS Cloud
+configuration._
 
 ## 🛡️ Security Considerations
 
@@ -322,8 +325,10 @@ python -m pytest tests/examples/ --cov=examples --cov-report=term-missing
 - [Main README](../README.md) - Project overview and setup
 - [Architecture Documentation](../docs/architecture/) - System design
 - [API Reference](../docs/api/) - Detailed API documentation
-- [flext-core Documentation](https://github.com/organization/flext/tree/main/flext-core/README.md) - Core patterns
-- [flext-observability Documentation](https://github.com/organization/flext/tree/main/flext-observability/README.md) - Monitoring
+- [flext-core Documentation](https://github.com/organization/flext/tree/main/flext-core/README.md) -
+  Core patterns
+- [flext-observability Documentation](https://github.com/organization/flext/tree/main/flext-observability/README.md) -
+  Monitoring
 
 ## 🤝 Contributing
 
@@ -342,4 +347,6 @@ All examples are provided under the MIT License. See [LICENSE](../LICENSE) for d
 
 ---
 
-**Note**: These examples use real Oracle WMS Cloud SaaS API patterns and production-grade flext-\* implementations. They are designed for mission-critical applications and follow enterprise security and performance standards.
+**Note**: These examples use real Oracle WMS Cloud SaaS API patterns and
+production-grade flext-\* implementations. They are designed for mission-critical
+applications and follow enterprise security and performance standards.
