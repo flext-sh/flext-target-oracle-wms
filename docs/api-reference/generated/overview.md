@@ -9,7 +9,7 @@
 <!-- AUTO-GENERATED — DO NOT EDIT MANUALLY -->
 
 - Package: `flext_target_oracle_wms`
-- Version: `0.12.0rc0`
+- Version: `0.12.0`
 - Description: FLEXT Target Oracle WMS - Singer Target for Oracle WMS Data
 - Doc summary: Flext Target Oracle Wms package.
 - Classifiers: `Development Status :: 3 - Alpha`, `Intended Audience :: Developers`,
