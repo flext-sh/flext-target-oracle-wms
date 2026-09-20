@@ -1,6 +1,6 @@
 """Settings for flext-target-oracle-wms — layer-0 strict.
 
-Imports only stdlib + pydantic-settings + the tier base (``FlextMeltanoSettings``).
+Imports only stdlib + the tier base facade (``FlextMeltanoSettings``/``m``).
 All runtime fields are inherited from the base by MRO; this class only scopes the
 env prefix. No ``c/t/p/m/u/r`` imports, no project imports, no accessor/factory
 methods — construction goes through ``fetch_global`` / ``model_validate``.
@@ -11,14 +11,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_meltano import FlextMeltanoSettings
-from pydantic_settings import SettingsConfigDict
+from flext_meltano import FlextMeltanoSettings, m
 
 
 class FlextTargetOracleWmsSettings(FlextMeltanoSettings):
     """Runtime configuration for target Oracle WMS (fields inherited from base)."""
 
-    model_config = SettingsConfigDict(
+    model_config = m.SettingsConfigDict(
         env_prefix="FLEXT_TARGET_ORACLE_WMS_", extra="ignore"
     )
 
