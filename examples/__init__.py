@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     from flext_core import d, h, r, x
     from flext_meltano import s
     from flext_oracle_wms import e
-<<<<<<< HEAD
     from flext_target_oracle_wms import (
         FlextTargetOracleWmsConstants,
         FlextTargetOracleWmsConstants as c,
@@ -21,32 +20,12 @@ if TYPE_CHECKING:
         t,
         u,
     )
-=======
 
-    from flext_core import d, h, r, x
-    from flext_target_oracle_wms import FlextTargetOracleWmsConstants
->>>>>>> origin/0.12.0-dev
-
-    from .constants import (
-        ExamplesFlextTargetOracleWmsConstants,
-        ExamplesFlextTargetOracleWmsConstants as c,
-    )
-    from .models import (
-        ExamplesFlextTargetOracleWmsModels,
-        ExamplesFlextTargetOracleWmsModels as m,
-    )
-    from .protocols import (
-        ExamplesFlextTargetOracleWmsProtocols,
-        ExamplesFlextTargetOracleWmsProtocols as p,
-    )
-    from .typings import (
-        ExamplesFlextTargetOracleWmsTypes,
-        ExamplesFlextTargetOracleWmsTypes as t,
-    )
-    from .utilities import (
-        ExamplesFlextTargetOracleWmsUtilities,
-        ExamplesFlextTargetOracleWmsUtilities as u,
-    )
+    from .constants import ExamplesFlextTargetOracleWmsConstants
+    from .models import ExamplesFlextTargetOracleWmsModels
+    from .protocols import ExamplesFlextTargetOracleWmsProtocols
+    from .typings import ExamplesFlextTargetOracleWmsTypes
+    from .utilities import ExamplesFlextTargetOracleWmsUtilities
 __all__: tuple[str, ...] = (
     "ExamplesFlextTargetOracleWmsConstants",
     "ExamplesFlextTargetOracleWmsModels",
@@ -70,15 +49,22 @@ __all__: tuple[str, ...] = (
 _LAZY_IMPORTS = MappingProxyType(
     build_lazy_import_map(
         MappingProxyType({
-            ".constants": ("ExamplesFlextTargetOracleWmsConstants", "c"),
-            ".models": ("ExamplesFlextTargetOracleWmsModels", "m"),
-            ".protocols": ("ExamplesFlextTargetOracleWmsProtocols", "p"),
-            ".typings": ("ExamplesFlextTargetOracleWmsTypes", "t"),
-            ".utilities": ("ExamplesFlextTargetOracleWmsUtilities", "u"),
+            ".constants": ("ExamplesFlextTargetOracleWmsConstants",),
+            ".models": ("ExamplesFlextTargetOracleWmsModels",),
+            ".protocols": ("ExamplesFlextTargetOracleWmsProtocols",),
+            ".typings": ("ExamplesFlextTargetOracleWmsTypes",),
+            ".utilities": ("ExamplesFlextTargetOracleWmsUtilities",),
             "flext_core": ("d", "h", "r", "x"),
             "flext_meltano": ("s",),
             "flext_oracle_wms": ("e",),
-            "flext_target_oracle_wms": ("FlextTargetOracleWmsConstants",),
+            "flext_target_oracle_wms": (
+                "FlextTargetOracleWmsConstants",
+                "c",
+                "m",
+                "p",
+                "t",
+                "u",
+            ),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
