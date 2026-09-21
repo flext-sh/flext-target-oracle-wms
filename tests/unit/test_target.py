@@ -6,7 +6,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import json
 from typing import TYPE_CHECKING
 
 import pytest
@@ -23,12 +22,13 @@ if TYPE_CHECKING:
 def _schema_line(
     stream: str, props: t.MappingKV[str, t.StrMapping], keys: t.StrSequence
 ) -> str:
-    msg = _schema_msg(stream, key_properties=keys)
-    schema_dict = msg.model_dump(by_alias=True)
-    schema_payload = dict(schema_dict["schema"])
-    schema_payload["properties"] = dict(props.items())
-    schema_dict["schema"] = schema_payload
-    return json.dumps(schema_dict)
+    message: m.Meltano.SingerSchemaMessage = m.Meltano.SingerSchemaMessage.model_validate({
+        "type": c.Meltano.SingerMessageType.SCHEMA,
+        "stream": stream,
+        "schema": {"type": "object", "properties": props},
+        "key_properties": keys,
+    })
+    return message.model_dump_json(by_alias=True)
 
 
 def _record_line(
