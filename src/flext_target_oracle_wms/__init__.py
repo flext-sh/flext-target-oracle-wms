@@ -22,6 +22,7 @@ from .__version__ import (
 if TYPE_CHECKING:
     from flext_meltano import FlextMeltanoConstants as meltano_c, d, e, h, r, s, x
 
+    from .__version__ import FlextTargetOracleWmsVersion
     from ._config import FlextTargetOracleWmsConfig, config
     from ._settings import FlextTargetOracleWmsSettings, settings
     from .api import FlextTargetOracleWmsService, target_oracle_wms
@@ -50,6 +51,7 @@ __all__: tuple[str, ...] = (
     "FlextTargetOracleWmsSettings",
     "FlextTargetOracleWmsTypes",
     "FlextTargetOracleWmsUtilities",
+    "FlextTargetOracleWmsVersion",
     "__author__",
     "__author_email__",
     "__description__",
@@ -79,6 +81,7 @@ __all__: tuple[str, ...] = (
 _LAZY_IMPORTS = MappingProxyType(
     build_lazy_import_map(
         MappingProxyType({
+            ".__version__": ("FlextTargetOracleWmsVersion",),
             "._config": ("FlextTargetOracleWmsConfig", "config"),
             "._settings": ("FlextTargetOracleWmsSettings", "settings"),
             ".api": ("FlextTargetOracleWmsService", "target_oracle_wms"),
