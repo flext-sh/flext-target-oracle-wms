@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
-from enum import StrEnum, unique
 from typing import TYPE_CHECKING, Final
 
 from flext_meltano import FlextMeltanoConstants as meltano_c
 from flext_oracle_wms import c
+
+from ._constants.base import FlextTargetOracleWmsConstantsBase
+from ._constants.values import FlextTargetOracleWmsConstantsValues
 
 if TYPE_CHECKING:
     from flext_oracle_wms import t
@@ -15,35 +17,20 @@ if TYPE_CHECKING:
 class FlextTargetOracleWmsConstants(meltano_c, c):
     """Typed constant namespace used by target Oracle WMS modules."""
 
-    class TargetOracleWms:
+    class TargetOracleWms(
+        FlextTargetOracleWmsConstantsBase,
+        FlextTargetOracleWmsConstantsValues.TargetOracleWms,
+    ):
         """Target-specific defaults and limits."""
 
-        CLI_MIN_CONFIG_ARG_COUNT: Final[int] = 3
         CLI_PLACEHOLDER_BASE_URL: Final[str] = "https://invalid.wms.ocs.oraclecloud.com"
 
-        class OracleWms:
+        class OracleWms(FlextTargetOracleWmsConstantsValues.TargetOracleWms.OracleWms):
             """Oracle WMS runtime defaults."""
 
-            DEFAULT_TIMEOUT: Final[int] = meltano_c.Meltano.DEFAULT_TIMEOUT_SECONDS
             DEFAULT_MAX_RETRIES: Final[int] = 3
             DEFAULT_BATCH_SIZE: Final[int] = (
                 meltano_c.Meltano.BATCH_DEFAULT_DEFAULT_BATCH_SIZE
-            )
-
-        class LoadMethods:
-            """Allowed load methods."""
-
-            @unique
-            class Method(StrEnum):
-                """Allowed target load methods."""
-
-                APPEND_ONLY = "APPEND_ONLY"
-                UPSERT = "UPSERT"
-                REPLACE = "REPLACE"
-                MERGE = "MERGE"
-
-            VALID_LOAD_METHODS: Final[frozenset[str]] = frozenset(
-                member.value for member in Method
             )
 
 
