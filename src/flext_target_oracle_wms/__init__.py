@@ -20,7 +20,9 @@ from .__version__ import (
 )
 
 if TYPE_CHECKING:
-    from flext_meltano import FlextMeltanoConstants as meltano_c, d, e, h, r, s, x
+    from flext_core import d, h, r, x
+    from flext_meltano import FlextMeltanoConstants as meltano_c, s
+    from flext_oracle_wms import e
 
     from .__version__ import FlextTargetOracleWmsVersion
     from ._config import FlextTargetOracleWmsConfig, config
@@ -42,15 +44,40 @@ if TYPE_CHECKING:
         FlextTargetOracleWmsUtilities as u,
     )
 __all__: tuple[str, ...] = (
-    "FlextTargetOracleWmsCli", "FlextTargetOracleWmsConfig", "FlextTargetOracleWmsConstants", "FlextTargetOracleWmsModels",
-    "FlextTargetOracleWmsProtocols", "FlextTargetOracleWmsService", "FlextTargetOracleWmsSettings", "FlextTargetOracleWmsTypes",
-    "FlextTargetOracleWmsUtilities", "FlextTargetOracleWmsVersion", "__author__", "__author_email__",
-    "__description__", "__license__", "__title__", "__url__",
-    "__version__", "__version_info__", "c", "config",
-    "d", "e", "h", "m",
-    "main", "meltano_c", "p", "r",
-    "s", "settings", "t", "target_oracle_wms",
-    "u", "x",
+    "FlextTargetOracleWmsCli",
+    "FlextTargetOracleWmsConfig",
+    "FlextTargetOracleWmsConstants",
+    "FlextTargetOracleWmsModels",
+    "FlextTargetOracleWmsProtocols",
+    "FlextTargetOracleWmsService",
+    "FlextTargetOracleWmsSettings",
+    "FlextTargetOracleWmsTypes",
+    "FlextTargetOracleWmsUtilities",
+    "FlextTargetOracleWmsVersion",
+    "__author__",
+    "__author_email__",
+    "__description__",
+    "__license__",
+    "__title__",
+    "__url__",
+    "__version__",
+    "__version_info__",
+    "c",
+    "config",
+    "d",
+    "e",
+    "h",
+    "m",
+    "main",
+    "meltano_c",
+    "p",
+    "r",
+    "s",
+    "settings",
+    "t",
+    "target_oracle_wms",
+    "u",
+    "x",
 )
 
 _LAZY_IMPORTS = MappingProxyType(
@@ -66,7 +93,9 @@ _LAZY_IMPORTS = MappingProxyType(
             ".protocols": ("FlextTargetOracleWmsProtocols", "p"),
             ".typings": ("FlextTargetOracleWmsTypes", "t"),
             ".utilities": ("FlextTargetOracleWmsUtilities", "u"),
-            "flext_meltano": ("d", "e", "h", "r", "s", "x"),
+            "flext_core": ("d", "h", "r", "x"),
+            "flext_meltano": ("s",),
+            "flext_oracle_wms": ("e",),
         }),
         alias_groups=MappingProxyType({
             "flext_meltano": (("meltano_c", "FlextMeltanoConstants"),)
