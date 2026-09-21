@@ -12,20 +12,7 @@ if TYPE_CHECKING:
     from flext_core import d, h, r, x
     from flext_meltano import s
     from flext_oracle_wms import e
-<<<<<<< HEAD
-    from flext_target_oracle_wms import (
-        FlextTargetOracleWmsConstants,
-        FlextTargetOracleWmsConstants as c,
-        m,
-        p,
-        t,
-        u,
-    )
-=======
-
-    from flext_core import d, h, r, x
     from flext_target_oracle_wms import FlextTargetOracleWmsConstants
->>>>>>> origin/0.12.0-dev
 
     from .constants import (
         ExamplesFlextTargetOracleWmsConstants,
