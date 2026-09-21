@@ -12,7 +12,8 @@ if TYPE_CHECKING:
     from .base import FlextTargetOracleWmsConstantsBase
     from .values import FlextTargetOracleWmsConstantsValues
 __all__: tuple[str, ...] = (
-    "FlextTargetOracleWmsConstantsBase", "FlextTargetOracleWmsConstantsValues",
+    "FlextTargetOracleWmsConstantsBase",
+    "FlextTargetOracleWmsConstantsValues",
 )
 
 _LAZY_IMPORTS = MappingProxyType(
