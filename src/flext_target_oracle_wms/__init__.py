@@ -20,9 +20,10 @@ from .__version__ import (
 )
 
 if TYPE_CHECKING:
-    from flext_core import d, h, r, x
     from flext_meltano import FlextMeltanoConstants as meltano_c, s
     from flext_oracle_wms import e
+
+    from flext_core import d, h, r, x
 
     from .__version__ import FlextTargetOracleWmsVersion
     from ._config import FlextTargetOracleWmsConfig, config

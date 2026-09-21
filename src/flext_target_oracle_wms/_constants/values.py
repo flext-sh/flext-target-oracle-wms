@@ -19,11 +19,13 @@ class FlextTargetOracleWmsConstantsValues:
         """Target-specific scalar constants."""
 
         CLI_MIN_CONFIG_ARG_COUNT: Final[int] = 3
+        CLI_PLACEHOLDER_BASE_URL: Final[str] = "https://invalid.wms.ocs.oraclecloud.com"
 
         class OracleWms:
             """Oracle WMS runtime scalar defaults."""
 
             DEFAULT_TIMEOUT: Final[int] = meltano_c.Meltano.DEFAULT_TIMEOUT_SECONDS
+            DEFAULT_MAX_RETRIES: Final[int] = 3
 
         class LoadMethods:
             """Allowed load methods."""

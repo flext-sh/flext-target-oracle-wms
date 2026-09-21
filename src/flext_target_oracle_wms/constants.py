@@ -23,12 +23,9 @@ class FlextTargetOracleWmsConstants(meltano_c, c):
     ):
         """Target-specific defaults and limits."""
 
-        CLI_PLACEHOLDER_BASE_URL: Final[str] = "https://invalid.wms.ocs.oraclecloud.com"
-
         class OracleWms(FlextTargetOracleWmsConstantsValues.TargetOracleWms.OracleWms):
             """Oracle WMS runtime defaults."""
 
-            DEFAULT_MAX_RETRIES: Final[int] = 3
             DEFAULT_BATCH_SIZE: Final[int] = (
                 meltano_c.Meltano.BATCH_DEFAULT_DEFAULT_BATCH_SIZE
             )
