@@ -20,7 +20,10 @@ from .__version__ import (
 )
 
 if TYPE_CHECKING:
-    from flext_meltano import FlextMeltanoConstants as meltano_c, d, e, h, r, s, x
+    from flext_meltano import FlextMeltanoConstants as meltano_c, s
+    from flext_oracle_wms import e
+
+    from flext_core import d, h, r, x
 
     from .__version__ import FlextTargetOracleWmsVersion
     from ._config import FlextTargetOracleWmsConfig, config
@@ -91,7 +94,9 @@ _LAZY_IMPORTS = MappingProxyType(
             ".protocols": ("FlextTargetOracleWmsProtocols", "p"),
             ".typings": ("FlextTargetOracleWmsTypes", "t"),
             ".utilities": ("FlextTargetOracleWmsUtilities", "u"),
-            "flext_meltano": ("d", "e", "h", "r", "s", "x"),
+            "flext_core": ("d", "h", "r", "x"),
+            "flext_meltano": ("s",),
+            "flext_oracle_wms": ("e",),
         }),
         alias_groups=MappingProxyType({
             "flext_meltano": (("meltano_c", "FlextMeltanoConstants"),)
