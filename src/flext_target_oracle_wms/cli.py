@@ -88,8 +88,8 @@ class FlextTargetOracleWmsCli:
             m.TargetOracleWms.WmsTargetConfig.model_validate({
                 "wms_auth": {
                     "base_url": c.TargetOracleWms.CLI_PLACEHOLDER_BASE_URL,
-                    "username": "oracle",
-                    "password": "oracle",
+                    "username": c.TargetOracleWms.OracleWms.DEFAULT_USERNAME,
+                    "password": c.TargetOracleWms.OracleWms.DEFAULT_PASSWORD,
                 }
             })
         )

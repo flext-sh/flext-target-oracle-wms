@@ -26,8 +26,13 @@ FLEXT Target Oracle WMS - Singer Target for Oracle WMS Data
 
 ## Module Map
 
-::: flext_target_oracle_wms options: members: false show_root_heading: false
-show_root_toc_entry: false show_source: false
+::: flext_target_oracle_wms
+
+    options:
+      members: false
+      show_root_heading: false
+      show_root_toc_entry: false
+      show_source: false
 
 ## Collection Rules
 
@@ -53,15 +58,16 @@ verification).
 - Public extensions exposed by this project: `FlextTargetOracleWmsCli`,
   `FlextTargetOracleWmsConfig`, `FlextTargetOracleWmsConstants`,
   `FlextTargetOracleWmsModels`, `FlextTargetOracleWmsProtocols`,
-  `FlextTargetOracleWmsService` (+3 more).
+  `FlextTargetOracleWmsService` (+4 more).
 - Library abstraction boundaries: see AGENTS.md §2.7.
 
 ## Quality Gates
 
 Canonical `make` verbs (`gen`, `check`, `test`, `fmt`, `docs`) execute their declared
-operations directly — see
-[`/flext/AGENTS.md`](https://github.com/flext-sh/flext/blob/0.12.0-dev/AGENTS.md)
-`Build & Test` and `Required Python quality gates`.
+operations directly.
+
+See [`/flext/AGENTS.md`](https://github.com/flext-sh/flext/blob/0.12.0-dev/AGENTS.md)
+for the build, test, and Python quality gates.
 
 ## Governance Pointer
 
