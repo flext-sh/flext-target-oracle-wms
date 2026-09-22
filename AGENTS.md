@@ -21,10 +21,15 @@ delegating WMS logic to `flext-oracle-wms`.
 
 ```text
 src/flext_target_oracle_wms/
-├── api.py            # FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase) — delegates sink creation
-├── target.py cli.py
-├── _utilities/service_runtime.py   # FlextTargetOracleWmsServiceRuntime — WMS target + sink creation
+├── api.py            # FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase)
+├── cli.py            # FlextTargetOracleWmsCli + main entry point
+├── _utilities/
+│   ├── client.py     # FlextTargetOracleWmsUtilitiesClient (CatalogManager, StreamProcessor, Target)
+│   ├── helpers.py    # FlextTargetOracleWmsUtilitiesHelpers (WMSTableManager, WMSDataTransformer, etc.)
+│   └── service_runtime.py   # FlextTargetOracleWmsServiceRuntime — WMS target + sink creation
 ├── constants.py typings.py protocols.py models.py utilities.py   # AUTO-GENERATED facets
+├── _config.py _settings.py   # private config/settings
+└── config/           # execution parametrization (YAML)
 ```
 
 ## Code Map
@@ -44,8 +49,9 @@ src/flext_target_oracle_wms/
 ## Commands
 
 ```bash
-make check PROJECT=flext-target-oracle-wms
-make test PROJECT=flext-target-oracle-wms # tests/{unit,integration,examples}
+make setup
+make check
+make test
 ```
 
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->

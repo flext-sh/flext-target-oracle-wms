@@ -6,13 +6,12 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import json as _stdlib_json
 from typing import TYPE_CHECKING
 
 import pytest
 from flext_tests import tm
 
-from tests import u
+from tests import m, u
 
 from .._helpers import _valid_config
 
@@ -26,26 +25,23 @@ def _schema_line(
     key_fields: t.StrSequence,
 ) -> str:
     schema_fields = dict(field_defs.items())
-    return _stdlib_json.dumps({
-        "type": "SCHEMA",
+    return m.Meltano.SingerSchemaMessage.model_validate({
         "stream": stream_name,
         "schema": {"type": "object", "properties": schema_fields},
         "key_properties": list(key_fields),
-        "schema_version": 1,
-    })
+    }).model_dump_json(by_alias=True, exclude_none=True)
 
 
 def _record_line(stream_name: str, record_data: t.JsonMapping) -> str:
-    return _stdlib_json.dumps({
-        "type": "RECORD",
-        "stream": stream_name,
-        "record": dict(record_data),
-        "_meta": {"version": 1},
-    })
+    return m.Meltano.SingerRecordMessage(
+        stream=stream_name, record=record_data, version=1
+    ).model_dump_json(by_alias=True, exclude_none=True)
 
 
 def _state_line(value: t.JsonMapping) -> str:
-    return _stdlib_json.dumps({"type": "STATE", "value": dict(value)})
+    return m.Meltano.SingerStateMessage(value=dict(value)).model_dump_json(
+        by_alias=True, exclude_none=True
+    )
 
 
 @pytest.mark.integration
