@@ -1,6 +1,7 @@
 # Triagem Snyk Code (SAST) — flext-sh/flext-target-oracle-wms
 
 <!-- TOC START -->
+
 - [Resumo](#resumo)
 - [Como usar este documento](#como-usar-este-documento)
 - [Achados](#achados)
@@ -8,7 +9,7 @@
   - [2 · 🟡 MEDIUM · Use of Hardcoded Passwords](#2-medium-use-of-hardcoded-passwords)
   - [3 · 🟡 MEDIUM · Use of Hardcoded Passwords](#3-medium-use-of-hardcoded-passwords)
   - [4 · 🟡 MEDIUM · Use of Hardcoded Passwords](#4-medium-use-of-hardcoded-passwords)
-<!-- TOC END -->
+  <!-- TOC END -->
 
 Gerado do scan Snyk (dump 2026-08-06). Bead: `mro-qmmv`
 
