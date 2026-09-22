@@ -31,7 +31,7 @@ def run_error_handling_example() -> t.Scalar:
         logger.info("Error handling example completed successfully")
     except (RuntimeError, OSError, ValueError):
         logger.exception("Unexpected error during processing")
-        return False
+        raise SystemExit(1) from None
     return True
 
 
