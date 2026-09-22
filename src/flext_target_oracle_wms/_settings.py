@@ -29,13 +29,10 @@ class FlextTargetOracleWmsSettings(FlextMeltanoSettings):
         username: Annotated[
             str, m.Field(default="oracle", description="Oracle WMS username")
         ]
-        password: Annotated[
-            str, m.Field(default="", description="Oracle WMS password")
-        ]
+        password: Annotated[str, m.Field(default="", description="Oracle WMS password")]
 
     TargetOracleWms: Annotated[
-        _TargetOracleWms,
-        m.Field(description="Oracle WMS connection defaults."),
+        _TargetOracleWms, m.Field(description="Oracle WMS connection defaults.")
     ] = _TargetOracleWms()
 
 
