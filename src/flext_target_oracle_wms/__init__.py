@@ -25,7 +25,6 @@ if TYPE_CHECKING:
     from flext_meltano import meltano, s
     from flext_oracle_wms import e, oracle_wms
     from flext_web import web
-    from pydantic_core import from_json, to_json, to_jsonable_python
 
     from flext_core import core, d, h, lazy_attribute, r, x
 
@@ -63,7 +62,6 @@ __all__: tuple[str, ...] = (
     "core",
     "d",
     "e",
-    "from_json",
     "h",
     "lazy_attribute",
     "m",
@@ -76,8 +74,6 @@ __all__: tuple[str, ...] = (
     "settings",
     "t",
     "target_oracle_wms",
-    "to_json",
-    "to_jsonable_python",
     "u",
     "web",
     "x",
@@ -101,7 +97,6 @@ _LAZY_IMPORTS = MappingProxyType(
             "flext_meltano": ("meltano", "s"),
             "flext_oracle_wms": ("e", "oracle_wms"),
             "flext_web": ("web",),
-            "pydantic_core": ("from_json", "to_json", "to_jsonable_python"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
