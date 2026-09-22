@@ -22,12 +22,14 @@ if TYPE_CHECKING:
 def _schema_line(
     stream: str, props: t.MappingKV[str, t.StrMapping], keys: t.StrSequence
 ) -> str:
-    message: m.Meltano.SingerSchemaMessage = m.Meltano.SingerSchemaMessage.model_validate({
-        "type": c.Meltano.SingerMessageType.SCHEMA,
-        "stream": stream,
-        "schema": {"type": "object", "properties": props},
-        "key_properties": keys,
-    })
+    message: m.Meltano.SingerSchemaMessage = (
+        m.Meltano.SingerSchemaMessage.model_validate({
+            "type": c.Meltano.SingerMessageType.SCHEMA,
+            "stream": stream,
+            "schema": {"type": "object", "properties": props},
+            "key_properties": keys,
+        })
+    )
     return message.model_dump_json(by_alias=True)
 
 
