@@ -9,36 +9,41 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_tests import FlextTestsConstants, d, e, h, r, td, tf, tk, tm, tv, x
+    from flext_cli import cli
+    from flext_infra import docs_main, infra
+    from flext_meltano import meltano
+    from flext_oracle_wms import e, oracle_wms
+    from flext_tests import (
+        active_rules,
+        api,
+        discover_repository_root,
+        install_local_packages,
+        load_infra_report,
+        split_csv,
+        td,
+        tf,
+        tk,
+        tm,
+        tv,
+    )
+    from flext_web import web
+    from pydantic_core import from_json, to_json, to_jsonable_python
+
+    from flext_core import core, d, h, lazy_attribute, r, x
+    from flext_target_oracle_wms import config, main, settings, target_oracle_wms
 
     from . import examples, integration, unit
     from .base import (
         TestsFlextTargetOracleWmsServiceBase,
         TestsFlextTargetOracleWmsServiceBase as s,
     )
-    from .constants import (
-        TestsFlextTargetOracleWmsConstants,
-        TestsFlextTargetOracleWmsConstants as c,
-    )
-    from .models import (
-        TestsFlextTargetOracleWmsModels,
-        TestsFlextTargetOracleWmsModels as m,
-    )
-    from .protocols import (
-        TestsFlextTargetOracleWmsProtocols,
-        TestsFlextTargetOracleWmsProtocols as p,
-    )
+    from .constants import TestsFlextTargetOracleWmsConstants, c
+    from .models import TestsFlextTargetOracleWmsModels, m
+    from .protocols import TestsFlextTargetOracleWmsProtocols, p
     from .settings import TestsFlextTargetOracleWmsSettings
-    from .typings import (
-        TestsFlextTargetOracleWmsTypes,
-        TestsFlextTargetOracleWmsTypes as t,
-    )
-    from .utilities import (
-        TestsFlextTargetOracleWmsUtilities,
-        TestsFlextTargetOracleWmsUtilities as u,
-    )
+    from .typings import TestsFlextTargetOracleWmsTypes, t
+    from .utilities import TestsFlextTargetOracleWmsUtilities, u
 __all__: tuple[str, ...] = (
-    "FlextTestsConstants",
     "TestsFlextTargetOracleWmsConstants",
     "TestsFlextTargetOracleWmsModels",
     "TestsFlextTargetOracleWmsProtocols",
@@ -46,24 +51,45 @@ __all__: tuple[str, ...] = (
     "TestsFlextTargetOracleWmsSettings",
     "TestsFlextTargetOracleWmsTypes",
     "TestsFlextTargetOracleWmsUtilities",
+    "active_rules",
+    "api",
     "c",
+    "cli",
+    "config",
+    "core",
     "d",
+    "discover_repository_root",
+    "docs_main",
     "e",
     "examples",
+    "from_json",
     "h",
+    "infra",
+    "install_local_packages",
     "integration",
+    "lazy_attribute",
+    "load_infra_report",
     "m",
+    "main",
+    "meltano",
+    "oracle_wms",
     "p",
     "r",
     "s",
+    "settings",
+    "split_csv",
     "t",
+    "target_oracle_wms",
     "td",
     "tf",
     "tk",
     "tm",
+    "to_json",
+    "to_jsonable_python",
     "tv",
     "u",
     "unit",
+    "web",
     "x",
 )
 
@@ -80,19 +106,32 @@ _LAZY_IMPORTS = MappingProxyType(
             ".typings": ("TestsFlextTargetOracleWmsTypes", "t"),
             ".unit": ("unit",),
             ".utilities": ("TestsFlextTargetOracleWmsUtilities", "u"),
+            "flext_cli": ("cli",),
+            "flext_core": ("core", "d", "h", "lazy_attribute", "r", "x"),
+            "flext_infra": ("docs_main", "infra"),
+            "flext_meltano": ("meltano",),
+            "flext_oracle_wms": ("e", "oracle_wms"),
+            "flext_target_oracle_wms": (
+                "config",
+                "main",
+                "settings",
+                "target_oracle_wms",
+            ),
             "flext_tests": (
-                "FlextTestsConstants",
-                "d",
-                "e",
-                "h",
-                "r",
+                "active_rules",
+                "api",
+                "discover_repository_root",
+                "install_local_packages",
+                "load_infra_report",
+                "split_csv",
                 "td",
                 "tf",
                 "tk",
                 "tm",
                 "tv",
-                "x",
             ),
+            "flext_web": ("web",),
+            "pydantic_core": ("from_json", "to_json", "to_jsonable_python"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
