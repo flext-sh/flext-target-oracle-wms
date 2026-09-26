@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from flext_tests.utilities import ModuleGovernanceMixin
+from flext_tests import FlextTestsModuleGovernanceMixin
 
 from tests import c, m
 
 
-class TestsFlextTargetOracleWmsModuleGovernance(ModuleGovernanceMixin):
+class TestsFlextTargetOracleWmsModuleGovernance(FlextTestsModuleGovernanceMixin):
     """Behavior contract for test_module_governance."""
 
     _test_file = __file__
