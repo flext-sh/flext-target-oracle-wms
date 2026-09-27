@@ -14,16 +14,12 @@ import os
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
-from flext_observability.services.monitoring import FlextObservabilityMonitor
-
 from flext_target_oracle_wms import FlextTargetOracleWmsUtilities, u
 
 if TYPE_CHECKING:
     from flext_core import t
 
 logger = u.fetch_logger(__name__)
-monitor = FlextObservabilityMonitor()
-flext_monitor_function = FlextObservabilityMonitor.flext_monitor_function
 
 _BATCH_WMS_AUTH: dict[str, t.JsonValue] = {
     "base_url": "https://wms.example.oraclecloud.com",
@@ -36,7 +32,6 @@ BATCH_CONFIG: Final[t.JsonMapping] = MappingProxyType({
 })
 
 
-@flext_monitor_function(monitor)
 def run_batch_example() -> t.Scalar:
     """Run batch processing example with Oracle WMS table management."""
     logger.info("Starting batch processing example")

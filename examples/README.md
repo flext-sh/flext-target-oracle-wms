@@ -36,7 +36,6 @@ All examples follow DRY (Don't Repeat Yourself) principles and use REAL implemen
 from the flext-\* ecosystem:
 
 - **flext-core**: r, FlextLogger, dependency injection patterns
-- **flext-observability**: FlextObservabilityMonitor, flext_monitor_function
 - **flext-oracle-wms**: Production Oracle WMS Cloud SaaS integration
 - **Singer SDK**: Real Singer protocol implementation
 
@@ -63,7 +62,6 @@ from __future__ import annotations
 # DRY: Real flext-* imports
 from flext_cli import u
 from flext_core import FlextSettings
-from flext_observability import flext_monitor_function
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
 # Real configuration
@@ -321,8 +319,6 @@ python -m pytest tests/examples/ --cov=examples --cov-report=term-missing
 - [API Reference](../docs/api/) - Detailed API documentation
 - [flext-core Documentation](https://github.com/organization/flext/tree/main/flext-core/README.md) -
   Core patterns
-- [flext-observability Documentation](https://github.com/organization/flext/tree/main/flext-observability/README.md) -
-  Monitoring
 
 ## 🤝 Contributing
 

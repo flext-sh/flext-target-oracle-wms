@@ -87,20 +87,20 @@ class TestsFlextTargetOracleWmsQuality:
 
     def test_catalog_manager_instantiates(self) -> None:
         mgr = u.TargetOracleWms.CatalogManager()
-        tm.that(mgr, none=False)
+        tm.that(mgr, is_=u.TargetOracleWms.CatalogManager)
 
     def test_table_manager_instantiates(self) -> None:
         manager = u.TargetOracleWms.WMSTableManager()
-        tm.that(manager, none=False)
+        tm.that(manager, is_=u.TargetOracleWms.WMSTableManager)
 
     def test_type_converter_instantiates(self) -> None:
         tc = u.TargetOracleWms.WMSTypeConverter()
-        tm.that(tc, none=False)
+        tm.that(tc, is_=u.TargetOracleWms.WMSTypeConverter)
 
     def test_data_transformer_instantiates(self) -> None:
         dt = u.TargetOracleWms.WMSDataTransformer()
-        tm.that(dt, none=False)
+        tm.that(dt, is_=u.TargetOracleWms.WMSDataTransformer)
 
     def test_schema_mapper_instantiates(self) -> None:
         sm = u.TargetOracleWms.WMSSchemaMapper()
-        tm.that(sm, none=False)
+        tm.that(sm, is_=u.TargetOracleWms.WMSSchemaMapper)
