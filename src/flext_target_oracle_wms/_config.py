@@ -10,6 +10,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from typing import Annotated, Self
+
 from flext_meltano import FlextMeltanoConfig, m
 
 
@@ -20,9 +22,32 @@ class _TargetOracleWmsNamespace(m.BaseModel):
 
 
 class FlextTargetOracleWmsConfig(FlextMeltanoConfig):
-    """TargetOracleWms config auto-loaded model-less from ``config/*.yaml``."""
+    """TargetOracleWms config auto-loaded model-less from ``config/*.yaml``.
 
-    TargetOracleWms: _TargetOracleWmsNamespace = _TargetOracleWmsNamespace()
+    MRO carries ``FlextSettings`` FIRST (ENFORCE-042); the class stays a frozen,
+    YAML-validated config singleton.
+    """
+
+    # ENFORCE-042 namespace-holder contract: ``FlextSettings`` contributes
+    # namespacing only — instance machinery stays plain object semantics so the
+    # settings singleton ``__new__`` cannot leak into the config singleton.
+    # The inherited pydantic ``__init__`` still runs the frozen, YAML-validated
+    # construction, and the inherited pydantic ``__setattr__`` keeps the frozen
+    # guard.
+    def __new__(cls, *args: object, **kwargs: object) -> Self:
+        _ = args, kwargs
+        return object.__new__(cls)
+
+    __eq__ = object.__eq__
+
+    __hash__ = object.__hash__
+
+    TargetOracleWms: Annotated[
+        _TargetOracleWmsNamespace,
+        m.Field(
+            description="Open namespace exposing ``config/*.yaml`` under ``TargetOracleWms``."
+        ),
+    ] = _TargetOracleWmsNamespace()
 
 
 config: FlextTargetOracleWmsConfig = FlextTargetOracleWmsConfig.fetch_global()

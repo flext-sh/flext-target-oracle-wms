@@ -11,6 +11,7 @@ import math
 from flext_tests import tm
 
 from tests import c, m, t, u
+
 from .._helpers import _valid_config
 
 

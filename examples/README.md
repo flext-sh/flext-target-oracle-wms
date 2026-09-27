@@ -5,10 +5,10 @@
 - [Oracle WMS Target - Examples](#oracle-wms-target---examples)
   - [🎯 Examples Overview](#-examples-overview)
   - [📚 Available Examples](#-available-examples)
-    - [1. basic\_usage.py](#1-basic_usagepy)
-    - [2. advanced\_configuration.py](#2-advanced_configurationpy)
-    - [3. batch\_processing.py](#3-batch_processingpy)
-    - [4. error\_handling.py](#4-error_handlingpy)
+    - [1. basic_usage.py](#1-basic_usagepy)
+    - [2. advanced_configuration.py](#2-advanced_configurationpy)
+    - [3. batch_processing.py](#3-batch_processingpy)
+    - [4. error_handling.py](#4-error_handlingpy)
   - [🚀 Running the Examples](#-running-the-examples)
     - [Prerequisites](#prerequisites)
     - [Running Individual Examples](#running-individual-examples)
@@ -27,14 +27,15 @@
 
 <!-- TOC END -->
 
-This directory contains comprehensive examples demonstrating production-grade usage of the flext-target-oracle-wms with REAL flext-\* APIs and mission-critical patterns.
+This directory contains comprehensive examples demonstrating production-grade usage of
+the flext-target-oracle-wms with REAL flext-\* APIs and mission-critical patterns.
 
 ## 🎯 Examples Overview
 
-All examples follow DRY (Don't Repeat Yourself) principles and use REAL implementations from the flext-\* ecosystem:
+All examples follow DRY (Don't Repeat Yourself) principles and use REAL implementations
+from the flext-\* ecosystem:
 
 - **flext-core**: r, FlextLogger, dependency injection patterns
-- **flext-observability**: FlextObservabilityMonitor, flext_monitor_function
 - **flext-oracle-wms**: Production Oracle WMS Cloud SaaS integration
 - **Singer SDK**: Real Singer protocol implementation
 
@@ -61,7 +62,6 @@ from __future__ import annotations
 # DRY: Real flext-* imports
 from flext_cli import u
 from flext_core import FlextSettings
-from flext_observability import flext_monitor_function
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
 # Real configuration
@@ -202,13 +202,7 @@ def retry_with_backoff(operation, max_retries: int = 3) -> p.Result[t.JsonValue]
 
    ```bash
    cd /path/to/flext-target-oracle-wms
-   poetry install
-   ```
-
-1. **Activate virtual environment:**
-
-   ```bash
-   poetry shell
+   make setup
    ```
 
 1. **Set environment variables (optional):**
@@ -241,10 +235,10 @@ python examples/03_error_handling.py
 ```bash
 # Run all examples in sequence
 for example in examples/*.py; do
-    echo "Running $example..."
-    python "$example"
-    echo "Completed $example"
-    echo "---"
+  echo "Running $example..."
+  python "$example"
+  echo "Completed $example"
+  echo "---"
 done
 ```
 
@@ -292,7 +286,8 @@ export WMS_ENV="production"
 - **Batch Processing**: ~200-500 MB
 - **Concurrent Processing**: ~500-1000 MB
 
-_Performance varies based on record complexity, network latency, and Oracle WMS Cloud configuration._
+_Performance varies based on record complexity, network latency, and Oracle WMS Cloud
+configuration._
 
 ## 🛡️ Security Considerations
 
@@ -322,8 +317,8 @@ python -m pytest tests/examples/ --cov=examples --cov-report=term-missing
 - [Main README](../README.md) - Project overview and setup
 - [Architecture Documentation](../docs/architecture/) - System design
 - [API Reference](../docs/api/) - Detailed API documentation
-- [flext-core Documentation](https://github.com/organization/flext/tree/main/flext-core/README.md) - Core patterns
-- [flext-observability Documentation](https://github.com/organization/flext/tree/main/flext-observability/README.md) - Monitoring
+- [flext-core Documentation](https://github.com/organization/flext/tree/main/flext-core/README.md) -
+  Core patterns
 
 ## 🤝 Contributing
 
@@ -340,6 +335,8 @@ When adding new examples:
 
 All examples are provided under the MIT License. See [LICENSE](../LICENSE) for details.
 
-______________________________________________________________________
+---
 
-**Note**: These examples use real Oracle WMS Cloud SaaS API patterns and production-grade flext-\* implementations. They are designed for mission-critical applications and follow enterprise security and performance standards.
+**Note**: These examples use real Oracle WMS Cloud SaaS API patterns and
+production-grade flext-\* implementations. They are designed for mission-critical
+applications and follow enterprise security and performance standards.

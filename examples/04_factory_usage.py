@@ -14,13 +14,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+import os
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
-
-from flext_observability.services.monitoring import (
-    FlextObservabilityMonitor,
-    flext_monitor_function,
-)
 
 from flext_target_oracle_wms import m, t, u
 
@@ -30,16 +26,14 @@ if TYPE_CHECKING:
 _ = u  # Anchor flext_core import for example validation.
 
 logger = u.fetch_logger(__name__)
-monitor = FlextObservabilityMonitor()
 
 TARGET_CONFIG: Final[Mapping[str, str]] = MappingProxyType({
     "base_url": "https://wms.example.oraclecloud.com",
     "username": "wms_target_user",
-    "password": "wms_target_pass",
+    "password": os.environ.get("FLEXT_DEMO_WMS_PASSWORD", "<demo>"),
 })
 
 
-@flext_monitor_function(monitor)
 def run_target_creation_example() -> t.Scalar:
     """Create an Oracle WMS target via the canonical utilities facade."""
     logger.info("Starting Oracle WMS target creation example")

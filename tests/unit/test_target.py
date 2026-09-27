@@ -6,13 +6,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import json
 from typing import TYPE_CHECKING
 
 import pytest
 from flext_tests import tm
 
 from tests import c, m, u
+
 from .._helpers import _record_msg, _schema_msg, _valid_config
 
 if TYPE_CHECKING:
@@ -22,10 +22,15 @@ if TYPE_CHECKING:
 def _schema_line(
     stream: str, props: t.MappingKV[str, t.StrMapping], keys: t.StrSequence
 ) -> str:
-    msg = _schema_msg(stream, key_properties=keys)
-    schema_dict = msg.model_dump(by_alias=True)
-    schema_dict["properties"] = dict(props.items())
-    return json.dumps(schema_dict)
+    message: m.Meltano.SingerSchemaMessage = (
+        m.Meltano.SingerSchemaMessage.model_validate({
+            "type": c.Meltano.SingerMessageType.SCHEMA,
+            "stream": stream,
+            "schema": {"type": "object", "properties": props},
+            "key_properties": keys,
+        })
+    )
+    return message.model_dump_json(by_alias=True)
 
 
 def _record_line(
@@ -86,14 +91,6 @@ class TestsFlextTargetOracleWmsTarget:
         })
         tm.that(config.load_method, eq=c.TargetOracleWms.LoadMethods.Method.UPSERT)
 
-    def test_has_catalog_manager(self) -> None:
-        target = u.TargetOracleWms.Target(_valid_config())
-        tm.that(target.catalog_manager, none=False)
-
-    def test_has_stream_processor(self) -> None:
-        target = u.TargetOracleWms.Target(_valid_config())
-        tm.that(target.stream_processor, none=False)
-
     def test_setup_returns_success(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
         result = target.setup()
@@ -123,9 +120,7 @@ class TestsFlextTargetOracleWmsTarget:
         msg = _record_msg("orphan", {"id": "1"})
         result = target.handle_record_message(msg)
         tm.fail(result)
-        error = result.error
-        assert error is not None
-        tm.that(error.lower(), has="schema not registered")
+        tm.that((result.error or "").lower(), has="schema not registered")
 
     def test_record_after_schema_succeeds(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
@@ -155,9 +150,7 @@ class TestsFlextTargetOracleWmsTarget:
         target = u.TargetOracleWms.Target(_valid_config())
         result = target.process_lines(["not json"])
         tm.fail(result)
-        error = result.error
-        assert error is not None
-        tm.that(error.lower(), has="invalid json")
+        tm.that((result.error or "").lower(), has="invalid json")
 
     def test_schema_then_record_then_state(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())

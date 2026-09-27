@@ -10,18 +10,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_observability.services.monitoring import (
-    FlextObservabilityMonitor,
-    flext_monitor_function,
-)
-
 from flext_target_oracle_wms import FlextTargetOracleWmsUtilities, t, u
 
 logger = u.fetch_logger(__name__)
-monitor = FlextObservabilityMonitor()
 
 
-@flext_monitor_function(monitor)
 def run_error_handling_example() -> t.Scalar:
     """Run error handling example with Oracle WMS resilience patterns."""
     logger.info("Starting error handling example")
@@ -33,7 +26,7 @@ def run_error_handling_example() -> t.Scalar:
         logger.info("Error handling example completed successfully")
     except (RuntimeError, OSError, ValueError):
         logger.exception("Unexpected error during processing")
-        return False
+        raise SystemExit(1) from None
     return True
 
 

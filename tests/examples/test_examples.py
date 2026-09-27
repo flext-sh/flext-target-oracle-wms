@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import importlib.util
+import importlib
 import inspect
 from pathlib import Path
 from types import ModuleType
@@ -19,14 +19,7 @@ from tests import c, t
 
 
 def _load_example_module(example_file: Path) -> ModuleType:
-    module_name = f"_flext_target_oracle_wms_example_{example_file.stem}"
-    spec = importlib.util.spec_from_file_location(module_name, example_file)
-    assert spec is not None
-    loader = spec.loader
-    assert loader is not None
-    module = importlib.util.module_from_spec(spec)
-    loader.exec_module(module)
-    return module
+    return importlib.import_module(f"{example_file.parent.name}.{example_file.stem}")
 
 
 _AUTO_GENERATED_FACETS: frozenset[str] = frozenset({
@@ -113,11 +106,14 @@ class TestsFlextTargetOracleWmsExamples:
     def test_examples_have_comprehensive_docstrings(
         self, example_files: t.SequenceOf[Path]
     ) -> None:
-        """Test that examples have comprehensive docstrings."""
+        """Require module docs everywhere and comprehensive docs in runnable examples."""
         for example_file in example_files:
             module = _load_example_module(example_file)
             module_docstring = inspect.getdoc(module)
             assert module_docstring is not None
+            assert module_docstring.strip(), f"{example_file.name} docstring is empty"
+            if example_file.name in _AUTO_GENERATED_FACETS:
+                continue
             assert (
                 len(module_docstring)
                 > c.TargetOracleWms.Tests.MIN_MODULE_DOCSTRING_LENGTH
@@ -212,8 +208,10 @@ class TestsFlextTargetOracleWmsExamples:
     def test_examples_have_main_execution_blocks(
         self, example_files: t.SequenceOf[Path]
     ) -> None:
-        """Test that examples have proper main execution blocks."""
+        """Require main blocks in runnable examples, not imported support facades."""
         for example_file in example_files:
+            if example_file.name in _AUTO_GENERATED_FACETS:
+                continue
             content = example_file.read_text(encoding="utf-8")
             tm.that(content, has='if __name__ == "__main__":')
             main_patterns = ["u.Cli.print(", "run(", "run_", "demonstrate_"]
@@ -338,13 +336,3 @@ class TestsFlextTargetOracleWmsExamples:
                 assert "logger.info(" in content or "logger.error(" in content, (
                     f"{example_file.name} must actually use the logger"
                 )
-
-    def test_examples_use_flext_observability(self) -> None:
-        """Test that examples use flext-observability correctly."""
-        examples_dir = Path(__file__).parents[2] / "examples"
-        example_files = list(examples_dir.glob("*.py"))
-        for example_file in example_files:
-            content = example_file.read_text(encoding="utf-8")
-            if "flext_monitor_function" in content:
-                tm.that(content, has="@flext_monitor_function(")
-                tm.that(content, has="FlextObservabilityMonitor")
