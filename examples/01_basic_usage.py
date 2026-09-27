@@ -16,16 +16,12 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Final
 
-from flext_observability.services.monitoring import FlextObservabilityMonitor
-
 from flext_target_oracle_wms import FlextTargetOracleWmsUtilities, t, u
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
 logger = u.fetch_logger(__name__)
-monitor = FlextObservabilityMonitor()
-flext_monitor_function = FlextObservabilityMonitor.flext_monitor_function
 
 
 WMS_AUTH: Final[Mapping[str, str]] = MappingProxyType({
@@ -36,7 +32,6 @@ WMS_AUTH: Final[Mapping[str, str]] = MappingProxyType({
 BATCH_SIZE: Final[int] = 100
 
 
-@flext_monitor_function(monitor)
 def run_basic_example() -> t.Scalar:
     """Run basic Oracle WMS target example with REAL configuration."""
     logger.info("Starting basic Oracle WMS target example")
