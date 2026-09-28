@@ -14,12 +14,12 @@ from typing import Annotated, Literal
 # types lazily at model-build time; hiding them under TYPE_CHECKING left WmsTargetConfig /
 # SingerSchemaProperties "not fully defined". Do NOT move them under TYPE_CHECKING.
 from flext_meltano import FlextMeltanoModels as meltano_m, t, u
-from flext_oracle_wms import m
+from flext_oracle_wms import FlextOracleWmsModels
 
 from flext_target_oracle_wms import c
 
 
-class FlextTargetOracleWmsModels(meltano_m, m):
+class FlextTargetOracleWmsModels(meltano_m, FlextOracleWmsModels):
     """Pydantic model namespace for target Oracle WMS.
 
     Inherited namespaces:
