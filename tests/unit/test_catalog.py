@@ -6,32 +6,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import pytest
 from flext_tests import tm
 
-from tests import c, m, u
-
-if TYPE_CHECKING:
-    from tests import t
-
-
-def _make_schema_message(
-    stream_name: str = "test_stream",
-    schema: t.JsonMapping | None = None,
-    key_properties: t.StrSequence | None = None,
-) -> m.Meltano.SingerSchemaMessage:
-    """Build a valid SingerSchemaMessage dict."""
-    message: m.Meltano.SingerSchemaMessage = (
-        m.Meltano.SingerSchemaMessage.model_validate({
-            "type": c.Meltano.SingerMessageType.SCHEMA,
-            "stream": stream_name,
-            "schema": schema or {"type": "object"},
-            "key_properties": key_properties or ["id"],
-        })
-    )
-    return message
+from tests import m, u
 
 
 class TestsFlextTargetOracleWmsCatalog:
@@ -39,27 +17,35 @@ class TestsFlextTargetOracleWmsCatalog:
 
     def test_add_stream_returns_success(self) -> None:
         mgr = u.TargetOracleWms.CatalogManager()
-        result = mgr.add_stream(_make_schema_message())
+        result = mgr.add_stream(
+            m.Meltano.SingerSchemaMessage(stream="test_stream", schema={"type": "object"})
+        )
         tm.ok(result)
         tm.that(result.value, eq=True)
 
     def test_add_stream_makes_stream_retrievable(self) -> None:
         mgr = u.TargetOracleWms.CatalogManager()
-        mgr.add_stream(_make_schema_message("inventory"))
+        mgr.add_stream(
+            m.Meltano.SingerSchemaMessage(stream="inventory", schema={"type": "object"})
+        )
         result = mgr.get_stream("inventory")
         tm.ok(result)
 
     def test_add_stream_overwrites_existing(self) -> None:
         mgr = u.TargetOracleWms.CatalogManager()
-        schema_v1 = _make_schema_message("s", key_properties=["id"])
-        schema_v2 = _make_schema_message("s", key_properties=["id", "name"])
+        schema_v1 = m.Meltano.SingerSchemaMessage(
+            stream="s", schema={"type": "object"}, key_properties=("id",)
+        )
+        schema_v2 = m.Meltano.SingerSchemaMessage(
+            stream="s", schema={"type": "object"}, key_properties=("id", "name")
+        )
         mgr.add_stream(schema_v1)
         mgr.add_stream(schema_v2)
         result = mgr.get_stream("s")
         tm.ok(result)
         tm.ok(result)
         entry = result.value
-        tm.that(entry.key_properties, eq=["id", "name"])
+        tm.that(entry.key_properties, eq=("id", "name"))
 
     def test_get_nonexistent_stream_fails(self) -> None:
         mgr = u.TargetOracleWms.CatalogManager()
@@ -69,7 +55,9 @@ class TestsFlextTargetOracleWmsCatalog:
 
     def test_get_existing_stream_returns_catalog_entry(self) -> None:
         mgr = u.TargetOracleWms.CatalogManager()
-        mgr.add_stream(_make_schema_message("orders"))
+        mgr.add_stream(
+            m.Meltano.SingerSchemaMessage(stream="orders", schema={"type": "object"})
+        )
         result = mgr.get_stream("orders")
         tm.ok(result)
         tm.that(result.value, none=False)
@@ -79,17 +67,25 @@ class TestsFlextTargetOracleWmsCatalog:
 
     def test_entry_has_correct_key_properties(self) -> None:
         mgr = u.TargetOracleWms.CatalogManager()
-        mgr.add_stream(_make_schema_message("items", key_properties=["item_id", "lot"]))
+        mgr.add_stream(
+            m.Meltano.SingerSchemaMessage(
+                stream="items",
+                schema={"type": "object"},
+                key_properties=("item_id", "lot"),
+            )
+        )
         stream_result = mgr.get_stream("items")
         tm.ok(stream_result)
         tm.that(stream_result.value, none=False)
         entry = stream_result.value
-        tm.that(entry.key_properties, eq=["item_id", "lot"])
+        tm.that(entry.key_properties, eq=("item_id", "lot"))
 
     def test_multiple_independent_streams(self) -> None:
         mgr = u.TargetOracleWms.CatalogManager()
         for name in ("alpha", "beta", "gamma"):
-            mgr.add_stream(_make_schema_message(name))
+            mgr.add_stream(
+                m.Meltano.SingerSchemaMessage(stream=name, schema={"type": "object"})
+            )
         for name in ("alpha", "beta", "gamma"):
             tm.ok(mgr.get_stream(name))
 
@@ -99,5 +95,7 @@ class TestsFlextTargetOracleWmsCatalog:
     )
     def test_various_stream_names(self, stream_name: str) -> None:
         mgr = u.TargetOracleWms.CatalogManager()
-        mgr.add_stream(_make_schema_message(stream_name))
+        mgr.add_stream(
+            m.Meltano.SingerSchemaMessage(stream=stream_name, schema={"type": "object"})
+        )
         tm.ok(mgr.get_stream(stream_name))
