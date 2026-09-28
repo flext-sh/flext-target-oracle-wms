@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from flext_meltano import FlextMeltanoConstants as meltano_c
+from flext_meltano import FlextMeltanoConstants
 from flext_oracle_wms import FlextOracleWmsConstants
 
 from ._constants.base import FlextTargetOracleWmsConstantsBase
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from flext_oracle_wms import t
 
 
-class FlextTargetOracleWmsConstants(meltano_c, FlextOracleWmsConstants):
+class FlextTargetOracleWmsConstants(FlextMeltanoConstants, FlextOracleWmsConstants):
     """Typed constant namespace used by target Oracle WMS modules."""
 
     class TargetOracleWms(
