@@ -18,7 +18,9 @@ class TestsFlextTargetOracleWmsCatalog:
     def test_add_stream_returns_success(self) -> None:
         mgr = u.TargetOracleWms.CatalogManager()
         result = mgr.add_stream(
-            m.Meltano.SingerSchemaMessage(stream="test_stream", schema={"type": "object"})
+            m.Meltano.SingerSchemaMessage(
+                stream="test_stream", schema={"type": "object"}
+            )
         )
         tm.ok(result)
         tm.that(result.value, eq=True)
