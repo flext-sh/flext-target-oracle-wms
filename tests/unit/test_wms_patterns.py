@@ -1,4 +1,4 @@
-"""Tests for WMS target model helpers: WMSTypeConverter, WMSDataTransformer, WMSSchemaMapper, WMSTableManager.
+"""Tests for WMS target model helpers: WMSTypeConverter, WMSDataTransformer, WMSTableManager.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -106,22 +106,6 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         tm.ok(result)
         tm.that(result.value, none=False)
         tm.that(result.value.record, has="NAME")
-
-    def test_returns_catalog_entry(self) -> None:
-        mapper = u.TargetOracleWms.WMSSchemaMapper()
-        result = mapper.map_stream_schema(_schema_msg("inventory"))
-        tm.ok(result)
-        tm.that(result.value, none=False)
-        entry = result.value
-        tm.that(entry.stream, eq="inventory")
-        tm.that(entry.tap_stream_id, eq="inventory")
-        tm.that(entry.table_name, eq="INVENTORY")
-
-    def test_preserves_key_properties(self) -> None:
-        mapper = u.TargetOracleWms.WMSSchemaMapper()
-        result = mapper.map_stream_schema(_schema_msg("s", key_properties=["a", "b"]))
-        tm.that(result.value, none=False)
-        tm.that(result.value.key_properties, eq=["a", "b"])
 
     def test_register_stream_returns_uppercase(self) -> None:
         manager = u.TargetOracleWms.WMSTableManager()

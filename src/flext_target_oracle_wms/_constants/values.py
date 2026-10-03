@@ -18,14 +18,13 @@ class FlextTargetOracleWmsConstantsValues:
     class TargetOracleWms:
         """Target-specific scalar constants."""
 
+        TARGET_NAME: Final[str] = "target-oracle-wms"
         CLI_MIN_CONFIG_ARG_COUNT: Final[int] = 3
         CLI_PLACEHOLDER_BASE_URL: Final[str] = "https://invalid.wms.ocs.oraclecloud.com"
 
         class OracleWms:
             """Oracle WMS runtime scalar defaults."""
 
-            DEFAULT_TIMEOUT: Final[int] = meltano_c.Meltano.DEFAULT_TIMEOUT_SECONDS
-            DEFAULT_MAX_RETRIES: Final[int] = 3
             DEFAULT_BATCH_SIZE: Final[int] = (
                 meltano_c.Meltano.BATCH_DEFAULT_DEFAULT_BATCH_SIZE
             )
@@ -41,10 +40,6 @@ class FlextTargetOracleWmsConstantsValues:
                 UPSERT = "UPSERT"
                 REPLACE = "REPLACE"
                 MERGE = "MERGE"
-
-            VALID_LOAD_METHODS: Final[frozenset[str]] = frozenset(
-                member.value for member in Method
-            )
 
 
 __all__: list[str] = ["FlextTargetOracleWmsConstantsValues"]

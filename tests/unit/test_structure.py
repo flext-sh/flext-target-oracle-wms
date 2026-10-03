@@ -11,7 +11,7 @@ import importlib.util
 
 from flext_tests import tm
 
-from tests import u
+from tests import c, u
 
 
 class TestsFlextTargetOracleWmsStructure:
@@ -20,11 +20,7 @@ class TestsFlextTargetOracleWmsStructure:
     def test_import_from_correct_module(self) -> None:
         """Test that we can import from the correct module."""
         tm.that(u.TargetOracleWms.Target, none=False)
-        if u.TargetOracleWms.Target.name != "target-oracle-wms":
-            msg: str = (
-                f"Expected {'target-oracle-wms'}, got {u.TargetOracleWms.Target.name}"
-            )
-            raise AssertionError(msg)
+        tm.that(u.TargetOracleWms.Target.name, eq=c.TargetOracleWms.TARGET_NAME)
 
     def test_no_dual_structure(self) -> None:
         """Test that flext_target_oracle_wms module exists correctly."""

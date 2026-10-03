@@ -25,20 +25,9 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
         CatalogManager = FlextTargetOracleWmsUtilitiesClient.CatalogManager
         StreamProcessor = FlextTargetOracleWmsUtilitiesClient.StreamProcessor
         Target = FlextTargetOracleWmsUtilitiesClient.Target
-        Validation = FlextTargetOracleWmsUtilitiesHelpers.Validation
         WMSDataTransformer = FlextTargetOracleWmsUtilitiesHelpers.WMSDataTransformer
-        WMSSchemaMapper = FlextTargetOracleWmsUtilitiesHelpers.WMSSchemaMapper
         WMSTableManager = FlextTargetOracleWmsUtilitiesHelpers.WMSTableManager
         WMSTypeConverter = FlextTargetOracleWmsUtilitiesHelpers.WMSTypeConverter
-        create_record_message = staticmethod(
-            FlextTargetOracleWmsUtilitiesHelpers.create_record_message
-        )
-        create_schema_message = staticmethod(
-            FlextTargetOracleWmsUtilitiesHelpers.create_schema_message
-        )
-        create_state_message = staticmethod(
-            FlextTargetOracleWmsUtilitiesHelpers.create_state_message
-        )
 
 
 __all__: list[str] = ["FlextTargetOracleWmsUtilities", "u"]

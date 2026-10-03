@@ -102,7 +102,7 @@ class FlextTargetOracleWmsUtilitiesClient:
         Accessible as u.TargetOracleWms.Client.Target.
         """
 
-        name = "target-oracle-wms"
+        name = c.TargetOracleWms.TARGET_NAME
         _state_type: ClassVar[str] = "STATE"
         _schema_type: ClassVar[str] = "SCHEMA"
         _record_type: ClassVar[str] = "RECORD"
@@ -195,7 +195,7 @@ class FlextTargetOracleWmsUtilitiesClient:
                 if not line:
                     continue
                 try:
-                    message = t.CONTAINER_MAP_ADAPTER.validate_json(line)
+                    message = t.json_mapping_adapter().validate_json(line)
                 except c.ValidationError as exc:
                     return r[bool].fail(f"Invalid JSON message: {exc}", exception=exc)
                 message_type = str(message.get("type", ""))
