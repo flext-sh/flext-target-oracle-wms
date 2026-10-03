@@ -41,6 +41,4 @@ class TestsFlextTargetOracleWmsOracleWmsInit:
         ]
         for export in expected_exports:
             tm.that(flext_target_oracle_wms.__all__, has=export)
-        tm.that(
-            isinstance(flext_target_oracle_wms.u.TargetOracleWms.Client, type), eq=True
-        )
+        tm.that(flext_target_oracle_wms.u.TargetOracleWms.Client, is_=type)

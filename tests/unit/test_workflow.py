@@ -13,6 +13,7 @@ from flext_tests import tm
 
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
 from tests import u
+
 from .._helpers import _valid_config
 
 if TYPE_CHECKING:

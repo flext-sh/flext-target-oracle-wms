@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 from flext_core import r
-from flext_target_oracle_wms import c, m, p, t, u
+from flext_target_oracle_wms import c, m, p, settings, t, u
 from flext_target_oracle_wms.__version__ import __version__
 
 from ._utilities.client import FlextTargetOracleWmsUtilitiesClient
@@ -88,8 +88,8 @@ class FlextTargetOracleWmsCli:
             m.TargetOracleWms.WmsTargetConfig.model_validate({
                 "wms_auth": {
                     "base_url": c.TargetOracleWms.CLI_PLACEHOLDER_BASE_URL,
-                    "username": "oracle",
-                    "password": "oracle",
+                    "username": settings.TargetOracleWms.username,
+                    "password": settings.TargetOracleWms.password,
                 }
             })
         )

@@ -9,33 +9,24 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_target_oracle_wms import (
-        FlextTargetOracleWmsConstants,
-        FlextTargetOracleWmsConstants as c,
-        d,
-        e,
-        h,
-        m,
-        p,
-        r,
-        s,
-        t,
-        u,
-        x,
-    )
+    from flext_meltano import s
+    from flext_oracle_wms import e
+
+    from flext_target_oracle_wms import c, d, h, m, p, r, t, u, x
 
     from .constants import ExamplesFlextTargetOracleWmsConstants
     from .models import ExamplesFlextTargetOracleWmsModels
     from .protocols import ExamplesFlextTargetOracleWmsProtocols
     from .typings import ExamplesFlextTargetOracleWmsTypes
     from .utilities import ExamplesFlextTargetOracleWmsUtilities
+
+
 __all__: tuple[str, ...] = (
     "ExamplesFlextTargetOracleWmsConstants",
     "ExamplesFlextTargetOracleWmsModels",
     "ExamplesFlextTargetOracleWmsProtocols",
     "ExamplesFlextTargetOracleWmsTypes",
     "ExamplesFlextTargetOracleWmsUtilities",
-    "FlextTargetOracleWmsConstants",
     "c",
     "d",
     "e",
@@ -57,20 +48,9 @@ _LAZY_IMPORTS = MappingProxyType(
             ".protocols": ("ExamplesFlextTargetOracleWmsProtocols",),
             ".typings": ("ExamplesFlextTargetOracleWmsTypes",),
             ".utilities": ("ExamplesFlextTargetOracleWmsUtilities",),
-            "flext_target_oracle_wms": (
-                "FlextTargetOracleWmsConstants",
-                "c",
-                "d",
-                "e",
-                "h",
-                "m",
-                "p",
-                "r",
-                "s",
-                "t",
-                "u",
-                "x",
-            ),
+            "flext_meltano": ("s",),
+            "flext_oracle_wms": ("e",),
+            "flext_target_oracle_wms": ("c", "d", "h", "m", "p", "r", "t", "u", "x"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,

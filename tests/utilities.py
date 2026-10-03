@@ -10,10 +10,12 @@ from __future__ import annotations
 
 from flext_tests import FlextTestsUtilities
 
-from flext_target_oracle_wms import u
+from flext_target_oracle_wms import FlextTargetOracleWmsUtilities
 
 
-class TestsFlextTargetOracleWmsUtilities(FlextTestsUtilities, u):
+class TestsFlextTargetOracleWmsUtilities(
+    FlextTestsUtilities, FlextTargetOracleWmsUtilities
+):
     """Test utilities for flext-target-oracle-wms."""
 
 
