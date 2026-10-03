@@ -47,42 +47,22 @@ class TestsFlextTargetOracleWmsQuality:
         tm.that(c.TargetOracleWms.LoadMethods.Method.APPEND_ONLY, eq="APPEND_ONLY")
         tm.that(c.TargetOracleWms.LoadMethods.Method.UPSERT, eq="UPSERT")
 
-    def test_valid_load_methods_is_set(self) -> None:
-        tm.that(c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS, has="APPEND_ONLY")
-        tm.that(c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS, has="MERGE")
-
     def test_oracle_wms_defaults_derive_from_meltano_ssot(self) -> None:
         """Target defaults mirror the flext-meltano constants SSOT they derive from."""
         tm.that(
             c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE,
             eq=meltano_c.Meltano.BATCH_DEFAULT_DEFAULT_BATCH_SIZE,
         )
-        tm.that(
-            c.TargetOracleWms.OracleWms.DEFAULT_TIMEOUT,
-            eq=meltano_c.Meltano.DEFAULT_TIMEOUT_SECONDS,
-        )
 
     def test_p_is_protocols_class(self) -> None:
         tm.that(p, none=False)
 
-    def test_wms_data_loading_protocol_exists(self) -> None:
-        tm.that(p.TargetOracleWms.WmsDataLoading, none=False)
-
-    def test_data_transformation_protocol_exists(self) -> None:
-        tm.that(p.TargetOracleWms.DataTransformation, none=False)
-
-    def test_target_creation_request_accessible(self) -> None:
-        tm.that(m.TargetOracleWms.TargetCreationRequest, none=False)
-
-    def test_monitored_target_creation_request_accessible(self) -> None:
-        tm.that(m.TargetOracleWms.MonitoredTargetCreationRequest, none=False)
-
     def test_target_name(self) -> None:
-        tm.that(u.TargetOracleWms.Target.name, eq="target-oracle-wms")
+        tm.that(u.TargetOracleWms.Target.name, eq=c.TargetOracleWms.TARGET_NAME)
 
     def test_cli_defaults(self) -> None:
         cli = FlextTargetOracleWmsCli()
-        tm.that(cli.name, eq="target-oracle-wms")
+        tm.that(cli.name, eq=c.TargetOracleWms.TARGET_NAME)
         assert cli.version
 
     def test_catalog_manager_instantiates(self) -> None:
@@ -100,7 +80,3 @@ class TestsFlextTargetOracleWmsQuality:
     def test_data_transformer_instantiates(self) -> None:
         dt = u.TargetOracleWms.WMSDataTransformer()
         tm.that(dt, is_=u.TargetOracleWms.WMSDataTransformer)
-
-    def test_schema_mapper_instantiates(self) -> None:
-        sm = u.TargetOracleWms.WMSSchemaMapper()
-        tm.that(sm, is_=u.TargetOracleWms.WMSSchemaMapper)

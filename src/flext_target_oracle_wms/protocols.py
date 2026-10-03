@@ -2,40 +2,12 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Protocol, runtime_checkable
-
 from flext_meltano import FlextMeltanoProtocols
 from flext_oracle_wms import FlextOracleWmsProtocols
 
-if TYPE_CHECKING:
-    from flext_target_oracle_wms import t
-
 
 class FlextTargetOracleWmsProtocols(FlextMeltanoProtocols, FlextOracleWmsProtocols):
-    """Namespace for target Oracle WMS protocol contracts."""
-
-    class TargetOracleWms:
-        """Target Oracle WMS protocol namespace."""
-
-        @runtime_checkable
-        class WmsDataLoading(Protocol):
-            """Protocol for loading records into a WMS sink."""
-
-            def load_data(
-                self, records: t.SequenceOf[t.JsonMapping]
-            ) -> FlextMeltanoProtocols.Result[bool]:
-                """Load a batch of records."""
-                ...
-
-        @runtime_checkable
-        class DataTransformation(Protocol):
-            """Protocol for transforming source record payloads."""
-
-            def transform_to_wms(
-                self, record: t.JsonMapping
-            ) -> FlextMeltanoProtocols.Result[t.JsonMapping]:
-                """Transform one record to WMS shape."""
-                ...
+    """Protocols composed from Meltano and Oracle WMS via MRO."""
 
 
 p = FlextTargetOracleWmsProtocols

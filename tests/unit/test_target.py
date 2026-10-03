@@ -68,7 +68,7 @@ class TestsFlextTargetOracleWmsTarget:
 
     def test_init_with_valid_config(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
-        tm.that(target.name, eq="target-oracle-wms")
+        tm.that(target.name, eq=c.TargetOracleWms.TARGET_NAME)
         tm.that(target.settings, none=False)
 
     def test_init_with_invalid_config_raises(self) -> None:

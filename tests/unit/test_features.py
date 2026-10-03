@@ -18,12 +18,12 @@ from .._helpers import _valid_config
 class TestsFlextTargetOracleWmsFeatures:
     """Verify core target features.
 
-    Feature coverage: init, lifecycle, type conversion, message creation.
+    Feature coverage: init, lifecycle, type conversion, record transformation.
     """
 
     def test_target_initialization(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
-        tm.that(target.name, eq="target-oracle-wms")
+        tm.that(target.name, eq=c.TargetOracleWms.TARGET_NAME)
 
     def test_target_setup_cleanup_lifecycle(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
@@ -71,30 +71,3 @@ class TestsFlextTargetOracleWmsFeatures:
         tm.ok(result)
         tm.that(result.value, none=False)
         tm.that(result.value.record, has="NAME")
-
-    def test_create_schema_message(self) -> None:
-        msg = u.TargetOracleWms.create_schema_message("test", {"type": "object"})
-        tm.that(msg["type"], eq="SCHEMA")
-        tm.that(msg["stream"], eq="test")
-
-    def test_create_record_message(self) -> None:
-        msg = u.TargetOracleWms.create_record_message("test", {"id": "1"})
-        tm.that(msg["type"], eq="RECORD")
-        tm.that(msg["stream"], eq="test")
-
-    def test_create_state_message(self) -> None:
-        msg = u.TargetOracleWms.create_state_message({"pos": 42})
-        tm.that(msg["type"], eq="STATE")
-        tm.that(msg["value"], eq={"pos": 42})
-
-    def test_validate_config_success(self) -> None:
-        result = u.TargetOracleWms.Validation.validate_wms_target_config({
-            "base_url": "https://x",
-            "username": "u",
-            "password": "p",
-        })
-        tm.ok(result)
-
-    def test_validate_config_missing_fields(self) -> None:
-        result = u.TargetOracleWms.Validation.validate_wms_target_config({})
-        tm.fail(result)

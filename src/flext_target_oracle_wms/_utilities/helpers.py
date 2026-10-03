@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from flext_cli import u
-from flext_meltano import c as meltano_c, u as meltano_u
+from flext_meltano import c as meltano_c
 
 from flext_core import r
 from flext_target_oracle_wms import (
@@ -20,23 +20,6 @@ if TYPE_CHECKING:
 
 class FlextTargetOracleWmsUtilitiesHelpers:
     """Private namespace class wrapping all WMS helper implementations."""
-
-    class Validation:
-        """Validation helpers for runtime target configuration."""
-
-        @staticmethod
-        def validate_wms_target_config(settings: t.JsonMapping) -> p.Result[bool]:
-            """Validate minimal required target configuration fields."""
-            required = {"base_url", "username", "password"}
-            missing = sorted(key for key in required if key not in settings)
-            if missing:
-                return r[bool].fail(f"Missing required configuration fields: {missing}")
-            load_method = settings.get(
-                "load_method", c.TargetOracleWms.LoadMethods.Method.APPEND_ONLY
-            )
-            if load_method not in c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS:
-                return r[bool].fail("Invalid load_method")
-            return r[bool].ok(value=True)
 
     class WMSTypeConverter:
         """Convert source scalar values to Oracle-friendly payload values."""
@@ -117,27 +100,6 @@ class FlextTargetOracleWmsUtilitiesHelpers:
                 })
             )
 
-    class WMSSchemaMapper:
-        """Map Singer schema payloads to Oracle DDL-friendly structures."""
-
-        def map_stream_schema(
-            self, schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping
-        ) -> p.Result[m.Meltano.SingerCatalogEntry]:
-            """Build normalized schema map for table creation."""
-            typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
-            entry_result = meltano_u.Meltano.build_catalog_entry(
-                stream_name=typed_schema.stream,
-                schema=typed_schema.schema_definition,
-                key_properties=typed_schema.key_properties,
-            )
-            if entry_result.failure:
-                return r[m.Meltano.SingerCatalogEntry].from_failure(entry_result)
-            return r[m.Meltano.SingerCatalogEntry].ok(
-                entry_result.value.model_copy(
-                    update={"table_name": typed_schema.stream.upper()}
-                )
-            )
-
     class WMSTableManager:
         """Maintain in-memory stream-to-table mappings for the target run."""
 
@@ -157,44 +119,6 @@ class FlextTargetOracleWmsUtilitiesHelpers:
             table_name = stream_name.upper()
             self._stream_tables[stream_name] = table_name
             return r[str].ok(table_name)
-
-    @staticmethod
-    def _validate_message_payload(
-        payload: t.MappingKV[str, t.JsonValue | t.JsonMapping | t.StrSequence],
-    ) -> t.JsonMapping:
-        """Validate Singer message payloads once at the helper owner."""
-        return t.Cli.JSON_MAPPING_ADAPTER.validate_python(payload)
-
-    @staticmethod
-    def create_record_message(stream_name: str, record: t.JsonMapping) -> t.JsonMapping:
-        """Create a Singer RECORD message payload."""
-        return FlextTargetOracleWmsUtilitiesHelpers._validate_message_payload({
-            "type": "RECORD",
-            "stream": stream_name,
-            "record": record,
-        })
-
-    @staticmethod
-    def create_schema_message(
-        stream_name: str,
-        schema: t.JsonMapping,
-        key_properties: t.StrSequence | None = None,
-    ) -> t.JsonMapping:
-        """Create a Singer SCHEMA message payload."""
-        return FlextTargetOracleWmsUtilitiesHelpers._validate_message_payload({
-            "type": "SCHEMA",
-            "stream": stream_name,
-            "schema": schema,
-            "key_properties": key_properties or [],
-        })
-
-    @staticmethod
-    def create_state_message(state: t.JsonMapping) -> t.JsonMapping:
-        """Create a Singer STATE message payload."""
-        return FlextTargetOracleWmsUtilitiesHelpers._validate_message_payload({
-            "type": "STATE",
-            "value": state,
-        })
 
 
 __all__: list[str] = ["FlextTargetOracleWmsUtilitiesHelpers"]

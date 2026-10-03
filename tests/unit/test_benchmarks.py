@@ -59,15 +59,6 @@ class TestsFlextTargetOracleWmsBenchmarks:
         elapsed = time.time() - start
         assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
 
-    def test_map_stream_schema_performance(self) -> None:
-        mapper = u.TargetOracleWms.WMSSchemaMapper()
-        msg = _schema_msg()
-        start = time.time()
-        for _ in range(c.TargetOracleWms.Tests.PERF_ITERATIONS):
-            mapper.map_stream_schema(msg)
-        elapsed = time.time() - start
-        assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
-
     def test_add_and_get_stream_performance(self) -> None:
         mgr = u.TargetOracleWms.CatalogManager()
         start = time.time()

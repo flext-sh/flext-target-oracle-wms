@@ -27,7 +27,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
         m.OracleWms.*  — WMS entity/API types (from m)
 
     Local namespace:
-        m.TargetOracleWms.* — target-specific settings, result, schema helpers
+        m.TargetOracleWms.* — target-specific settings and schema helpers
     """
 
     class TargetOracleWms:
@@ -105,36 +105,6 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
                     description="Singer schema field property definitions.",
                 ),
             ]
-
-        class TargetCreationRequest(FlextMeltanoModels.ArbitraryTypesModel):
-            """Input object for target construction."""
-
-            base_url: Annotated[
-                str, u.Field(description="Oracle WMS REST API base URL.")
-            ]
-            username: Annotated[
-                str, u.Field(description="Username used to authenticate against WMS.")
-            ]
-            password: Annotated[
-                str, u.Field(description="Password used to authenticate against WMS.")
-            ]
-            environment: Annotated[
-                str, u.Field(description="Target environment name.")
-            ] = "development"
-            preset: Annotated[
-                str | None, u.Field(description="Optional preset profile name.")
-            ] = None
-            additional_config: Annotated[
-                t.JsonMapping | None,
-                u.Field(default=None, description="Additional environment overrides."),
-            ]
-
-        class MonitoredTargetCreationRequest(TargetCreationRequest):
-            """Input object for monitored target creation."""
-
-            monitor_name: Annotated[
-                str, u.Field(description="Monitoring label for the created target.")
-            ] = "oracle_wms_target"
 
 
 m = FlextTargetOracleWmsModels
