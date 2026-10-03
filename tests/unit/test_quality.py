@@ -6,6 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from flext_meltano import c as meltano_c
 from flext_tests import tm
 
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
@@ -50,9 +51,16 @@ class TestsFlextTargetOracleWmsQuality:
         tm.that(c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS, has="APPEND_ONLY")
         tm.that(c.TargetOracleWms.LoadMethods.VALID_LOAD_METHODS, has="MERGE")
 
-    def test_oracle_wms_defaults(self) -> None:
-        assert c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE > 0
-        assert c.TargetOracleWms.OracleWms.DEFAULT_TIMEOUT > 0
+    def test_oracle_wms_defaults_derive_from_meltano_ssot(self) -> None:
+        """Target defaults mirror the flext-meltano constants SSOT they derive from."""
+        tm.that(
+            c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE,
+            eq=meltano_c.Meltano.BATCH_DEFAULT_DEFAULT_BATCH_SIZE,
+        )
+        tm.that(
+            c.TargetOracleWms.OracleWms.DEFAULT_TIMEOUT,
+            eq=meltano_c.Meltano.DEFAULT_TIMEOUT_SECONDS,
+        )
 
     def test_p_is_protocols_class(self) -> None:
         tm.that(p, none=False)
@@ -79,20 +87,20 @@ class TestsFlextTargetOracleWmsQuality:
 
     def test_catalog_manager_instantiates(self) -> None:
         mgr = u.TargetOracleWms.CatalogManager()
-        tm.that(mgr, none=False)
+        tm.that(mgr, is_=u.TargetOracleWms.CatalogManager)
 
     def test_table_manager_instantiates(self) -> None:
         manager = u.TargetOracleWms.WMSTableManager()
-        tm.that(manager, none=False)
+        tm.that(manager, is_=u.TargetOracleWms.WMSTableManager)
 
     def test_type_converter_instantiates(self) -> None:
         tc = u.TargetOracleWms.WMSTypeConverter()
-        tm.that(tc, none=False)
+        tm.that(tc, is_=u.TargetOracleWms.WMSTypeConverter)
 
     def test_data_transformer_instantiates(self) -> None:
         dt = u.TargetOracleWms.WMSDataTransformer()
-        tm.that(dt, none=False)
+        tm.that(dt, is_=u.TargetOracleWms.WMSDataTransformer)
 
     def test_schema_mapper_instantiates(self) -> None:
         sm = u.TargetOracleWms.WMSSchemaMapper()
-        tm.that(sm, none=False)
+        tm.that(sm, is_=u.TargetOracleWms.WMSSchemaMapper)

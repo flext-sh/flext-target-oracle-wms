@@ -6,11 +6,10 @@ import sys
 from pathlib import Path
 
 from flext_core import r
-from flext_target_oracle_wms import c, m, p, t, u
+from flext_target_oracle_wms import c, m, p, settings, t, u
 from flext_target_oracle_wms.__version__ import __version__
-from flext_target_oracle_wms._utilities.client import (
-    FlextTargetOracleWmsUtilitiesClient,
-)
+
+from ._utilities.client import FlextTargetOracleWmsUtilitiesClient
 
 
 class FlextTargetOracleWmsCli:
@@ -21,7 +20,7 @@ class FlextTargetOracleWmsCli:
         self.name = "target-oracle-wms"
         self.description = "Oracle WMS Singer Target"
         # NOTE (multi-agent, bead mro-nwc.19): derive from __version__ SSOT; the prior
-        # hardcoded "0.9.0" was stale (real version is 0.20.0.dev0) — a silent version bug.
+        # hardcoded "0.9.0" was stale (real version is 0.12.0.dev0) — a silent version bug.
         self.version = __version__
 
     def execute(
@@ -48,7 +47,7 @@ class FlextTargetOracleWmsCli:
         )
 
     def _execute_target_pipeline(
-        self, settings: p.TargetOracleWms.WmsTargetConfig, message_lines: t.StrSequence
+        self, settings: m.TargetOracleWms.WmsTargetConfig, message_lines: t.StrSequence
     ) -> p.Result[bool]:
         """Set up, process the message lines, and clean up the target runtime."""
         target = FlextTargetOracleWmsUtilitiesClient.Target(settings)
@@ -77,20 +76,20 @@ class FlextTargetOracleWmsCli:
 
     def _prepare_config(
         self, config_path: str | None
-    ) -> p.Result[p.TargetOracleWms.WmsTargetConfig]:
+    ) -> p.Result[m.TargetOracleWms.WmsTargetConfig]:
         """Load settings from file or build defaults."""
         if config_path is not None:
-            return r[p.TargetOracleWms.WmsTargetConfig].ok(
+            return r[m.TargetOracleWms.WmsTargetConfig].ok(
                 m.TargetOracleWms.WmsTargetConfig.model_validate_json(
                     self._load_config(config_path)
                 )
             )
-        return r[p.TargetOracleWms.WmsTargetConfig].ok(
+        return r[m.TargetOracleWms.WmsTargetConfig].ok(
             m.TargetOracleWms.WmsTargetConfig.model_validate({
                 "wms_auth": {
-                    "base_url": "https://invalid.wms.ocs.oraclecloud.com",
-                    "username": "oracle",
-                    "password": "oracle",
+                    "base_url": c.TargetOracleWms.CLI_PLACEHOLDER_BASE_URL,
+                    "username": settings.TargetOracleWms.username,
+                    "password": settings.TargetOracleWms.password,
                 }
             })
         )
@@ -124,3 +123,6 @@ def main(
 
 if __name__ == "__main__":
     main()
+
+
+__all__: list[str] = ["FlextTargetOracleWmsCli", "main"]

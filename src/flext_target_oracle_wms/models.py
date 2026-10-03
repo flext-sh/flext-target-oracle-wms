@@ -6,22 +6,20 @@ Defines local TargetOracleWms namespace for target-specific models.
 
 from __future__ import annotations
 
-from types import MappingProxyType
-from typing import TYPE_CHECKING, Annotated, Literal
+from collections.abc import MutableMapping
+from typing import Annotated, Literal
 
 # NOTE (multi-agent, bead mro-nwc.19): t / MutableMapping MUST stay RUNTIME imports.
 # `from __future__ import annotations` makes pydantic v2 resolve these field annotation
 # types lazily at model-build time; hiding them under TYPE_CHECKING left WmsTargetConfig /
 # SingerSchemaProperties "not fully defined". Do NOT move them under TYPE_CHECKING.
-from flext_meltano import FlextMeltanoModels as meltano_m, t, u
-from flext_oracle_wms import m
+from flext_meltano import FlextMeltanoModels, t, u
+from flext_oracle_wms import FlextOracleWmsModels
+
 from flext_target_oracle_wms import c
 
-if TYPE_CHECKING:
-    from collections.abc import MutableMapping
 
-
-class FlextTargetOracleWmsModels(meltano_m, m):
+class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
     """Pydantic model namespace for target Oracle WMS.
 
     Inherited namespaces:
@@ -35,7 +33,7 @@ class FlextTargetOracleWmsModels(meltano_m, m):
     class TargetOracleWms:
         """Target Oracle WMS model namespace — m.TargetOracleWms.*."""
 
-        class WmsAuthenticationConfig(meltano_m.ArbitraryTypesModel):
+        class WmsAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
             """Authentication and endpoint settings."""
 
             base_url: Annotated[
@@ -63,7 +61,7 @@ class FlextTargetOracleWmsModels(meltano_m, m):
                 "MAIN"
             )
 
-        class WmsTargetConfig(meltano_m.ArbitraryTypesModel):
+        class WmsTargetConfig(FlextMeltanoModels.ArbitraryTypesModel):
             """Top-level target configuration model."""
 
             wms_auth: Annotated[
@@ -73,7 +71,7 @@ class FlextTargetOracleWmsModels(meltano_m, m):
             stream_maps: Annotated[
                 MutableMapping[str, t.StrMapping],
                 u.Field(
-                    default_factory=lambda: MappingProxyType({}),
+                    default_factory=dict,
                     description="Singer stream map configurations.",
                 ),
             ]
@@ -88,14 +86,14 @@ class FlextTargetOracleWmsModels(meltano_m, m):
                 bool, u.Field(description="Whether to validate records before writing.")
             ] = True
 
-        class SingerFieldSchema(meltano_m.FlexibleModel):
+        class SingerFieldSchema(FlextMeltanoModels.FlexibleModel):
             """Typed Singer field schema entry for target-side schema parsing."""
 
             type: Annotated[
                 str, u.Field(description="JSON schema type descriptor for the field.")
             ] = "string"
 
-        class SingerSchemaProperties(meltano_m.FlexibleModel):
+        class SingerSchemaProperties(FlextMeltanoModels.FlexibleModel):
             """Typed Singer schema properties block for target-side schema parsing."""
 
             properties: Annotated[
@@ -103,12 +101,12 @@ class FlextTargetOracleWmsModels(meltano_m, m):
                     str, FlextTargetOracleWmsModels.TargetOracleWms.SingerFieldSchema
                 ],
                 u.Field(
-                    default_factory=lambda: MappingProxyType({}),
+                    default_factory=dict,
                     description="Singer schema field property definitions.",
                 ),
             ]
 
-        class TargetCreationRequest(meltano_m.ArbitraryTypesModel):
+        class TargetCreationRequest(FlextMeltanoModels.ArbitraryTypesModel):
             """Input object for target construction."""
 
             base_url: Annotated[

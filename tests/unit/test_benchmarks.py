@@ -10,19 +10,19 @@ from __future__ import annotations
 
 import time
 
-from tests import c, m, p, u
+from tests import c, m, u
 
 
-def _schema_msg(stream: str = "bench") -> p.Meltano.SingerSchemaMessage:
+def _schema_msg(stream: str = "bench") -> m.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage(
         type=c.Meltano.SingerMessageType.SCHEMA,
         stream=stream,
-        schema_definition={"type": "object"},
+        schema={"type": "object"},
         key_properties=["id"],
     )
 
 
-def _record_msg(stream: str = "bench") -> p.Meltano.SingerRecordMessage:
+def _record_msg(stream: str = "bench") -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage(
         type=c.Meltano.SingerMessageType.RECORD,
         stream=stream,

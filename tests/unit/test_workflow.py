@@ -7,21 +7,17 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import json as _stdlib_json
+from typing import TYPE_CHECKING
 
 from flext_tests import tm
 
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
-from tests import t, u
+from tests import u
 
+from .._helpers import _valid_config
 
-def _valid_config() -> t.JsonMapping:
-    return {
-        "wms_auth": {
-            "base_url": "https://test.wms.example.com",
-            "username": "user",
-            "password": "pass",
-        }
-    }
+if TYPE_CHECKING:
+    from tests import t
 
 
 def _schema_line(

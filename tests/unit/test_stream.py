@@ -10,7 +10,9 @@ from typing import override
 
 from flext_tests import r, tm
 
-from tests import c, m, p, t, u
+from tests import m, p, t, u
+
+from .._helpers import _record_msg, _schema_msg
 
 
 class _FailingTransformer(u.TargetOracleWms.WMSDataTransformer):
@@ -19,38 +21,18 @@ class _FailingTransformer(u.TargetOracleWms.WMSDataTransformer):
     @override
     def transform_record(
         self,
-        record_message: p.Meltano.SingerRecordMessage | t.JsonMapping,
-        schema_message: p.Meltano.SingerSchemaMessage | t.JsonMapping | None = None,
-    ) -> p.Result[p.Meltano.SingerRecordMessage]:
+        record_message: m.Meltano.SingerRecordMessage | t.JsonMapping,
+        schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping | None = None,
+    ) -> p.Result[m.Meltano.SingerRecordMessage]:
         _ = record_message, schema_message
-        return r[p.Meltano.SingerRecordMessage].fail("transformer error")
-
-
-def _schema_msg(
-    stream: str = "test_stream",
-    schema: t.JsonMapping | None = None,
-    key_properties: t.StrSequence | None = None,
-) -> p.Meltano.SingerSchemaMessage:
-    return m.Meltano.SingerSchemaMessage(
-        type=c.Meltano.SingerMessageType.SCHEMA,
-        stream=stream,
-        schema_definition=schema or {"type": "object"},
-        key_properties=key_properties or ["id"],
-    )
-
-
-def _record_msg(
-    stream: str = "test_stream", record: t.JsonMapping | None = None
-) -> p.Meltano.SingerRecordMessage:
-    return m.Meltano.SingerRecordMessage(
-        type=c.Meltano.SingerMessageType.RECORD,
-        stream=stream,
-        record=record or {"id": "1"},
-    )
+        return r[m.Meltano.SingerRecordMessage].fail("transformer error")
 
 
 class TestsFlextTargetOracleWmsStream:
-    """Tests for u.TargetOracleWms.StreamProcessor.initialize_stream."""
+    """Tests for u.TargetOracleWms.StreamProcessor.initialize_stream.
+
+    Stream lifecycle: init, register, process, failure handling.
+    """
 
     def test_initialize_stream_success(self) -> None:
         proc = u.TargetOracleWms.StreamProcessor(
@@ -95,7 +77,7 @@ class TestsFlextTargetOracleWmsStream:
         proc = u.TargetOracleWms.StreamProcessor(
             u.TargetOracleWms.WMSTableManager(), u.TargetOracleWms.WMSDataTransformer()
         )
-        schema = _schema_msg("s", schema={"type": "object"})
+        schema = _schema_msg("s")
         proc.initialize_stream(schema)
         result = proc.process_record(_record_msg("s", {"name": "hello"}), schema)
         tm.ok(result)

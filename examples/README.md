@@ -2,38 +2,40 @@
 
 <!-- TOC START -->
 
-- [🎯 Examples Overview](#-examples-overview)
-- [📚 Available Examples](#-available-examples)
-  - \[1. [basic_usage.py](./basic_usage.py)\](#1-basicusagepybasicusagepy)
-  - \[2. [advanced_configuration.py](./advanced_configuration.py)\](#2-advancedconfigurationpyadvancedconfigurationpy)
-  - \[3. [batch_processing.py](./batch_processing.py)\](#3-batchprocessingpybatchprocessingpy)
-  - \[4. [error_handling.py](./error_handling.py)\](#4-errorhandlingpyerrorhandlingpy)
-- [🚀 Running the Examples](#-running-the-examples)
-  - [Prerequisites](#prerequisites)
-  - [Running Individual Examples](#running-individual-examples)
-  - [Running All Examples](#running-all-examples)
-- [🔧 Configuration Options](#-configuration-options)
-  - [File-based Configuration](#file-based-configuration)
-  - [Environment Variables](#environment-variables)
-- [📊 Performance Benchmarks](#-performance-benchmarks)
-  - [Batch Processing Performance](#batch-processing-performance)
-  - [Memory Usage](#memory-usage)
-- [🛡️ Security Considerations](#-security-considerations)
-- [🧪 Testing the Examples](#-testing-the-examples)
-- [📖 Related Documentation](#-related-documentation)
-- [🤝 Contributing](#-contributing)
-- [📝 License](#-license)
+- [Oracle WMS Target - Examples](#oracle-wms-target---examples)
+  - [🎯 Examples Overview](#-examples-overview)
+  - [📚 Available Examples](#-available-examples)
+    - [1. basic_usage.py](#1-basic_usagepy)
+    - [2. advanced_configuration.py](#2-advanced_configurationpy)
+    - [3. batch_processing.py](#3-batch_processingpy)
+    - [4. error_handling.py](#4-error_handlingpy)
+  - [🚀 Running the Examples](#-running-the-examples)
+    - [Prerequisites](#prerequisites)
+    - [Running Individual Examples](#running-individual-examples)
+    - [Running All Examples](#running-all-examples)
+  - [🔧 Configuration Options](#-configuration-options)
+    - [File-based Configuration](#file-based-configuration)
+    - [Environment Variables](#environment-variables)
+  - [📊 Performance Benchmarks](#-performance-benchmarks)
+    - [Batch Processing Performance](#batch-processing-performance)
+    - [Memory Usage](#memory-usage)
+  - [🛡️ Security Considerations](#️-security-considerations)
+  - [🧪 Testing the Examples](#-testing-the-examples)
+  - [📖 Related Documentation](#-related-documentation)
+  - [🤝 Contributing](#-contributing)
+  - [📝 License](#-license)
 
 <!-- TOC END -->
 
-This directory contains comprehensive examples demonstrating production-grade usage of the flext-target-oracle-wms with REAL flext-\* APIs and mission-critical patterns.
+This directory contains comprehensive examples demonstrating production-grade usage of
+the flext-target-oracle-wms with REAL flext-\* APIs and mission-critical patterns.
 
 ## 🎯 Examples Overview
 
-All examples follow DRY (Don't Repeat Yourself) principles and use REAL implementations from the flext-\* ecosystem:
+All examples follow DRY (Don't Repeat Yourself) principles and use REAL implementations
+from the flext-\* ecosystem:
 
 - **flext-core**: r, FlextLogger, dependency injection patterns
-- **flext-observability**: FlextObservabilityMonitor, flext_monitor_function
 - **flext-oracle-wms**: Production Oracle WMS Cloud SaaS integration
 - **Singer SDK**: Real Singer protocol implementation
 
@@ -54,28 +56,12 @@ Demonstrates fundamental Oracle WMS target usage with real configuration:
 
 **Key Patterns:**
 
-```python notest
+```python
+from __future__ import annotations
+
 # DRY: Real flext-* imports
-from flext_core import FlextBus
+from flext_cli import u
 from flext_core import FlextSettings
-from flext_core import FlextConstants
-from flext_core import FlextContainer
-from flext_core import FlextContext
-from flext_core import d
-from flext_core import FlextDispatcher
-from flext_core import e
-from flext_core import h
-from flext_core import x
-from flext_core import FlextModels
-from flext_core import FlextProcessors
-from flext_core import p
-from flext_core import FlextRegistry
-from flext_core import r, p
-from flext_core import u
-from flext_core import s
-from flext_core import p, t
-from flext_core import u
-from flext_observability import flext_monitor_function
 from flext_target_oracle_wms import SingerTargetOracleWMS
 
 # Real configuration
@@ -110,7 +96,10 @@ Shows sophisticated configuration and custom business logic:
 
 **Key Patterns:**
 
-```python notest
+```python
+from __future__ import annotations
+
+
 # Custom business type converter
 class CustomWMSTypeConverter(WMSTypeConverter):
     def convert_singer_to_oracle(
@@ -149,7 +138,9 @@ Demonstrates optimized batch processing for large-scale data:
 
 **Key Patterns:**
 
-```python notest
+```python
+from __future__ import annotations
+
 # Performance optimization
 settings = {
     "batch_size": 5000,
@@ -180,7 +171,9 @@ Shows comprehensive error handling and recovery patterns:
 
 **Key Patterns:**
 
-```python notest
+```python
+from __future__ import annotations
+
 # Error handling configuration
 settings = {
     "max_retries": 3,
@@ -209,13 +202,7 @@ def retry_with_backoff(operation, max_retries: int = 3) -> p.Result[t.JsonValue]
 
    ```bash
    cd /path/to/flext-target-oracle-wms
-   poetry install
-   ```
-
-1. **Activate virtual environment:**
-
-   ```bash
-   poetry shell
+   make setup
    ```
 
 1. **Set environment variables (optional):**
@@ -248,10 +235,10 @@ python examples/03_error_handling.py
 ```bash
 # Run all examples in sequence
 for example in examples/*.py; do
-    echo "Running $example..."
-    python "$example"
-    echo "Completed $example"
-    echo "---"
+  echo "Running $example..."
+  python "$example"
+  echo "Completed $example"
+  echo "---"
 done
 ```
 
@@ -299,7 +286,8 @@ export WMS_ENV="production"
 - **Batch Processing**: ~200-500 MB
 - **Concurrent Processing**: ~500-1000 MB
 
-_Performance varies based on record complexity, network latency, and Oracle WMS Cloud configuration._
+_Performance varies based on record complexity, network latency, and Oracle WMS Cloud
+configuration._
 
 ## 🛡️ Security Considerations
 
@@ -329,8 +317,8 @@ python -m pytest tests/examples/ --cov=examples --cov-report=term-missing
 - [Main README](../README.md) - Project overview and setup
 - [Architecture Documentation](../docs/architecture/) - System design
 - [API Reference](../docs/api/) - Detailed API documentation
-- [flext-core Documentation](https://github.com/organization/flext/tree/main/flext-core/README.md) - Core patterns
-- [flext-observability Documentation](https://github.com/organization/flext/tree/main/flext-observability/README.md) - Monitoring
+- [flext-core Documentation](https://github.com/organization/flext/tree/main/flext-core/README.md) -
+  Core patterns
 
 ## 🤝 Contributing
 
@@ -347,6 +335,8 @@ When adding new examples:
 
 All examples are provided under the MIT License. See [LICENSE](../LICENSE) for details.
 
-______________________________________________________________________
+---
 
-**Note**: These examples use real Oracle WMS Cloud SaaS API patterns and production-grade flext-\* implementations. They are designed for mission-critical applications and follow enterprise security and performance standards.
+**Note**: These examples use real Oracle WMS Cloud SaaS API patterns and
+production-grade flext-\* implementations. They are designed for mission-critical
+applications and follow enterprise security and performance standards.

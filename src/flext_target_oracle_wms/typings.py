@@ -9,18 +9,19 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from flext_meltano import t as meltano_t
-from flext_oracle_wms import t
+from flext_meltano import FlextMeltanoTypes
+from flext_oracle_wms import FlextOracleWmsTypes
 
 if TYPE_CHECKING:
-    from flext_oracle_wms import p
+    from flext_meltano import m
 
 
-class FlextTargetOracleWmsTypes(meltano_t, t):
+class FlextTargetOracleWmsTypes(FlextMeltanoTypes, FlextOracleWmsTypes):
     """MRO facade composing Meltano + OracleWms type namespaces."""
 
-    json_value_adapter: p.TypeAdapter[t.JsonValue] = t.json_value_adapter()
-    CONTAINER_MAP_ADAPTER: p.TypeAdapter[t.JsonMapping] = t.json_mapping_adapter()
+    CONTAINER_MAP_ADAPTER: m.TypeAdapter[FlextOracleWmsTypes.JsonMapping] = (
+        FlextOracleWmsTypes.json_mapping_adapter()
+    )
 
 
 t = FlextTargetOracleWmsTypes

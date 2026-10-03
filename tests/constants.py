@@ -12,13 +12,15 @@ from typing import Final
 
 from flext_tests import FlextTestsConstants
 
-from flext_target_oracle_wms import c
+from flext_target_oracle_wms import FlextTargetOracleWmsConstants
 
 
-class TestsFlextTargetOracleWmsConstants(c, FlextTestsConstants):
+class TestsFlextTargetOracleWmsConstants(
+    FlextTargetOracleWmsConstants, FlextTestsConstants
+):
     """Test constants for flext-target-oracle-wms."""
 
-    class TargetOracleWms(c.TargetOracleWms):
+    class TargetOracleWms(FlextTargetOracleWmsConstants.TargetOracleWms):
         """Target Oracle WMS domain test constants namespace."""
 
         # NOTE (multi-agent, bead mro-nwc.19): inherit test constants only from
@@ -36,6 +38,13 @@ class TestsFlextTargetOracleWmsConstants(c, FlextTestsConstants):
             }
             PERF_ITERATIONS: Final[int] = 500
             PERF_THRESHOLD_SEC: Final[float] = 5.0
+            MIN_EXAMPLE_FILE_COUNT: Final[int] = 4
+            MIN_MODULE_DOCSTRING_LENGTH: Final[int] = 50
+            MIN_FUNCTION_DOCSTRING_LENGTH: Final[int] = 10
+            MIN_DOCUMENTED_FUNCTION_RATIO: Final[float] = 0.8
+            MIN_README_LENGTH: Final[int] = 1000
+            MIN_EXAMPLE_STEM_LENGTH: Final[int] = 5
+            MIN_SEMVER_SEPARATOR_COUNT: Final[int] = 2
 
 
 c = TestsFlextTargetOracleWmsConstants

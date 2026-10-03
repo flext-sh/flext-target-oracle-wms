@@ -12,19 +12,14 @@ from flext_tests import tm
 
 from tests import c, m, t, u
 
-
-def _valid_config() -> t.JsonMapping:
-    return {
-        "wms_auth": {
-            "base_url": "https://test.wms.example.com",
-            "username": "user",
-            "password": "pass",
-        }
-    }
+from .._helpers import _valid_config
 
 
 class TestsFlextTargetOracleWmsFeatures:
-    """Verify core target features."""
+    """Verify core target features.
+
+    Feature coverage: init, lifecycle, type conversion, message creation.
+    """
 
     def test_target_initialization(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
@@ -64,11 +59,13 @@ class TestsFlextTargetOracleWmsFeatures:
         record = m.Meltano.SingerRecordMessage(
             type=c.Meltano.SingerMessageType.RECORD, stream="s", record={"name": "test"}
         )
-        schema = m.Meltano.SingerSchemaMessage(
-            type=c.Meltano.SingerMessageType.SCHEMA,
-            stream="s",
-            schema_definition={"type": "object"},
-            key_properties=["name"],
+        schema: m.Meltano.SingerSchemaMessage = (
+            m.Meltano.SingerSchemaMessage.model_validate({
+                "type": c.Meltano.SingerMessageType.SCHEMA,
+                "stream": "s",
+                "schema": {"type": "object"},
+                "key_properties": ["name"],
+            })
         )
         result = transformer.transform_record(record, schema)
         tm.ok(result)

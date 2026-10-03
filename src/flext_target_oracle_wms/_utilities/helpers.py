@@ -2,15 +2,20 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from flext_cli import u
-from flext_core import r
 from flext_meltano import c as meltano_c, u as meltano_u
+
+from flext_core import r
 from flext_target_oracle_wms import (
     FlextTargetOracleWmsConstants as c,
     FlextTargetOracleWmsModels as m,
     FlextTargetOracleWmsTypes as t,
-    p,
 )
+
+if TYPE_CHECKING:
+    from flext_target_oracle_wms import p
 
 
 class FlextTargetOracleWmsUtilitiesHelpers:
@@ -42,9 +47,10 @@ class FlextTargetOracleWmsUtilitiesHelpers:
             """Convert a single source value according to Singer type."""
             if singer_type in {"object", "array"}:
                 return r[t.JsonValue].ok(
-                    t.json_value_adapter.dump_json(
-                        u.normalize_to_json_value(value)
-                    ).decode(c.DEFAULT_ENCODING)
+                    t
+                    .json_value_adapter()
+                    .dump_json(u.normalize_to_json_value(value))
+                    .decode(c.DEFAULT_ENCODING)
                 )
             if singer_type in {"integer", "number"}:
                 try:
@@ -73,9 +79,9 @@ class FlextTargetOracleWmsUtilitiesHelpers:
 
         def transform_record(
             self,
-            record_message: p.Meltano.SingerRecordMessage | t.JsonMapping,
-            schema_message: p.Meltano.SingerSchemaMessage | t.JsonMapping | None = None,
-        ) -> p.Result[p.Meltano.SingerRecordMessage]:
+            record_message: m.Meltano.SingerRecordMessage | t.JsonMapping,
+            schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping | None = None,
+        ) -> p.Result[m.Meltano.SingerRecordMessage]:
             """Transform one typed Singer RECORD payload with optional typed schema."""
             typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
             transformed: t.MutableJsonMapping = {}
@@ -99,11 +105,9 @@ class FlextTargetOracleWmsUtilitiesHelpers:
                     resolved_type, value
                 )
                 if converted.failure:
-                    return r[p.Meltano.SingerRecordMessage].fail(
-                        converted.error or "Conversion failed"
-                    )
+                    return r[m.Meltano.SingerRecordMessage].from_failure(converted)
                 transformed[key.upper()] = converted.value
-            return r[p.Meltano.SingerRecordMessage].ok(
+            return r[m.Meltano.SingerRecordMessage].ok(
                 m.Meltano.SingerRecordMessage.model_validate({
                     "type": typed_record.type,
                     "stream": typed_record.stream,
@@ -117,8 +121,8 @@ class FlextTargetOracleWmsUtilitiesHelpers:
         """Map Singer schema payloads to Oracle DDL-friendly structures."""
 
         def map_stream_schema(
-            self, schema_message: p.Meltano.SingerSchemaMessage | t.JsonMapping
-        ) -> p.Result[p.Meltano.SingerCatalogEntry]:
+            self, schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping
+        ) -> p.Result[m.Meltano.SingerCatalogEntry]:
             """Build normalized schema map for table creation."""
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
             entry_result = meltano_u.Meltano.build_catalog_entry(
@@ -127,11 +131,8 @@ class FlextTargetOracleWmsUtilitiesHelpers:
                 key_properties=typed_schema.key_properties,
             )
             if entry_result.failure:
-                return r[p.Meltano.SingerCatalogEntry].fail(
-                    entry_result.error
-                    or f"Failed to map schema for stream: {typed_schema.stream}"
-                )
-            return r[p.Meltano.SingerCatalogEntry].ok(
+                return r[m.Meltano.SingerCatalogEntry].from_failure(entry_result)
+            return r[m.Meltano.SingerCatalogEntry].ok(
                 entry_result.value.model_copy(
                     update={"table_name": typed_schema.stream.upper()}
                 )

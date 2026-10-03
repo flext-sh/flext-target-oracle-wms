@@ -13,13 +13,15 @@ from __future__ import annotations
 
 from flext_tests import FlextTestsProtocols
 
-from flext_target_oracle_wms import p
+from flext_target_oracle_wms import FlextTargetOracleWmsProtocols
 
 
-class TestsFlextTargetOracleWmsProtocols(FlextTestsProtocols, p):
+class TestsFlextTargetOracleWmsProtocols(
+    FlextTestsProtocols, FlextTargetOracleWmsProtocols
+):
     """Test protocols combining TestsFlextProtocols and project-specific protocols."""
 
-    class TargetOracleWms(p.TargetOracleWms):
+    class TargetOracleWms(FlextTargetOracleWmsProtocols.TargetOracleWms):
         """TargetOracleWms domain protocols extending project protocols."""
 
         class Tests:

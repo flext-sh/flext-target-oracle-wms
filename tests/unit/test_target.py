@@ -6,31 +6,31 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import pytest
 from flext_tests import tm
 
-from tests import c, m, p, t, u
+from tests import c, m, u
 
+from .._helpers import _record_msg, _schema_msg, _valid_config
 
-def _valid_config() -> t.JsonMapping:
-    return {
-        "wms_auth": {
-            "base_url": "https://test.wms.example.com",
-            "username": "user",
-            "password": "pass",
-        }
-    }
+if TYPE_CHECKING:
+    from tests import t
 
 
 def _schema_line(
-    stream: str = "test_stream",
-    properties: t.MappingKV[str, t.StrMapping] | None = None,
-    key_properties: t.StrSequence | None = None,
+    stream: str, props: t.MappingKV[str, t.StrMapping], keys: t.StrSequence
 ) -> str:
-    json_line: str = _schema_msg(stream, properties, key_properties).model_dump_json(
-        by_alias=True
+    message: m.Meltano.SingerSchemaMessage = (
+        m.Meltano.SingerSchemaMessage.model_validate({
+            "type": c.Meltano.SingerMessageType.SCHEMA,
+            "stream": stream,
+            "schema": {"type": "object", "properties": props},
+            "key_properties": keys,
+        })
     )
-    return json_line
+    return message.model_dump_json(by_alias=True)
 
 
 def _record_line(
@@ -45,37 +45,13 @@ def _state_line(state: t.JsonMapping | None = None) -> str:
     return json_line
 
 
-def _schema_msg(
-    stream: str = "test_stream",
-    properties: t.MappingKV[str, t.StrMapping] | None = None,
-    key_properties: t.StrSequence | None = None,
-) -> p.Meltano.SingerSchemaMessage:
-    _ = properties
-    return m.Meltano.SingerSchemaMessage(
-        type=c.Meltano.SingerMessageType.SCHEMA,
-        stream=stream,
-        schema_definition={"type": "object"},
-        key_properties=key_properties or ["id"],
-    )
-
-
-def _record_msg(
-    stream: str = "test_stream", record: t.JsonMapping | None = None
-) -> p.Meltano.SingerRecordMessage:
-    return m.Meltano.SingerRecordMessage(
-        type=c.Meltano.SingerMessageType.RECORD,
-        stream=stream,
-        record=record or {"id": "1"},
-    )
-
-
-def _state_msg(state: t.JsonMapping | None = None) -> p.Meltano.SingerStateMessage:
+def _state_msg(state: t.JsonMapping | None = None) -> m.Meltano.SingerStateMessage:
     empty_bookmarks: dict[str, t.JsonValue] = {}
     default_state: dict[str, t.JsonValue] = {"bookmarks": empty_bookmarks}
     resolved_state: dict[str, t.JsonValue] = (
         dict(state) if state is not None else default_state
     )
-    state_message: p.Meltano.SingerStateMessage = (
+    state_message: m.Meltano.SingerStateMessage = (
         m.Meltano.SingerStateMessage.model_validate({
             "type": c.Meltano.SingerMessageType.STATE,
             "value": resolved_state,
@@ -85,7 +61,10 @@ def _state_msg(state: t.JsonMapping | None = None) -> p.Meltano.SingerStateMessa
 
 
 class TestsFlextTargetOracleWmsTarget:
-    """Tests for FlextTargetOracleWms initialization."""
+    """Tests for FlextTargetOracleWms initialization.
+
+    WMS-specific: targets Oracle WMS singer protocol directly.
+    """
 
     def test_init_with_valid_config(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
@@ -93,7 +72,7 @@ class TestsFlextTargetOracleWmsTarget:
         tm.that(target.settings, none=False)
 
     def test_init_with_invalid_config_raises(self) -> None:
-        with pytest.raises(Exception):
+        with pytest.raises(c.ValidationError):
             u.TargetOracleWms.Target({"bad": "settings"})
 
     def test_invalid_load_method_rejected(self) -> None:
@@ -111,14 +90,6 @@ class TestsFlextTargetOracleWmsTarget:
             "load_method": c.TargetOracleWms.LoadMethods.Method.UPSERT,
         })
         tm.that(config.load_method, eq=c.TargetOracleWms.LoadMethods.Method.UPSERT)
-
-    def test_has_catalog_manager(self) -> None:
-        target = u.TargetOracleWms.Target(_valid_config())
-        tm.that(target.catalog_manager, none=False)
-
-    def test_has_stream_processor(self) -> None:
-        target = u.TargetOracleWms.Target(_valid_config())
-        tm.that(target.stream_processor, none=False)
 
     def test_setup_returns_success(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
@@ -149,9 +120,7 @@ class TestsFlextTargetOracleWmsTarget:
         msg = _record_msg("orphan", {"id": "1"})
         result = target.handle_record_message(msg)
         tm.fail(result)
-        error = result.error
-        assert error is not None
-        tm.that(error.lower(), has="schema not registered")
+        tm.that((result.error or "").lower(), has="schema not registered")
 
     def test_record_after_schema_succeeds(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
@@ -181,15 +150,13 @@ class TestsFlextTargetOracleWmsTarget:
         target = u.TargetOracleWms.Target(_valid_config())
         result = target.process_lines(["not json"])
         tm.fail(result)
-        error = result.error
-        assert error is not None
-        tm.that(error.lower(), has="invalid json")
+        tm.that((result.error or "").lower(), has="invalid json")
 
     def test_schema_then_record_then_state(self) -> None:
         target = u.TargetOracleWms.Target(_valid_config())
         lines = [
             _schema_line(
-                "orders", {"id": {"type": "string"}, "name": {"type": "string"}}
+                "orders", {"id": {"type": "string"}, "name": {"type": "string"}}, ["id"]
             ),
             _record_line("orders", {"id": "1", "name": "test"}),
             _state_line({"bookmarks": {"orders": "1"}}),

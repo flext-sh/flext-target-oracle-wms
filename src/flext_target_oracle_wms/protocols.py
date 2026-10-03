@@ -5,13 +5,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 from flext_meltano import FlextMeltanoProtocols
-from flext_oracle_wms import p
+from flext_oracle_wms import FlextOracleWmsProtocols
 
 if TYPE_CHECKING:
     from flext_target_oracle_wms import t
 
 
-class FlextTargetOracleWmsProtocols(FlextMeltanoProtocols, p):
+class FlextTargetOracleWmsProtocols(FlextMeltanoProtocols, FlextOracleWmsProtocols):
     """Namespace for target Oracle WMS protocol contracts."""
 
     class TargetOracleWms:
