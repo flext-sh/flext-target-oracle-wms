@@ -19,10 +19,8 @@ class TestsFlextTargetOracleWmsModuleGovernance(FlextTestsModuleGovernanceMixin)
     _tests_config = c.TargetOracleWms.Tests
 
     @staticmethod
-    def test_target_oracle_wms_namespace_does_not_define_local_singer_message_models() -> (
-        None
-    ):
-        """Test target oracle wms namespace does not define local singer message models."""
+    def test_namespace_does_not_define_local_singer_message_models() -> None:
+        """The namespace does not define local Singer message models."""
         assert hasattr(m.TargetOracleWms, "SingerFieldSchema")
         assert hasattr(m.TargetOracleWms, "SingerSchemaProperties")
         assert not hasattr(m.TargetOracleWms, "SingerSchemaMessage")

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Batch processing example for flext-target-oracle-wms - PRODUCTION REAL IMPLEMENTATION.
+"""Batch processing example for flext-target-oracle-wms (real implementation).
 
 Demonstrates batch processing patterns with Oracle WMS target for production use.
 

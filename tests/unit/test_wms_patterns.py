@@ -1,4 +1,6 @@
-"""Tests for WMS target model helpers: WMSTypeConverter, WMSDataTransformer, WMSTableManager.
+"""Tests for WMS target model helpers.
+
+Covers WMSTypeConverter, WMSDataTransformer, and WMSTableManager.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -86,7 +88,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         """Test boolean type becomes string."""
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
             "boolean",
-            True,
+            value=True,
         )
         tm.ok(result)
         tm.that(result.value, eq="True")
