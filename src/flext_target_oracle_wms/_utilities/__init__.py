@@ -1,17 +1,27 @@
 # AUTO-GENERATED FILE — Regenerate with: make gen
-"""Flext Target Oracle Wms. Utilities package."""
+"""Flext Target Oracle Wms. Utilities package.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from flext_core.lazy import build_lazy_import_map, install_lazy_exports
+from flext_core import install_lazy_exports
 
 if TYPE_CHECKING:
-    from .client import FlextTargetOracleWmsUtilitiesClient
-    from .helpers import FlextTargetOracleWmsUtilitiesHelpers
-    from .service_runtime import FlextTargetOracleWmsServiceRuntime
+    from flext_target_oracle_wms._utilities.client import (
+        FlextTargetOracleWmsUtilitiesClient,
+    )
+    from flext_target_oracle_wms._utilities.helpers import (
+        FlextTargetOracleWmsUtilitiesHelpers,
+    )
+    from flext_target_oracle_wms._utilities.service_runtime import (
+        FlextTargetOracleWmsServiceRuntime,
+    )
 
 
 __all__: tuple[str, ...] = (
@@ -20,16 +30,13 @@ __all__: tuple[str, ...] = (
     "FlextTargetOracleWmsUtilitiesHelpers",
 )
 
-_LAZY_IMPORTS = MappingProxyType(
-    build_lazy_import_map(
-        MappingProxyType({
-            ".client": ("FlextTargetOracleWmsUtilitiesClient",),
-            ".helpers": ("FlextTargetOracleWmsUtilitiesHelpers",),
-            ".service_runtime": ("FlextTargetOracleWmsServiceRuntime",),
-        }),
-        alias_groups=MappingProxyType({}),
-        sort_keys=False,
-    )
+install_lazy_exports(
+    __name__,
+    globals(),
+    MappingProxyType({
+        "FlextTargetOracleWmsServiceRuntime": ".service_runtime",
+        "FlextTargetOracleWmsUtilitiesClient": ".client",
+        "FlextTargetOracleWmsUtilitiesHelpers": ".helpers",
+    }),
+    public_exports=__all__,
 )
-
-install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)

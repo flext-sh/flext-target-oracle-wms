@@ -1,4 +1,4 @@
-# flext-target-oracle-wms Public API
+# flext_target_oracle_wms.api
 
 <!-- TOC START -->
 
@@ -6,7 +6,7 @@
 
 <!-- AUTO-GENERATED — DO NOT EDIT MANUALLY -->
 
-::: flext_target_oracle_wms
+::: flext_target_oracle_wms.api
 
     options:
       show_root_heading: true

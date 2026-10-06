@@ -1,4 +1,9 @@
-"""Singer target client classes for Oracle WMS — u.TargetOracleWms.Client.*."""
+"""Singer target client classes for Oracle WMS — u.TargetOracleWms.Client.*.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+src/flext_target_oracle_wms/_utilities/client
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
@@ -9,8 +14,9 @@ from flext_meltano import u
 
 from flext_core import e, r
 from flext_target_oracle_wms import c, m, t
-
-from .helpers import FlextTargetOracleWmsUtilitiesHelpers
+from flext_target_oracle_wms._utilities.helpers import (
+    FlextTargetOracleWmsUtilitiesHelpers,
+)
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping
@@ -27,13 +33,19 @@ class FlextTargetOracleWmsUtilitiesClient:
         def __init__(self) -> None:
             """Initialize catalog storage for stream metadata."""
             self._catalog_entries: MutableMapping[
-                str, m.Meltano.SingerCatalogEntry
+                str,
+                m.Meltano.SingerCatalogEntry,
             ] = {}
 
         def add_stream(
-            self, schema_message: m.Meltano.SingerSchemaMessage
+            self,
+            schema_message: m.Meltano.SingerSchemaMessage,
         ) -> p.Result[bool]:
-            """Register one stream schema entry."""
+            """Register one stream schema entry.
+
+            Returns:
+                The resulting ``p.Result[bool]``.
+            """
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
             stream_name = typed_schema.stream
             entry_result = u.Meltano.build_catalog_entry(
@@ -47,7 +59,8 @@ class FlextTargetOracleWmsUtilitiesClient:
             return r[bool].ok(value=True)
 
         def get_stream(
-            self, stream_name: str
+            self,
+            stream_name: str,
         ) -> p.Result[m.Meltano.SingerCatalogEntry]:
             """Return catalog entry for a stream or a failure."""
             entry = self._catalog_entries.get(stream_name)
@@ -75,9 +88,14 @@ class FlextTargetOracleWmsUtilitiesClient:
             self.data_transformer = data_transformer
 
         def initialize_stream(
-            self, schema_message: m.Meltano.SingerSchemaMessage
+            self,
+            schema_message: m.Meltano.SingerSchemaMessage,
         ) -> p.Result[bool]:
-            """Register stream metadata in table manager."""
+            """Register stream metadata in table manager.
+
+            Returns:
+                The resulting ``p.Result[bool]``.
+            """
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
             registration = self.table_manager.register_stream(typed_schema.stream)
             if registration.failure:
@@ -89,7 +107,11 @@ class FlextTargetOracleWmsUtilitiesClient:
             record_message: m.Meltano.SingerRecordMessage,
             schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping,
         ) -> p.Result[m.Meltano.SingerRecordMessage]:
-            """Transform one typed Singer record."""
+            """Transform one typed Singer record.
+
+            Returns:
+                The resulting ``p.Result[m.Meltano.SingerRecordMessage]``.
+            """
             typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
             table_lookup = self.table_manager.get_table_name(typed_record.stream)
             if table_lookup.failure:
@@ -109,7 +131,8 @@ class FlextTargetOracleWmsUtilitiesClient:
         logger: ClassVar[p.Logger] = u.fetch_logger(__name__)
 
         def __init__(
-            self, settings: t.JsonMapping | m.TargetOracleWms.WmsTargetConfig
+            self,
+            settings: t.JsonMapping | m.TargetOracleWms.WmsTargetConfig,
         ) -> None:
             """Initialize target runtime with validated settings."""
             # AGENT-COORDINATION (2026-07-11, bead mro-nwc.19): store the validated config as
@@ -122,35 +145,52 @@ class FlextTargetOracleWmsUtilitiesClient:
                 FlextTargetOracleWmsUtilitiesHelpers.WMSDataTransformer()
             )
             self.stream_processor = FlextTargetOracleWmsUtilitiesClient.StreamProcessor(
-                self.table_manager, self.data_transformer
+                self.table_manager,
+                self.data_transformer,
             )
             self._schemas: MutableMapping[str, m.Meltano.SingerSchemaMessage] = {}
 
-        def cleanup(self) -> p.Result[bool]:
-            """Release target runtime resources."""
+        @staticmethod
+        def cleanup() -> p.Result[bool]:
+            """Release target runtime resources.
+
+            Returns:
+                The resulting ``p.Result[bool]``.
+            """
             return r[bool].ok(value=True)
 
         def handle_record_message(
-            self, message: m.Meltano.SingerRecordMessage
+            self,
+            message: m.Meltano.SingerRecordMessage,
         ) -> p.Result[bool]:
-            """Handle one RECORD message."""
+            """Handle one RECORD message.
+
+            Returns:
+                The resulting ``p.Result[bool]``.
+            """
             typed_record = m.Meltano.SingerRecordMessage.model_validate(message)
             schema_message = self._schemas.get(typed_record.stream)
             if schema_message is None:
                 return r[bool].fail(
-                    f"Schema not registered for stream: {typed_record.stream}"
+                    f"Schema not registered for stream: {typed_record.stream}",
                 )
             process_result = self.stream_processor.process_record(
-                typed_record, schema_message
+                typed_record,
+                schema_message,
             )
             if process_result.failure:
                 return r[bool].from_failure(process_result)
             return r[bool].ok(value=True)
 
         def handle_schema_message(
-            self, message: m.Meltano.SingerSchemaMessage
+            self,
+            message: m.Meltano.SingerSchemaMessage,
         ) -> p.Result[bool]:
-            """Handle one SCHEMA message."""
+            """Handle one SCHEMA message.
+
+            Returns:
+                The resulting ``p.Result[bool]``.
+            """
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(message)
             add_result = self.catalog_manager.add_stream(typed_schema)
             if add_result.failure:
@@ -161,35 +201,50 @@ class FlextTargetOracleWmsUtilitiesClient:
             return init_result
 
         def handle_state_message(
-            self, message: m.Meltano.SingerStateMessage
+            self,
+            message: m.Meltano.SingerStateMessage,
         ) -> p.Result[bool]:
-            """Handle one STATE message."""
+            """Handle one STATE message.
+
+            Returns:
+                The resulting ``p.Result[bool]``.
+            """
             typed_state = m.Meltano.SingerStateMessage.model_validate(message)
             self.logger.debug("Received state", state=str(typed_state.value))
             return r[bool].ok(value=True)
 
         def _dispatch_message(
-            self, message_type: str, message: t.JsonMapping
+            self,
+            message_type: str,
+            message: t.JsonMapping,
         ) -> p.Result[bool]:
-            """Dispatch a single Singer message to the appropriate handler."""
+            """Dispatch a single Singer message to the appropriate handler.
+
+            Returns:
+                The resulting ``p.Result[bool]``.
+            """
             match message_type:
                 case message_type if message_type == self._schema_type:
                     return self.handle_schema_message(
-                        m.Meltano.SingerSchemaMessage.model_validate(message)
+                        m.Meltano.SingerSchemaMessage.model_validate(message),
                     )
                 case message_type if message_type == self._record_type:
                     return self.handle_record_message(
-                        m.Meltano.SingerRecordMessage.model_validate(message)
+                        m.Meltano.SingerRecordMessage.model_validate(message),
                     )
                 case message_type if message_type == self._state_type:
                     return self.handle_state_message(
-                        m.Meltano.SingerStateMessage.model_validate(message)
+                        m.Meltano.SingerStateMessage.model_validate(message),
                     )
                 case _:
                     return r[bool].ok(value=True)
 
         def process_lines(self, input_lines: t.StrSequence) -> p.Result[bool]:
-            """Parse and process Singer JSON lines."""
+            """Parse and process Singer JSON lines.
+
+            Returns:
+                The resulting ``p.Result[bool]``.
+            """
             for raw_line in input_lines:
                 line = raw_line.strip()
                 if not line:
@@ -208,11 +263,20 @@ class FlextTargetOracleWmsUtilitiesClient:
             return r[bool].ok(value=True)
 
         def run(self) -> p.Result[bool]:
-            """Run target processing loop using stdin."""
+            """Run target processing loop using stdin.
+
+            Returns:
+                The resulting ``p.Result[bool]``.
+            """
             return self.process_lines(list(sys.stdin))
 
-        def setup(self) -> p.Result[bool]:
-            """Prepare target runtime state."""
+        @staticmethod
+        def setup() -> p.Result[bool]:
+            """Prepare target runtime state.
+
+            Returns:
+                The resulting ``p.Result[bool]``.
+            """
             return r[bool].ok(value=True)
 
 

@@ -1,4 +1,9 @@
-"""Type aliases for flexttargetoraclewms."""
+"""Type aliases for flexttargetoraclewms.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+examples/typings
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 

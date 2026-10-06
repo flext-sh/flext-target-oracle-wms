@@ -15,31 +15,45 @@ from tests import m, u
 class TestsFlextTargetOracleWmsCatalog:
     """Tests for u.TargetOracleWms.CatalogManager stream registration."""
 
-    def test_add_stream_returns_success(self) -> None:
+    @staticmethod
+    def test_add_stream_returns_success() -> None:
+        """Test add stream returns success."""
         mgr = u.TargetOracleWms.CatalogManager()
         result = mgr.add_stream(
             m.Meltano.SingerSchemaMessage(
-                stream="test_stream", schema={"type": "object"}
-            )
+                stream="test_stream",
+                schema={"type": "object"},
+            ),
         )
         tm.ok(result)
         tm.that(result.value, eq=True)
 
-    def test_add_stream_makes_stream_retrievable(self) -> None:
+    @staticmethod
+    def test_add_stream_makes_stream_retrievable() -> None:
+        """Test add stream makes stream retrievable."""
         mgr = u.TargetOracleWms.CatalogManager()
         mgr.add_stream(
-            m.Meltano.SingerSchemaMessage(stream="inventory", schema={"type": "object"})
+            m.Meltano.SingerSchemaMessage(
+                stream="inventory",
+                schema={"type": "object"},
+            ),
         )
         result = mgr.get_stream("inventory")
         tm.ok(result)
 
-    def test_add_stream_overwrites_existing(self) -> None:
+    @staticmethod
+    def test_add_stream_overwrites_existing() -> None:
+        """Test add stream overwrites existing."""
         mgr = u.TargetOracleWms.CatalogManager()
         schema_v1 = m.Meltano.SingerSchemaMessage(
-            stream="s", schema={"type": "object"}, key_properties=("id",)
+            stream="s",
+            schema={"type": "object"},
+            key_properties=("id",),
         )
         schema_v2 = m.Meltano.SingerSchemaMessage(
-            stream="s", schema={"type": "object"}, key_properties=("id", "name")
+            stream="s",
+            schema={"type": "object"},
+            key_properties=("id", "name"),
         )
         mgr.add_stream(schema_v1)
         mgr.add_stream(schema_v2)
@@ -49,16 +63,20 @@ class TestsFlextTargetOracleWmsCatalog:
         entry = result.value
         tm.that(entry.key_properties, eq=("id", "name"))
 
-    def test_get_nonexistent_stream_fails(self) -> None:
+    @staticmethod
+    def test_get_nonexistent_stream_fails() -> None:
+        """Test get nonexistent stream fails."""
         mgr = u.TargetOracleWms.CatalogManager()
         result = mgr.get_stream("nope")
         tm.fail(result)
         tm.that(result.error, has="nope")
 
-    def test_get_existing_stream_returns_catalog_entry(self) -> None:
+    @staticmethod
+    def test_get_existing_stream_returns_catalog_entry() -> None:
+        """Test get existing stream returns catalog entry."""
         mgr = u.TargetOracleWms.CatalogManager()
         mgr.add_stream(
-            m.Meltano.SingerSchemaMessage(stream="orders", schema={"type": "object"})
+            m.Meltano.SingerSchemaMessage(stream="orders", schema={"type": "object"}),
         )
         result = mgr.get_stream("orders")
         tm.ok(result)
@@ -67,14 +85,16 @@ class TestsFlextTargetOracleWmsCatalog:
         tm.that(entry.stream, eq="orders")
         tm.that(entry.tap_stream_id, eq="orders")
 
-    def test_entry_has_correct_key_properties(self) -> None:
+    @staticmethod
+    def test_entry_has_correct_key_properties() -> None:
+        """Test entry has correct key properties."""
         mgr = u.TargetOracleWms.CatalogManager()
         mgr.add_stream(
             m.Meltano.SingerSchemaMessage(
                 stream="items",
                 schema={"type": "object"},
                 key_properties=("item_id", "lot"),
-            )
+            ),
         )
         stream_result = mgr.get_stream("items")
         tm.ok(stream_result)
@@ -82,22 +102,29 @@ class TestsFlextTargetOracleWmsCatalog:
         entry = stream_result.value
         tm.that(entry.key_properties, eq=("item_id", "lot"))
 
-    def test_multiple_independent_streams(self) -> None:
+    @staticmethod
+    def test_multiple_independent_streams() -> None:
+        """Test multiple independent streams."""
         mgr = u.TargetOracleWms.CatalogManager()
         for name in ("alpha", "beta", "gamma"):
             mgr.add_stream(
-                m.Meltano.SingerSchemaMessage(stream=name, schema={"type": "object"})
+                m.Meltano.SingerSchemaMessage(stream=name, schema={"type": "object"}),
             )
         for name in ("alpha", "beta", "gamma"):
             tm.ok(mgr.get_stream(name))
 
+    @staticmethod
     @pytest.mark.parametrize(
         "stream_name",
         ["simple", "with-dashes", "with_underscores", "CamelCase", "stream.dotted"],
     )
-    def test_various_stream_names(self, stream_name: str) -> None:
+    def test_various_stream_names(stream_name: str) -> None:
+        """Test various stream names."""
         mgr = u.TargetOracleWms.CatalogManager()
         mgr.add_stream(
-            m.Meltano.SingerSchemaMessage(stream=stream_name, schema={"type": "object"})
+            m.Meltano.SingerSchemaMessage(
+                stream=stream_name,
+                schema={"type": "object"},
+            ),
         )
         tm.ok(mgr.get_stream(stream_name))

@@ -11,25 +11,30 @@ from __future__ import annotations
 from flext_tests import tm
 
 from tests import u
-
-from .._helpers import _record_msg, _schema_msg, _valid_config
+from tests._helpers import _record_msg, _schema_msg, _valid_config
 
 
 class TestsFlextTargetOracleWmsSinks:
     """Verify target initializes all expected sub-components."""
 
-    def test_unknown_stream_lookup_fails_not_found(self) -> None:
+    @staticmethod
+    def test_unknown_stream_lookup_fails_not_found() -> None:
+        """Test unknown stream lookup fails not found."""
         target = u.TargetOracleWms.Target(_valid_config())
         tm.fail(target.catalog_manager.get_stream("never_registered"))
 
-    def test_schema_registers_in_both_catalog_and_table(self) -> None:
+    @staticmethod
+    def test_schema_registers_in_both_catalog_and_table() -> None:
+        """Test schema registers in both catalog and table."""
         target = u.TargetOracleWms.Target(_valid_config())
         schema = _schema_msg("items")
         target.handle_schema_message(schema)
         tm.ok(target.catalog_manager.get_stream("items"))
         tm.ok(target.table_manager.get_table_name("items"))
 
-    def test_table_name_is_uppercased_stream(self) -> None:
+    @staticmethod
+    def test_table_name_is_uppercased_stream() -> None:
+        """Test table name is uppercased stream."""
         target = u.TargetOracleWms.Target(_valid_config())
         schema = _schema_msg("orders")
         target.handle_schema_message(schema)
@@ -38,7 +43,9 @@ class TestsFlextTargetOracleWmsSinks:
         tm.that(table_result.value, none=False)
         tm.that(table_result.value, eq="ORDERS")
 
-    def test_record_keys_uppercased(self) -> None:
+    @staticmethod
+    def test_record_keys_uppercased() -> None:
+        """Test record keys uppercased."""
         target = u.TargetOracleWms.Target(_valid_config())
         schema = _schema_msg("s")
         target.handle_schema_message(schema)

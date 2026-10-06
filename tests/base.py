@@ -1,4 +1,9 @@
-"""Service base for flext-target-oracle-wms tests."""
+"""Service base for flext-target-oracle-wms tests.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+tests/base
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
@@ -20,7 +25,7 @@ class TestsFlextTargetOracleWmsServiceBase(FlextTestsServiceBase):
     @override
     def runtime_bootstrap_options(cls) -> m.RuntimeBootstrapOptions:
         return m.RuntimeBootstrapOptions(
-            settings_type=TestsFlextTargetOracleWmsSettings
+            settings_type=TestsFlextTargetOracleWmsSettings,
         )
 
 

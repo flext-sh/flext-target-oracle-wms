@@ -21,7 +21,11 @@ DEFAULT_BATCH: int = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
 
 
 def run_advanced_example() -> t.Scalar:
-    """Run advanced configuration example with Oracle WMS constants."""
+    """Run advanced configuration example with Oracle WMS constants.
+
+    Returns:
+        The resulting ``t.Scalar``.
+    """
     logger.info("Starting advanced configuration example")
     logger.info("Load method: %s, base_url: wms.example.oraclecloud.com", LOAD_METHOD)
     logger.info("Default batch size: %d, password protected", DEFAULT_BATCH)
