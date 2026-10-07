@@ -33,7 +33,9 @@ def _record_msg(stream: str = "bench") -> m.Meltano.SingerRecordMessage:
 class TestsFlextTargetOracleWmsBenchmarks:
     """Performance tests for WMSTypeConverter."""
 
-    def test_convert_string_performance(self) -> None:
+    @staticmethod
+    def test_convert_string_performance() -> None:
+        """Test convert string performance."""
         converter = u.TargetOracleWms.WMSTypeConverter()
         start = time.time()
         for _ in range(c.TargetOracleWms.Tests.PERF_ITERATIONS):
@@ -41,7 +43,9 @@ class TestsFlextTargetOracleWmsBenchmarks:
         elapsed = time.time() - start
         assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
 
-    def test_convert_integer_performance(self) -> None:
+    @staticmethod
+    def test_convert_integer_performance() -> None:
+        """Test convert integer performance."""
         converter = u.TargetOracleWms.WMSTypeConverter()
         start = time.time()
         for _ in range(c.TargetOracleWms.Tests.PERF_ITERATIONS):
@@ -49,7 +53,9 @@ class TestsFlextTargetOracleWmsBenchmarks:
         elapsed = time.time() - start
         assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
 
-    def test_register_and_lookup_performance(self) -> None:
+    @staticmethod
+    def test_register_and_lookup_performance() -> None:
+        """Test register and lookup performance."""
         tm = u.TargetOracleWms.WMSTableManager()
         start = time.time()
         for i in range(c.TargetOracleWms.Tests.PERF_ITERATIONS):
@@ -59,7 +65,9 @@ class TestsFlextTargetOracleWmsBenchmarks:
         elapsed = time.time() - start
         assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
 
-    def test_add_and_get_stream_performance(self) -> None:
+    @staticmethod
+    def test_add_and_get_stream_performance() -> None:
+        """Test add and get stream performance."""
         mgr = u.TargetOracleWms.CatalogManager()
         start = time.time()
         for i in range(c.TargetOracleWms.Tests.PERF_ITERATIONS):
@@ -69,7 +77,9 @@ class TestsFlextTargetOracleWmsBenchmarks:
         elapsed = time.time() - start
         assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
 
-    def test_transform_record_performance(self) -> None:
+    @staticmethod
+    def test_transform_record_performance() -> None:
+        """Test transform record performance."""
         transformer = u.TargetOracleWms.WMSDataTransformer()
         rec = _record_msg()
         schema = _schema_msg()

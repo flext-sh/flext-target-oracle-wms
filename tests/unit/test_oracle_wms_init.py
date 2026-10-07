@@ -16,19 +16,22 @@ from tests import c
 class TestsFlextTargetOracleWmsOracleWmsInit:
     """Test module initialization and version handling."""
 
-    def test_version_import_success(self) -> None:
+    @staticmethod
+    def test_version_import_success() -> None:
         """Test successful version import from importlib.metadata."""
         tm.that(flext_target_oracle_wms.__version__, is_=str)
         assert flext_target_oracle_wms.__version__
 
-    def test_version_is_valid_semver(self) -> None:
+    @staticmethod
+    def test_version_is_valid_semver() -> None:
         """Version string is a non-empty dotted semver."""
         version = flext_target_oracle_wms.__version__
         tm.that(version, is_=str)
         assert version
         assert version.count(".") >= c.TargetOracleWms.Tests.MIN_SEMVER_SEPARATOR_COUNT
 
-    def test_module_exports(self) -> None:
+    @staticmethod
+    def test_module_exports() -> None:
         """Test that module exports are properly defined."""
         tm.that(flext_target_oracle_wms.__all__, is_=(list, tuple))
         # NOTE (multi-agent, bead mro-nwc.19): canonical package surface only. The

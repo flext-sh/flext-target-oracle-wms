@@ -1,4 +1,9 @@
-"""WMS helper classes — u.TargetOracleWms.{WMSTableManager,WMSDataTransformer,...}."""
+"""WMS helper classes — u.TargetOracleWms.{WMSTableManager,WMSDataTransformer,...}.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+src/flext_target_oracle_wms/_utilities/helpers
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
@@ -24,16 +29,22 @@ class FlextTargetOracleWmsUtilitiesHelpers:
     class WMSTypeConverter:
         """Convert source scalar values to Oracle-friendly payload values."""
 
+        @staticmethod
         def convert_singer_to_oracle(
-            self, singer_type: str, value: t.JsonValue
+            singer_type: str,
+            value: t.JsonValue,
         ) -> p.Result[t.JsonValue]:
-            """Convert a single source value according to Singer type."""
+            """Convert a single source value according to Singer type.
+
+            Returns:
+                The resulting ``p.Result[t.JsonValue]``.
+            """
             if singer_type in {"object", "array"}:
                 return r[t.JsonValue].ok(
                     t
                     .json_value_adapter()
                     .dump_json(u.normalize_to_json_value(value))
-                    .decode(c.DEFAULT_ENCODING)
+                    .decode(c.DEFAULT_ENCODING),
                 )
             if singer_type in {"integer", "number"}:
                 try:
@@ -65,19 +76,23 @@ class FlextTargetOracleWmsUtilitiesHelpers:
             record_message: m.Meltano.SingerRecordMessage | t.JsonMapping,
             schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping | None = None,
         ) -> p.Result[m.Meltano.SingerRecordMessage]:
-            """Transform one typed Singer RECORD payload with optional typed schema."""
+            """Transform one typed Singer RECORD payload with optional typed schema.
+
+            Returns:
+                The resulting ``p.Result[m.Meltano.SingerRecordMessage]``.
+            """
             typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
             transformed: t.MutableJsonMapping = {}
             empty_schema: t.MutableJsonMapping = {}
             schema_definition = (
                 m.Meltano.SingerSchemaMessage.model_validate(
-                    schema_message
+                    schema_message,
                 ).schema_definition
                 if schema_message is not None
                 else empty_schema
             )
             schema_props = m.TargetOracleWms.SingerSchemaProperties.model_validate(
-                schema_definition
+                schema_definition,
             )
             for key, value in typed_record.record.items():
                 prop_schema = schema_props.properties.get(key)
@@ -85,7 +100,8 @@ class FlextTargetOracleWmsUtilitiesHelpers:
                     prop_schema.type if prop_schema is not None else "string"
                 )
                 converted = self.type_converter.convert_singer_to_oracle(
-                    resolved_type, value
+                    resolved_type,
+                    value,
                 )
                 if converted.failure:
                     return r[m.Meltano.SingerRecordMessage].from_failure(converted)
@@ -97,7 +113,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
                     "record": transformed,
                     "time_extracted": typed_record.time_extracted,
                     "version": typed_record.version,
-                })
+                }),
             )
 
     class WMSTableManager:
@@ -108,14 +124,22 @@ class FlextTargetOracleWmsUtilitiesHelpers:
             self._stream_tables: t.MutableStrMapping = {}
 
         def get_table_name(self, stream_name: str) -> p.Result[str]:
-            """Get registered table name for stream."""
+            """Get registered table name for stream.
+
+            Returns:
+                The resulting ``p.Result[str]``.
+            """
             table_name = self._stream_tables.get(stream_name)
             if table_name is None:
                 return r[str].fail(f"Stream not registered: {stream_name}")
             return r[str].ok(table_name)
 
         def register_stream(self, stream_name: str) -> p.Result[str]:
-            """Register a stream and return table name."""
+            """Register a stream and return table name.
+
+            Returns:
+                The resulting ``p.Result[str]``.
+            """
             table_name = stream_name.upper()
             self._stream_tables[stream_name] = table_name
             return r[str].ok(table_name)

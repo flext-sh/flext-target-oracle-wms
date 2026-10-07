@@ -33,7 +33,11 @@ BATCH_SIZE: Final[int] = 100
 
 
 def run_basic_example() -> t.Scalar:
-    """Run basic Oracle WMS target example with REAL configuration."""
+    """Run basic Oracle WMS target example with REAL configuration.
+
+    Returns:
+        The resulting ``t.Scalar``.
+    """
     logger.info("Starting basic Oracle WMS target example")
     logger.info("Using base_url=%s, batch_size=%d", WMS_AUTH["base_url"], BATCH_SIZE)
     tm = FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTableManager()
@@ -43,7 +47,11 @@ def run_basic_example() -> t.Scalar:
 
 
 def run_from_singer_files() -> t.Scalar:
-    """Run target from Singer JSON files - REAL Singer integration."""
+    """Run target from Singer JSON files - REAL Singer integration.
+
+    Returns:
+        The resulting ``t.Scalar``.
+    """
     logger.info("Running target from Singer JSON files")
     config_file = Path("settings.json")
     if config_file.exists():

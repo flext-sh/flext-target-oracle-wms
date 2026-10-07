@@ -1,4 +1,9 @@
-"""CLI entry point for target Oracle WMS."""
+"""CLI entry point for target Oracle WMS.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+src/flext_target_oracle_wms/cli
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
@@ -8,8 +13,9 @@ from pathlib import Path
 from flext_core import r
 from flext_target_oracle_wms import c, m, p, settings, t, u
 from flext_target_oracle_wms.__version__ import __version__
-
-from ._utilities.client import FlextTargetOracleWmsUtilitiesClient
+from flext_target_oracle_wms._utilities.client import (
+    FlextTargetOracleWmsUtilitiesClient,
+)
 
 
 class FlextTargetOracleWmsCli:
@@ -24,7 +30,9 @@ class FlextTargetOracleWmsCli:
         self.version = __version__
 
     def execute(
-        self, message_lines: t.StrSequence | None = None, settings: str | None = None
+        self,
+        message_lines: t.StrSequence | None = None,
+        settings: str | None = None,
     ) -> p.Result[bool]:
         """Execute target run.
 
@@ -35,6 +43,8 @@ class FlextTargetOracleWmsCli:
             settings: optional path to a Singer settings JSON file. When ``None`` a
                 default configuration is used.
 
+        Returns:
+            The resulting ``p.Result[bool]``.
         """
         lines: t.StrSequence = (
             message_lines if message_lines is not None else list(sys.stdin)
@@ -47,9 +57,15 @@ class FlextTargetOracleWmsCli:
         )
 
     def _execute_target_pipeline(
-        self, settings: m.TargetOracleWms.WmsTargetConfig, message_lines: t.StrSequence
+        self,
+        settings: m.TargetOracleWms.WmsTargetConfig,
+        message_lines: t.StrSequence,
     ) -> p.Result[bool]:
-        """Set up, process the message lines, and clean up the target runtime."""
+        """Set up, process the message lines, and clean up the target runtime.
+
+        Returns:
+            The resulting ``p.Result[bool]``.
+        """
         target = FlextTargetOracleWmsUtilitiesClient.Target(settings)
         setup_result = target.setup().map_error(lambda e: e or "Setup failed")
         if setup_result.failure:
@@ -59,14 +75,27 @@ class FlextTargetOracleWmsCli:
             return process_result
         return self._finalize_target(target)
 
+    @staticmethod
     def _finalize_target(
-        self, target: FlextTargetOracleWmsUtilitiesClient.Target
+        target: FlextTargetOracleWmsUtilitiesClient.Target,
     ) -> p.Result[bool]:
-        """Finalize target processing."""
+        """Finalize target processing.
+
+        Returns:
+            The resulting ``p.Result[bool]``.
+        """
         return target.cleanup()
 
-    def _load_config(self, config_path: str) -> str:
-        """Read JSON configuration file."""
+    @staticmethod
+    def _load_config(config_path: str) -> str:
+        """Read JSON configuration file.
+
+        Returns:
+            The resulting ``str``.
+
+        Raises:
+            FileNotFoundError: If Configuration file not found.
+        """
         config_file = Path(config_path)
         if not config_file.exists():
             msg = f"Configuration file not found: {config_path}"
@@ -75,14 +104,19 @@ class FlextTargetOracleWmsCli:
         return content
 
     def _prepare_config(
-        self, config_path: str | None
+        self,
+        config_path: str | None,
     ) -> p.Result[m.TargetOracleWms.WmsTargetConfig]:
-        """Load settings from file or build defaults."""
+        """Load settings from file or build defaults.
+
+        Returns:
+            The resulting ``p.Result[m.TargetOracleWms.WmsTargetConfig]``.
+        """
         if config_path is not None:
             return r[m.TargetOracleWms.WmsTargetConfig].ok(
                 m.TargetOracleWms.WmsTargetConfig.model_validate_json(
-                    self._load_config(config_path)
-                )
+                    self._load_config(config_path),
+                ),
             )
         return r[m.TargetOracleWms.WmsTargetConfig].ok(
             m.TargetOracleWms.WmsTargetConfig.model_validate({
@@ -90,13 +124,14 @@ class FlextTargetOracleWmsCli:
                     "base_url": c.TargetOracleWms.CLI_PLACEHOLDER_BASE_URL,
                     "username": settings.TargetOracleWms.username,
                     "password": settings.TargetOracleWms.password,
-                }
-            })
+                },
+            }),
         )
 
 
 def main(
-    argv: t.StrSequence | None = None, message_lines: t.StrSequence | None = None
+    argv: t.StrSequence | None = None,
+    message_lines: t.StrSequence | None = None,
 ) -> None:
     """Run CLI command from process arguments.
 
@@ -106,6 +141,8 @@ def main(
         message_lines: Singer message lines; forwarded to ``execute`` (reads stdin
             when ``None``).
 
+    Raises:
+        RuntimeError: If ``result.failure``.
     """
     args: t.StrSequence = argv if argv is not None else sys.argv
     cli_instance = FlextTargetOracleWmsCli()

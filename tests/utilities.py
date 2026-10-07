@@ -14,7 +14,8 @@ from flext_target_oracle_wms import FlextTargetOracleWmsUtilities
 
 
 class TestsFlextTargetOracleWmsUtilities(
-    FlextTestsUtilities, FlextTargetOracleWmsUtilities
+    FlextTestsUtilities,
+    FlextTargetOracleWmsUtilities,
 ):
     """Test utilities for flext-target-oracle-wms."""
 

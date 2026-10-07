@@ -11,121 +11,160 @@ import math
 from flext_tests import tm
 
 from tests import m, t, u
-
-from .._helpers import _record_msg, _schema_msg
+from tests._helpers import _record_msg, _schema_msg
 
 
 class TestsFlextTargetOracleWmsWmsPatterns:
     """Tests for WMSTypeConverter.convert_singer_to_oracle."""
 
-    def test_string_type(self) -> None:
+    @staticmethod
+    def test_string_type() -> None:
+        """Test string type."""
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "string", "hello"
+            "string",
+            "hello",
         )
         tm.ok(result)
         tm.that(result.value, eq="hello")
 
-    def test_integer_type(self) -> None:
+    @staticmethod
+    def test_integer_type() -> None:
+        """Test integer type."""
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "integer", 42
+            "integer",
+            42,
         )
         tm.ok(result)
         tm.that(result.value, eq=42)
 
-    def test_number_type_float(self) -> None:
+    @staticmethod
+    def test_number_type_float() -> None:
+        """Test number type float."""
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "number", math.pi
+            "number",
+            math.pi,
         )
         tm.ok(result)
         tm.that(result.value, eq=math.pi)
 
-    def test_none_value(self) -> None:
+    @staticmethod
+    def test_none_value() -> None:
+        """Test none value."""
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "string", ""
+            "string",
+            "",
         )
         tm.ok(result)
         tm.that(result.value, eq="")
 
-    def test_object_type_serializes_to_json(self) -> None:
+    @staticmethod
+    def test_object_type_serializes_to_json() -> None:
+        """Test object type serializes to json."""
         data = '{"nested": "value"}'
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "object", data
+            "object",
+            data,
         )
         tm.ok(result)
         tm.that(result.value, none=False)
         tm.that(m.TypeAdapter(t.StrictStr).validate_json(str(result.value)), eq=data)
 
-    def test_array_type_serializes_to_json(self) -> None:
+    @staticmethod
+    def test_array_type_serializes_to_json() -> None:
+        """Test array type serializes to json."""
         data = "[1, 2, 3]"
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "array", data
+            "array",
+            data,
         )
         tm.ok(result)
         tm.that(result.value, none=False)
         tm.that(m.TypeAdapter(t.StrictStr).validate_json(str(result.value)), eq=data)
 
-    def test_boolean_type_becomes_string(self) -> None:
+    @staticmethod
+    def test_boolean_type_becomes_string() -> None:
+        """Test boolean type becomes string."""
         result = u.TargetOracleWms.WMSTypeConverter().convert_singer_to_oracle(
-            "boolean", True
+            "boolean",
+            True,
         )
         tm.ok(result)
         tm.that(result.value, eq="True")
 
-    def test_uppercases_record_keys(self) -> None:
+    @staticmethod
+    def test_uppercases_record_keys() -> None:
+        """Test uppercases record keys."""
         transformer = u.TargetOracleWms.WMSDataTransformer()
         result = transformer.transform_record(
-            _record_msg("s", {"name": "alice", "age": "30"}), _schema_msg("s")
+            _record_msg("s", {"name": "alice", "age": "30"}),
+            _schema_msg("s"),
         )
         tm.ok(result)
         tm.that(result.value, none=False)
         tm.that(result.value.record, has="NAME")
         tm.that(result.value.record, has="AGE")
 
-    def test_preserves_stream_name(self) -> None:
+    @staticmethod
+    def test_preserves_stream_name() -> None:
+        """Test preserves stream name."""
         transformer = u.TargetOracleWms.WMSDataTransformer()
         result = transformer.transform_record(
-            _record_msg("orders", {"id": "1"}), _schema_msg("orders")
+            _record_msg("orders", {"id": "1"}),
+            _schema_msg("orders"),
         )
         tm.ok(result)
         tm.that(result.value, none=False)
         tm.that(result.value.stream, eq="orders")
 
-    def test_uses_custom_type_converter(self) -> None:
+    @staticmethod
+    def test_uses_custom_type_converter() -> None:
+        """Test uses custom type converter."""
         converter = u.TargetOracleWms.WMSTypeConverter()
         transformer = u.TargetOracleWms.WMSDataTransformer(type_converter=converter)
         result = transformer.transform_record(
-            _record_msg("s", {"qty": 10}), _schema_msg("s")
+            _record_msg("s", {"qty": 10}),
+            _schema_msg("s"),
         )
         tm.ok(result)
         tm.that(result.value, none=False)
         tm.that(result.value.record, has="QTY")
 
-    def test_transform_without_schema(self) -> None:
+    @staticmethod
+    def test_transform_without_schema() -> None:
+        """Test transform without schema."""
         transformer = u.TargetOracleWms.WMSDataTransformer()
         result = transformer.transform_record(_record_msg("s", {"name": "bob"}), None)
         tm.ok(result)
         tm.that(result.value, none=False)
         tm.that(result.value.record, has="NAME")
 
-    def test_register_stream_returns_uppercase(self) -> None:
+    @staticmethod
+    def test_register_stream_returns_uppercase() -> None:
+        """Test register stream returns uppercase."""
         manager = u.TargetOracleWms.WMSTableManager()
         result = manager.register_stream("orders")
         tm.ok(result)
         tm.that(result.value, eq="ORDERS")
 
-    def test_get_registered_table(self) -> None:
+    @staticmethod
+    def test_get_registered_table() -> None:
+        """Test get registered table."""
         manager = u.TargetOracleWms.WMSTableManager()
         manager.register_stream("items")
         result = manager.get_table_name("items")
         tm.ok(result)
         tm.that(result.value, eq="ITEMS")
 
-    def test_get_unregistered_fails(self) -> None:
+    @staticmethod
+    def test_get_unregistered_fails() -> None:
+        """Test get unregistered fails."""
         manager = u.TargetOracleWms.WMSTableManager()
         result = manager.get_table_name("nope")
         tm.fail(result)
 
-    def test_multiple_streams(self) -> None:
+    @staticmethod
+    def test_multiple_streams() -> None:
+        """Test multiple streams."""
         manager = u.TargetOracleWms.WMSTableManager()
         manager.register_stream("a")
         manager.register_stream("b")

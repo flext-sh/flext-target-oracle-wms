@@ -33,7 +33,11 @@ BATCH_CONFIG: Final[t.JsonMapping] = MappingProxyType({
 
 
 def run_batch_example() -> t.Scalar:
-    """Run batch processing example with Oracle WMS table management."""
+    """Run batch processing example with Oracle WMS table management.
+
+    Returns:
+        The resulting ``t.Scalar``.
+    """
     logger.info("Starting batch processing example")
     tm = FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTableManager()
     result = tm.register_stream("orders")

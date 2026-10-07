@@ -35,14 +35,18 @@ TARGET_CONFIG: Final[Mapping[str, str]] = MappingProxyType({
 
 
 def run_target_creation_example() -> t.Scalar:
-    """Create an Oracle WMS target via the canonical utilities facade."""
+    """Create an Oracle WMS target via the canonical utilities facade.
+
+    Returns:
+        The resulting ``t.Scalar``.
+    """
     logger.info("Starting Oracle WMS target creation example")
     config = m.TargetOracleWms.WmsTargetConfig.model_validate({
         "wms_auth": {
             "base_url": TARGET_CONFIG["base_url"],
             "username": TARGET_CONFIG["username"],
             "password": TARGET_CONFIG["password"],
-        }
+        },
     })
     target = u.TargetOracleWms.Target(config)
     logger.info("Created Oracle WMS target: %s", target.name)

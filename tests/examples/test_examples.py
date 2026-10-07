@@ -51,7 +51,8 @@ def _import_lines(content: str) -> list[str]:
 class TestsFlextTargetOracleWmsExamples:
     """Test examples for code quality and real API usage."""
 
-    def test_examples_directory_exists(self, examples_dir: Path) -> None:
+    @staticmethod
+    def test_examples_directory_exists(examples_dir: Path) -> None:
         """Test that examples directory exists and contains files."""
         assert examples_dir.exists(), "Examples directory must exist"
         assert examples_dir.is_dir(), "Examples path must be a directory"
@@ -71,7 +72,8 @@ class TestsFlextTargetOracleWmsExamples:
                 f"Required example file {expected_file} must exist"
             )
 
-    def test_examples_use_real_imports(self, example_files: t.SequenceOf[Path]) -> None:
+    @staticmethod
+    def test_examples_use_real_imports(example_files: t.SequenceOf[Path]) -> None:
         """Test that examples use REAL flext-* imports, not fallbacks."""
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
@@ -103,8 +105,9 @@ class TestsFlextTargetOracleWmsExamples:
             for pattern in forbidden_patterns:
                 tm.that(content, lacks=pattern)
 
+    @staticmethod
     def test_examples_have_comprehensive_docstrings(
-        self, example_files: t.SequenceOf[Path]
+        example_files: t.SequenceOf[Path],
     ) -> None:
         """Require module docs everywhere and comprehensive docs in runnable examples."""
         for example_file in example_files:
@@ -137,8 +140,9 @@ class TestsFlextTargetOracleWmsExamples:
                     doc_ratio >= c.TargetOracleWms.Tests.MIN_DOCUMENTED_FUNCTION_RATIO
                 ), f"{example_file.name} must have 80%+ functions documented"
 
+    @staticmethod
     def test_examples_use_await_patterns(
-        self, example_files: t.SequenceOf[Path]
+        example_files: t.SequenceOf[Path],
     ) -> None:
         """Test that examples with async functions use proper await patterns."""
         for example_file in example_files:
@@ -158,8 +162,9 @@ class TestsFlextTargetOracleWmsExamples:
                     f"{example_file.name} has async functions but no await statements"
                 )
 
+    @staticmethod
     def test_examples_implement_error_handling(
-        self, example_files: t.SequenceOf[Path]
+        example_files: t.SequenceOf[Path],
     ) -> None:
         """Test that examples implement proper error handling."""
         for example_file in example_files:
@@ -173,8 +178,9 @@ class TestsFlextTargetOracleWmsExamples:
                     f"{example_file.name} mentions errors but has no error handling"
                 )
 
+    @staticmethod
     def test_examples_use_realistic_config(
-        self, example_files: t.SequenceOf[Path]
+        example_files: t.SequenceOf[Path],
     ) -> None:
         """Test that examples use realistic configuration patterns."""
         for example_file in example_files:
@@ -205,8 +211,9 @@ class TestsFlextTargetOracleWmsExamples:
                 f"{example_file.name} must contain Oracle WMS specific patterns"
             )
 
+    @staticmethod
     def test_examples_have_main_execution_blocks(
-        self, example_files: t.SequenceOf[Path]
+        example_files: t.SequenceOf[Path],
     ) -> None:
         """Require main blocks in runnable examples, not imported support facades."""
         for example_file in example_files:
@@ -226,7 +233,8 @@ class TestsFlextTargetOracleWmsExamples:
 
     """Test that examples can be imported without errors."""
 
-    def test_examples_are_importable(self) -> None:
+    @staticmethod
+    def test_examples_are_importable() -> None:
         """Test that examples can be imported (syntax validation)."""
         examples_dir = Path(__file__).parents[2] / "examples"
         example_files = list(examples_dir.glob("*.py"))
@@ -253,7 +261,8 @@ class TestsFlextTargetOracleWmsExamples:
 
     """Test examples directory structure and organization."""
 
-    def test_examples_readme_exists(self) -> None:
+    @staticmethod
+    def test_examples_readme_exists() -> None:
         """Test that examples README exists and is comprehensive."""
         examples_dir = Path(__file__).parents[2] / "examples"
         readme_path = examples_dir / "README.md"
@@ -272,7 +281,8 @@ class TestsFlextTargetOracleWmsExamples:
         for section in required_sections:
             tm.that(readme_content, has=section)
 
-    def test_examples_follow_naming_convention(self) -> None:
+    @staticmethod
+    def test_examples_follow_naming_convention() -> None:
         """Test that examples follow proper naming conventions."""
         examples_dir = Path(__file__).parents[2] / "examples"
         example_files = list(examples_dir.glob("*.py"))
@@ -288,7 +298,8 @@ class TestsFlextTargetOracleWmsExamples:
                 f"Example {example_file.name} name too short"
             )
 
-    def test_examples_have_proper_headers(self) -> None:
+    @staticmethod
+    def test_examples_have_proper_headers() -> None:
         """Test that examples have proper file headers."""
         examples_dir = Path(__file__).parents[2] / "examples"
         example_files = list(examples_dir.glob("*.py"))
@@ -311,7 +322,8 @@ class TestsFlextTargetOracleWmsExamples:
 
     """Test that examples properly integrate with flext-* ecosystem."""
 
-    def test_examples_use_flext_result_pattern(self) -> None:
+    @staticmethod
+    def test_examples_use_flext_result_pattern() -> None:
         """Test that examples use r pattern correctly."""
         examples_dir = Path(__file__).parents[2] / "examples"
         example_files = list(examples_dir.glob("*.py"))
@@ -325,7 +337,8 @@ class TestsFlextTargetOracleWmsExamples:
                     f"{example_file.name} must check result.error or result.value"
                 )
 
-    def test_examples_use_flext_logging(self) -> None:
+    @staticmethod
+    def test_examples_use_flext_logging() -> None:
         """Test that examples use flext-core logging correctly."""
         examples_dir = Path(__file__).parents[2] / "examples"
         example_files = list(examples_dir.glob("*.py"))

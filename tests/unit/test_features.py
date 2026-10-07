@@ -11,8 +11,7 @@ import math
 from flext_tests import tm
 
 from tests import c, m, t, u
-
-from .._helpers import _valid_config
+from tests._helpers import _valid_config
 
 
 class TestsFlextTargetOracleWmsFeatures:
@@ -21,20 +20,28 @@ class TestsFlextTargetOracleWmsFeatures:
     Feature coverage: init, lifecycle, type conversion, record transformation.
     """
 
-    def test_target_initialization(self) -> None:
+    @staticmethod
+    def test_target_initialization() -> None:
+        """Test target initialization."""
         target = u.TargetOracleWms.Target(_valid_config())
         tm.that(target.name, eq=c.TargetOracleWms.TARGET_NAME)
 
-    def test_target_setup_cleanup_lifecycle(self) -> None:
+    @staticmethod
+    def test_target_setup_cleanup_lifecycle() -> None:
+        """Test target setup cleanup lifecycle."""
         target = u.TargetOracleWms.Target(_valid_config())
         tm.ok(target.setup())
         tm.ok(target.cleanup())
 
-    def test_target_process_empty_lines(self) -> None:
+    @staticmethod
+    def test_target_process_empty_lines() -> None:
+        """Test target process empty lines."""
         target = u.TargetOracleWms.Target(_valid_config())
         tm.ok(target.process_lines([]))
 
-    def test_type_converter_handles_all_types(self) -> None:
+    @staticmethod
+    def test_type_converter_handles_all_types() -> None:
+        """Test type converter handles all types."""
         converter = u.TargetOracleWms.WMSTypeConverter()
         types_and_values: t.SequenceOf[tuple[str, bool | float | str]] = [
             ("string", "hello"),
@@ -48,16 +55,22 @@ class TestsFlextTargetOracleWmsFeatures:
             result = converter.convert_singer_to_oracle(singer_type, value)
             tm.ok(result)
 
-    def test_type_converter_null_handling(self) -> None:
+    @staticmethod
+    def test_type_converter_null_handling() -> None:
+        """Test type converter null handling."""
         converter = u.TargetOracleWms.WMSTypeConverter()
         result = converter.convert_singer_to_oracle("string", "")
         tm.ok(result)
         tm.that(result.value, eq="")
 
-    def test_transformer_uppercases_keys(self) -> None:
+    @staticmethod
+    def test_transformer_uppercases_keys() -> None:
+        """Test transformer uppercases keys."""
         transformer = u.TargetOracleWms.WMSDataTransformer()
         record = m.Meltano.SingerRecordMessage(
-            type=c.Meltano.SingerMessageType.RECORD, stream="s", record={"name": "test"}
+            type=c.Meltano.SingerMessageType.RECORD,
+            stream="s",
+            record={"name": "test"},
         )
         schema: m.Meltano.SingerSchemaMessage = (
             m.Meltano.SingerSchemaMessage.model_validate({
