@@ -1,6 +1,7 @@
 """Protocols for flext-target-oracle-wms tests - uses p.Wms.Tests.* namespace pattern.
 
-This module provides test-specific protocols that extend the main flext-target-oracle-wms protocols.
+This module provides test-specific protocols that extend the main
+flext-target-oracle-wms protocols.
 Uses the unified namespace pattern p.Wms.Tests.* for test-only objects.
 Combines TestsFlextProtocols functionality with project-specific test protocols.
 

@@ -20,7 +20,8 @@ from flext_target_oracle_wms import c, t, u
 
 # NOTE (multi-agent, bead mro-nwc.19): t / MutableMapping MUST stay RUNTIME imports.
 # `from __future__ import annotations` makes pydantic v2 resolve these field annotation
-# types lazily at model-build time; hiding them under TYPE_CHECKING left WmsTargetConfig /
+# types lazily at model-build time; hiding them under TYPE_CHECKING left
+# WmsTargetConfig /
 # SingerSchemaProperties "not fully defined". Do NOT move them under TYPE_CHECKING.
 
 

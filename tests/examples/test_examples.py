@@ -109,7 +109,7 @@ class TestsFlextTargetOracleWmsExamples:
     def test_examples_have_comprehensive_docstrings(
         example_files: t.SequenceOf[Path],
     ) -> None:
-        """Require module docs everywhere and comprehensive docs in runnable examples."""
+        """Require module docs everywhere and comprehensive example docs."""
         for example_file in example_files:
             module = _load_example_module(example_file)
             module_docstring = inspect.getdoc(module)
@@ -199,7 +199,10 @@ class TestsFlextTargetOracleWmsExamples:
                     break
             if "settings" in content.lower():
                 assert has_config, (
-                    f"{example_file.name} mentions settings but has no realistic configuration"
+                    (
+                        f"{example_file.name} mentions settings but has no "
+                        "realistic configuration"
+                    ),
                 )
             oracle_patterns = ["oracle", "wms", "FlextTargetOracleWms"]
             has_oracle_pattern = False
