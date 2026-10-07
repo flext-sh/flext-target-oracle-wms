@@ -16,12 +16,20 @@ from tests import t
 
 @pytest.fixture(scope="class")
 def examples_dir() -> Path:
-    """Get examples directory path."""
+    """Get examples directory path.
+
+    Returns:
+        The resulting ``Path``.
+    """
     project_root = Path(__file__).parents[1]
     return project_root / "examples"
 
 
 @pytest.fixture(scope="class")
 def example_files(examples_dir: Path) -> t.SequenceOf[Path]:
-    """Get all Python example files (excluding __init__.py)."""
+    """Get all Python example files (excluding __init__.py).
+
+    Returns:
+        The resulting ``t.SequenceOf[Path]``.
+    """
     return [f for f in examples_dir.glob("*.py") if f.name != "__init__.py"]

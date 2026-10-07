@@ -12,8 +12,7 @@ import pytest
 from flext_tests import tm
 
 from tests import m, u
-
-from .._helpers import _valid_config
+from tests._helpers import _valid_config
 
 if TYPE_CHECKING:
     from tests import t
@@ -34,13 +33,16 @@ def _schema_line(
 
 def _record_line(stream_name: str, record_data: t.JsonMapping) -> str:
     return m.Meltano.SingerRecordMessage(
-        stream=stream_name, record=record_data, version=1
+        stream=stream_name,
+        record=record_data,
+        version=1,
     ).model_dump_json(by_alias=True, exclude_none=True)
 
 
 def _state_line(value: t.JsonMapping) -> str:
     return m.Meltano.SingerStateMessage(value=dict(value)).model_dump_json(
-        by_alias=True, exclude_none=True
+        by_alias=True,
+        exclude_none=True,
     )
 
 
@@ -51,12 +53,16 @@ class TestsFlextTargetOracleWmsOracle:
     WMS-oracle integration: tests end-to-end target process_lines flow.
     """
 
-    def test_setup_process_cleanup(self) -> None:
+    @staticmethod
+    def test_setup_process_cleanup() -> None:
+        """Test setup process cleanup."""
         target = u.TargetOracleWms.Target(_valid_config())
         tm.ok(target.setup())
         lines = [
             _schema_line(
-                "items", {"id": {"type": "string"}, "name": {"type": "string"}}, ["id"]
+                "items",
+                {"id": {"type": "string"}, "name": {"type": "string"}},
+                ["id"],
             ),
             _record_line("items", {"id": "1", "name": "Widget"}),
             _state_line({"bookmarks": {"items": "1"}}),
@@ -64,7 +70,9 @@ class TestsFlextTargetOracleWmsOracle:
         tm.ok(target.process_lines(lines))
         tm.ok(target.cleanup())
 
-    def test_multiple_batches(self) -> None:
+    @staticmethod
+    def test_multiple_batches() -> None:
+        """Test multiple batches."""
         target = u.TargetOracleWms.Target(_valid_config())
         target.setup()
         batch1 = [
@@ -82,7 +90,9 @@ class TestsFlextTargetOracleWmsOracle:
 
     """Integration tests for multi-stream scenarios."""
 
-    def test_three_streams_interleaved(self) -> None:
+    @staticmethod
+    def test_three_streams_interleaved() -> None:
+        """Test three streams interleaved."""
         target = u.TargetOracleWms.Target(_valid_config())
         target.setup()
         lines = [

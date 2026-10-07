@@ -20,19 +20,22 @@ class FlextTargetOracleWmsSettings(FlextMeltanoSettings):
     """Runtime configuration for target Oracle WMS (fields inherited from base)."""
 
     model_config = m.SettingsConfigDict(
-        env_prefix="FLEXT_TARGET_ORACLE_WMS_", extra="ignore"
+        env_prefix="FLEXT_TARGET_ORACLE_WMS_",
+        extra="ignore",
     )
 
     class _TargetOracleWms(m.BaseModel):
         """Namespaced Oracle WMS connection defaults."""
 
         username: Annotated[
-            str, m.Field(default="oracle", description="Oracle WMS username")
+            str,
+            m.Field(default="oracle", description="Oracle WMS username"),
         ]
         password: Annotated[str, m.Field(default="", description="Oracle WMS password")]
 
     TargetOracleWms: Annotated[
-        _TargetOracleWms, m.Field(description="Oracle WMS connection defaults.")
+        _TargetOracleWms,
+        m.Field(description="Oracle WMS connection defaults."),
     ] = _TargetOracleWms()
 
 

@@ -16,7 +16,14 @@ logger = u.fetch_logger(__name__)
 
 
 def run_error_handling_example() -> t.Scalar:
-    """Run error handling example with Oracle WMS resilience patterns."""
+    """Run error handling example with Oracle WMS resilience patterns.
+
+    Returns:
+        The resulting ``t.Scalar``.
+
+    Raises:
+        SystemExit: If a ``(RuntimeError, OSError, ValueError)`` is caught.
+    """
     logger.info("Starting error handling example")
     try:
         tm = FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTableManager()

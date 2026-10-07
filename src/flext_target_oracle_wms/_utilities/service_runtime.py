@@ -1,4 +1,9 @@
-"""Internal runtime adapters for the target-oracle-wms service facade."""
+"""Internal runtime adapters for the target-oracle-wms service facade.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+src/flext_target_oracle_wms/_utilities/service_runtime
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
@@ -32,7 +37,11 @@ class FlextTargetOracleWmsServiceRuntime:
             schema: t.JsonDict,
             key_properties: t.StrSequence,
         ) -> FlextTargetOracleWmsServiceRuntime.Sink:
-            """Create an adapter sink and attach the Oracle WMS runtime target."""
+            """Create an adapter sink and attach the Oracle WMS runtime target.
+
+            Returns:
+                The resulting ``FlextTargetOracleWmsServiceRuntime.Sink``.
+            """
             service_sink = cls(
                 target=target,
                 stream_name=stream_name,
@@ -44,14 +53,18 @@ class FlextTargetOracleWmsServiceRuntime:
 
         @override
         def process_record(self, record: t.JsonMapping, context: t.JsonMapping) -> None:
-            """Process a single record through the Oracle WMS runtime."""
+            """Process a single record through the Oracle WMS runtime.
+
+            Raises:
+                RuntimeError: If ``result.failure``.
+            """
             _ = context
             result = self._runtime_target.handle_record_message(
                 m.Meltano.SingerRecordMessage.model_validate({
                     "type": "RECORD",
                     "stream": self.stream_name,
                     "record": u.normalize_to_json_mapping(record),
-                })
+                }),
             )
             if result.failure:
                 msg = result.error or "Oracle WMS runtime rejected the record"
@@ -64,9 +77,20 @@ class FlextTargetOracleWmsServiceRuntime:
 
     @classmethod
     def create_sink(
-        cls, *, stream_name: str, schema: t.JsonMapping, target_config: t.ScalarMapping
+        cls,
+        *,
+        stream_name: str,
+        schema: t.JsonMapping,
+        target_config: t.ScalarMapping,
     ) -> p.Meltano.SingerDrainSink:
-        """Create the service-level Singer sink adapter."""
+        """Create the service-level Singer sink adapter.
+
+        Returns:
+            The resulting ``p.Meltano.SingerDrainSink``.
+
+        Raises:
+            RuntimeError: If ``schema_result.failure``.
+        """
         normalized_target_config = u.normalize_to_json_mapping(target_config)
         runtime_target = u.TargetOracleWms.Target(normalized_target_config)
         normalized_schema = cls.normalize_flat_schema(schema)
@@ -93,7 +117,11 @@ class FlextTargetOracleWmsServiceRuntime:
 
     @staticmethod
     def normalize_flat_schema(schema: t.JsonMapping) -> t.JsonDict:
-        """Normalize a flat Singer schema to the WMS runtime contract."""
+        """Normalize a flat Singer schema to the WMS runtime contract.
+
+        Returns:
+            The resulting ``t.JsonDict``.
+        """
         return {
             key: (str(value) if isinstance(value, Path) else value)
             for key, value in schema.items()
