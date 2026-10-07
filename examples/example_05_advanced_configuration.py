@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Advanced configuration example for flext-target-oracle-wms - PRODUCTION REAL IMPLEMENTATION.
+"""Advanced configuration example for flext-target-oracle-wms (real).
 
 Demonstrates advanced configuration and custom business logic for production use.
 

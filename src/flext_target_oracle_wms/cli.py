@@ -26,7 +26,8 @@ class FlextTargetOracleWmsCli:
         self.name = c.TargetOracleWms.TARGET_NAME
         self.description = "Oracle WMS Singer Target"
         # NOTE (multi-agent, bead mro-nwc.19): derive from __version__ SSOT; the prior
-        # hardcoded "0.9.0" was stale (real version is 0.12.0.dev0) — a silent version bug.
+        # hardcoded "0.9.0" was stale (real version is 0.12.0.dev0) — a silent
+        # version bug.
         self.version = __version__
 
     def execute(

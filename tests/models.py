@@ -1,6 +1,7 @@
 """Models for flext-target-oracle-wms tests - uses m.Wms.Tests.* namespace pattern.
 
-This module provides test-specific models that extend the main flext-target-oracle-wms models.
+This module provides test-specific models that extend the main
+flext-target-oracle-wms models.
 Uses the unified namespace pattern m.Wms.Tests.* for test-only objects.
 Combines TestsFlextModels functionality with project-specific test models.
 

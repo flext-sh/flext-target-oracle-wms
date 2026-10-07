@@ -25,7 +25,8 @@ class TestsFlextTargetOracleWmsConstants(
         """Target Oracle WMS domain test constants namespace."""
 
         # NOTE (multi-agent, bead mro-nwc.19): inherit test constants only from
-        # FlextTestsConstants.Tests (canonical). The production constants.Tests namespace
+        # FlextTestsConstants.Tests (canonical). The production constants.Tests
+        # namespace
         # was removed — it held only a dead PATCH_TARGET test-mock path (test concern
         # leaking into production constants). Matches sibling target projects.
         class Tests(FlextTestsConstants.Tests):

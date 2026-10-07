@@ -28,7 +28,7 @@ class FlextTargetOracleWmsUtilitiesClient:
     """Public namespace class wrapping all WMS client implementations."""
 
     class CatalogManager:
-        """In-memory Singer catalog manager — u.TargetOracleWms.Client.CatalogManager."""
+        """In-memory Singer catalog manager (u.TargetOracleWms.Client)."""
 
         def __init__(self) -> None:
             """Initialize catalog storage for stream metadata."""
@@ -135,9 +135,12 @@ class FlextTargetOracleWmsUtilitiesClient:
             settings: t.JsonMapping | m.TargetOracleWms.WmsTargetConfig,
         ) -> None:
             """Initialize target runtime with validated settings."""
-            # AGENT-COORDINATION (2026-07-11, bead mro-nwc.19): store the validated config as
-            # self.settings. Previously the model_validate result was assigned to a local and
-            # discarded, so the public `settings` accessor was missing (test_init_with_valid_config).
+            # AGENT-COORDINATION (2026-07-11, bead mro-nwc.19): store the validated
+            # config as
+            # self.settings. Previously the model_validate result was assigned to a
+            # local and
+            # discarded, so the public `settings` accessor was missing
+            # (test_init_with_valid_config).
             self.settings = m.TargetOracleWms.WmsTargetConfig.model_validate(settings)
             self.catalog_manager = FlextTargetOracleWmsUtilitiesClient.CatalogManager()
             self.table_manager = FlextTargetOracleWmsUtilitiesHelpers.WMSTableManager()

@@ -1,8 +1,10 @@
-"""FlextTargetOracleWmsConfig — frozen config singleton for flext-target-oracle-wms (ADR-005 §7).
+"""FlextTargetOracleWmsConfig — frozen config singleton for flext-target-oracle-wms.
 
-Model-less: business rules live in ``config/*.yaml`` under the ``TargetOracleWms:`` key and
-are exposed through the open ``config.TargetOracleWms`` namespace (``extra="allow"``), with
-no per-domain model. Access is ``config.TargetOracleWms.<domain>[<key>...]``.
+See ADR-005 §7.
+
+Model-less: business rules live in ``config/*.yaml`` under the ``TargetOracleWms:``
+key, exposed through the open ``config.TargetOracleWms`` namespace (``extra="allow"``)
+with no per-domain model. Access is ``config.TargetOracleWms.<domain>[<key>...]``.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -47,12 +49,17 @@ class FlextTargetOracleWmsConfig(FlextMeltanoConfig):
     TargetOracleWms: Annotated[
         _TargetOracleWmsNamespace,
         m.Field(
-            description="Open namespace exposing ``config/*.yaml`` under ``TargetOracleWms``.",
+            description=(
+                "Open namespace exposing ``config/*.yaml`` under ``TargetOracleWms``."
+            ),
         ),
     ] = _TargetOracleWmsNamespace()
 
 
 config: FlextTargetOracleWmsConfig = FlextTargetOracleWmsConfig.fetch_global()
-"""Pre-instantiated frozen config singleton — ``from flext_target_oracle_wms import config``."""
+"""Pre-instantiated frozen config singleton.
+
+Exposed as ``from flext_target_oracle_wms import config``.
+"""
 
 __all__: list[str] = ["FlextTargetOracleWmsConfig", "config"]
