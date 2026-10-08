@@ -17,7 +17,7 @@ from typing import Annotated, Self
 from flext_meltano import FlextMeltanoConfig
 
 from flext_core import m
-from flext_target_oracle_wms._models.config import FlextTargetOracleWmsModelsConfig
+from flext_target_oracle_wms._models import FlextTargetOracleWmsModelsConfig
 
 
 class FlextTargetOracleWmsConfig(FlextMeltanoConfig):
