@@ -13,10 +13,10 @@ from __future__ import annotations
 from collections.abc import MutableMapping
 from typing import Annotated, Literal
 
-from flext_meltano import FlextMeltanoModels
+from flext_meltano import FlextMeltanoModels, u
 from flext_oracle_wms import FlextOracleWmsModels
 
-from flext_target_oracle_wms import c, t, u
+from flext_target_oracle_wms import c, t
 
 # NOTE (multi-agent, bead mro-nwc.19): t / MutableMapping MUST stay RUNTIME imports.
 # `from __future__ import annotations` makes pydantic v2 resolve these field annotation

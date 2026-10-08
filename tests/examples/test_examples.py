@@ -61,10 +61,10 @@ class TestsFlextTargetOracleWmsExamples:
             "Must have at least 4 example files"
         )
         expected_files = [
-            "01_basic_usage.py",
-            "05_advanced_configuration.py",
-            "02_batch_processing.py",
-            "03_error_handling.py",
+            "example_01_basic_usage.py",
+            "example_05_advanced_configuration.py",
+            "example_02_batch_processing.py",
+            "example_03_error_handling.py",
         ]
         for expected_file in expected_files:
             file_path = examples_dir / expected_file
@@ -199,10 +199,8 @@ class TestsFlextTargetOracleWmsExamples:
                     break
             if "settings" in content.lower():
                 assert has_config, (
-                    (
-                        f"{example_file.name} mentions settings but has no "
-                        "realistic configuration"
-                    ),
+                    f"{example_file.name} mentions settings but has no "
+                    "realistic configuration"
                 )
             oracle_patterns = ["oracle", "wms", "FlextTargetOracleWms"]
             has_oracle_pattern = False
