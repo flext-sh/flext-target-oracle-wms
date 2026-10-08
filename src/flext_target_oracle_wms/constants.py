@@ -12,8 +12,8 @@ from typing import TYPE_CHECKING
 from flext_meltano import FlextMeltanoConstants
 from flext_oracle_wms import FlextOracleWmsConstants
 
-from flext_target_oracle_wms._constants.base import FlextTargetOracleWmsConstantsBase
-from flext_target_oracle_wms._constants.values import (
+from flext_target_oracle_wms._constants import (
+    FlextTargetOracleWmsConstantsBase,
     FlextTargetOracleWmsConstantsValues,
 )
 
