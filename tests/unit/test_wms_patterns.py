@@ -12,7 +12,7 @@ import math
 
 from flext_tests import tm
 
-from tests import m, t, u
+from tests import t, u
 from tests._helpers import _record_msg, _schema_msg
 
 
@@ -69,7 +69,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         )
         tm.ok(result)
         tm.that(result.value, none=False)
-        tm.that(m.TypeAdapter(t.StrictStr).validate_json(str(result.value)), eq=data)
+        tm.that(t.str_adapter().validate_json(str(result.value)), eq=data)
 
     @staticmethod
     def test_array_type_serializes_to_json() -> None:
@@ -81,7 +81,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         )
         tm.ok(result)
         tm.that(result.value, none=False)
-        tm.that(m.TypeAdapter(t.StrictStr).validate_json(str(result.value)), eq=data)
+        tm.that(t.str_adapter().validate_json(str(result.value)), eq=data)
 
     @staticmethod
     def test_boolean_type_becomes_string() -> None:
