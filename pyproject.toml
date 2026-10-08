@@ -399,7 +399,9 @@ python_files = ["*_test.py", "*_tests.py", "test_*.py"]
 testpaths = ["tests"]
 
 [tool.ruff]
-extend-exclude = []
+extend-exclude = [
+  "**/.archive/**",
+]
 fix = false
 line-length = 88
 namespace-packages = ["tests", "examples", "scripts"]
