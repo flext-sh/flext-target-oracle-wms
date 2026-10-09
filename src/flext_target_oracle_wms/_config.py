@@ -16,13 +16,8 @@ from typing import Annotated, Self
 
 from flext_meltano import FlextMeltanoConfig
 
-from flext_target_oracle_wms import m
-
-
-class _TargetOracleWmsNamespace(m.BaseModel):
-    """Open, frozen namespace exposing every ``config/*.yaml`` domain model-less."""
-
-    model_config = m.ConfigDict(extra="allow", frozen=True)
+from flext_core import m
+from flext_target_oracle_wms._models import FlextTargetOracleWmsModelsConfig
 
 
 class FlextTargetOracleWmsConfig(FlextMeltanoConfig):
@@ -47,13 +42,13 @@ class FlextTargetOracleWmsConfig(FlextMeltanoConfig):
     __hash__ = object.__hash__
 
     TargetOracleWms: Annotated[
-        _TargetOracleWmsNamespace,
+        FlextTargetOracleWmsModelsConfig.TargetOracleWmsNamespace,
         m.Field(
             description=(
                 "Open namespace exposing ``config/*.yaml`` under ``TargetOracleWms``."
             ),
         ),
-    ] = _TargetOracleWmsNamespace()
+    ] = FlextTargetOracleWmsModelsConfig.TargetOracleWmsNamespace()
 
 
 config: FlextTargetOracleWmsConfig = FlextTargetOracleWmsConfig.fetch_global()
