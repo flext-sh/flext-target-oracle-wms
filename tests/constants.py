@@ -33,8 +33,6 @@ class TestsFlextTargetOracleWmsConstants(
             """Target Oracle WMS-specific test constants."""
 
             PROJECT_ROOT_PARENT_DEPTH: ClassVar[int] = 1
-            SRC_DIR: str = "src"
-            PACKAGE_DIR: str = "flext_target_oracle_wms"
             ALLOWED_MODULE_FUNCTIONS: ClassVar[dict[str, frozenset[str]]] = {
                 "cli.py": frozenset({"main"}),
             }
