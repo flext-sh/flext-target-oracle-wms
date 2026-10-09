@@ -9,14 +9,13 @@ from __future__ import annotations
 
 from flext_tests import u
 
-from tests import c, m
+from tests import m
 
 
 class TestsFlextTargetOracleWmsModuleGovernance(u.FlextTestsModuleGovernanceMixin):
     """Behavior contract for test_module_governance."""
 
     _test_file = __file__
-    _tests_config = c.TargetOracleWms.Tests()
 
     @staticmethod
     def test_namespace_does_not_define_local_singer_message_models() -> None:
