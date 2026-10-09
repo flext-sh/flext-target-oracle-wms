@@ -20,10 +20,10 @@ class TestsFlextTargetOracleWmsCatalog:
         """Test add stream returns success."""
         mgr = u.TargetOracleWms.CatalogManager()
         result = mgr.add_stream(
-            m.Meltano.SingerSchemaMessage(
-                stream="test_stream",
-                schema={"type": "object"},
-            ),
+            m.Meltano.SingerSchemaMessage.model_validate({
+                "stream": "test_stream",
+                "schema": {"type": "object"},
+            }),
         )
         tm.ok(result)
         tm.that(result.value, eq=True)
@@ -33,10 +33,10 @@ class TestsFlextTargetOracleWmsCatalog:
         """Test add stream makes stream retrievable."""
         mgr = u.TargetOracleWms.CatalogManager()
         mgr.add_stream(
-            m.Meltano.SingerSchemaMessage(
-                stream="inventory",
-                schema={"type": "object"},
-            ),
+            m.Meltano.SingerSchemaMessage.model_validate({
+                "stream": "inventory",
+                "schema": {"type": "object"},
+            }),
         )
         result = mgr.get_stream("inventory")
         tm.ok(result)
@@ -45,16 +45,16 @@ class TestsFlextTargetOracleWmsCatalog:
     def test_add_stream_overwrites_existing() -> None:
         """Test add stream overwrites existing."""
         mgr = u.TargetOracleWms.CatalogManager()
-        schema_v1 = m.Meltano.SingerSchemaMessage(
-            stream="s",
-            schema={"type": "object"},
-            key_properties=("id",),
-        )
-        schema_v2 = m.Meltano.SingerSchemaMessage(
-            stream="s",
-            schema={"type": "object"},
-            key_properties=("id", "name"),
-        )
+        schema_v1 = m.Meltano.SingerSchemaMessage.model_validate({
+            "stream": "s",
+            "schema": {"type": "object"},
+            "key_properties": ("id",),
+        })
+        schema_v2 = m.Meltano.SingerSchemaMessage.model_validate({
+            "stream": "s",
+            "schema": {"type": "object"},
+            "key_properties": ("id", "name"),
+        })
         mgr.add_stream(schema_v1)
         mgr.add_stream(schema_v2)
         result = mgr.get_stream("s")
@@ -76,7 +76,10 @@ class TestsFlextTargetOracleWmsCatalog:
         """Test get existing stream returns catalog entry."""
         mgr = u.TargetOracleWms.CatalogManager()
         mgr.add_stream(
-            m.Meltano.SingerSchemaMessage(stream="orders", schema={"type": "object"}),
+            m.Meltano.SingerSchemaMessage.model_validate({
+                "stream": "orders",
+                "schema": {"type": "object"},
+            }),
         )
         result = mgr.get_stream("orders")
         tm.ok(result)
@@ -90,11 +93,11 @@ class TestsFlextTargetOracleWmsCatalog:
         """Test entry has correct key properties."""
         mgr = u.TargetOracleWms.CatalogManager()
         mgr.add_stream(
-            m.Meltano.SingerSchemaMessage(
-                stream="items",
-                schema={"type": "object"},
-                key_properties=("item_id", "lot"),
-            ),
+            m.Meltano.SingerSchemaMessage.model_validate({
+                "stream": "items",
+                "schema": {"type": "object"},
+                "key_properties": ("item_id", "lot"),
+            }),
         )
         stream_result = mgr.get_stream("items")
         tm.ok(stream_result)
@@ -108,7 +111,10 @@ class TestsFlextTargetOracleWmsCatalog:
         mgr = u.TargetOracleWms.CatalogManager()
         for name in ("alpha", "beta", "gamma"):
             mgr.add_stream(
-                m.Meltano.SingerSchemaMessage(stream=name, schema={"type": "object"}),
+                m.Meltano.SingerSchemaMessage.model_validate({
+                    "stream": name,
+                    "schema": {"type": "object"},
+                }),
             )
         for name in ("alpha", "beta", "gamma"):
             tm.ok(mgr.get_stream(name))
@@ -122,9 +128,9 @@ class TestsFlextTargetOracleWmsCatalog:
         """Test various stream names."""
         mgr = u.TargetOracleWms.CatalogManager()
         mgr.add_stream(
-            m.Meltano.SingerSchemaMessage(
-                stream=stream_name,
-                schema={"type": "object"},
-            ),
+            m.Meltano.SingerSchemaMessage.model_validate({
+                "stream": stream_name,
+                "schema": {"type": "object"},
+            }),
         )
         tm.ok(mgr.get_stream(stream_name))
