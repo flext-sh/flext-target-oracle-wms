@@ -86,8 +86,34 @@ GITHUB_AUTH_CI := local
 else ifeq ($(strip $(CI)),)
 GITHUB_AUTH_CI := unset
 endif
+GITHUB_AUTH_SOURCE := $(if $(strip $(GITHUB_TOKEN)),GITHUB_TOKEN,$(if $(strip $(GH_TOKEN)),GH_TOKEN,$(if $(strip $(MISE_GITHUB_TOKEN)),MISE_GITHUB_TOKEN,none)))
+GITHUB_AUTH_STATUS := not-selected
+override GITHUB_AUTH_COMMAND := not-selected
+override GITHUB_AUTH_COMMAND_STATUS := not-selected
+GITHUB_AUTH_HOST_SOURCE := $(if $(strip $(GH_HOST)),GH_HOST,native-default)
+GITHUB_AUTH_CONFIG_OVERRIDE := $(if $(strip $(GH_CONFIG_DIR)),yes,no)
+GITHUB_AUTH_XDG_OVERRIDE := $(if $(strip $(XDG_CONFIG_HOME)),yes,no)
+GITHUB_AUTH_SESSION_BUS := $(if $(strip $(DBUS_SESSION_BUS_ADDRESS)),yes,no)
+GITHUB_AUTH_CI := other
+ifeq ($(strip $(CI)),Y)
+GITHUB_AUTH_CI := ci
+else ifeq ($(strip $(CI)),N)
+GITHUB_AUTH_CI := local
+else ifeq ($(strip $(CI)),)
+GITHUB_AUTH_CI := unset
+endif
 GITHUB_TOKEN := $(firstword $(GITHUB_TOKEN) $(GH_TOKEN) $(MISE_GITHUB_TOKEN))
 ifeq ($(GITHUB_TOKEN),)
+ifneq ($(filter local unset,$(GITHUB_AUTH_CI)),)
+GITHUB_AUTH_SOURCE := gh
+override GITHUB_AUTH_COMMAND := $(shell command -v gh 2>/dev/null)
+override GITHUB_AUTH_COMMAND_STATUS := $(.SHELLSTATUS)
+ifeq ($(GITHUB_AUTH_COMMAND_STATUS),0)
+GITHUB_TOKEN := $(shell "$(GITHUB_AUTH_COMMAND)" auth token 2>/dev/null)
+GITHUB_AUTH_STATUS := $(.SHELLSTATUS)
+else
+GITHUB_AUTH_STATUS := $(GITHUB_AUTH_COMMAND_STATUS)
+endif
 ifneq ($(filter local unset,$(GITHUB_AUTH_CI)),)
 GITHUB_AUTH_SOURCE := gh
 override GITHUB_AUTH_COMMAND := $(shell command -v gh 2>/dev/null)
@@ -108,6 +134,10 @@ else
 unexport GITHUB_TOKEN GH_TOKEN MISE_GITHUB_TOKEN
 endif
 unexport GITHUB_API_TOKEN
+GITHUB_AUTH_PRESENT := $(if $(strip $(GITHUB_TOKEN)),yes,no)
+GITHUB_AUTH_PHYSICAL_COMMAND := $(if $(filter gh,$(GITHUB_AUTH_SOURCE)),$(realpath $(GITHUB_AUTH_COMMAND)),not-selected)
+# Diagnostics expose only producer metadata, never credentials or command stderr.
+GITHUB_AUTH_DIAGNOSTICS = printf 'github-auth source=%s extraction-exit=%s present=%s ci=%s command-exit=%s command=%s physical-command=%s host-source=%s gh-config-override=%s xdg-config-override=%s session-bus=%s\n' '$(GITHUB_AUTH_SOURCE)' '$(GITHUB_AUTH_STATUS)' '$(GITHUB_AUTH_PRESENT)' '$(GITHUB_AUTH_CI)' '$(GITHUB_AUTH_COMMAND_STATUS)' '$(GITHUB_AUTH_COMMAND)' '$(GITHUB_AUTH_PHYSICAL_COMMAND)' '$(GITHUB_AUTH_HOST_SOURCE)' '$(GITHUB_AUTH_CONFIG_OVERRIDE)' '$(GITHUB_AUTH_XDG_OVERRIDE)' '$(GITHUB_AUTH_SESSION_BUS)'
 GITHUB_AUTH_PRESENT := $(if $(strip $(GITHUB_TOKEN)),yes,no)
 GITHUB_AUTH_PHYSICAL_COMMAND := $(if $(filter gh,$(GITHUB_AUTH_SOURCE)),$(realpath $(GITHUB_AUTH_COMMAND)),not-selected)
 # Diagnostics expose only producer metadata, never credentials or command stderr.
@@ -203,6 +233,8 @@ endif
 # only in the profiles it declares (make.verbs[].profiles).
 PUBLIC_VERBS := help setup pre-commit upg build check smells test test-full test-file file-gate profile-test profile-test-report fmt fix fix-namespace fix-accessors audit status verify-clean docs clean bootstrap-candidate release-plan release-version release-tag release-build publication gen gen-footprint initialize mod mod-text mod-text-candidate mod-snapshots waza duplication sonarcloud-sync sonarcloud-issues
 BUILTIN_VERBS := help setup pre-commit upg build check smells test test-full test-file file-gate profile-test profile-test-report fmt fix fix-namespace fix-accessors audit status verify-clean docs clean bootstrap-candidate release-plan release-version release-tag release-build publication gen gen-footprint initialize mod mod-text mod-text-candidate mod-snapshots waza duplication sonarcloud-sync sonarcloud-issues
+PUBLIC_VERBS := help setup pre-commit upg build check smells test test-full test-file file-gate profile-test profile-test-report fmt fix fix-namespace fix-accessors audit status verify-clean docs clean bootstrap-candidate release-plan release-version release-tag release-build publication gen gen-footprint initialize mod mod-text mod-text-candidate mod-snapshots waza duplication sonarcloud-sync sonarcloud-issues
+BUILTIN_VERBS := help setup pre-commit upg build check smells test test-full test-file file-gate profile-test profile-test-report fmt fix fix-namespace fix-accessors audit status verify-clean docs clean bootstrap-candidate release-plan release-version release-tag release-build publication gen gen-footprint initialize mod mod-text mod-text-candidate mod-snapshots waza duplication sonarcloud-sync sonarcloud-issues
 SCRIPT_VERBS :=
 
 CUSTOM_MAKEFILE := $(MAKEFILE_ROOT)/custom.mk
@@ -286,6 +318,12 @@ CALLER_VIRTUAL_ENV := $(patsubst %/,%,$(VIRTUAL_ENV))
 override RUNTIME_ROOT := $(REPOSITORY_ROOT)
 override export GIT_CEILING_DIRECTORIES := $(abspath $(RUNTIME_ROOT)/..)
 override export MISE_CEILING_PATHS := $(abspath $(RUNTIME_ROOT)/..)
+override export MISE_CONFIG_DIR := $(RUNTIME_ROOT)/.mise
+override export MISE_GLOBAL_CONFIG_FILE := $(MISE_CONFIG_DIR)/config.toml
+override export MISE_SYSTEM_CONFIG_DIR := $(MISE_CONFIG_DIR)
+# A file override wins over the system directory in native Mise discovery.
+unexport MISE_SYSTEM_CONFIG_FILE
+# Project provisioning must never install or resolve tools from host config.
 override export MISE_CONFIG_DIR := $(RUNTIME_ROOT)/.mise
 override export MISE_GLOBAL_CONFIG_FILE := $(MISE_CONFIG_DIR)/config.toml
 override export MISE_SYSTEM_CONFIG_DIR := $(MISE_CONFIG_DIR)
@@ -507,6 +545,7 @@ SETUP_ENVIRONMENT_RECIPE = set -eu; \
 		for member in $(WORKSPACE_SUBPROJECTS); do \
 			if [ -f "$(PROJECT_ROOT)/$$member/.envrc" ]; then \
 				$(PROJECT_FLEXT_INFRA) workspace sync-environment --repository-root "$(PROJECT_ROOT)/$$member"; \
+				$(PROJECT_FLEXT_INFRA) workspace sync-environment --repository-root "$(PROJECT_ROOT)/$$member"; \
 			fi; \
 		done; \
 	fi
@@ -634,6 +673,7 @@ _activated-pre-commit: _builtin_require_environment
 
 build: _builtin_require_workspace
 
+
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-build,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-build)
 
 .PHONY: _activated-build
@@ -645,6 +685,7 @@ _activated-build: _builtin_require_environment
 
 
 check: _builtin_require_workspace
+
 
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-check,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-check)
 
@@ -658,6 +699,7 @@ _activated-check: _builtin_require_environment
 
 smells: _builtin_require_workspace
 
+
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-smells,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-smells)
 
 .PHONY: _activated-smells
@@ -669,6 +711,7 @@ _activated-smells: _builtin_require_environment
 
 
 test: _builtin_require_workspace
+
 
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-test,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-test)
 
@@ -682,6 +725,7 @@ _activated-test: _builtin_require_environment
 
 test-full: _builtin_require_workspace
 
+
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-test-full,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-test-full)
 
 .PHONY: _activated-test-full
@@ -693,6 +737,7 @@ _activated-test-full: _builtin_require_environment
 
 
 test-file: _builtin_require_workspace
+
 
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-test-file,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-test-file)
 
@@ -706,6 +751,7 @@ _activated-test-file: _builtin_require_environment
 
 file-gate: _builtin_require_workspace
 
+
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-file-gate,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-file-gate)
 
 .PHONY: _activated-file-gate
@@ -717,6 +763,7 @@ _activated-file-gate: _builtin_require_environment
 
 
 profile-test: _builtin_require_workspace
+
 
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-profile-test,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-profile-test)
 
@@ -730,6 +777,7 @@ _activated-profile-test: _builtin_require_environment
 
 profile-test-report: _builtin_require_workspace
 
+
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-profile-test-report,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-profile-test-report)
 
 .PHONY: _activated-profile-test-report
@@ -741,6 +789,7 @@ _activated-profile-test-report: _builtin_require_environment
 
 
 fmt: _builtin_require_workspace
+
 
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-fmt,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-fmt)
 
@@ -754,6 +803,7 @@ _activated-fmt: _builtin_require_environment
 
 fix: _builtin_require_workspace
 
+
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-fix,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-fix)
 
 .PHONY: _activated-fix
@@ -765,6 +815,7 @@ _activated-fix: _builtin_require_environment
 
 
 fix-namespace: _builtin_require_workspace
+
 
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-fix-namespace,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-fix-namespace)
 
@@ -778,6 +829,7 @@ _activated-fix-namespace: _builtin_require_environment
 
 fix-accessors: _builtin_require_workspace
 
+
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-fix-accessors,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-fix-accessors)
 
 .PHONY: _activated-fix-accessors
@@ -789,6 +841,7 @@ _activated-fix-accessors: _builtin_require_environment
 
 
 audit: _builtin_require_workspace
+
 
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-audit,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-audit)
 
@@ -804,6 +857,9 @@ status: _builtin_require_workspace
 
 	@$(GITHUB_AUTH_DIAGNOSTICS)
 
+
+	@$(GITHUB_AUTH_DIAGNOSTICS)
+
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-status,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-status)
 
 .PHONY: _activated-status
@@ -816,6 +872,7 @@ _activated-status: _builtin_require_environment
 
 verify-clean: _builtin_require_workspace
 
+
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-verify-clean,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-verify-clean)
 
 .PHONY: _activated-verify-clean
@@ -827,6 +884,7 @@ _activated-verify-clean: _builtin_require_environment
 
 
 docs: _builtin_require_workspace
+
 
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-docs,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-docs)
 
@@ -847,6 +905,7 @@ clean:
 
 bootstrap-candidate: _builtin_require_workspace
 
+
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-bootstrap-candidate,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-bootstrap-candidate)
 
 .PHONY: _activated-bootstrap-candidate
@@ -858,6 +917,7 @@ _activated-bootstrap-candidate: _builtin_require_environment
 
 
 release-plan: _builtin_require_workspace
+
 
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-release-plan,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-release-plan)
 
@@ -871,6 +931,7 @@ _activated-release-plan: _builtin_require_environment
 
 release-version: _builtin_require_workspace
 
+
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-release-version,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-release-version)
 
 .PHONY: _activated-release-version
@@ -882,6 +943,7 @@ _activated-release-version: _builtin_require_environment
 
 
 release-tag: _builtin_require_workspace
+
 
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-release-tag,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-release-tag)
 
@@ -895,6 +957,7 @@ _activated-release-tag: _builtin_require_environment
 
 release-build: _builtin_require_workspace
 
+
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-release-build,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-release-build)
 
 .PHONY: _activated-release-build
@@ -907,6 +970,7 @@ _activated-release-build: _builtin_require_environment
 
 publication: _builtin_require_workspace
 
+
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-publication,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-publication)
 
 .PHONY: _activated-publication
@@ -916,6 +980,10 @@ _activated-publication: _builtin_require_environment
 
 
 
+
+gen: _builtin_require_workspace
+
+	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-gen,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-gen)
 
 gen: _builtin_require_workspace
 
@@ -937,10 +1005,24 @@ gen-footprint: _builtin_require_workspace _builtin_require_environment
 _activated-gen-footprint: _builtin_require_environment
 	$(call RUN_PUBLIC_POST,gen-footprint)
 
+	$(if $(filter Y,$(CI)),+@$(SELF_MAKE) _builtin-gen,$(call RUN_PUBLIC,gen))
+
+
+
+# The pre hook and selected producer run once before activation. The producer
+# owns the complete generation transaction; activation adds no second writer.
+gen-footprint: _builtin_require_workspace _builtin_require_environment
+	$(call RUN_PUBLIC,gen-footprint,1)
+
+.PHONY: _activated-gen-footprint
+_activated-gen-footprint: _builtin_require_environment
+	$(call RUN_PUBLIC_POST,gen-footprint)
+
 
 
 
 initialize: _builtin_require_workspace
+
 
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-initialize,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-initialize)
 
@@ -954,6 +1036,7 @@ _activated-initialize: _builtin_require_environment
 
 mod: _builtin_require_workspace
 
+
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-mod,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-mod)
 
 .PHONY: _activated-mod
@@ -965,6 +1048,7 @@ _activated-mod: _builtin_require_environment
 
 
 mod-text: _builtin_require_workspace
+
 
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-mod-text,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-mod-text)
 
@@ -978,6 +1062,7 @@ _activated-mod-text: _builtin_require_environment
 
 mod-text-candidate: _builtin_require_workspace
 
+
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-mod-text-candidate,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-mod-text-candidate)
 
 .PHONY: _activated-mod-text-candidate
@@ -989,6 +1074,7 @@ _activated-mod-text-candidate: _builtin_require_environment
 
 
 mod-snapshots: _builtin_require_workspace
+
 
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-mod-snapshots,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-mod-snapshots)
 
@@ -1002,6 +1088,7 @@ _activated-mod-snapshots: _builtin_require_environment
 
 waza: _builtin_require_workspace
 
+
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-waza,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-waza)
 
 .PHONY: _activated-waza
@@ -1013,6 +1100,7 @@ _activated-waza: _builtin_require_environment
 
 
 duplication: _builtin_require_workspace
+
 
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-duplication,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-duplication)
 
@@ -1026,6 +1114,7 @@ _activated-duplication: _builtin_require_environment
 
 sonarcloud-sync: _builtin_require_workspace
 
+
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-sonarcloud-sync,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-sonarcloud-sync)
 
 .PHONY: _activated-sonarcloud-sync
@@ -1037,6 +1126,7 @@ _activated-sonarcloud-sync: _builtin_require_environment
 
 
 sonarcloud-issues: _builtin_require_workspace
+
 
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _activated-sonarcloud-issues,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-sonarcloud-issues)
 
@@ -1062,6 +1152,8 @@ _builtin-pre-commit: _builtin_require_environment
 # must not require an existing environment, and as the only resolver it must
 # not require a satisfied committed mise.lock either. Its bootstrap half runs
 # `mise lock --bump` first (native resolution; no stage and no prior install),
+# then installs from the fresh lock. Only a lock owner resolves: an attached
+# member stops in _builtin_require_upg_lock_owner before any lock is written.
 # then installs from the fresh lock. Only a lock owner resolves: an attached
 # member stops in _builtin_require_upg_lock_owner before any lock is written.
 upg: TOOL_BOOTSTRAP_LIFECYCLE := _upg_lifecycle
@@ -1184,6 +1276,10 @@ publication:
 gen:
 	@printf '  %-16s %s\n' 'gen' 'Regenerate every managed projection atomically.'
 	@printf '%s\n' 'OPTIONS=Y displays this contract without effects; run make gen to execute it.'
+
+gen-footprint:
+	@printf '  %-16s %s\n' 'gen-footprint' 'Inspect the pending generation journal and declared physical effect footprint without leases, recovery, or publication.'
+	@printf '%s\n' 'OPTIONS=Y displays this contract without effects; run make gen-footprint to execute it.'
 
 gen-footprint:
 	@printf '  %-16s %s\n' 'gen-footprint' 'Inspect the pending generation journal and declared physical effect footprint without leases, recovery, or publication.'
@@ -1313,6 +1409,8 @@ _builtin-help:
 	@printf '  %-16s %s\n' 'publication' 'Publish only receipt-attested release artifacts.';
 
 	@printf '  %-16s %s\n' 'gen' 'Regenerate every managed projection atomically.';
+
+	@printf '  %-16s %s\n' 'gen-footprint' 'Inspect the pending generation journal and declared physical effect footprint without leases, recovery, or publication.';
 
 	@printf '  %-16s %s\n' 'gen-footprint' 'Inspect the pending generation journal and declared physical effect footprint without leases, recovery, or publication.';
 
@@ -1648,6 +1746,8 @@ _upg_converge:
 	$(call RUN_PUBLIC_ACTIVATE,gen)
 	@$(SELF_MAKE) gen
 	@$(PROJECT_FLEXT_INFRA) codegen conform --root "$(PROJECT_ROOT)" --mode check
+	@$(SELF_MAKE) gen
+	@$(PROJECT_FLEXT_INFRA) codegen conform --root "$(PROJECT_ROOT)" --mode check
 	@$(PROJECT_FLEXT_INFRA) deps verify-locks --repository-root "$(PROJECT_ROOT)"
 	+@$(if $(filter Y,$(CI)),$(SELF_MAKE) _upg_activated,direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _upg_activated)
 
@@ -1752,6 +1852,7 @@ TESTMON_DATAFILE="$$database" $(PYTEST_BOUNDED) $(UV_RUN) python -m flext_infra.
 # Export the raw Make value instead of interpolating operator input into shell code.
 export FLEXT_FILE_GATE_FILE := $(value FILE)
 _builtin_file_gate_all: _builtin_require_environment
+	@$(PROJECT_FLEXT_INFRA) check run --repository-root "$(PROJECT_ROOT)" --gates "lint,format,pyrefly,mypy,pyright,codemod" --file "$$FLEXT_FILE_GATE_FILE"
 	@$(PROJECT_FLEXT_INFRA) check run --repository-root "$(PROJECT_ROOT)" --gates "lint,format,pyrefly,mypy,pyright,codemod" --file "$$FLEXT_FILE_GATE_FILE"
 
 _builtin_tests_all: _builtin_require_environment
@@ -1865,6 +1966,7 @@ _builtin-profile-test-report: _builtin_require_environment
 
 _builtin_status_diagnostics: _builtin_require_environment
 	@$(GITHUB_AUTH_DIAGNOSTICS)
+	@$(GITHUB_AUTH_DIAGNOSTICS)
 	@printf 'profile=%s\nproject=%s\nruntime=%s\n' \
 		'$(MAKE_PROFILE)' '$(PROJECT_ROOT)' '$(RUNTIME_ROOT)'
 	@$(SHELL) -c 'command -v uv'
@@ -1934,6 +2036,8 @@ _builtin_release_publish: _builtin_require_environment
 
 # Generation has one transaction owner. Conform covers this root and all declared
 # members and journals ordinary, Mise, lazy-init, and documentation phases through
+# Generation has one transaction owner. Conform covers this root and all declared
+# members and journals ordinary, Mise, lazy-init, and documentation phases through
 # one fixed point. Only `upg` resolves and rewrites the locks; gen installs
 # nothing and never runs another writer before or after conform's journal.
 _builtin_gen_init:
@@ -1941,6 +2045,10 @@ _builtin_gen_init:
 	@$(PROJECT_FLEXT_INFRA) codegen init --repository-root "$(PROJECT_ROOT)" --check-only
 
 _builtin_gen_all:
+	@$(PROJECT_FLEXT_INFRA) codegen conform --root "$(PROJECT_ROOT)" --scope all --mode apply
+
+_builtin-gen-footprint:
+	@$(PROJECT_FLEXT_INFRA) codegen footprint --root "$(PROJECT_ROOT)" --scope all
 	@$(PROJECT_FLEXT_INFRA) codegen conform --root "$(PROJECT_ROOT)" --scope all --mode apply
 
 _builtin-gen-footprint:
