@@ -21,8 +21,6 @@ __all__: tuple[str, ...] = ("FlextTargetOracleWmsModelsConfig",)
 install_lazy_exports(
     __name__,
     globals(),
-    MappingProxyType({
-        "FlextTargetOracleWmsModelsConfig": ".config",
-    }),
+    MappingProxyType({"FlextTargetOracleWmsModelsConfig": ".config"}),
     public_exports=__all__,
 )
