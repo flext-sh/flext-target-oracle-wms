@@ -253,7 +253,7 @@ class FlextTargetOracleWmsUtilitiesClient:
                 if not line:
                     continue
                 try:
-                    message = t.json_mapping_adapter().validate_json(line)
+                    message = u.json_mapping_adapter().validate_json(line)
                 except c.ValidationError as exc:
                     return r[bool].fail(f"Invalid JSON message: {exc}", exception=exc)
                 message_type = str(message.get("type", ""))
