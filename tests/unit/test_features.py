@@ -8,9 +8,7 @@ from __future__ import annotations
 
 import math
 
-from flext_tests import tm
-
-from tests import c, m, t, u
+from tests import c, m, t, tm, u
 from tests._helpers import _valid_config
 
 

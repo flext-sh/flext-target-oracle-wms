@@ -7,10 +7,9 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_meltano import c as meltano_c
-from flext_tests import tm
 
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
-from tests import c, m, p, u
+from tests import c, m, p, tm, u
 
 
 class TestsFlextTargetOracleWmsQuality:

@@ -13,9 +13,8 @@ from pathlib import Path
 from types import ModuleType
 
 import pytest
-from flext_tests import tm
 
-from tests import c, t
+from tests import c, t, tm
 
 
 def _load_example_module(example_file: Path) -> ModuleType:
