@@ -13,11 +13,9 @@ from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_wms import FlextOracleWmsUtilities
 
 from flext_target_oracle_wms._utilities import (
+    FlextTargetOracleWmsServiceRuntime,
     FlextTargetOracleWmsUtilitiesClient,
     FlextTargetOracleWmsUtilitiesHelpers,
-)
-from flext_target_oracle_wms._utilities.service_runtime import (
-    FlextTargetOracleWmsServiceRuntime,
 )
 
 
@@ -30,17 +28,6 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
         FlextTargetOracleWmsUtilitiesHelpers,
     ):
         """Project-local namespace aggregating Client and Helpers public classes."""
-
-        Client = FlextTargetOracleWmsUtilitiesClient
-        Helpers = FlextTargetOracleWmsUtilitiesHelpers
-
-        # Direct nested-class access for canonical u.TargetOracleWms.<Class> usage
-        CatalogManager = FlextTargetOracleWmsUtilitiesClient.CatalogManager
-        StreamProcessor = FlextTargetOracleWmsUtilitiesClient.StreamProcessor
-        Target = FlextTargetOracleWmsUtilitiesClient.Target
-        WMSDataTransformer = FlextTargetOracleWmsUtilitiesHelpers.WMSDataTransformer
-        WMSTableManager = FlextTargetOracleWmsUtilitiesHelpers.WMSTableManager
-        WMSTypeConverter = FlextTargetOracleWmsUtilitiesHelpers.WMSTypeConverter
 
 
 u = FlextTargetOracleWmsUtilities
