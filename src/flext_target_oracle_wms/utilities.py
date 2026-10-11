@@ -16,12 +16,19 @@ from flext_target_oracle_wms._utilities import (
     FlextTargetOracleWmsUtilitiesClient,
     FlextTargetOracleWmsUtilitiesHelpers,
 )
+from flext_target_oracle_wms._utilities.service_runtime import (
+    FlextTargetOracleWmsServiceRuntime,
+)
 
 
 class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtilities):
     """Namespace exposing Singer-target Client and Helpers under TargetOracleWms.*."""
 
-    class TargetOracleWms:
+    class TargetOracleWms(
+        FlextTargetOracleWmsServiceRuntime,
+        FlextTargetOracleWmsUtilitiesClient,
+        FlextTargetOracleWmsUtilitiesHelpers,
+    ):
         """Project-local namespace aggregating Client and Helpers public classes."""
 
         Client = FlextTargetOracleWmsUtilitiesClient
