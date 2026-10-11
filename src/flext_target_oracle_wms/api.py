@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from typing import Annotated, override
 
-from flext_meltano import Target
+from flext_meltano import FlextMeltanoTargetServiceBase
 
 from flext_target_oracle_wms import c, p, t, u
 from flext_target_oracle_wms._utilities.service_runtime import (
@@ -19,7 +19,7 @@ from flext_target_oracle_wms._utilities.service_runtime import (
 )
 
 
-class FlextTargetOracleWmsService(Target):
+class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
     """Orchestrator for target-oracle-wms. All behavior from base via MRO."""
 
     target_name: Annotated[
