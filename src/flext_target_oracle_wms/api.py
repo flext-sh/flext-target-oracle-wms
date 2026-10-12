@@ -48,9 +48,9 @@ class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
         )
 
 
-target_oracle_wms: FlextTargetOracleWmsService = (
-    FlextTargetOracleWmsService.fetch_global()
-)
+_service: FlextTargetOracleWmsService = FlextTargetOracleWmsService.fetch_global()
+
+target_oracle_wms: FlextTargetOracleWmsService = _service
 """Shared FlextTargetOracleWmsService facade instance."""
 
 __all__: list[str] = ["FlextTargetOracleWmsService", "target_oracle_wms"]

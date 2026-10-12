@@ -10,8 +10,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from tests import c, m, tm, u
-from tests._helpers import _record_msg, _schema_msg, _valid_config
+from tests import _record_msg, _schema_msg, _valid_config, c, m, tm, u
 
 if TYPE_CHECKING:
     from tests import t
@@ -47,11 +46,9 @@ def _state_line(state: t.JsonMapping | None = None) -> str:
 
 
 def _state_msg(state: t.JsonMapping | None = None) -> m.Meltano.SingerStateMessage:
-    empty_bookmarks: dict[str, t.JsonValue] = {}
-    default_state: dict[str, t.JsonValue] = {"bookmarks": empty_bookmarks}
-    resolved_state: dict[str, t.JsonValue] = (
-        dict(state) if state is not None else default_state
-    )
+    empty_bookmarks: t.JsonMapping = {}
+    default_state: t.JsonMapping = {"bookmarks": empty_bookmarks}
+    resolved_state: t.JsonMapping = dict(state) if state is not None else default_state
     state_message: m.Meltano.SingerStateMessage = (
         m.Meltano.SingerStateMessage.model_validate({
             "type": c.Meltano.SingerMessageType.STATE,

@@ -8,8 +8,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from tests import tm, u
-from tests._helpers import _record_msg, _schema_msg, _valid_config
+from tests import _record_msg, _schema_msg, _valid_config, tm, u
 
 
 class TestsFlextTargetOracleWmsSinks:

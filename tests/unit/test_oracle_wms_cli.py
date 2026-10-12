@@ -14,8 +14,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from flext_target_oracle_wms import main
-from flext_target_oracle_wms.__version__ import __version__ as _pkg_version
+from flext_target_oracle_wms import __version__, main
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
 from tests import c, tm
 
@@ -45,7 +44,7 @@ class TestsFlextTargetOracleWmsOracleWmsCli:
         cli = FlextTargetOracleWmsCli()
         tm.that(cli.name, eq="target-oracle-wms")
         tm.that(cli.description, eq="Oracle WMS Singer Target")
-        tm.that(cli.version, eq=_pkg_version)
+        tm.that(cli.version, eq=__version__)
 
     @staticmethod
     def test_execute_with_config_file(tmp_path: Path) -> None:

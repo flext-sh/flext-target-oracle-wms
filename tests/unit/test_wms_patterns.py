@@ -10,8 +10,7 @@ from __future__ import annotations
 
 import math
 
-from tests import t, tm, u
-from tests._helpers import _record_msg, _schema_msg
+from tests import _record_msg, _schema_msg, t, tm, u
 
 
 class TestsFlextTargetOracleWmsWmsPatterns:

@@ -14,4 +14,6 @@ class ExamplesFlextTargetOracleWmsUtilities(FlextTargetOracleWmsUtilities):
     """Utility functions for flexttargetoraclewms."""
 
 
-__all__: list[str] = ["ExamplesFlextTargetOracleWmsUtilities"]
+u = ExamplesFlextTargetOracleWmsUtilities
+
+__all__: list[str] = ["ExamplesFlextTargetOracleWmsUtilities", "u"]

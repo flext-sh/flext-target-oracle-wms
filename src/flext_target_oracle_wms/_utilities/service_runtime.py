@@ -21,7 +21,7 @@ from flext_target_oracle_wms._utilities.client import (
 class FlextTargetOracleWmsServiceRuntime:
     """Service-runtime adapters used by the target-oracle-wms facade."""
 
-    class Target(m.Meltano.SingerTargetBase):
+    class SingerTarget(m.Meltano.SingerTargetBase):
         """Minimal Singer target used by the service facade."""
 
         name = c.TargetOracleWms.TARGET_NAME
@@ -113,7 +113,7 @@ class FlextTargetOracleWmsServiceRuntime:
             raise RuntimeError(msg)
         return cls.Sink.create(
             runtime_target=runtime_target,
-            target=cls.Target(
+            target=cls.SingerTarget(
                 config=t.json_dict_adapter().validate_python(normalized_target_config),
                 validate_config=False,
             ),

@@ -8,8 +8,7 @@ from __future__ import annotations
 
 import math
 
-from tests import c, m, t, tm, u
-from tests._helpers import _valid_config
+from tests import _valid_config, c, m, t, tm, u
 
 
 class TestsFlextTargetOracleWmsFeatures:

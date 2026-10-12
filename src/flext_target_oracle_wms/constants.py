@@ -24,7 +24,7 @@ class FlextTargetOracleWmsConstants(FlextMeltanoConstants, FlextOracleWmsConstan
 
     class TargetOracleWms(
         FlextTargetOracleWmsConstantsBase,
-        FlextTargetOracleWmsConstantsValues.TargetOracleWms,
+        FlextTargetOracleWmsConstantsValues,
     ):
         """Target-specific defaults and limits."""
 

@@ -10,14 +10,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from flext_cli import u
-from flext_meltano import c as meltano_c
 
 from flext_core import r
-from flext_target_oracle_wms import (
-    FlextTargetOracleWmsConstants as c,
-    FlextTargetOracleWmsModels as m,
-    FlextTargetOracleWmsTypes as t,
-)
+from flext_target_oracle_wms import c, m, t
 
 if TYPE_CHECKING:
     from flext_target_oracle_wms import p
@@ -53,7 +48,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
                         float(as_text) if "." in as_text else int(as_text)
                     )
                     return r[t.JsonValue].ok(converted)
-                except meltano_c.Meltano.SINGER_SAFE_EXCEPTIONS:
+                except c.Meltano.SINGER_SAFE_EXCEPTIONS:
                     return r[t.JsonValue].ok(str(value))
             return r[t.JsonValue].ok(str(value))
 

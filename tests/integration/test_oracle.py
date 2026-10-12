@@ -10,8 +10,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from tests import m, tm, u
-from tests._helpers import _valid_config
+from tests import _valid_config, m, tm, u
 
 if TYPE_CHECKING:
     from tests import t

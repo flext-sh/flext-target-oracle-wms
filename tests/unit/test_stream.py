@@ -10,11 +10,12 @@ from typing import override
 
 from flext_tests import r, tm
 
-from tests import m, p, t, u
-from tests._helpers import _record_msg, _schema_msg
+from tests import _record_msg, _schema_msg, m, p, t, u
 
 
-class _FailingTransformer(u.TargetOracleWms.WMSDataTransformer):
+class TestsFlextTargetOracleWmsFailingTransformer(
+    u.TargetOracleWms.WMSDataTransformer,
+):
     """Real transformer subclass forcing transform_record to fail (no Mock)."""
 
     @override
@@ -104,7 +105,10 @@ class TestsFlextTargetOracleWmsStream:
     def test_process_record_with_transformer_failure() -> None:
         """Test process record with transformer failure."""
         manager = u.TargetOracleWms.WMSTableManager()
-        proc = u.TargetOracleWms.StreamProcessor(manager, _FailingTransformer())
+        proc = u.TargetOracleWms.StreamProcessor(
+            manager,
+            TestsFlextTargetOracleWmsFailingTransformer(),
+        )
         manager.register_stream("s")
         result = proc.process_record(_record_msg("s"), _schema_msg("s"))
         tm.fail(result)
