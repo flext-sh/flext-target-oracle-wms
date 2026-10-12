@@ -64,8 +64,8 @@ class TestsFlextTargetOracleWmsQuality:
     def test_load_methods_accessible() -> None:
         """LoadMethods.Method resolves members from their canonical values."""
         method = c.TargetOracleWms.LoadMethods.Method
-        tm.that(method("APPEND_ONLY"), is_=method.APPEND_ONLY)
-        tm.that(method("UPSERT"), is_=method.UPSERT)
+        tm.that(method("APPEND_ONLY"), eq=method.APPEND_ONLY)
+        tm.that(method("UPSERT"), eq=method.UPSERT)
 
     @staticmethod
     def test_oracle_wms_defaults_derive_from_meltano_ssot() -> None:

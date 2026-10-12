@@ -46,9 +46,9 @@ def _state_line(state: t.JsonMapping | None = None) -> str:
 
 
 def _state_msg(state: t.JsonMapping | None = None) -> m.Meltano.SingerStateMessage:
-    empty_bookmarks: t.JsonMapping = {}
-    default_state: t.JsonMapping = {"bookmarks": empty_bookmarks}
-    resolved_state: t.JsonMapping = dict(state) if state is not None else default_state
+    empty_bookmarks: t.JsonDict = {}
+    default_state: t.JsonDict = {"bookmarks": empty_bookmarks}
+    resolved_state: t.JsonDict = dict(state) if state is not None else default_state
     state_message: m.Meltano.SingerStateMessage = (
         m.Meltano.SingerStateMessage.model_validate({
             "type": c.Meltano.SingerMessageType.STATE,

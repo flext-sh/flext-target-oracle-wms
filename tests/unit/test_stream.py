@@ -18,6 +18,8 @@ class TestsFlextTargetOracleWmsFailingTransformer(
 ):
     """Real transformer subclass forcing transform_record to fail (no Mock)."""
 
+    __test__ = False
+
     @override
     def transform_record(
         self,
