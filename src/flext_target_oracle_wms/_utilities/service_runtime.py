@@ -10,7 +10,12 @@ from __future__ import annotations
 from pathlib import Path
 from typing import override
 
-from flext_target_oracle_wms import c, m, p, t, u
+from flext_meltano import u
+
+from flext_target_oracle_wms import c, m, p, t
+from flext_target_oracle_wms._utilities.client import (
+    FlextTargetOracleWmsUtilitiesClient,
+)
 
 
 class FlextTargetOracleWmsServiceRuntime:
@@ -25,13 +30,13 @@ class FlextTargetOracleWmsServiceRuntime:
         """Singer sink adapter delegating records to the Oracle WMS runtime."""
 
         name = "target-oracle-wms-sink"
-        _runtime_target: u.TargetOracleWms.Target
+        _runtime_target: FlextTargetOracleWmsUtilitiesClient.Target
 
         @classmethod
         def create(
             cls,
             *,
-            runtime_target: u.TargetOracleWms.Target,
+            runtime_target: FlextTargetOracleWmsUtilitiesClient.Target,
             target: m.Meltano.SingerTargetBase,
             stream_name: str,
             schema: t.JsonDict,
@@ -92,7 +97,9 @@ class FlextTargetOracleWmsServiceRuntime:
             RuntimeError: If ``schema_result.failure``.
         """
         normalized_target_config = u.normalize_to_json_mapping(target_config)
-        runtime_target = u.TargetOracleWms.Target(normalized_target_config)
+        runtime_target = FlextTargetOracleWmsUtilitiesClient.Target(
+            normalized_target_config
+        )
         normalized_schema = cls.normalize_flat_schema(schema)
         schema_message = m.Meltano.SingerSchemaMessage.model_validate({
             "type": "SCHEMA",
