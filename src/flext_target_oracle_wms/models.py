@@ -17,6 +17,7 @@ from flext_meltano import FlextMeltanoModels, u
 from flext_oracle_wms import FlextOracleWmsModels
 
 from flext_target_oracle_wms import c, t
+from flext_target_oracle_wms._models.config import FlextTargetOracleWmsModelsConfig
 
 # NOTE (multi-agent, bead mro-nwc.19): t / MutableMapping MUST stay RUNTIME imports.
 # `from __future__ import annotations` makes pydantic v2 resolve these field annotation
@@ -36,7 +37,7 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
         m.TargetOracleWms.* — target-specific settings and schema helpers
     """
 
-    class TargetOracleWms:
+    class TargetOracleWms(FlextTargetOracleWmsModelsConfig):
         """Target Oracle WMS model namespace — m.TargetOracleWms.*."""
 
         class WmsAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):

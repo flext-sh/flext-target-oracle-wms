@@ -12,11 +12,11 @@ from __future__ import annotations
 from flext_meltano import FlextMeltanoUtilities
 from flext_oracle_wms import FlextOracleWmsUtilities
 
-from flext_target_oracle_wms._utilities import (
-    FlextTargetOracleWmsServiceRuntime,
-    FlextTargetOracleWmsUtilitiesClient,
+from flext_target_oracle_wms._utilities.helpers import (
     FlextTargetOracleWmsUtilitiesHelpers,
 )
+from flext_target_oracle_wms._utilities.service_runtime import FlextTargetOracleWmsServiceRuntime
+from flext_target_oracle_wms._utilities.client import FlextTargetOracleWmsUtilitiesClient
 
 
 class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtilities):
