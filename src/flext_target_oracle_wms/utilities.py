@@ -33,6 +33,9 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
     ):
         """Project-local namespace aggregating Client and Helpers public classes."""
 
+        Client = FlextTargetOracleWmsUtilitiesClient
+        Helpers = FlextTargetOracleWmsUtilitiesHelpers
+
 
 u = FlextTargetOracleWmsUtilities
 
