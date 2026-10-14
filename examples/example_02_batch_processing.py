@@ -37,6 +37,7 @@ def run_batch_example() -> t.Scalar:
 
     Returns:
         The resulting ``t.Scalar``.
+
     """
     logger.info("Starting batch processing example")
     tm = FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTableManager()

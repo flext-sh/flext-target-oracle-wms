@@ -38,7 +38,7 @@ class FlextTargetOracleWmsCli:
             message_lines: Singer message lines to process. When ``None`` the lines
                 are read from ``sys.stdin`` (dependency injection seam so callers and
                 tests supply input directly instead of patching stdin).
-            settings: optional path to a Singer settings JSON file. When ``None`` a
+            settings: Optional path to a Singer settings JSON file. When ``None`` a
                 default configuration is used.
 
         Returns:
@@ -62,6 +62,10 @@ class FlextTargetOracleWmsCli:
     ) -> p.Result[bool]:
         """Set up, process the message lines, and clean up the target runtime.
 
+        Args:
+            settings: Validated target configuration for the run.
+            message_lines: Singer message lines to process.
+
         Returns:
             The resulting ``p.Result[bool]``.
 
@@ -81,6 +85,9 @@ class FlextTargetOracleWmsCli:
     ) -> p.Result[bool]:
         """Finalize target processing.
 
+        Args:
+            target: Target runtime whose resources are released.
+
         Returns:
             The resulting ``p.Result[bool]``.
 
@@ -91,11 +98,14 @@ class FlextTargetOracleWmsCli:
     def _load_config(config_path: str) -> str:
         """Read JSON configuration file.
 
+        Args:
+            config_path: Path to the JSON configuration file to read.
+
         Returns:
-            The resulting ``str``.
+            The file contents as a string.
 
         Raises:
-            FileNotFoundError: If Configuration file not found.
+            FileNotFoundError: If the configuration file does not exist.
 
         """
         config_file = Path(config_path)
@@ -110,6 +120,10 @@ class FlextTargetOracleWmsCli:
         config_path: str | None,
     ) -> p.Result[m.TargetOracleWms.WmsTargetConfig]:
         """Load settings from file or build defaults.
+
+        Args:
+            config_path: Optional path to a JSON configuration file; defaults are
+                built when omitted.
 
         Returns:
             The resulting ``p.Result[m.TargetOracleWms.WmsTargetConfig]``.

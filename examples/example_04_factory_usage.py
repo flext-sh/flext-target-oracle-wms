@@ -39,6 +39,7 @@ def run_target_creation_example() -> t.Scalar:
 
     Returns:
         The resulting ``t.Scalar``.
+
     """
     logger.info("Starting Oracle WMS target creation example")
     config = m.TargetOracleWms.WmsTargetConfig.model_validate({
