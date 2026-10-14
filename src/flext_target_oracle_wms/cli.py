@@ -1,7 +1,6 @@
 """CLI entry point for target Oracle WMS.
 
 Copyright (c) 2026 FLEXT Team. All rights reserved.
-src/flext_target_oracle_wms/cli
 SPDX-License-Identifier: MIT
 """
 
@@ -44,6 +43,7 @@ class FlextTargetOracleWmsCli:
 
         Returns:
             The resulting ``p.Result[bool]``.
+
         """
         lines: t.StrSequence = (
             message_lines if message_lines is not None else list(sys.stdin)
@@ -64,6 +64,7 @@ class FlextTargetOracleWmsCli:
 
         Returns:
             The resulting ``p.Result[bool]``.
+
         """
         target = FlextTargetOracleWmsUtilitiesClient.Target(settings)
         setup_result = target.setup().map_error(lambda e: e or "Setup failed")
@@ -82,6 +83,7 @@ class FlextTargetOracleWmsCli:
 
         Returns:
             The resulting ``p.Result[bool]``.
+
         """
         return target.cleanup()
 
@@ -94,6 +96,7 @@ class FlextTargetOracleWmsCli:
 
         Raises:
             FileNotFoundError: If Configuration file not found.
+
         """
         config_file = Path(config_path)
         if not config_file.exists():
@@ -110,6 +113,7 @@ class FlextTargetOracleWmsCli:
 
         Returns:
             The resulting ``p.Result[m.TargetOracleWms.WmsTargetConfig]``.
+
         """
         if config_path is not None:
             return r[m.TargetOracleWms.WmsTargetConfig].ok(
@@ -142,6 +146,7 @@ def main(
 
     Raises:
         RuntimeError: If ``result.failure``.
+
     """
     args: t.StrSequence = argv if argv is not None else sys.argv
     cli_instance = FlextTargetOracleWmsCli()

@@ -1,7 +1,6 @@
 """WMS helper classes — u.TargetOracleWms.{WMSTableManager,WMSDataTransformer,...}.
 
 Copyright (c) 2026 FLEXT Team. All rights reserved.
-src/flext_target_oracle_wms/_utilities/helpers
 SPDX-License-Identifier: MIT
 """
 
@@ -31,8 +30,13 @@ class FlextTargetOracleWmsUtilitiesHelpers:
         ) -> p.Result[t.JsonValue]:
             """Convert a single source value according to Singer type.
 
+            Args:
+                singer_type: Singer JSON schema type declared for the field.
+                value: Raw source value to convert.
+
             Returns:
                 The resulting ``p.Result[t.JsonValue]``.
+
             """
             if singer_type in {"object", "array"}:
                 return r[t.JsonValue].ok(
@@ -60,7 +64,13 @@ class FlextTargetOracleWmsUtilitiesHelpers:
             type_converter: FlextTargetOracleWmsUtilitiesHelpers.WMSTypeConverter
             | None = None,
         ) -> None:
-            """Initialize data transformer with optional converter."""
+            """Initialize data transformer with optional converter.
+
+            Args:
+                type_converter: Converter applied per field; defaults to a new
+                    ``WMSTypeConverter`` when omitted.
+
+            """
             self.type_converter = (
                 type_converter
                 or FlextTargetOracleWmsUtilitiesHelpers.WMSTypeConverter()
@@ -73,8 +83,16 @@ class FlextTargetOracleWmsUtilitiesHelpers:
         ) -> p.Result[m.Meltano.SingerRecordMessage]:
             """Transform one typed Singer RECORD payload with optional typed schema.
 
+            Args:
+                record_message: Singer RECORD message (or mapping) carrying the
+                    raw record.
+                schema_message: Optional Singer SCHEMA message (or mapping) used
+                    to resolve per-field types; fields default to string
+                    conversion when omitted.
+
             Returns:
                 The resulting ``p.Result[m.Meltano.SingerRecordMessage]``.
+
             """
             typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
             transformed: t.MutableJsonMapping = {}
@@ -121,8 +139,12 @@ class FlextTargetOracleWmsUtilitiesHelpers:
         def get_table_name(self, stream_name: str) -> p.Result[str]:
             """Get registered table name for stream.
 
+            Args:
+                stream_name: Name of the stream to look up.
+
             Returns:
                 The resulting ``p.Result[str]``.
+
             """
             table_name = self._stream_tables.get(stream_name)
             if table_name is None:
@@ -132,8 +154,12 @@ class FlextTargetOracleWmsUtilitiesHelpers:
         def register_stream(self, stream_name: str) -> p.Result[str]:
             """Register a stream and return table name.
 
+            Args:
+                stream_name: Name of the stream to register.
+
             Returns:
                 The resulting ``p.Result[str]``.
+
             """
             table_name = stream_name.upper()
             self._stream_tables[stream_name] = table_name

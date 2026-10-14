@@ -3,7 +3,6 @@
 Facade composing helpers from _utilities/ submodules into u.TargetOracleWms.* namespace.
 
 Copyright (c) 2026 FLEXT Team. All rights reserved.
-src/flext_target_oracle_wms/utilities
 SPDX-License-Identifier: MIT
 """
 

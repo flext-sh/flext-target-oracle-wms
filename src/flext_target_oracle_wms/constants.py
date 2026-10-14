@@ -1,7 +1,6 @@
 """Constants for the target Oracle WMS package.
 
 Copyright (c) 2026 FLEXT Team. All rights reserved.
-src/flext_target_oracle_wms/constants
 SPDX-License-Identifier: MIT
 """
 

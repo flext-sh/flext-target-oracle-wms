@@ -35,8 +35,13 @@ class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
     ) -> p.Meltano.SingerDrainSink:
         """Create an Oracle WMS sink for a stream.
 
+        Args:
+            stream_name: Name of the Singer stream the sink receives.
+            schema: Singer schema describing the stream's record structure.
+
         Returns:
             The resulting ``p.Meltano.SingerDrainSink``.
+
         """
         target_config: t.ScalarMapping = (
             self.settings_overrides if self.settings_overrides is not None else {}

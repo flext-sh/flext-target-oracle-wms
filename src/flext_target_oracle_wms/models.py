@@ -4,7 +4,6 @@ Inherits from the canonical Meltano models facade and m.
 Defines local TargetOracleWms namespace for target-specific models.
 
 Copyright (c) 2026 FLEXT Team. All rights reserved.
-src/flext_target_oracle_wms/models
 SPDX-License-Identifier: MIT
 """
 
