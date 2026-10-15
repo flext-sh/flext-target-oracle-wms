@@ -14,9 +14,9 @@ from __future__ import annotations
 
 from typing import Annotated
 
+from flext_core import m
 from flext_meltano import FlextMeltanoConfig
 
-from flext_core import m
 from flext_target_oracle_wms._models.config import FlextTargetOracleWmsModelsConfig
 
 

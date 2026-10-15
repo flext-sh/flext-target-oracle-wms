@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 
 from flext_core import r
+
 from flext_target_oracle_wms import c, m, p, settings, t, u
 from flext_target_oracle_wms.__version__ import __version__
 from flext_target_oracle_wms._utilities import FlextTargetOracleWmsUtilitiesClient
