@@ -58,7 +58,7 @@ verification).
 - Public extensions exposed by this project: `FlextTargetOracleWmsCli`,
   `FlextTargetOracleWmsConfig`, `FlextTargetOracleWmsConstants`,
   `FlextTargetOracleWmsModels`, `FlextTargetOracleWmsProtocols`,
-  `FlextTargetOracleWmsService` (+3 more).
+  `FlextTargetOracleWmsService` (+4 more).
 - Library abstraction boundaries: see AGENTS.md §2.7.
 
 ## Quality Gates

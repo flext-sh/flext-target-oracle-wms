@@ -7,10 +7,9 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_meltano import c as meltano_c
-from flext_tests import tm
 
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
-from tests import c, m, p, u
+from tests import c, m, p, tm, u
 
 
 class TestsFlextTargetOracleWmsQuality:
@@ -63,9 +62,10 @@ class TestsFlextTargetOracleWmsQuality:
 
     @staticmethod
     def test_load_methods_accessible() -> None:
-        """Test load methods accessible."""
-        tm.that(c.TargetOracleWms.LoadMethods.Method.APPEND_ONLY, eq="APPEND_ONLY")
-        tm.that(c.TargetOracleWms.LoadMethods.Method.UPSERT, eq="UPSERT")
+        """LoadMethods.Method resolves members from their canonical values."""
+        method = c.TargetOracleWms.LoadMethods.Method
+        tm.that(method("APPEND_ONLY"), eq=method.APPEND_ONLY)
+        tm.that(method("UPSERT"), eq=method.UPSERT)
 
     @staticmethod
     def test_oracle_wms_defaults_derive_from_meltano_ssot() -> None:
@@ -96,22 +96,22 @@ class TestsFlextTargetOracleWmsQuality:
     def test_catalog_manager_instantiates() -> None:
         """Test catalog manager instantiates."""
         mgr = u.TargetOracleWms.CatalogManager()
-        tm.that(mgr, is_=u.TargetOracleWms.CatalogManager)
+        tm.fail(mgr.get_stream("never_registered"))
 
     @staticmethod
     def test_table_manager_instantiates() -> None:
         """Test table manager instantiates."""
         manager = u.TargetOracleWms.WMSTableManager()
-        tm.that(manager, is_=u.TargetOracleWms.WMSTableManager)
+        tm.fail(manager.get_table_name("never_registered"))
 
     @staticmethod
     def test_type_converter_instantiates() -> None:
         """Test type converter instantiates."""
         tc = u.TargetOracleWms.WMSTypeConverter()
-        tm.that(tc, is_=u.TargetOracleWms.WMSTypeConverter)
+        tm.that(tc.convert_singer_to_oracle("string", "hello").value, eq="hello")
 
     @staticmethod
     def test_data_transformer_instantiates() -> None:
         """Test data transformer instantiates."""
         dt = u.TargetOracleWms.WMSDataTransformer()
-        tm.that(dt, is_=u.TargetOracleWms.WMSDataTransformer)
+        tm.that(dt.type_converter, none=False)

@@ -1,7 +1,6 @@
 """Constants for the target Oracle WMS package.
 
 Copyright (c) 2026 FLEXT Team. All rights reserved.
-src/flext_target_oracle_wms/constants
 SPDX-License-Identifier: MIT
 """
 
@@ -12,10 +11,8 @@ from typing import TYPE_CHECKING
 from flext_meltano import FlextMeltanoConstants
 from flext_oracle_wms import FlextOracleWmsConstants
 
-from flext_target_oracle_wms._constants import (
-    FlextTargetOracleWmsConstantsBase,
-    FlextTargetOracleWmsConstantsValues,
-)
+from flext_target_oracle_wms._constants import FlextTargetOracleWmsConstantsValues
+from flext_target_oracle_wms._constants.base import FlextTargetOracleWmsConstantsBase
 
 if TYPE_CHECKING:
     from flext_oracle_wms import t
@@ -26,7 +23,7 @@ class FlextTargetOracleWmsConstants(FlextMeltanoConstants, FlextOracleWmsConstan
 
     class TargetOracleWms(
         FlextTargetOracleWmsConstantsBase,
-        FlextTargetOracleWmsConstantsValues.TargetOracleWms,
+        FlextTargetOracleWmsConstantsValues,
     ):
         """Target-specific defaults and limits."""
 

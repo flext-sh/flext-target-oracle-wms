@@ -37,6 +37,7 @@ def run_basic_example() -> t.Scalar:
 
     Returns:
         The resulting ``t.Scalar``.
+
     """
     logger.info("Starting basic Oracle WMS target example")
     logger.info("Using base_url=%s, batch_size=%d", WMS_AUTH["base_url"], BATCH_SIZE)
@@ -51,6 +52,7 @@ def run_from_singer_files() -> t.Scalar:
 
     Returns:
         The resulting ``t.Scalar``.
+
     """
     logger.info("Running target from Singer JSON files")
     config_file = Path("settings.json")

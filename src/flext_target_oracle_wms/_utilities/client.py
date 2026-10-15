@@ -1,7 +1,6 @@
 """Singer target client classes for Oracle WMS — u.TargetOracleWms.Client.*.
 
 Copyright (c) 2026 FLEXT Team. All rights reserved.
-src/flext_target_oracle_wms/_utilities/client
 SPDX-License-Identifier: MIT
 """
 
@@ -10,9 +9,9 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING, ClassVar
 
+from flext_core import e, r
 from flext_meltano import u
 
-from flext_core import e, r
 from flext_target_oracle_wms import c, m, t
 from flext_target_oracle_wms._utilities.helpers import (
     FlextTargetOracleWmsUtilitiesHelpers,
@@ -43,8 +42,12 @@ class FlextTargetOracleWmsUtilitiesClient:
         ) -> p.Result[bool]:
             """Register one stream schema entry.
 
+            Args:
+                schema_message: Singer SCHEMA message describing the stream.
+
             Returns:
                 The resulting ``p.Result[bool]``.
+
             """
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
             stream_name = typed_schema.stream
@@ -62,7 +65,15 @@ class FlextTargetOracleWmsUtilitiesClient:
             self,
             stream_name: str,
         ) -> p.Result[m.Meltano.SingerCatalogEntry]:
-            """Return catalog entry for a stream or a failure."""
+            """Return catalog entry for a stream or a failure.
+
+            Args:
+                stream_name: Name of the stream to look up.
+
+            Returns:
+                The resulting ``p.Result[m.Meltano.SingerCatalogEntry]``.
+
+            """
             entry = self._catalog_entries.get(stream_name)
             if entry is None:
                 return e.fail_not_found(
@@ -83,7 +94,13 @@ class FlextTargetOracleWmsUtilitiesClient:
             table_manager: FlextTargetOracleWmsUtilitiesHelpers.WMSTableManager,
             data_transformer: FlextTargetOracleWmsUtilitiesHelpers.WMSDataTransformer,
         ) -> None:
-            """Initialize processing dependencies."""
+            """Initialize processing dependencies.
+
+            Args:
+                table_manager: Stream-to-table registry used during processing.
+                data_transformer: Record payload transformer applied per record.
+
+            """
             self.table_manager = table_manager
             self.data_transformer = data_transformer
 
@@ -93,8 +110,12 @@ class FlextTargetOracleWmsUtilitiesClient:
         ) -> p.Result[bool]:
             """Register stream metadata in table manager.
 
+            Args:
+                schema_message: Singer SCHEMA message describing the stream.
+
             Returns:
                 The resulting ``p.Result[bool]``.
+
             """
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(schema_message)
             registration = self.table_manager.register_stream(typed_schema.stream)
@@ -109,8 +130,14 @@ class FlextTargetOracleWmsUtilitiesClient:
         ) -> p.Result[m.Meltano.SingerRecordMessage]:
             """Transform one typed Singer record.
 
+            Args:
+                record_message: Singer RECORD message carrying the raw record.
+                schema_message: Typed schema message (or schema mapping) used to
+                    resolve per-field types.
+
             Returns:
                 The resulting ``p.Result[m.Meltano.SingerRecordMessage]``.
+
             """
             typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
             table_lookup = self.table_manager.get_table_name(typed_record.stream)
@@ -134,7 +161,13 @@ class FlextTargetOracleWmsUtilitiesClient:
             self,
             settings: t.JsonMapping | m.TargetOracleWms.WmsTargetConfig,
         ) -> None:
-            """Initialize target runtime with validated settings."""
+            """Initialize target runtime with validated settings.
+
+            Args:
+                settings: Target configuration mapping or pre-built
+                    ``WmsTargetConfig`` instance.
+
+            """
             # AGENT-COORDINATION (2026-07-11, bead mro-nwc.19): store the validated
             # config as
             # self.settings. Previously the model_validate result was assigned to a
@@ -159,6 +192,7 @@ class FlextTargetOracleWmsUtilitiesClient:
 
             Returns:
                 The resulting ``p.Result[bool]``.
+
             """
             return r[bool].ok(value=True)
 
@@ -168,8 +202,12 @@ class FlextTargetOracleWmsUtilitiesClient:
         ) -> p.Result[bool]:
             """Handle one RECORD message.
 
+            Args:
+                message: Singer RECORD message carrying the record to load.
+
             Returns:
                 The resulting ``p.Result[bool]``.
+
             """
             typed_record = m.Meltano.SingerRecordMessage.model_validate(message)
             schema_message = self._schemas.get(typed_record.stream)
@@ -191,8 +229,12 @@ class FlextTargetOracleWmsUtilitiesClient:
         ) -> p.Result[bool]:
             """Handle one SCHEMA message.
 
+            Args:
+                message: Singer SCHEMA message registering the stream schema.
+
             Returns:
                 The resulting ``p.Result[bool]``.
+
             """
             typed_schema = m.Meltano.SingerSchemaMessage.model_validate(message)
             add_result = self.catalog_manager.add_stream(typed_schema)
@@ -209,8 +251,12 @@ class FlextTargetOracleWmsUtilitiesClient:
         ) -> p.Result[bool]:
             """Handle one STATE message.
 
+            Args:
+                message: Singer STATE message carrying the bookmark value.
+
             Returns:
                 The resulting ``p.Result[bool]``.
+
             """
             typed_state = m.Meltano.SingerStateMessage.model_validate(message)
             self.logger.debug("Received state", state=str(typed_state.value))
@@ -223,8 +269,13 @@ class FlextTargetOracleWmsUtilitiesClient:
         ) -> p.Result[bool]:
             """Dispatch a single Singer message to the appropriate handler.
 
+            Args:
+                message_type: Singer message type discriminator.
+                message: Raw Singer message mapping to dispatch.
+
             Returns:
                 The resulting ``p.Result[bool]``.
+
             """
             match message_type:
                 case message_type if message_type == self._schema_type:
@@ -245,15 +296,19 @@ class FlextTargetOracleWmsUtilitiesClient:
         def process_lines(self, input_lines: t.StrSequence) -> p.Result[bool]:
             """Parse and process Singer JSON lines.
 
+            Args:
+                input_lines: Raw Singer JSON lines, typically read from stdin.
+
             Returns:
                 The resulting ``p.Result[bool]``.
+
             """
             for raw_line in input_lines:
                 line = raw_line.strip()
                 if not line:
                     continue
                 try:
-                    message = t.json_mapping_adapter().validate_json(line)
+                    message = u.json_mapping_adapter().validate_json(line)
                 except c.ValidationError as exc:
                     return r[bool].fail(f"Invalid JSON message: {exc}", exception=exc)
                 message_type = str(message.get("type", ""))
@@ -270,6 +325,7 @@ class FlextTargetOracleWmsUtilitiesClient:
 
             Returns:
                 The resulting ``p.Result[bool]``.
+
             """
             return self.process_lines(list(sys.stdin))
 
@@ -279,6 +335,7 @@ class FlextTargetOracleWmsUtilitiesClient:
 
             Returns:
                 The resulting ``p.Result[bool]``.
+
             """
             return r[bool].ok(value=True)
 

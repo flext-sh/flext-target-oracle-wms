@@ -23,6 +23,7 @@ def run_error_handling_example() -> t.Scalar:
 
     Raises:
         SystemExit: If a ``(RuntimeError, OSError, ValueError)`` is caught.
+
     """
     logger.info("Starting error handling example")
     try:

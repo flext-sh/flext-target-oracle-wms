@@ -54,7 +54,7 @@ em `.snyk`) / `risco-aceito` (com prazo).
 
 ```{.python .notest}
        27
-       28  _BATCH_WMS_AUTH: dict[str, t.JsonValue] = {
+       28  _BATCH_WMS_AUTH: t.JsonDict = {
        29      "base_url": "https://wms.example.oraclecloud.com",
        30      "username": "wms_batch_user",
 >>>    31      "password": "wms_batch_pass",
