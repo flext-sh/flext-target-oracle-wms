@@ -1,3 +1,4 @@
+# AUTO-GENERATED FILE — Regenerate with: make gen
 """Domain models for target Oracle WMS.
 
 Inherits from the canonical Meltano models facade and m.
@@ -16,7 +17,7 @@ from flext_meltano import FlextMeltanoModels, u
 from flext_oracle_wms import FlextOracleWmsModels
 
 from flext_target_oracle_wms import c, t
-from flext_target_oracle_wms._models.config import FlextTargetOracleWmsModelsConfig
+from flext_target_oracle_wms._models import FlextTargetOracleWmsModelsConfig
 
 # NOTE (multi-agent, bead mro-nwc.19): t / MutableMapping MUST stay RUNTIME imports.
 # `from __future__ import annotations` makes pydantic v2 resolve these field annotation
