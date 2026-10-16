@@ -20,6 +20,7 @@ def examples_dir() -> Path:
 
     Returns:
         The resulting ``Path``.
+
     """
     project_root = Path(__file__).parents[1]
     return project_root / "examples"
@@ -31,5 +32,6 @@ def example_files(examples_dir: Path) -> t.SequenceOf[Path]:
 
     Returns:
         The resulting ``t.SequenceOf[Path]``.
+
     """
     return [f for f in examples_dir.glob("*.py") if f.name != "__init__.py"]

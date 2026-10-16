@@ -9,10 +9,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
-from flext_tests import tm
 
-from tests import m, u
-from tests._helpers import _valid_config
+from tests import _valid_config, m, tm, u
 
 if TYPE_CHECKING:
     from tests import t

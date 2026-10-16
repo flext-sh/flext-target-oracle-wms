@@ -7,20 +7,12 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import importlib
-import inspect
+import ast
 from pathlib import Path
-from types import ModuleType
 
 import pytest
-from flext_tests import tm
 
-from tests import c, t
-
-
-def _load_example_module(example_file: Path) -> ModuleType:
-    return importlib.import_module(f"{example_file.parent.name}.{example_file.stem}")
-
+from tests import c, t, tm
 
 _AUTO_GENERATED_FACETS: frozenset[str] = frozenset({
     "constants.py",
@@ -31,13 +23,19 @@ _AUTO_GENERATED_FACETS: frozenset[str] = frozenset({
 })
 
 
-def _module_functions(module: ModuleType) -> list[tuple[str, object]]:
-    return [
-        (name, value)
-        for name, value in vars(module).items()
-        if inspect.isfunction(value)
-        and getattr(value, "__module__", None) == module.__name__
-    ]
+def _parse_example(example_file: Path) -> ast.Module:
+    return ast.parse(
+        example_file.read_text(encoding="utf-8"),
+        filename=str(example_file),
+    )
+
+
+def _module_docstring(tree: ast.Module) -> str:
+    return ast.get_docstring(tree) or ""
+
+
+def _module_functions(tree: ast.Module) -> list[ast.FunctionDef]:
+    return [node for node in tree.body if isinstance(node, ast.FunctionDef)]
 
 
 def _import_lines(content: str) -> list[str]:
@@ -111,9 +109,8 @@ class TestsFlextTargetOracleWmsExamples:
     ) -> None:
         """Require module docs everywhere and comprehensive example docs."""
         for example_file in example_files:
-            module = _load_example_module(example_file)
-            module_docstring = inspect.getdoc(module)
-            assert module_docstring is not None
+            tree = _parse_example(example_file)
+            module_docstring = _module_docstring(tree)
             assert module_docstring.strip(), f"{example_file.name} docstring is empty"
             if example_file.name in _AUTO_GENERATED_FACETS:
                 continue
@@ -125,12 +122,12 @@ class TestsFlextTargetOracleWmsExamples:
                 "PRODUCTION" in module_docstring.upper()
                 or "REAL" in module_docstring.upper()
             ), f"{example_file.name} must emphasize production/real implementation"
-            module_functions = _module_functions(module)
+            module_functions = _module_functions(tree)
             function_count = len(module_functions)
             documented_functions = sum(
                 1
-                for _, function in module_functions
-                if (func_docstring := inspect.getdoc(function))
+                for function in module_functions
+                if (func_docstring := ast.get_docstring(function))
                 and len(func_docstring)
                 > c.TargetOracleWms.Tests.MIN_FUNCTION_DOCSTRING_LENGTH
             )
@@ -146,16 +143,15 @@ class TestsFlextTargetOracleWmsExamples:
     ) -> None:
         """Test that examples with async functions use proper await patterns."""
         for example_file in example_files:
-            module = _load_example_module(example_file)
-            module_functions = _module_functions(module)
+            tree = _parse_example(example_file)
             async_functions = [
-                function
-                for _, function in module_functions
-                if inspect.iscoroutinefunction(function)
+                node for node in tree.body if isinstance(node, ast.AsyncFunctionDef)
             ]
             has_async_function = bool(async_functions)
             has_await = any(
-                "await " in inspect.getsource(function) for function in async_functions
+                isinstance(node, ast.Await)
+                for function in async_functions
+                for node in ast.walk(function)
             )
             if has_async_function:
                 assert has_await, (

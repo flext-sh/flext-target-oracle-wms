@@ -9,11 +9,8 @@ from __future__ import annotations
 import json as _stdlib_json
 from typing import TYPE_CHECKING
 
-from flext_tests import tm
-
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
-from tests import u
-from tests._helpers import _valid_config
+from tests import _valid_config, tm, u
 
 if TYPE_CHECKING:
     from tests import t

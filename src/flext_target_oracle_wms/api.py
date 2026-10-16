@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from typing import Annotated, override
 
-from flext_meltano import meltano
+from flext_meltano import FlextMeltanoTargetServiceBase
 
 from flext_target_oracle_wms import c, p, t, u
 from flext_target_oracle_wms._utilities.service_runtime import (
@@ -19,7 +19,7 @@ from flext_target_oracle_wms._utilities.service_runtime import (
 )
 
 
-class FlextTargetOracleWmsService(meltano.Target):
+class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
     """Orchestrator for target-oracle-wms. All behavior from base via MRO."""
 
     target_name: Annotated[
@@ -35,8 +35,13 @@ class FlextTargetOracleWmsService(meltano.Target):
     ) -> p.Meltano.SingerDrainSink:
         """Create an Oracle WMS sink for a stream.
 
+        Args:
+            stream_name: Name of the Singer stream the sink receives.
+            schema: Singer schema describing the stream's record structure.
+
         Returns:
             The resulting ``p.Meltano.SingerDrainSink``.
+
         """
         target_config: t.ScalarMapping = (
             self.settings_overrides if self.settings_overrides is not None else {}
@@ -48,9 +53,9 @@ class FlextTargetOracleWmsService(meltano.Target):
         )
 
 
-target_oracle_wms: FlextTargetOracleWmsService = (
-    FlextTargetOracleWmsService.fetch_global()
-)
+_service: FlextTargetOracleWmsService = FlextTargetOracleWmsService.fetch_global()
+
+target_oracle_wms: FlextTargetOracleWmsService = _service
 """Shared FlextTargetOracleWmsService facade instance."""
 
 __all__: list[str] = ["FlextTargetOracleWmsService", "target_oracle_wms"]

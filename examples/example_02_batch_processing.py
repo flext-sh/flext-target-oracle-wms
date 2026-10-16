@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 logger = u.fetch_logger(__name__)
 
-_BATCH_WMS_AUTH: dict[str, t.JsonValue] = {
+_BATCH_WMS_AUTH: t.JsonDict = {
     "base_url": "https://wms.example.oraclecloud.com",
     "username": "wms_batch_user",
     "password": os.environ.get("FLEXT_DEMO_WMS_PASSWORD", "<demo>"),
@@ -37,6 +37,7 @@ def run_batch_example() -> t.Scalar:
 
     Returns:
         The resulting ``t.Scalar``.
+
     """
     logger.info("Starting batch processing example")
     tm = FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTableManager()

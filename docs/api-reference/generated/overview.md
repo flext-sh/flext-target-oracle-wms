@@ -22,13 +22,13 @@
 - Main facades: `FlextTargetOracleWmsCli`, `FlextTargetOracleWmsConfig`,
   `FlextTargetOracleWmsConstants`, `FlextTargetOracleWmsModels`,
   `FlextTargetOracleWmsProtocols`, `FlextTargetOracleWmsService`,
-  `FlextTargetOracleWmsSettings`, `FlextTargetOracleWmsTypes` (+1 more)
+  `FlextTargetOracleWmsSettings`, `FlextTargetOracleWmsTypes` (+2 more)
 - Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
 - Public symbol exports: `FlextTargetOracleWmsCli`, `FlextTargetOracleWmsConfig`,
   `FlextTargetOracleWmsConstants`, `FlextTargetOracleWmsModels`,
   `FlextTargetOracleWmsProtocols`, `FlextTargetOracleWmsService`,
   `FlextTargetOracleWmsSettings`, `FlextTargetOracleWmsTypes`,
-  `FlextTargetOracleWmsUtilities`, `config` (+3 more)
+  `FlextTargetOracleWmsUtilities`, `FlextTargetOracleWmsVersion` (+4 more)
 - Exported module shortcuts: _none_
 - Generated module pages: `7`
 

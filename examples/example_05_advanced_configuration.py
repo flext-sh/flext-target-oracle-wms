@@ -25,6 +25,7 @@ def run_advanced_example() -> t.Scalar:
 
     Returns:
         The resulting ``t.Scalar``.
+
     """
     logger.info("Starting advanced configuration example")
     logger.info("Load method: %s, base_url: wms.example.oraclecloud.com", LOAD_METHOD)

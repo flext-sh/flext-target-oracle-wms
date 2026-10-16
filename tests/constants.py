@@ -12,7 +12,7 @@ from typing import ClassVar
 
 from flext_tests import FlextTestsConstants
 
-from flext_target_oracle_wms import FlextTargetOracleWmsConstants
+from flext_target_oracle_wms import FlextTargetOracleWmsConstants, t
 
 
 class TestsFlextTargetOracleWmsConstants(
@@ -33,7 +33,7 @@ class TestsFlextTargetOracleWmsConstants(
             """Target Oracle WMS-specific test constants."""
 
             PROJECT_ROOT_PARENT_DEPTH: ClassVar[int] = 1
-            ALLOWED_MODULE_FUNCTIONS: ClassVar[dict[str, frozenset[str]]] = {
+            ALLOWED_MODULE_FUNCTIONS: ClassVar[t.MappingKV[str, frozenset[str]]] = {
                 "cli.py": frozenset({"main"}),
             }
             PERF_ITERATIONS: ClassVar[int] = 500
