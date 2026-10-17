@@ -16,7 +16,6 @@ from typing import Annotated
 
 from flext_core import m
 from flext_meltano import FlextMeltanoConfig
-from flext_meltano.models import FlextMeltanoModelsConfig
 
 
 class FlextTargetOracleWmsConfig(FlextMeltanoConfig):
@@ -27,13 +26,13 @@ class FlextTargetOracleWmsConfig(FlextMeltanoConfig):
     """
 
     TargetOracleWms: Annotated[
-        FlextMeltanoModelsConfig.MeltanoNamespace,
+        m.Meltano.MeltanoNamespace,
         m.Field(
             description=(
                 "Open namespace exposing ``config/*.yaml`` under ``TargetOracleWms``."
             ),
         ),
-    ] = FlextMeltanoModelsConfig.MeltanoNamespace()
+    ] = m.Meltano.MeltanoNamespace()
 
 
 config: FlextTargetOracleWmsConfig = FlextTargetOracleWmsConfig.fetch_global()
