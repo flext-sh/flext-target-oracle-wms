@@ -1,3 +1,4 @@
+# AUTO-GENERATED FILE — Regenerate with: make gen
 """Domain models for target Oracle WMS.
 
 Inherits from the canonical Meltano models facade and m.
@@ -12,8 +13,10 @@ from __future__ import annotations
 from flext_meltano import FlextMeltanoModels
 from flext_oracle_wms import FlextOracleWmsModels
 
-from flext_target_oracle_wms._models.config import FlextTargetOracleWmsModelsConfig
-from flext_target_oracle_wms._models.target import FlextTargetOracleWmsModelsTarget
+from flext_target_oracle_wms._models import (
+    FlextTargetOracleWmsModelsConfig,
+    FlextTargetOracleWmsModelsTarget,
+)
 
 
 class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
