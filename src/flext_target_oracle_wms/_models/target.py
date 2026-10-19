@@ -9,9 +9,9 @@ from __future__ import annotations
 from collections.abc import MutableMapping
 from typing import Annotated, Literal
 
-from flext_meltano import FlextMeltanoModels, u
+from flext_meltano import FlextMeltanoModels
 
-from flext_target_oracle_wms import c, t
+from flext_target_oracle_wms import c, m, t
 
 
 class FlextTargetOracleWmsModelsTarget:
@@ -22,28 +22,28 @@ class FlextTargetOracleWmsModelsTarget:
 
         base_url: Annotated[
             str,
-            u.Field(description="Oracle WMS REST API base URL."),
+            m.Field(description="Oracle WMS REST API base URL."),
         ]
         auth_method: Annotated[
             Literal["oauth2", "basic", "api_key"],
-            u.Field(description="WMS authentication method."),
+            m.Field(description="WMS authentication method."),
         ] = "oauth2"
         username: Annotated[
             str | None,
-            u.Field(description="Optional authentication username."),
+            m.Field(description="Optional authentication username."),
         ] = None
         password: Annotated[
             t.SecretStr | None,
-            u.Field(description="Optional authentication password."),
+            m.Field(description="Optional authentication password."),
         ] = None
         api_key: Annotated[
             t.SecretStr | None,
-            u.Field(description="Optional API key for the selected auth method."),
+            m.Field(description="Optional API key for the selected auth method."),
         ] = None
-        company_code: Annotated[str, u.Field(description="WMS company code.")] = (
+        company_code: Annotated[str, m.Field(description="WMS company code.")] = (
             "DEFAULT"
         )
-        facility_code: Annotated[str, u.Field(description="WMS facility code.")] = (
+        facility_code: Annotated[str, m.Field(description="WMS facility code.")] = (
             "MAIN"
         )
 
@@ -52,26 +52,26 @@ class FlextTargetOracleWmsModelsTarget:
 
         wms_auth: Annotated[
             FlextTargetOracleWmsModelsTarget.WmsAuthenticationConfig,
-            u.Field(description="WMS authentication and endpoint settings."),
+            m.Field(description="WMS authentication and endpoint settings."),
         ]
         stream_maps: Annotated[
             MutableMapping[str, t.StrMapping],
-            u.Field(
+            m.Field(
                 default_factory=dict,
                 description="Singer stream map configurations.",
             ),
         ]
         batch_size: Annotated[
             t.BatchSize,
-            u.Field(description="Number of records per batch write."),
+            m.Field(description="Number of records per batch write."),
         ] = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
         load_method: Annotated[
             c.TargetOracleWms.LoadMethods.Method,
-            u.Field(description="Load strategy for writing records to WMS."),
+            m.Field(description="Load strategy for writing records to WMS."),
         ] = c.TargetOracleWms.LoadMethods.Method.APPEND_ONLY
         validate_records: Annotated[
             bool,
-            u.Field(description="Whether to validate records before writing."),
+            m.Field(description="Whether to validate records before writing."),
         ] = True
 
     class SingerFieldSchema(FlextMeltanoModels.FlexibleModel):
@@ -79,7 +79,7 @@ class FlextTargetOracleWmsModelsTarget:
 
         type: Annotated[
             str,
-            u.Field(description="JSON schema type descriptor for the field."),
+            m.Field(description="JSON schema type descriptor for the field."),
         ] = "string"
 
     class SingerSchemaProperties(FlextMeltanoModels.FlexibleModel):
@@ -90,7 +90,7 @@ class FlextTargetOracleWmsModelsTarget:
                 str,
                 FlextTargetOracleWmsModelsTarget.SingerFieldSchema,
             ],
-            u.Field(
+            m.Field(
                 default_factory=dict,
                 description="Singer schema field property definitions.",
             ),
