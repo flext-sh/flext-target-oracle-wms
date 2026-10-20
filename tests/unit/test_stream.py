@@ -8,9 +8,7 @@ from __future__ import annotations
 
 from typing import override
 
-from flext_tests import r, tm
-
-from tests import _record_msg, _schema_msg, m, p, t, u
+from tests import _record_msg, _schema_msg, m, p, r, t, tm, u
 
 
 class TestsFlextTargetOracleWmsFailingTransformer(

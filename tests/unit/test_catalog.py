@@ -60,7 +60,7 @@ class TestsFlextTargetOracleWmsCatalog:
         tm.ok(result)
         tm.ok(result)
         entry = result.value
-        tm.that(entry.key_properties, eq=("id", "name"))
+        assert entry.key_properties == ("id", "name")
 
     @staticmethod
     def test_get_nonexistent_stream_fails() -> None:
@@ -102,7 +102,7 @@ class TestsFlextTargetOracleWmsCatalog:
         tm.ok(stream_result)
         tm.that(stream_result.value, none=False)
         entry = stream_result.value
-        tm.that(entry.key_properties, eq=("item_id", "lot"))
+        assert entry.key_properties == ("item_id", "lot")
 
     @staticmethod
     def test_multiple_independent_streams() -> None:
