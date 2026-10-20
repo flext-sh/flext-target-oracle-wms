@@ -83,7 +83,7 @@ class TestsFlextTargetOracleWmsStream:
         )
         tm.fail(result)
         error = result.error
-        assert error is not None
+        tm.not_none(error)
         assert "not registered" in error.lower() or "lookup" in error.lower()
 
     @staticmethod
