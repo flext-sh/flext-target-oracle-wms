@@ -43,7 +43,7 @@ class TestsFlextTargetOracleWmsStream:
         )
         result = proc.initialize_stream(_schema_msg("orders"))
         tm.ok(result)
-        tm.that(result.value, eq=True)
+        tm.ok(result.value)
 
     @staticmethod
     def test_initialize_registers_table() -> None:

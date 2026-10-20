@@ -25,7 +25,7 @@ class TestsFlextTargetOracleWmsCatalog:
             }),
         )
         tm.ok(result)
-        tm.that(result.value, eq=True)
+        tm.ok(result.value)
 
     @staticmethod
     def test_add_stream_makes_stream_retrievable() -> None:
