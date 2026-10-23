@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import time
 
-from tests import c, m, u
+from tests import c, m, tm, u
 
 
 def _schema_msg(stream: str = "bench") -> m.Meltano.SingerSchemaMessage:
@@ -41,7 +41,7 @@ class TestsFlextTargetOracleWmsBenchmarks:
         for _ in range(c.TargetOracleWms.Tests.PERF_ITERATIONS):
             converter.convert_singer_to_oracle("string", "hello")
         elapsed = time.time() - start
-        assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
+        tm.that(elapsed, lt=c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC)
 
     @staticmethod
     def test_convert_integer_performance() -> None:
@@ -51,19 +51,19 @@ class TestsFlextTargetOracleWmsBenchmarks:
         for _ in range(c.TargetOracleWms.Tests.PERF_ITERATIONS):
             converter.convert_singer_to_oracle("integer", 42)
         elapsed = time.time() - start
-        assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
+        tm.that(elapsed, lt=c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC)
 
     @staticmethod
     def test_register_and_lookup_performance() -> None:
         """Test register and lookup performance."""
-        tm = u.TargetOracleWms.WMSTableManager()
+        manager = u.TargetOracleWms.WMSTableManager()
         start = time.time()
         for i in range(c.TargetOracleWms.Tests.PERF_ITERATIONS):
             name = f"stream_{i}"
-            tm.register_stream(name)
-            tm.get_table_name(name)
+            manager.register_stream(name)
+            manager.get_table_name(name)
         elapsed = time.time() - start
-        assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
+        tm.that(elapsed, lt=c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC)
 
     @staticmethod
     def test_add_and_get_stream_performance() -> None:
@@ -75,7 +75,7 @@ class TestsFlextTargetOracleWmsBenchmarks:
             mgr.add_stream(_schema_msg(name))
             mgr.get_stream(name)
         elapsed = time.time() - start
-        assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
+        tm.that(elapsed, lt=c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC)
 
     @staticmethod
     def test_transform_record_performance() -> None:
@@ -87,4 +87,4 @@ class TestsFlextTargetOracleWmsBenchmarks:
         for _ in range(c.TargetOracleWms.Tests.PERF_ITERATIONS):
             transformer.transform_record(rec, schema)
         elapsed = time.time() - start
-        assert elapsed < c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC
+        tm.that(elapsed, lt=c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC)

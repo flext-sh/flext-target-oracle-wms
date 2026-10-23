@@ -57,8 +57,7 @@ class TestsFlextTargetOracleWmsFeatures:
         """Test type converter null handling."""
         converter = u.TargetOracleWms.WMSTypeConverter()
         result = converter.convert_singer_to_oracle("string", "")
-        tm.ok(result)
-        tm.that(result.value, eq="")
+        tm.ok(result, eq="")
 
     @staticmethod
     def test_transformer_uppercases_keys() -> None:

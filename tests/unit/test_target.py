@@ -6,14 +6,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import pytest
 
-from tests import _record_msg, _schema_msg, _valid_config, c, m, tm, u
-
-if TYPE_CHECKING:
-    from tests import t
+from tests import _record_msg, _schema_msg, _valid_config, c, m, t, tm, u
 
 
 def _schema_line(

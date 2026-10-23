@@ -7,13 +7,9 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import json as _stdlib_json
-from typing import TYPE_CHECKING
 
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
-from tests import _valid_config, tm, u
-
-if TYPE_CHECKING:
-    from tests import t
+from tests import _valid_config, t, tm, u
 
 
 def _schema_line(

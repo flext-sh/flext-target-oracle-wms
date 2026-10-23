@@ -23,8 +23,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
             "string",
             "hello",
         )
-        tm.ok(result)
-        tm.that(result.value, eq="hello")
+        tm.ok(result, eq="hello")
 
     @staticmethod
     def test_integer_type() -> None:
@@ -33,8 +32,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
             "integer",
             42,
         )
-        tm.ok(result)
-        tm.that(result.value, eq=42)
+        tm.ok(result, eq=42)
 
     @staticmethod
     def test_number_type_float() -> None:
@@ -53,8 +51,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
             "string",
             "",
         )
-        tm.ok(result)
-        tm.that(result.value, eq="")
+        tm.ok(result, eq="")
 
     @staticmethod
     def test_object_type_serializes_to_json() -> None:
@@ -87,8 +84,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
             "boolean",
             value=True,
         )
-        tm.ok(result)
-        tm.that(result.value, eq="True")
+        tm.ok(result, eq="True")
 
     @staticmethod
     def test_uppercases_record_keys() -> None:
@@ -142,8 +138,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         """Test register stream returns uppercase."""
         manager = u.TargetOracleWms.WMSTableManager()
         result = manager.register_stream("orders")
-        tm.ok(result)
-        tm.that(result.value, eq="ORDERS")
+        tm.ok(result, eq="ORDERS")
 
     @staticmethod
     def test_get_registered_table() -> None:
@@ -151,8 +146,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         manager = u.TargetOracleWms.WMSTableManager()
         manager.register_stream("items")
         result = manager.get_table_name("items")
-        tm.ok(result)
-        tm.that(result.value, eq="ITEMS")
+        tm.ok(result, eq="ITEMS")
 
     @staticmethod
     def test_get_unregistered_fails() -> None:

@@ -55,8 +55,7 @@ class TestsFlextTargetOracleWmsStream:
         )
         proc.initialize_stream(_schema_msg("items"))
         table_result = manager.get_table_name("items")
-        tm.ok(table_result)
-        tm.that(table_result.value, eq="ITEMS")
+        tm.ok(table_result, eq="ITEMS")
 
     @staticmethod
     def test_process_record_after_init() -> None:

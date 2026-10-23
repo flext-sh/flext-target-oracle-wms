@@ -52,11 +52,13 @@ class TestsFlextTargetOracleWmsExamples:
     @staticmethod
     def test_examples_directory_exists(examples_dir: Path) -> None:
         """Test that examples directory exists and contains files."""
-        assert examples_dir.exists(), "Examples directory must exist"
-        assert examples_dir.is_dir(), "Examples path must be a directory"
+        tm.that(examples_dir.exists(), msg="Examples directory must exist")
+        tm.that(examples_dir.is_dir(), msg="Examples path must be a directory")
         python_files = list(examples_dir.glob("*.py"))
-        assert len(python_files) >= c.TargetOracleWms.Tests.MIN_EXAMPLE_FILE_COUNT, (
-            "Must have at least 4 example files"
+        tm.that(
+            len(python_files),
+            gte=c.TargetOracleWms.Tests.MIN_EXAMPLE_FILE_COUNT,
+            msg=("Must have the configured minimum example files"),
         )
         expected_files = [
             "example_01_basic_usage.py",
@@ -66,8 +68,9 @@ class TestsFlextTargetOracleWmsExamples:
         ]
         for expected_file in expected_files:
             file_path = examples_dir / expected_file
-            assert file_path.exists(), (
-                f"Required example file {expected_file} must exist"
+            tm.that(
+                file_path.exists(),
+                msg=(f"Required example file {expected_file} must exist"),
             )
 
     @staticmethod
@@ -83,12 +86,16 @@ class TestsFlextTargetOracleWmsExamples:
             has_target_import = any(
                 "flext_target_oracle_wms" in line for line in import_lines
             )
-            assert has_flext_core, (
-                f"{example_file.name} must import real flext primitives "
-                "(flext_core or the flext_target_oracle_wms facade)"
+            tm.that(
+                has_flext_core,
+                msg=(
+                    f"{example_file.name} must import real flext primitives "
+                    "(flext_core or the flext_target_oracle_wms facade)"
+                ),
             )
-            assert has_target_import, (
-                f"{example_file.name} must import from flext_target_oracle_wms"
+            tm.that(
+                has_target_import,
+                msg=(f"{example_file.name} must import from flext_target_oracle_wms"),
             )
             forbidden_patterns = [
                 "type: ignore[import-not-found]",
@@ -111,17 +118,25 @@ class TestsFlextTargetOracleWmsExamples:
         for example_file in example_files:
             tree = _parse_example(example_file)
             module_docstring = _module_docstring(tree)
-            assert module_docstring.strip(), f"{example_file.name} docstring is empty"
+            tm.that(
+                module_docstring.strip(),
+                truth=True,
+                msg=f"{example_file.name} docstring is empty",
+            )
             if example_file.name in _AUTO_GENERATED_FACETS:
                 continue
-            assert (
-                len(module_docstring)
-                > c.TargetOracleWms.Tests.MIN_MODULE_DOCSTRING_LENGTH
-            ), f"{example_file.name} docstring too short"
-            assert (
+            tm.that(
+                len(module_docstring),
+                gt=c.TargetOracleWms.Tests.MIN_MODULE_DOCSTRING_LENGTH,
+                msg=f"{example_file.name} docstring too short",
+            )
+            tm.that(
                 "PRODUCTION" in module_docstring.upper()
-                or "REAL" in module_docstring.upper()
-            ), f"{example_file.name} must emphasize production/real implementation"
+                or "REAL" in module_docstring.upper(),
+                msg=(
+                    f"{example_file.name} must emphasize production/real implementation"
+                ),
+            )
             module_functions = _module_functions(tree)
             function_count = len(module_functions)
             documented_functions = sum(
@@ -133,9 +148,14 @@ class TestsFlextTargetOracleWmsExamples:
             )
             if function_count > 0:
                 doc_ratio = documented_functions / function_count
-                assert (
-                    doc_ratio >= c.TargetOracleWms.Tests.MIN_DOCUMENTED_FUNCTION_RATIO
-                ), f"{example_file.name} must have 80%+ functions documented"
+                tm.that(
+                    doc_ratio,
+                    gte=c.TargetOracleWms.Tests.MIN_DOCUMENTED_FUNCTION_RATIO,
+                    msg=(
+                        f"{example_file.name} must meet "
+                        "the configured documentation ratio"
+                    ),
+                )
 
     @staticmethod
     def test_examples_use_await_patterns(
@@ -154,8 +174,12 @@ class TestsFlextTargetOracleWmsExamples:
                 for node in ast.walk(function)
             )
             if has_async_function:
-                assert has_await, (
-                    f"{example_file.name} has async functions but no await statements"
+                tm.that(
+                    has_await,
+                    msg=(
+                        f"{example_file.name} has async functions "
+                        "but no await statements"
+                    ),
                 )
 
     @staticmethod
@@ -170,8 +194,11 @@ class TestsFlextTargetOracleWmsExamples:
                 token in content for token in (".success", ".is_success", ".is_failure")
             )
             if "error" in content.lower():
-                assert has_try_except or has_flext_result_check, (
-                    f"{example_file.name} mentions errors but has no error handling"
+                tm.that(
+                    has_try_except or has_flext_result_check,
+                    msg=(
+                        f"{example_file.name} mentions errors but has no error handling"
+                    ),
                 )
 
     @staticmethod
@@ -194,9 +221,12 @@ class TestsFlextTargetOracleWmsExamples:
                     has_config = True
                     break
             if "settings" in content.lower():
-                assert has_config, (
-                    f"{example_file.name} mentions settings but has no "
-                    "realistic configuration"
+                tm.that(
+                    has_config,
+                    msg=(
+                        f"{example_file.name} mentions settings but has no "
+                        "realistic configuration"
+                    ),
                 )
             oracle_patterns = ["oracle", "wms", "FlextTargetOracleWms"]
             has_oracle_pattern = False
@@ -204,8 +234,9 @@ class TestsFlextTargetOracleWmsExamples:
                 if pattern in content:
                     has_oracle_pattern = True
                     break
-            assert has_oracle_pattern, (
-                f"{example_file.name} must contain Oracle WMS specific patterns"
+            tm.that(
+                has_oracle_pattern,
+                msg=(f"{example_file.name} must contain Oracle WMS specific patterns"),
             )
 
     @staticmethod
@@ -224,8 +255,9 @@ class TestsFlextTargetOracleWmsExamples:
                 if pattern in content:
                     has_main_execution = True
                     break
-            assert has_main_execution, (
-                f"{example_file.name} main block must execute examples"
+            tm.that(
+                has_main_execution,
+                msg=(f"{example_file.name} main block must execute examples"),
             )
 
     """Test that examples can be imported without errors."""
@@ -263,10 +295,12 @@ class TestsFlextTargetOracleWmsExamples:
         """Test that examples README exists and is comprehensive."""
         examples_dir = Path(__file__).parents[2] / "examples"
         readme_path = examples_dir / "README.md"
-        assert readme_path.exists(), "Examples directory must have README.md"
+        tm.that(readme_path.exists(), msg="Examples directory must have README.md")
         readme_content = readme_path.read_text(encoding="utf-8")
-        assert len(readme_content) > c.TargetOracleWms.Tests.MIN_README_LENGTH, (
-            "README must be comprehensive (>1000 chars)"
+        tm.that(
+            len(readme_content),
+            gt=c.TargetOracleWms.Tests.MIN_README_LENGTH,
+            msg=("README must meet the configured minimum length"),
         )
         required_sections = [
             "Examples Overview",
@@ -287,12 +321,17 @@ class TestsFlextTargetOracleWmsExamples:
             if example_file.name == "__init__.py":
                 continue
             name = example_file.stem
-            assert name.islower(), f"Example {example_file.name} must use lowercase"
-            assert "_" in name or name.isalpha(), (
-                f"Example {example_file.name} must use snake_case"
+            tm.that(
+                name.islower(), msg=f"Example {example_file.name} must use lowercase"
             )
-            assert len(name) >= c.TargetOracleWms.Tests.MIN_EXAMPLE_STEM_LENGTH, (
-                f"Example {example_file.name} name too short"
+            tm.that(
+                "_" in name or name.isalpha(),
+                msg=(f"Example {example_file.name} must use snake_case"),
+            )
+            tm.that(
+                len(name),
+                gte=c.TargetOracleWms.Tests.MIN_EXAMPLE_STEM_LENGTH,
+                msg=(f"Example {example_file.name} name too short"),
             )
 
     @staticmethod
@@ -307,14 +346,17 @@ class TestsFlextTargetOracleWmsExamples:
                 continue
             content = example_file.read_text(encoding="utf-8")
             lines = content.split("\n")
-            assert lines[0].startswith("#!/usr/bin/env python3"), (
-                f"{example_file.name} must have proper shebang"
+            tm.that(
+                lines[0].startswith("#!/usr/bin/env python3"),
+                msg=(f"{example_file.name} must have proper shebang"),
             )
-            assert any("Copyright" in line for line in lines[:20]), (
-                f"{example_file.name} must have copyright notice"
+            tm.that(
+                any("Copyright" in line for line in lines[:20]),
+                msg=(f"{example_file.name} must have copyright notice"),
             )
-            assert any("MIT" in line for line in lines[:20]), (
-                f"{example_file.name} must have MIT license notice"
+            tm.that(
+                any("MIT" in line for line in lines[:20]),
+                msg=(f"{example_file.name} must have MIT license notice"),
             )
 
     """Test that examples properly integrate with flext-* ecosystem."""
@@ -327,11 +369,15 @@ class TestsFlextTargetOracleWmsExamples:
         for example_file in example_files:
             content = example_file.read_text(encoding="utf-8")
             if "import r" in content or "from flext_core import r" in content:
-                assert ".is_success" in content or ".is_failure" in content, (
-                    f"{example_file.name} uses r but not .is_success/.is_failure"
+                tm.that(
+                    ".is_success" in content or ".is_failure" in content,
+                    msg=(f"{example_file.name} uses r but not .is_success/.is_failure"),
                 )
-                assert ".error" in content or ".value" in content, (
-                    f"{example_file.name} must check result.error or result.value"
+                tm.that(
+                    ".error" in content or ".value" in content,
+                    msg=(
+                        f"{example_file.name} must check result.error or result.value"
+                    ),
                 )
 
     @staticmethod
@@ -343,6 +389,7 @@ class TestsFlextTargetOracleWmsExamples:
             content = example_file.read_text(encoding="utf-8")
             if "FlextLogger" in content:
                 tm.that(content, has="logger = u.fetch_logger(__name__)")
-                assert "logger.info(" in content or "logger.error(" in content, (
-                    f"{example_file.name} must actually use the logger"
+                tm.that(
+                    "logger.info(" in content or "logger.error(" in content,
+                    msg=(f"{example_file.name} must actually use the logger"),
                 )

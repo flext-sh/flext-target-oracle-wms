@@ -6,12 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
-from tests import c, m
-
-if TYPE_CHECKING:
-    from tests import t
+from tests import c, m, t
 
 
 def _valid_config() -> t.JsonMapping:

@@ -90,7 +90,7 @@ class TestsFlextTargetOracleWmsQuality:
         """Test cli defaults."""
         cli = FlextTargetOracleWmsCli()
         tm.that(cli.name, eq=c.TargetOracleWms.TARGET_NAME)
-        assert cli.version
+        tm.that(cli.version, truth=True)
 
     @staticmethod
     def test_catalog_manager_instantiates() -> None:
