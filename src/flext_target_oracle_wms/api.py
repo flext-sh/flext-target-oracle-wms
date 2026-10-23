@@ -43,7 +43,7 @@ class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
             The resulting ``p.Meltano.SingerDrainSink``.
 
         """
-        target_config: t.ScalarMapping = (
+        target_config: t.JsonMapping = (
             self.settings_overrides if self.settings_overrides is not None else {}
         )
         return FlextTargetOracleWmsServiceRuntime.create_sink(

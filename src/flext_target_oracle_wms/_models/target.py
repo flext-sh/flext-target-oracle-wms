@@ -9,15 +9,15 @@ from __future__ import annotations
 from collections.abc import MutableMapping
 from typing import Annotated, Literal
 
-from flext_meltano import FlextMeltanoModels
+from flext_meltano import m
 
-from flext_target_oracle_wms import c, m, t
+from flext_target_oracle_wms import c, t
 
 
 class FlextTargetOracleWmsModelsTarget:
     """Target-specific WMS configuration models composed into ``m.TargetOracleWms``."""
 
-    class WmsAuthenticationConfig(FlextMeltanoModels.ArbitraryTypesModel):
+    class WmsAuthenticationConfig(m.ArbitraryTypesModel):
         """Authentication and endpoint settings."""
 
         base_url: Annotated[
@@ -47,7 +47,7 @@ class FlextTargetOracleWmsModelsTarget:
             "MAIN"
         )
 
-    class WmsTargetConfig(FlextMeltanoModels.ArbitraryTypesModel):
+    class WmsTargetConfig(m.ArbitraryTypesModel):
         """Top-level target configuration model."""
 
         wms_auth: Annotated[
@@ -74,7 +74,7 @@ class FlextTargetOracleWmsModelsTarget:
             m.Field(description="Whether to validate records before writing."),
         ] = True
 
-    class SingerFieldSchema(FlextMeltanoModels.FlexibleModel):
+    class SingerFieldSchema(m.FlexibleModel):
         """Typed Singer field schema entry for target-side schema parsing."""
 
         type: Annotated[
@@ -82,7 +82,7 @@ class FlextTargetOracleWmsModelsTarget:
             m.Field(description="JSON schema type descriptor for the field."),
         ] = "string"
 
-    class SingerSchemaProperties(FlextMeltanoModels.FlexibleModel):
+    class SingerSchemaProperties(m.FlexibleModel):
         """Typed Singer schema properties block for target-side schema parsing."""
 
         properties: Annotated[
