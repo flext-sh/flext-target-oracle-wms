@@ -57,8 +57,7 @@ class TestsFlextTargetOracleWmsFeatures:
         """Test type converter null handling."""
         converter = u.TargetOracleWms.WMSTypeConverter()
         result = converter.convert_singer_to_oracle("string", "")
-        tm.ok(result)
-        tm.that(result.value, eq="")
+        tm.ok(result, eq="")
 
     @staticmethod
     def test_transformer_uppercases_keys() -> None:
@@ -72,7 +71,7 @@ class TestsFlextTargetOracleWmsFeatures:
         schema: m.Meltano.SingerSchemaMessage = (
             m.Meltano.SingerSchemaMessage.model_validate({
                 "type": c.Meltano.SingerMessageType.SCHEMA,
-                "stream": "s",
+                c.ProcessingMode.STREAM: "s",
                 "schema": {"type": "object"},
                 "key_properties": ["name"],
             })

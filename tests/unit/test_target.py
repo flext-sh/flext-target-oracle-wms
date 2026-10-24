@@ -6,14 +6,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import pytest
 
-from tests import _record_msg, _schema_msg, _valid_config, c, m, tm, u
-
-if TYPE_CHECKING:
-    from tests import t
+from tests import _record_msg, _schema_msg, _valid_config, c, m, t, tm, u
 
 
 def _schema_line(
@@ -24,7 +19,7 @@ def _schema_line(
     message: m.Meltano.SingerSchemaMessage = (
         m.Meltano.SingerSchemaMessage.model_validate({
             "type": c.Meltano.SingerMessageType.SCHEMA,
-            "stream": stream,
+            c.ProcessingMode.STREAM: stream,
             "schema": {"type": "object", "properties": props},
             "key_properties": keys,
         })
@@ -103,7 +98,7 @@ class TestsFlextTargetOracleWmsTarget:
         target = u.TargetOracleWms.Target(_valid_config())
         result = target.setup()
         tm.ok(result)
-        tm.that(result.value, eq=True)
+        tm.ok(result.value)
 
     @staticmethod
     def test_cleanup_returns_success() -> None:
@@ -111,7 +106,7 @@ class TestsFlextTargetOracleWmsTarget:
         target = u.TargetOracleWms.Target(_valid_config())
         result = target.cleanup()
         tm.ok(result)
-        tm.that(result.value, eq=True)
+        tm.ok(result.value)
 
     @staticmethod
     def test_handle_schema_success() -> None:
@@ -133,7 +128,7 @@ class TestsFlextTargetOracleWmsTarget:
     def test_record_without_schema_fails() -> None:
         """Test record without schema fails."""
         target = u.TargetOracleWms.Target(_valid_config())
-        msg = _record_msg("orphan", {"id": "1"})
+        msg = _record_msg("orphan", {"id": c.ParserBooleanToken.ONE})
         result = target.handle_record_message(msg)
         tm.fail(result)
         tm.that((result.error or "").lower(), has="schema not registered")
@@ -144,7 +139,7 @@ class TestsFlextTargetOracleWmsTarget:
         target = u.TargetOracleWms.Target(_valid_config())
         schema = _schema_msg("s")
         target.handle_schema_message(schema)
-        record = _record_msg("s", {"id": "1"})
+        record = _record_msg("s", {"id": c.ParserBooleanToken.ONE})
         result = target.handle_record_message(record)
         tm.ok(result)
 
@@ -188,8 +183,8 @@ class TestsFlextTargetOracleWmsTarget:
                 {"id": {"type": "string"}, "name": {"type": "string"}},
                 ["id"],
             ),
-            _record_line("orders", {"id": "1", "name": "test"}),
-            _state_line({"bookmarks": {"orders": "1"}}),
+            _record_line("orders", {"id": c.ParserBooleanToken.ONE, "name": "test"}),
+            _state_line({"bookmarks": {"orders": c.ParserBooleanToken.ONE}}),
         ]
         result = target.process_lines(lines)
         tm.ok(result)
@@ -198,6 +193,6 @@ class TestsFlextTargetOracleWmsTarget:
     def test_record_before_schema_fails() -> None:
         """Test record before schema fails."""
         target = u.TargetOracleWms.Target(_valid_config())
-        lines = [_record_line("orders", {"id": "1"})]
+        lines = [_record_line("orders", {"id": c.ParserBooleanToken.ONE})]
         result = target.process_lines(lines)
         tm.fail(result)

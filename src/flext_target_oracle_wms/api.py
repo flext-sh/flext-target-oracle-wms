@@ -13,7 +13,7 @@ from typing import Annotated, override
 
 from flext_meltano import FlextMeltanoTargetServiceBase
 
-from flext_target_oracle_wms import c, p, t, u
+from flext_target_oracle_wms import c, m, p, t
 from flext_target_oracle_wms._utilities.service_runtime import (
     FlextTargetOracleWmsServiceRuntime,
 )
@@ -24,7 +24,7 @@ class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
 
     target_name: Annotated[
         t.NonEmptyStr,
-        u.Field(description="Canonical Singer target identifier."),
+        m.Field(description="Canonical Singer target identifier."),
     ] = c.TargetOracleWms.TARGET_NAME
 
     @override
@@ -43,7 +43,7 @@ class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
             The resulting ``p.Meltano.SingerDrainSink``.
 
         """
-        target_config: t.ScalarMapping = (
+        target_config: t.JsonMapping = (
             self.settings_overrides if self.settings_overrides is not None else {}
         )
         return FlextTargetOracleWmsServiceRuntime.create_sink(

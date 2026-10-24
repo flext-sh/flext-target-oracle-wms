@@ -8,9 +8,7 @@ from __future__ import annotations
 
 from typing import override
 
-from flext_tests import r, tm
-
-from tests import _record_msg, _schema_msg, m, p, t, u
+from tests import _record_msg, _schema_msg, c, m, p, r, t, tm, u
 
 
 class TestsFlextTargetOracleWmsFailingTransformer(
@@ -45,7 +43,7 @@ class TestsFlextTargetOracleWmsStream:
         )
         result = proc.initialize_stream(_schema_msg("orders"))
         tm.ok(result)
-        tm.that(result.value, eq=True)
+        tm.ok(result.value)
 
     @staticmethod
     def test_initialize_registers_table() -> None:
@@ -57,8 +55,7 @@ class TestsFlextTargetOracleWmsStream:
         )
         proc.initialize_stream(_schema_msg("items"))
         table_result = manager.get_table_name("items")
-        tm.ok(table_result)
-        tm.that(table_result.value, eq="ITEMS")
+        tm.ok(table_result, eq="ITEMS")
 
     @staticmethod
     def test_process_record_after_init() -> None:
@@ -69,7 +66,9 @@ class TestsFlextTargetOracleWmsStream:
         )
         schema = _schema_msg("orders")
         proc.initialize_stream(schema)
-        result = proc.process_record(_record_msg("orders", {"id": "1"}), schema)
+        result = proc.process_record(
+            _record_msg("orders", {"id": c.ParserBooleanToken.ONE}), schema
+        )
         tm.ok(result)
 
     @staticmethod
@@ -80,13 +79,11 @@ class TestsFlextTargetOracleWmsStream:
             u.TargetOracleWms.WMSDataTransformer(),
         )
         result = proc.process_record(
-            _record_msg("orders", {"id": "1"}),
+            _record_msg("orders", {"id": c.ParserBooleanToken.ONE}),
             _schema_msg("orders"),
         )
-        tm.fail(result)
-        error = result.error
-        assert error is not None
-        assert "not registered" in error.lower() or "lookup" in error.lower()
+        error = tm.fail(result)
+        tm.ok("not registered" in error.lower() or "lookup" in error.lower())
 
     @staticmethod
     def test_process_record_uppercases_keys() -> None:
@@ -126,7 +123,9 @@ class TestsFlextTargetOracleWmsStream:
         schema_b = _schema_msg("beta")
         proc.initialize_stream(schema_a)
         proc.initialize_stream(schema_b)
-        r_a = proc.process_record(_record_msg("alpha", {"id": "1"}), schema_a)
+        r_a = proc.process_record(
+            _record_msg("alpha", {"id": c.ParserBooleanToken.ONE}), schema_a
+        )
         r_b = proc.process_record(_record_msg("beta", {"id": "2"}), schema_b)
         tm.ok(r_a)
         tm.ok(r_b)

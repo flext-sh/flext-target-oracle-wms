@@ -6,8 +6,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_meltano import c as meltano_c
-
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
 from tests import c, m, p, tm, u
 
@@ -72,7 +70,7 @@ class TestsFlextTargetOracleWmsQuality:
         """Target defaults mirror the flext-meltano constants SSOT they derive from."""
         tm.that(
             c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE,
-            eq=meltano_c.Meltano.BATCH_DEFAULT_DEFAULT_BATCH_SIZE,
+            eq=c.Meltano.BATCH_DEFAULT_DEFAULT_BATCH_SIZE,
         )
 
     @staticmethod
@@ -90,7 +88,7 @@ class TestsFlextTargetOracleWmsQuality:
         """Test cli defaults."""
         cli = FlextTargetOracleWmsCli()
         tm.that(cli.name, eq=c.TargetOracleWms.TARGET_NAME)
-        assert cli.version
+        tm.that(cli.version, truth=True)
 
     @staticmethod
     def test_catalog_manager_instantiates() -> None:
