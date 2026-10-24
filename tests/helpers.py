@@ -26,7 +26,7 @@ def _schema_msg(
     message: m.Meltano.SingerSchemaMessage = (
         m.Meltano.SingerSchemaMessage.model_validate({
             "type": c.Meltano.SingerMessageType.SCHEMA,
-            "stream": stream,
+            c.ProcessingMode.STREAM: stream,
             "schema": {"type": "object"},
             "key_properties": key_properties or ["id"],
         })
@@ -41,7 +41,7 @@ def _record_msg(
     return m.Meltano.SingerRecordMessage(
         type=c.Meltano.SingerMessageType.RECORD,
         stream=stream,
-        record=record or {"id": "1"},
+        record=record or {"id": c.ParserBooleanToken.ONE},
     )
 
 

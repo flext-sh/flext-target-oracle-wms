@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import math
 
-from tests import _record_msg, _schema_msg, tm, u
+from tests import _record_msg, _schema_msg, c, tm, u
 
 
 class TestsFlextTargetOracleWmsWmsPatterns:
@@ -104,7 +104,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         """Test preserves stream name."""
         transformer = u.TargetOracleWms.WMSDataTransformer()
         result = transformer.transform_record(
-            _record_msg("orders", {"id": "1"}),
+            _record_msg("orders", {"id": c.ParserBooleanToken.ONE}),
             _schema_msg("orders"),
         )
         tm.ok(result)

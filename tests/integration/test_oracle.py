@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import pytest
 
-from tests import _valid_config, m, t, tm, u
+from tests import _valid_config, c, m, t, tm, u
 
 
 def _schema_line(
@@ -18,7 +18,7 @@ def _schema_line(
 ) -> str:
     schema_fields = dict(field_defs.items())
     return m.Meltano.SingerSchemaMessage.model_validate({
-        "stream": stream_name,
+        c.ProcessingMode.STREAM: stream_name,
         "schema": {"type": "object", "properties": schema_fields},
         "key_properties": list(key_fields),
     }).model_dump_json(by_alias=True, exclude_none=True)
@@ -57,8 +57,8 @@ class TestsFlextTargetOracleWmsOracle:
                 {"id": {"type": "string"}, "name": {"type": "string"}},
                 ["id"],
             ),
-            _record_line("items", {"id": "1", "name": "Widget"}),
-            _state_line({"bookmarks": {"items": "1"}}),
+            _record_line("items", {"id": c.ParserBooleanToken.ONE, "name": "Widget"}),
+            _state_line({"bookmarks": {"items": c.ParserBooleanToken.ONE}}),
         ]
         tm.ok(target.process_lines(lines))
         tm.ok(target.cleanup())

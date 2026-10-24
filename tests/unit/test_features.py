@@ -71,7 +71,7 @@ class TestsFlextTargetOracleWmsFeatures:
         schema: m.Meltano.SingerSchemaMessage = (
             m.Meltano.SingerSchemaMessage.model_validate({
                 "type": c.Meltano.SingerMessageType.SCHEMA,
-                "stream": "s",
+                c.ProcessingMode.STREAM: "s",
                 "schema": {"type": "object"},
                 "key_properties": ["name"],
             })

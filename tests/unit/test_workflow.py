@@ -9,7 +9,7 @@ from __future__ import annotations
 import json as _stdlib_json
 
 from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
-from tests import _valid_config, t, tm, u
+from tests import _valid_config, c, t, tm, u
 
 
 def _schema_line(
@@ -20,7 +20,7 @@ def _schema_line(
     _ = props
     return _stdlib_json.dumps({
         "type": "SCHEMA",
-        "stream": stream,
+        c.ProcessingMode.STREAM: stream,
         "schema": {"type": "object"},
         "key_properties": list(keys),
     })
@@ -29,7 +29,7 @@ def _schema_line(
 def _record_line(stream: str, record: t.JsonMapping) -> str:
     return _stdlib_json.dumps({
         "type": "RECORD",
-        "stream": stream,
+        c.ProcessingMode.STREAM: stream,
         "record": dict(record),
     })
 
@@ -78,7 +78,7 @@ class TestsFlextTargetOracleWmsWorkflow:
         target = u.TargetOracleWms.Target(_valid_config())
         lines = [
             _schema_line("s", {"id": {"type": "string"}}, ["id"]),
-            _record_line("s", {"id": "1"}),
+            _record_line("s", {"id": c.ParserBooleanToken.ONE}),
             _schema_line(
                 "s",
                 {"id": {"type": "string"}, "name": {"type": "string"}},
@@ -111,7 +111,7 @@ class TestsFlextTargetOracleWmsWorkflow:
         """Test cli execute with messages."""
         lines = [
             _schema_line("test", {"id": {"type": "string"}}, ["id"]),
-            _record_line("test", {"id": "1"}),
+            _record_line("test", {"id": c.ParserBooleanToken.ONE}),
             _state_line({"bookmarks": {}}),
         ]
         cli = FlextTargetOracleWmsCli()
@@ -133,6 +133,6 @@ class TestsFlextTargetOracleWmsWorkflow:
     def test_record_for_unknown_stream_fails() -> None:
         """Test record for unknown stream fails."""
         target = u.TargetOracleWms.Target(_valid_config())
-        lines = [_record_line("unknown_stream", {"id": "1"})]
+        lines = [_record_line("unknown_stream", {"id": c.ParserBooleanToken.ONE})]
         result = target.process_lines(lines)
         tm.fail(result)

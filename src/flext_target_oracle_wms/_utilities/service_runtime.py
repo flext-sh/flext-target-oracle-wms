@@ -79,7 +79,7 @@ class FlextTargetOracleWmsServiceRuntime:
             result = self._runtime_target.handle_record_message(
                 m.Meltano.SingerRecordMessage.model_validate({
                     "type": "RECORD",
-                    "stream": self.stream_name,
+                    c.ProcessingMode.STREAM: self.stream_name,
                     "record": u.normalize_to_json_mapping(record),
                 }),
             )
@@ -126,7 +126,7 @@ class FlextTargetOracleWmsServiceRuntime:
         normalized_schema = cls.normalize_flat_schema(schema)
         schema_message = m.Meltano.SingerSchemaMessage.model_validate({
             "type": "SCHEMA",
-            "stream": stream_name,
+            c.ProcessingMode.STREAM: stream_name,
             "schema": normalized_schema,
             "key_properties": [],
         })

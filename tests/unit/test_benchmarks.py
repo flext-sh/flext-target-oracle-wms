@@ -16,7 +16,7 @@ from tests import c, m, tm, u
 def _schema_msg(stream: str = "bench") -> m.Meltano.SingerSchemaMessage:
     return m.Meltano.SingerSchemaMessage.model_validate({
         "type": c.Meltano.SingerMessageType.SCHEMA,
-        "stream": stream,
+        c.ProcessingMode.STREAM: stream,
         "schema": {"type": "object"},
         "key_properties": ["id"],
     })
@@ -26,7 +26,7 @@ def _record_msg(stream: str = "bench") -> m.Meltano.SingerRecordMessage:
     return m.Meltano.SingerRecordMessage(
         type=c.Meltano.SingerMessageType.RECORD,
         stream=stream,
-        record={"id": "1", "qty": 100},
+        record={"id": c.ParserBooleanToken.ONE, "qty": 100},
     )
 
 

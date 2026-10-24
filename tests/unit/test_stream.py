@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import override
 
-from tests import _record_msg, _schema_msg, m, p, r, t, tm, u
+from tests import _record_msg, _schema_msg, c, m, p, r, t, tm, u
 
 
 class TestsFlextTargetOracleWmsFailingTransformer(
@@ -66,7 +66,9 @@ class TestsFlextTargetOracleWmsStream:
         )
         schema = _schema_msg("orders")
         proc.initialize_stream(schema)
-        result = proc.process_record(_record_msg("orders", {"id": "1"}), schema)
+        result = proc.process_record(
+            _record_msg("orders", {"id": c.ParserBooleanToken.ONE}), schema
+        )
         tm.ok(result)
 
     @staticmethod
@@ -77,7 +79,7 @@ class TestsFlextTargetOracleWmsStream:
             u.TargetOracleWms.WMSDataTransformer(),
         )
         result = proc.process_record(
-            _record_msg("orders", {"id": "1"}),
+            _record_msg("orders", {"id": c.ParserBooleanToken.ONE}),
             _schema_msg("orders"),
         )
         error = tm.fail(result)
@@ -121,7 +123,9 @@ class TestsFlextTargetOracleWmsStream:
         schema_b = _schema_msg("beta")
         proc.initialize_stream(schema_a)
         proc.initialize_stream(schema_b)
-        r_a = proc.process_record(_record_msg("alpha", {"id": "1"}), schema_a)
+        r_a = proc.process_record(
+            _record_msg("alpha", {"id": c.ParserBooleanToken.ONE}), schema_a
+        )
         r_b = proc.process_record(_record_msg("beta", {"id": "2"}), schema_b)
         tm.ok(r_a)
         tm.ok(r_b)

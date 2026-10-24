@@ -122,7 +122,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
             return r[m.Meltano.SingerRecordMessage].ok(
                 m.Meltano.SingerRecordMessage.model_validate({
                     "type": typed_record.type,
-                    "stream": typed_record.stream,
+                    c.ProcessingMode.STREAM: typed_record.stream,
                     "record": transformed,
                     "time_extracted": typed_record.time_extracted,
                     "version": typed_record.version,
