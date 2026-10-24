@@ -1,12 +1,13 @@
 # AGENTS.md — flext-target-oracle-wms
 
-> **Parent workspace law** lives in [`../AGENTS.md`](../AGENTS.md) — read it first.
-> Universal engineering core: `~/.agents/UNIVERSAL_CORE.md`. Composition: global
-> skills + parent/root `AGENTS.md` + this scope delta. Do not re-embed universal law.
->
-> **Standalone / independent mode:** when `../AGENTS.md` does not resolve, pin the
-> parent raw `AGENTS.md` URL to the same branch/release as this package (never
-> `main`): <https://raw.githubusercontent.com/flext-sh/flext/0.12.0-dev/AGENTS.md>
+Read the branch-matched [FLEXT root](../AGENTS.md) and its local flext-law through
+that root's authority entry point. In standalone mode resolve the same branch or
+release; a coincidental parent instruction file does not establish FLEXT authority.
+This file adds only this package's domain delta. Command routing, architecture
+and universal execution stay with their parent owners.
+
+Embedded AI Hub or Beads generated blocks are retired delivery material, not
+active local rules. Their withdrawal remains the publisher's responsibility.
 
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-BEGIN -->
 
@@ -18,42 +19,10 @@
 Singer **target** (loader) for Oracle WMS. Thin driver over `flext-meltano` (ADR-006),
 delegating WMS logic to `flext-oracle-wms`.
 
-## Structure
-
-```text
-src/flext_target_oracle_wms/
-├── api.py            # FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase)
-├── cli.py            # FlextTargetOracleWmsCli + main entry point
-├── _utilities/
-│   ├── client.py     # FlextTargetOracleWmsUtilitiesClient (CatalogManager, StreamProcessor, Target)
-│   ├── helpers.py    # FlextTargetOracleWmsUtilitiesHelpers (WMSTableManager, WMSDataTransformer, etc.)
-│   └── service_runtime.py   # FlextTargetOracleWmsServiceRuntime — WMS target + sink creation
-├── constants.py typings.py protocols.py models.py utilities.py   # AUTO-GENERATED facets
-├── _config.py _settings.py   # private config/settings
-└── config/           # execution parametrization (YAML)
-```
-
-## Code Map
-
-| Symbol                               | Kind  | Location                        | Role                                     |
-| ------------------------------------ | ----- | ------------------------------- | ---------------------------------------- |
-| `FlextTargetOracleWmsService`        | class | `api.py`                        | target service; delegates to the runtime |
-| `FlextTargetOracleWmsServiceRuntime` | class | `_utilities/service_runtime.py` | WMS sink creation + transform            |
-
 ## Conventions (specific to this package)
 
 - **One canonical service path** through `api.py` + `service_runtime.py` — no parallel
   `simple_api` branch. WMS config uses namespaced settings.
-- Config/settings canonical pattern: ADR-012.
-- Codemod governance (ast-grep + make mod): ADR-014.
-
-## Commands
-
-```bash
-make setup
-make check
-make test
-```
 
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->
 
