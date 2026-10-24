@@ -40,7 +40,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
             """
             if singer_type in {"object", "array"}:
                 return r[t.JsonValue].ok(
-                    t
+                    u
                     .json_value_adapter()
                     .dump_json(u.normalize_to_json_value(value))
                     .decode(c.DEFAULT_ENCODING),
