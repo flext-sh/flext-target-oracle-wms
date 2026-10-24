@@ -44,7 +44,7 @@ src/flext_target_oracle_wms/
 
 - **One canonical service path** through `api.py` + `service_runtime.py` — no parallel
   `simple_api` branch. WMS config uses namespaced settings.
-- Config/settings canonical pattern: ADR-012.
+- Config/settings canonical pattern: ADR-005 (SSOT) and ADR-024 (DI config contract).
 - Codemod governance (ast-grep + make mod): ADR-014.
 
 ## Commands
@@ -52,7 +52,7 @@ src/flext_target_oracle_wms/
 ```bash
 make setup
 make check
-make test
+make tests
 ```
 
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->
