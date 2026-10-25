@@ -14,7 +14,9 @@ from flext_meltano import FlextMeltanoModels
 from flext_oracle_wms import FlextOracleWmsModels
 
 from flext_target_oracle_wms._models import (
+    FlextTargetOracleWmsModelsAuth,
     FlextTargetOracleWmsModelsConfig,
+    FlextTargetOracleWmsModelsSinger,
     FlextTargetOracleWmsModelsTarget,
 )
 
@@ -31,19 +33,13 @@ class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
     """
 
     class TargetOracleWms(
+        FlextTargetOracleWmsModelsAuth,
         FlextTargetOracleWmsModelsConfig,
+        FlextTargetOracleWmsModelsSinger,
         FlextTargetOracleWmsModelsTarget,
     ):
         """Target Oracle WMS model namespace — m.TargetOracleWms.*."""
 
-        WmsAuthenticationConfig = (
-            FlextTargetOracleWmsModelsTarget.WmsAuthenticationConfig
-        )
-        WmsTargetConfig = FlextTargetOracleWmsModelsTarget.WmsTargetConfig
-        SingerFieldSchema = FlextTargetOracleWmsModelsTarget.SingerFieldSchema
-        SingerSchemaProperties = FlextTargetOracleWmsModelsTarget.SingerSchemaProperties
-
 
 m = FlextTargetOracleWmsModels
-
 __all__: list[str] = ["FlextTargetOracleWmsModels", "m"]

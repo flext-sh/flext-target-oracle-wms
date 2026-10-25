@@ -10,34 +10,51 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_target_oracle_wms import FlextTargetOracleWmsUtilities, t, u
+from typing import TYPE_CHECKING, ClassVar
 
-logger = u.fetch_logger(__name__)
+from flext_target_oracle_wms import t, u
+
+if TYPE_CHECKING:
+    from flext_target_oracle_wms import p
 
 
-def run_error_handling_example() -> t.Scalar:
-    """Run error handling example with Oracle WMS resilience patterns.
+class FlextTargetOracleWmsExampleErrorHandling:
+    """Error handling through result failures of the WMS table manager."""
 
-    Returns:
-        The resulting ``t.Scalar``.
+    logger: ClassVar[p.Logger] = u.fetch_logger(__name__)
+    UNKNOWN_STREAM: ClassVar[str] = "nonexistent"
 
-    Raises:
-        SystemExit: If a ``(RuntimeError, OSError, ValueError)`` is caught.
+    @staticmethod
+    def run_error_handling_example() -> t.Scalar:
+        """Run error handling example with Oracle WMS resilience patterns.
 
-    """
-    logger.info("Starting error handling example")
-    try:
-        tm = FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTableManager()
-        result = tm.get_table_name("nonexistent")
+        Failures travel as ``r`` results; unexpected exceptions escape unchanged.
+
+        Returns:
+            The resulting ``t.Scalar``.
+
+        """
+        example = FlextTargetOracleWmsExampleErrorHandling
+        example.logger.info("Starting error handling example")
+        manager = u.TargetOracleWms.WMSTableManager()
+        result = manager.get_table_name(example.UNKNOWN_STREAM)
         if result.failure:
-            logger.info("Expected failure handled: %s", result.error)
-        logger.info("Error handling example completed successfully")
-    except (RuntimeError, OSError, ValueError):
-        logger.exception("Unexpected error during processing")
-        raise SystemExit(1) from None
-    return True
+            example.logger.info("Expected failure handled: %s", result.error)
+        example.logger.info("Error handling example completed successfully")
+        return True
 
+    @staticmethod
+    def main() -> t.Scalar:
+        """Run the error handling example.
+
+        Returns:
+            ``True`` when the example completed.
+
+        """
+        return FlextTargetOracleWmsExampleErrorHandling.run_error_handling_example()
+
+
+__all__: list[str] = ["FlextTargetOracleWmsExampleErrorHandling"]
 
 if __name__ == "__main__":
-    """Run the error handling example."""
-    run_error_handling_example()
+    FlextTargetOracleWmsExampleErrorHandling.main()

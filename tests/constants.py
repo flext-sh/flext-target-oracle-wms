@@ -12,7 +12,7 @@ from typing import ClassVar
 
 from flext_tests import FlextTestsConstants
 
-from flext_target_oracle_wms import FlextTargetOracleWmsConstants, t
+from flext_target_oracle_wms import FlextTargetOracleWmsConstants
 
 
 class TestsFlextTargetOracleWmsConstants(
@@ -32,19 +32,17 @@ class TestsFlextTargetOracleWmsConstants(
         class Tests(FlextTestsConstants.Tests):
             """Target Oracle WMS-specific test constants."""
 
-            PROJECT_ROOT_PARENT_DEPTH: ClassVar[int] = 1
-            ALLOWED_MODULE_FUNCTIONS: ClassVar[t.MappingKV[str, frozenset[str]]] = {
-                "cli.py": frozenset({"main"}),
-            }
             PERF_ITERATIONS: ClassVar[int] = 500
             PERF_THRESHOLD_SEC: ClassVar[float] = 5.0
-            MIN_EXAMPLE_FILE_COUNT: ClassVar[int] = 4
-            MIN_MODULE_DOCSTRING_LENGTH: ClassVar[int] = 50
-            MIN_FUNCTION_DOCSTRING_LENGTH: ClassVar[int] = 10
-            MIN_DOCUMENTED_FUNCTION_RATIO: ClassVar[float] = 0.8
-            MIN_README_LENGTH: ClassVar[int] = 1000
-            MIN_EXAMPLE_STEM_LENGTH: ClassVar[int] = 5
             MIN_SEMVER_SEPARATOR_COUNT: ClassVar[int] = 2
+            # Scenario data for the WMS auth block; the secret is generated per
+            # build (``u.TargetOracleWms.Tests.valid_config``), never a literal.
+            WMS_BASE_URL: ClassVar[str] = "https://test.wms.example.com"
+            WMS_USERNAME: ClassVar[str] = "user"
+            WMS_SECRET_BYTES: ClassVar[int] = 16
+            DEFAULT_STREAM: ClassVar[str] = "test_stream"
+            BENCH_STREAM: ClassVar[str] = "bench"
+            CONFIG_FILE_NAME: ClassVar[str] = "settings.json"
 
 
 c = TestsFlextTargetOracleWmsConstants

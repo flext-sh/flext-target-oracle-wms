@@ -34,21 +34,20 @@ class FlextTargetOracleWmsServiceRuntime:
         @classmethod
         def create(
             cls,
-            *,
             runtime_target: FlextTargetOracleWmsUtilitiesClient.Target,
             target: m.Meltano.SingerTargetBase,
             stream_name: str,
             schema: t.JsonDict,
-            key_properties: t.StrSequence,
         ) -> FlextTargetOracleWmsServiceRuntime.Sink:
             """Create an adapter sink and attach the Oracle WMS runtime target.
+
+            The WMS runtime declares no stream key properties.
 
             Args:
                 runtime_target: Oracle WMS runtime target receiving records.
                 target: Singer target base instance owning the sink.
                 stream_name: Name of the Singer stream the sink receives.
                 schema: Normalized Singer schema for the stream.
-                key_properties: Stream key properties for record identity.
 
             Returns:
                 The resulting ``FlextTargetOracleWmsServiceRuntime.Sink``.
@@ -58,7 +57,7 @@ class FlextTargetOracleWmsServiceRuntime:
                 target=target,
                 stream_name=stream_name,
                 schema=schema,
-                key_properties=key_properties,
+                key_properties=[],
             )
             service_sink._runtime_target = runtime_target
             return service_sink
@@ -142,7 +141,6 @@ class FlextTargetOracleWmsServiceRuntime:
             ),
             stream_name=stream_name,
             schema=normalized_schema,
-            key_properties=[],
         )
 
     @staticmethod

@@ -27,12 +27,8 @@ class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtiliti
         FlextTargetOracleWmsUtilitiesHelpers,
         FlextTargetOracleWmsServiceRuntime,
     ):
-        """Project-local namespace aggregating Client and Helpers public classes."""
-
-        Client = FlextTargetOracleWmsUtilitiesClient
-        Helpers = FlextTargetOracleWmsUtilitiesHelpers
+        """Project-local namespace inheriting the Client and Helpers public classes."""
 
 
 u = FlextTargetOracleWmsUtilities
-
 __all__: list[str] = ["FlextTargetOracleWmsUtilities", "u"]

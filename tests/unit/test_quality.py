@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
+from flext_target_oracle_wms import FlextTargetOracleWmsCli
 from tests import c, m, p, tm, u
 
 

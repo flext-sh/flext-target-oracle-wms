@@ -14,25 +14,11 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from flext_target_oracle_wms import __version__, main
-from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
-from tests import c, tm
+from flext_target_oracle_wms import FlextTargetOracleWmsCli, __version__, main
+from tests import c, tm, u
 
 if TYPE_CHECKING:
     from pathlib import Path
-
-
-def _valid_config_json() -> str:
-    return (
-        '{"wms_auth": {"base_url": "https://test.wms.example.com", '
-        '"username": "user", "password": "pass"}}'
-    )
-
-
-def _write_config_file(config_json: str, tmp_path: Path) -> str:
-    config_file = tmp_path / "settings.json"
-    config_file.write_text(config_json, encoding="utf-8")
-    return str(config_file)
 
 
 class TestsFlextTargetOracleWmsOracleWmsCli:
@@ -50,7 +36,9 @@ class TestsFlextTargetOracleWmsOracleWmsCli:
     def test_execute_with_config_file(tmp_path: Path) -> None:
         """Test execute with config file."""
         cli = FlextTargetOracleWmsCli()
-        config_path = _write_config_file(_valid_config_json(), tmp_path)
+        config_path = u.TargetOracleWms.Tests.write_config_file(
+            u.TargetOracleWms.Tests.valid_config_json(), tmp_path
+        )
         result = cli.execute(message_lines=[], settings=config_path)
         tm.ok(result)
 
@@ -72,7 +60,7 @@ class TestsFlextTargetOracleWmsOracleWmsCli:
     def test_execute_with_non_object_config_fails(tmp_path: Path) -> None:
         """Test execute with non object config fails."""
         cli = FlextTargetOracleWmsCli()
-        bad_path = _write_config_file("[1, 2, 3]", tmp_path)
+        bad_path = u.TargetOracleWms.Tests.write_config_file("[1, 2, 3]", tmp_path)
         with pytest.raises(c.ValidationError):
             cli.execute(message_lines=[], settings=bad_path)
 
@@ -84,7 +72,9 @@ class TestsFlextTargetOracleWmsOracleWmsCli:
     @staticmethod
     def test_main_with_config_arg(tmp_path: Path) -> None:
         """Test main with config arg."""
-        config_path = _write_config_file(_valid_config_json(), tmp_path)
+        config_path = u.TargetOracleWms.Tests.write_config_file(
+            u.TargetOracleWms.Tests.valid_config_json(), tmp_path
+        )
         main(argv=["target-oracle-wms", "--config", config_path], message_lines=[])
 
     @staticmethod

@@ -109,12 +109,7 @@ class TestsFlextTargetOracleWmsCatalog:
         """Test multiple independent streams."""
         mgr = u.TargetOracleWms.CatalogManager()
         for name in ("alpha", "beta", "gamma"):
-            mgr.add_stream(
-                m.Meltano.SingerSchemaMessage.model_validate({
-                    c.ProcessingMode.STREAM: name,
-                    "schema": {"type": "object"},
-                }),
-            )
+            mgr.add_stream(u.TargetOracleWms.Tests.schema_msg(name))
         for name in ("alpha", "beta", "gamma"):
             tm.ok(mgr.get_stream(name))
 

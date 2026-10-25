@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import math
 
-from tests import _record_msg, _schema_msg, c, tm, u
+from tests import c, tm, u
 
 
 class TestsFlextTargetOracleWmsWmsPatterns:
@@ -91,8 +91,8 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         """Test uppercases record keys."""
         transformer = u.TargetOracleWms.WMSDataTransformer()
         result = transformer.transform_record(
-            _record_msg("s", {"name": "alice", "age": "30"}),
-            _schema_msg("s"),
+            u.TargetOracleWms.Tests.record_msg("s", {"name": "alice", "age": "30"}),
+            u.TargetOracleWms.Tests.schema_msg("s"),
         )
         tm.ok(result)
         tm.that(result.value, none=False)
@@ -104,8 +104,10 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         """Test preserves stream name."""
         transformer = u.TargetOracleWms.WMSDataTransformer()
         result = transformer.transform_record(
-            _record_msg("orders", {"id": c.ParserBooleanToken.ONE}),
-            _schema_msg("orders"),
+            u.TargetOracleWms.Tests.record_msg(
+                "orders", {"id": c.ParserBooleanToken.ONE}
+            ),
+            u.TargetOracleWms.Tests.schema_msg("orders"),
         )
         tm.ok(result)
         tm.that(result.value, none=False)
@@ -117,8 +119,8 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         converter = u.TargetOracleWms.WMSTypeConverter()
         transformer = u.TargetOracleWms.WMSDataTransformer(type_converter=converter)
         result = transformer.transform_record(
-            _record_msg("s", {"qty": 10}),
-            _schema_msg("s"),
+            u.TargetOracleWms.Tests.record_msg("s", {"qty": 10}),
+            u.TargetOracleWms.Tests.schema_msg("s"),
         )
         tm.ok(result)
         tm.that(result.value, none=False)
@@ -128,7 +130,9 @@ class TestsFlextTargetOracleWmsWmsPatterns:
     def test_transform_without_schema() -> None:
         """Test transform without schema."""
         transformer = u.TargetOracleWms.WMSDataTransformer()
-        result = transformer.transform_record(_record_msg("s", {"name": "bob"}), None)
+        result = transformer.transform_record(
+            u.TargetOracleWms.Tests.record_msg("s", {"name": "bob"}), None
+        )
         tm.ok(result)
         tm.that(result.value, none=False)
         tm.that(result.value.record, has="NAME")
@@ -154,18 +158,3 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         manager = u.TargetOracleWms.WMSTableManager()
         result = manager.get_table_name("nope")
         tm.fail(result)
-
-    @staticmethod
-    def test_multiple_streams() -> None:
-        """Test multiple streams."""
-        manager = u.TargetOracleWms.WMSTableManager()
-        manager.register_stream("a")
-        manager.register_stream("b")
-        result_a = manager.get_table_name("a")
-        tm.ok(result_a)
-        tm.that(result_a.value, none=False)
-        result_b = manager.get_table_name("b")
-        tm.ok(result_b)
-        tm.that(result_b.value, none=False)
-        tm.that(result_a.value, eq="A")
-        tm.that(result_b.value, eq="B")

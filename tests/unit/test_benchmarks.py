@@ -10,24 +10,7 @@ from __future__ import annotations
 
 import time
 
-from tests import c, m, tm, u
-
-
-def _schema_msg(stream: str = "bench") -> m.Meltano.SingerSchemaMessage:
-    return m.Meltano.SingerSchemaMessage.model_validate({
-        "type": c.Meltano.SingerMessageType.SCHEMA,
-        c.ProcessingMode.STREAM: stream,
-        "schema": {"type": "object"},
-        "key_properties": ["id"],
-    })
-
-
-def _record_msg(stream: str = "bench") -> m.Meltano.SingerRecordMessage:
-    return m.Meltano.SingerRecordMessage(
-        type=c.Meltano.SingerMessageType.RECORD,
-        stream=stream,
-        record={"id": c.ParserBooleanToken.ONE, "qty": 100},
-    )
+from tests import c, tm, u
 
 
 class TestsFlextTargetOracleWmsBenchmarks:
@@ -72,7 +55,7 @@ class TestsFlextTargetOracleWmsBenchmarks:
         start = time.time()
         for i in range(c.TargetOracleWms.Tests.PERF_ITERATIONS):
             name = f"stream_{i}"
-            mgr.add_stream(_schema_msg(name))
+            mgr.add_stream(u.TargetOracleWms.Tests.schema_msg(name))
             mgr.get_stream(name)
         elapsed = time.time() - start
         tm.that(elapsed, lt=c.TargetOracleWms.Tests.PERF_THRESHOLD_SEC)
@@ -81,8 +64,11 @@ class TestsFlextTargetOracleWmsBenchmarks:
     def test_transform_record_performance() -> None:
         """Test transform record performance."""
         transformer = u.TargetOracleWms.WMSDataTransformer()
-        rec = _record_msg()
-        schema = _schema_msg()
+        bench = c.TargetOracleWms.Tests.BENCH_STREAM
+        rec = u.TargetOracleWms.Tests.record_msg(
+            bench, {"id": c.ParserBooleanToken.ONE, "qty": 100}
+        )
+        schema = u.TargetOracleWms.Tests.schema_msg(bench)
         start = time.time()
         for _ in range(c.TargetOracleWms.Tests.PERF_ITERATIONS):
             transformer.transform_record(rec, schema)

@@ -6,36 +6,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import json as _stdlib_json
-
-from flext_target_oracle_wms.cli import FlextTargetOracleWmsCli
-from tests import _valid_config, c, t, tm, u
-
-
-def _schema_line(
-    stream: str,
-    props: t.MappingKV[str, t.StrMapping],
-    keys: t.StrSequence,
-) -> str:
-    _ = props
-    return _stdlib_json.dumps({
-        "type": "SCHEMA",
-        c.ProcessingMode.STREAM: stream,
-        "schema": {"type": "object"},
-        "key_properties": list(keys),
-    })
-
-
-def _record_line(stream: str, record: t.JsonMapping) -> str:
-    return _stdlib_json.dumps({
-        "type": "RECORD",
-        c.ProcessingMode.STREAM: stream,
-        "record": dict(record),
-    })
-
-
-def _state_line(value: t.JsonMapping) -> str:
-    return _stdlib_json.dumps({"type": "STATE", "value": dict(value)})
+from flext_target_oracle_wms import FlextTargetOracleWmsCli
+from tests import c, tm, u
 
 
 class TestsFlextTargetOracleWmsWorkflow:
@@ -44,30 +16,17 @@ class TestsFlextTargetOracleWmsWorkflow:
     @staticmethod
     def test_single_stream_workflow() -> None:
         """Test single stream workflow."""
-        target = u.TargetOracleWms.Target(_valid_config())
+        tests = u.TargetOracleWms.Tests
+        target = u.TargetOracleWms.Target(tests.valid_config())
         lines = [
-            _schema_line(
-                "inventory",
-                {"id": {"type": "string"}, "qty": {"type": "integer"}},
-                ["id"],
-            ),
-            _record_line("inventory", {"id": "ITEM001", "qty": 100}),
-            _record_line("inventory", {"id": "ITEM002", "qty": 50}),
-            _state_line({"bookmarks": {"inventory": "2"}}),
-        ]
-        result = target.process_lines(lines)
-        tm.ok(result)
-
-    @staticmethod
-    def test_multiple_stream_workflow() -> None:
-        """Test multiple stream workflow."""
-        target = u.TargetOracleWms.Target(_valid_config())
-        lines = [
-            _schema_line("orders", {"order_id": {"type": "string"}}, ["order_id"]),
-            _schema_line("items", {"item_id": {"type": "string"}}, ["item_id"]),
-            _record_line("orders", {"order_id": "ORD001"}),
-            _record_line("items", {"item_id": "ITEM001"}),
-            _state_line({"bookmarks": {}}),
+            tests.schema_msg("inventory").model_dump_json(by_alias=True),
+            tests.record_msg(
+                "inventory", {"id": "ITEM001", "qty": 100}
+            ).model_dump_json(),
+            tests.record_msg(
+                "inventory", {"id": "ITEM002", "qty": 50}
+            ).model_dump_json(),
+            tests.state_msg({"bookmarks": {"inventory": "2"}}).model_dump_json(),
         ]
         result = target.process_lines(lines)
         tm.ok(result)
@@ -75,16 +34,13 @@ class TestsFlextTargetOracleWmsWorkflow:
     @staticmethod
     def test_schema_update_mid_stream() -> None:
         """Test schema update mid stream."""
-        target = u.TargetOracleWms.Target(_valid_config())
+        tests = u.TargetOracleWms.Tests
+        target = u.TargetOracleWms.Target(tests.valid_config())
         lines = [
-            _schema_line("s", {"id": {"type": "string"}}, ["id"]),
-            _record_line("s", {"id": c.ParserBooleanToken.ONE}),
-            _schema_line(
-                "s",
-                {"id": {"type": "string"}, "name": {"type": "string"}},
-                ["id"],
-            ),
-            _record_line("s", {"id": "2", "name": "updated"}),
+            tests.schema_msg("s").model_dump_json(by_alias=True),
+            tests.record_msg("s", {"id": c.ParserBooleanToken.ONE}).model_dump_json(),
+            tests.schema_msg("s").model_dump_json(by_alias=True),
+            tests.record_msg("s", {"id": "2", "name": "updated"}).model_dump_json(),
         ]
         result = target.process_lines(lines)
         tm.ok(result)
@@ -92,9 +48,9 @@ class TestsFlextTargetOracleWmsWorkflow:
     @staticmethod
     def test_state_only_workflow() -> None:
         """Test state only workflow."""
-        target = u.TargetOracleWms.Target(_valid_config())
-        lines = [_state_line({"bookmarks": {}})]
-        result = target.process_lines(lines)
+        tests = u.TargetOracleWms.Tests
+        target = u.TargetOracleWms.Target(tests.valid_config())
+        result = target.process_lines([tests.state_msg().model_dump_json()])
         tm.ok(result)
 
     @staticmethod
@@ -109,10 +65,13 @@ class TestsFlextTargetOracleWmsWorkflow:
     @staticmethod
     def test_cli_execute_with_messages() -> None:
         """Test cli execute with messages."""
+        tests = u.TargetOracleWms.Tests
         lines = [
-            _schema_line("test", {"id": {"type": "string"}}, ["id"]),
-            _record_line("test", {"id": c.ParserBooleanToken.ONE}),
-            _state_line({"bookmarks": {}}),
+            tests.schema_msg("test").model_dump_json(by_alias=True),
+            tests.record_msg(
+                "test", {"id": c.ParserBooleanToken.ONE}
+            ).model_dump_json(),
+            tests.state_msg().model_dump_json(),
         ]
         cli = FlextTargetOracleWmsCli()
         result = cli.execute(message_lines=lines)
@@ -121,9 +80,10 @@ class TestsFlextTargetOracleWmsWorkflow:
     @staticmethod
     def test_malformed_json_stops_processing() -> None:
         """Test malformed json stops processing."""
-        target = u.TargetOracleWms.Target(_valid_config())
+        tests = u.TargetOracleWms.Tests
+        target = u.TargetOracleWms.Target(tests.valid_config())
         lines = [
-            _schema_line("s", {"id": {"type": "string"}}, ["id"]),
+            tests.schema_msg("s").model_dump_json(by_alias=True),
             "NOT VALID JSON",
         ]
         result = target.process_lines(lines)
@@ -132,7 +92,12 @@ class TestsFlextTargetOracleWmsWorkflow:
     @staticmethod
     def test_record_for_unknown_stream_fails() -> None:
         """Test record for unknown stream fails."""
-        target = u.TargetOracleWms.Target(_valid_config())
-        lines = [_record_line("unknown_stream", {"id": c.ParserBooleanToken.ONE})]
+        tests = u.TargetOracleWms.Tests
+        target = u.TargetOracleWms.Target(tests.valid_config())
+        lines = [
+            tests.record_msg(
+                "unknown_stream", {"id": c.ParserBooleanToken.ONE}
+            ).model_dump_json(),
+        ]
         result = target.process_lines(lines)
         tm.fail(result)

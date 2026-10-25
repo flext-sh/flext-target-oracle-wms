@@ -8,6 +8,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import flext_target_oracle_wms
+from flext_target_oracle_wms import u
 from tests import c, tm
 
 
@@ -44,4 +45,4 @@ class TestsFlextTargetOracleWmsOracleWmsInit:
         ]
         for export in expected_exports:
             tm.that(flext_target_oracle_wms.__all__, has=export)
-        tm.that(flext_target_oracle_wms.u.TargetOracleWms.Client, is_=type)
+        tm.that(u.TargetOracleWms.Target, is_=type)

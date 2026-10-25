@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import math
 
-from tests import _valid_config, c, m, t, tm, u
+from tests import c, t, tm, u
 
 
 class TestsFlextTargetOracleWmsFeatures:
@@ -20,20 +20,20 @@ class TestsFlextTargetOracleWmsFeatures:
     @staticmethod
     def test_target_initialization() -> None:
         """Test target initialization."""
-        target = u.TargetOracleWms.Target(_valid_config())
+        target = u.TargetOracleWms.Target(u.TargetOracleWms.Tests.valid_config())
         tm.that(target.name, eq=c.TargetOracleWms.TARGET_NAME)
 
     @staticmethod
     def test_target_setup_cleanup_lifecycle() -> None:
         """Test target setup cleanup lifecycle."""
-        target = u.TargetOracleWms.Target(_valid_config())
+        target = u.TargetOracleWms.Target(u.TargetOracleWms.Tests.valid_config())
         tm.ok(target.setup())
         tm.ok(target.cleanup())
 
     @staticmethod
     def test_target_process_empty_lines() -> None:
         """Test target process empty lines."""
-        target = u.TargetOracleWms.Target(_valid_config())
+        target = u.TargetOracleWms.Target(u.TargetOracleWms.Tests.valid_config())
         tm.ok(target.process_lines([]))
 
     @staticmethod
@@ -58,25 +58,3 @@ class TestsFlextTargetOracleWmsFeatures:
         converter = u.TargetOracleWms.WMSTypeConverter()
         result = converter.convert_singer_to_oracle("string", "")
         tm.ok(result, eq="")
-
-    @staticmethod
-    def test_transformer_uppercases_keys() -> None:
-        """Test transformer uppercases keys."""
-        transformer = u.TargetOracleWms.WMSDataTransformer()
-        record = m.Meltano.SingerRecordMessage(
-            type=c.Meltano.SingerMessageType.RECORD,
-            stream="s",
-            record={"name": "test"},
-        )
-        schema: m.Meltano.SingerSchemaMessage = (
-            m.Meltano.SingerSchemaMessage.model_validate({
-                "type": c.Meltano.SingerMessageType.SCHEMA,
-                c.ProcessingMode.STREAM: "s",
-                "schema": {"type": "object"},
-                "key_properties": ["name"],
-            })
-        )
-        result = transformer.transform_record(record, schema)
-        tm.ok(result)
-        tm.that(result.value, none=False)
-        tm.that(result.value.record, has="NAME")

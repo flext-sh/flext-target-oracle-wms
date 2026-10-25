@@ -13,7 +13,6 @@ from flext_core import r
 
 from flext_target_oracle_wms import c, m, p, settings, t, u
 from flext_target_oracle_wms.__version__ import __version__
-from flext_target_oracle_wms._utilities import FlextTargetOracleWmsUtilitiesClient
 
 
 class FlextTargetOracleWmsCli:
@@ -71,7 +70,7 @@ class FlextTargetOracleWmsCli:
             The resulting ``p.Result[bool]``.
 
         """
-        target = FlextTargetOracleWmsUtilitiesClient.Target(settings)
+        target = u.TargetOracleWms.Target(settings)
         setup_result = target.setup().map_error(lambda e: e or "Setup failed")
         if setup_result.failure:
             return setup_result
@@ -82,7 +81,7 @@ class FlextTargetOracleWmsCli:
 
     @staticmethod
     def _finalize_target(
-        target: FlextTargetOracleWmsUtilitiesClient.Target,
+        target: u.TargetOracleWms.Target,
     ) -> p.Result[bool]:
         """Finalize target processing.
 
