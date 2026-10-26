@@ -14,9 +14,22 @@ from flext_core.lazy import install_lazy_exports
 
 if TYPE_CHECKING:
     from flext_oracle_wms import e
-    from flext_tests import api, td, tf, tk, tm
+    from flext_tests import api, install_local_packages, td, tf, tk, tm
 
-    from flext_target_oracle_wms import d, h, r, x
+    from flext_target_oracle_wms import (
+        cli,
+        config,
+        d,
+        h,
+        main,
+        meltano,
+        oracle_wms,
+        r,
+        settings,
+        target_oracle_wms,
+        web,
+        x,
+    )
     from tests.base import TestsFlextTargetOracleWmsServiceBase, s
     from tests.constants import TestsFlextTargetOracleWmsConstants, c
     from tests.models import TestsFlextTargetOracleWmsModels, m
@@ -36,19 +49,28 @@ __all__: tuple[str, ...] = (
     "TestsFlextTargetOracleWmsUtilities",
     "api",
     "c",
+    "cli",
+    "config",
     "d",
     "e",
     "h",
+    "install_local_packages",
     "m",
+    "main",
+    "meltano",
+    "oracle_wms",
     "p",
     "r",
     "s",
+    "settings",
     "t",
+    "target_oracle_wms",
     "td",
     "tf",
     "tk",
     "tm",
     "u",
+    "web",
     "x",
 )
 
@@ -65,19 +87,28 @@ install_lazy_exports(
         "TestsFlextTargetOracleWmsUtilities": ".utilities",
         "api": "flext_tests",
         "c": ".constants",
+        "cli": "flext_target_oracle_wms",
+        "config": "flext_target_oracle_wms",
         "d": "flext_target_oracle_wms",
         "e": "flext_oracle_wms",
         "h": "flext_target_oracle_wms",
+        "install_local_packages": "flext_tests",
         "m": ".models",
+        "main": "flext_target_oracle_wms",
+        "meltano": "flext_target_oracle_wms",
+        "oracle_wms": "flext_target_oracle_wms",
         "p": ".protocols",
         "r": "flext_target_oracle_wms",
         "s": ".base",
+        "settings": "flext_target_oracle_wms",
         "t": ".typings",
+        "target_oracle_wms": "flext_target_oracle_wms",
         "td": "flext_tests",
         "tf": "flext_tests",
         "tk": "flext_tests",
         "tm": "flext_tests",
         "u": ".utilities",
+        "web": "flext_target_oracle_wms",
         "x": "flext_target_oracle_wms",
     }),
     public_exports=__all__,

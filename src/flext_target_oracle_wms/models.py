@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_meltano import FlextMeltanoModels
-from flext_oracle_wms import FlextOracleWmsModels
+from flext_oracle_wms import m
 
 from flext_target_oracle_wms._models import (
     FlextTargetOracleWmsModelsAuth,
@@ -21,7 +21,7 @@ from flext_target_oracle_wms._models import (
 )
 
 
-class FlextTargetOracleWmsModels(FlextMeltanoModels, FlextOracleWmsModels):
+class FlextTargetOracleWmsModels(FlextMeltanoModels, m):
     """Pydantic model namespace for target Oracle WMS.
 
     Inherited namespaces:

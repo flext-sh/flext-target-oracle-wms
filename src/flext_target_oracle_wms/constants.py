@@ -8,7 +8,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_meltano import FlextMeltanoConstants
-from flext_oracle_wms import FlextOracleWmsConstants
+from flext_oracle_wms import c
 
 from flext_target_oracle_wms._constants import (
     FlextTargetOracleWmsConstantsBase,
@@ -16,7 +16,7 @@ from flext_target_oracle_wms._constants import (
 )
 
 
-class FlextTargetOracleWmsConstants(FlextMeltanoConstants, FlextOracleWmsConstants):
+class FlextTargetOracleWmsConstants(FlextMeltanoConstants, c):
     """Typed constant namespace used by target Oracle WMS modules."""
 
     class TargetOracleWms(
