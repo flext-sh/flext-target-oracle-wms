@@ -17,12 +17,12 @@ from __future__ import annotations
 from types import MappingProxyType
 from typing import TYPE_CHECKING, ClassVar
 
-from flext_target_oracle_wms import m, settings, t, u
+from examples import m, settings, t, u
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
-    from flext_target_oracle_wms import p
+    from examples import p
 
 
 class FlextTargetOracleWmsExampleFactoryUsage:

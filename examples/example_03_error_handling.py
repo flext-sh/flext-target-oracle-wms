@@ -12,10 +12,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar
 
-from flext_target_oracle_wms import t, u
+from examples import t, u
 
 if TYPE_CHECKING:
-    from flext_target_oracle_wms import p
+    from examples import p
 
 
 class FlextTargetOracleWmsExampleErrorHandling:

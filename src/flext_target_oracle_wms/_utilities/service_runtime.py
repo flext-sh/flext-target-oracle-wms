@@ -12,9 +12,7 @@ from typing import override
 from flext_meltano import u
 
 from flext_target_oracle_wms import c, m, p, t
-from flext_target_oracle_wms._utilities.client import (
-    FlextTargetOracleWmsUtilitiesClient,
-)
+from flext_target_oracle_wms._utilities import FlextTargetOracleWmsUtilitiesClient
 
 
 class FlextTargetOracleWmsServiceRuntime:

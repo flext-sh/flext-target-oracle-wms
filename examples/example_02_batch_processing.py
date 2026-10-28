@@ -13,10 +13,10 @@ from __future__ import annotations
 from types import MappingProxyType
 from typing import TYPE_CHECKING, ClassVar
 
-from flext_target_oracle_wms import settings, t, u
+from examples import settings, t, u
 
 if TYPE_CHECKING:
-    from flext_target_oracle_wms import p
+    from examples import p
 
 
 class FlextTargetOracleWmsExampleBatchProcessing:

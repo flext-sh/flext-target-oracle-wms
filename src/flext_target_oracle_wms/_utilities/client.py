@@ -9,13 +9,10 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING, ClassVar
 
-from flext_core import e, r
 from flext_meltano import u
 
-from flext_target_oracle_wms import c, m, t
-from flext_target_oracle_wms._utilities.helpers import (
-    FlextTargetOracleWmsUtilitiesHelpers,
-)
+from flext_target_oracle_wms import c, e, m, r, t
+from flext_target_oracle_wms._utilities import FlextTargetOracleWmsUtilitiesHelpers
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping

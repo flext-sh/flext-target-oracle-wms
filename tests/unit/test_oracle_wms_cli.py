@@ -14,8 +14,8 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from flext_target_oracle_wms import FlextTargetOracleWmsCli, __version__, main
-from tests import c, tm, u
+from flext_target_oracle_wms import FlextTargetOracleWmsCli, __version__
+from tests import c, main, tm, u
 
 if TYPE_CHECKING:
     from pathlib import Path
