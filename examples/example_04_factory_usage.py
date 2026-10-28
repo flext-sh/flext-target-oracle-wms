@@ -14,14 +14,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from types import MappingProxyType
 from typing import TYPE_CHECKING, ClassVar
 
 from examples import m, settings, t, u
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
-
     from examples import p
 
 
