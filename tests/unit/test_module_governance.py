@@ -10,7 +10,7 @@ from __future__ import annotations
 from tests import m, tm, u
 
 
-class TestsFlextTargetOracleWmsModuleGovernance(u.FlextTestsModuleGovernanceMixin):
+class TestsFlextTargetOracleWmsModuleGovernance(u.FlextTestsModuleGovernance):
     """Behavior contract for test_module_governance."""
 
     _test_file = __file__
