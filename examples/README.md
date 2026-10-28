@@ -59,20 +59,10 @@ Demonstrates fundamental Oracle WMS target usage with real configuration:
 ```python
 from __future__ import annotations
 
-# DRY: Real flext-* imports
 from flext_cli import u
 from flext_core import FlextSettings
-from flext_target_oracle_wms import SingerTargetOracleWMS
+from flext_target_oracle_wms import SingerTargetOracleWMS, settings
 
-# Real configuration
-settings = {
-    "base_url": "https://example.wms.oracle.com",
-    "username": "demo_user",
-    "password": "demo_password",
-    "environment": "demo",
-    "batch_size": 1000,
-    "table_prefix": "DEMO_",
-}
 
 # Real implementation with error handling
 target = SingerTargetOracleWMS(settings)
@@ -98,6 +88,15 @@ Shows sophisticated configuration and custom business logic:
 
 ```python
 from __future__ import annotations
+
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
 
 
 # Custom business type converter
@@ -141,6 +140,15 @@ Demonstrates optimized batch processing for large-scale data:
 ```python
 from __future__ import annotations
 
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
+
 # Performance optimization
 settings = {
     "batch_size": 5000,
@@ -173,6 +181,15 @@ Shows comprehensive error handling and recovery patterns:
 
 ```python
 from __future__ import annotations
+
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
 
 # Error handling configuration
 settings = {

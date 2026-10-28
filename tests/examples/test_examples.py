@@ -8,9 +8,10 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import runpy
+from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
-from tests import t, tm
+from tests import tm
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -20,7 +21,7 @@ class TestsFlextTargetOracleWmsExamples:
     """Every runnable example executes its public entry to completion."""
 
     @staticmethod
-    def test_examples_run_to_completion(example_files: t.SequenceOf[Path]) -> None:
+    def test_examples_run_to_completion(example_files: Sequence[Path]) -> None:
         """Load each example by file path and run its facade's ``main`` entry."""
         runnable = [path for path in example_files if path.name.startswith("example_")]
         tm.that(len(runnable), gt=0, msg="No runnable example found")

@@ -9,6 +9,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import secrets
+from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
 from flext_tests import FlextTestsUtilities
@@ -81,7 +82,7 @@ class TestsFlextTargetOracleWmsUtilities(
             @staticmethod
             def schema_msg(
                 stream: str | None = None,
-                key_properties: t.StrSequence | None = None,
+                key_properties: Sequence[str] | None = None,
             ) -> m.Meltano.SingerSchemaMessage:
                 """Build a Singer SCHEMA message for ``stream``.
 

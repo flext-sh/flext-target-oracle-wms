@@ -7,6 +7,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import sys
+from collections.abc import MutableMapping, Sequence
 from typing import TYPE_CHECKING, ClassVar
 
 from flext_meltano import u
@@ -15,8 +16,6 @@ from flext_target_oracle_wms import c, e, m, r, t
 from flext_target_oracle_wms._utilities import FlextTargetOracleWmsUtilitiesHelpers
 
 if TYPE_CHECKING:
-    from collections.abc import MutableMapping
-
     from flext_target_oracle_wms import p
 
 
@@ -290,7 +289,7 @@ class FlextTargetOracleWmsUtilitiesClient:
                 case _:
                     return r[bool].ok(value=True)
 
-        def process_lines(self, input_lines: t.StrSequence) -> p.Result[bool]:
+        def process_lines(self, input_lines: Sequence[str]) -> p.Result[bool]:
             """Parse and process Singer JSON lines.
 
             Args:

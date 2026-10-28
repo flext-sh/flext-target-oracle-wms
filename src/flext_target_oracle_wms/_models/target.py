@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import MutableMapping
+from collections.abc import Mapping, MutableMapping
 from typing import Annotated
 
 from flext_meltano import m
@@ -29,7 +29,7 @@ class FlextTargetOracleWmsModelsTarget:
             m.Field(description="WMS authentication and endpoint settings."),
         ]
         stream_maps: Annotated[
-            MutableMapping[str, t.StrMapping],
+            MutableMapping[str, Mapping[str, str]],
             m.Field(
                 default_factory=dict,
                 description="Singer stream map configurations.",

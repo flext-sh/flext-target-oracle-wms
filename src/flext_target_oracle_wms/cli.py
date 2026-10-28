@@ -7,9 +7,10 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import sys
+from collections.abc import Sequence
 from pathlib import Path
 
-from flext_target_oracle_wms import c, m, p, r, settings, t, u
+from flext_target_oracle_wms import c, m, p, r, settings, u
 from flext_target_oracle_wms.__version__ import __version__
 
 
@@ -27,7 +28,7 @@ class FlextTargetOracleWmsCli:
 
     def execute(
         self,
-        message_lines: t.StrSequence | None = None,
+        message_lines: Sequence[str] | None = None,
         settings: str | None = None,
     ) -> p.Result[bool]:
         """Execute target run.
@@ -43,7 +44,7 @@ class FlextTargetOracleWmsCli:
             The resulting ``p.Result[bool]``.
 
         """
-        lines: t.StrSequence = (
+        lines: Sequence[str] = (
             message_lines if message_lines is not None else list(sys.stdin)
         )
         return (
@@ -56,7 +57,7 @@ class FlextTargetOracleWmsCli:
     def _execute_target_pipeline(
         self,
         settings: m.TargetOracleWms.WmsTargetConfig,
-        message_lines: t.StrSequence,
+        message_lines: Sequence[str],
     ) -> p.Result[bool]:
         """Set up, process the message lines, and clean up the target runtime.
 
@@ -145,8 +146,8 @@ class FlextTargetOracleWmsCli:
 
 
 def main(
-    argv: t.StrSequence | None = None,
-    message_lines: t.StrSequence | None = None,
+    argv: Sequence[str] | None = None,
+    message_lines: Sequence[str] | None = None,
 ) -> None:
     """Run CLI command from process arguments.
 
@@ -160,7 +161,7 @@ def main(
         RuntimeError: If ``result.failure``.
 
     """
-    args: t.StrSequence = argv if argv is not None else sys.argv
+    args: Sequence[str] = argv if argv is not None else sys.argv
     cli_instance = FlextTargetOracleWmsCli()
     config_path: str | None = None
     if (

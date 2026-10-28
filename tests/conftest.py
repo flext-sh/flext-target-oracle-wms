@@ -7,11 +7,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from pathlib import Path
 
 import pytest
-
-from tests import t
 
 
 @pytest.fixture(scope="class")
@@ -27,11 +26,11 @@ def examples_dir() -> Path:
 
 
 @pytest.fixture(scope="class")
-def example_files(examples_dir: Path) -> t.SequenceOf[Path]:
+def example_files(examples_dir: Path) -> Sequence[Path]:
     """Get all Python example files (excluding __init__.py).
 
     Returns:
-        The resulting ``t.SequenceOf[Path]``.
+        The resulting ``Sequence[Path]``.
 
     """
     return [f for f in examples_dir.glob("*.py") if f.name != "__init__.py"]

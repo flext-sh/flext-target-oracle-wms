@@ -7,8 +7,9 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import math
+from collections.abc import Sequence
 
-from tests import c, t, tm, u
+from tests import c, tm, u
 
 
 class TestsFlextTargetOracleWmsFeatures:
@@ -40,7 +41,7 @@ class TestsFlextTargetOracleWmsFeatures:
     def test_type_converter_handles_all_types() -> None:
         """Test type converter handles all types."""
         converter = u.TargetOracleWms.WMSTypeConverter()
-        types_and_values: t.SequenceOf[tuple[str, bool | float | str]] = [
+        types_and_values: Sequence[tuple[str, bool | float | str]] = [
             ("string", "hello"),
             ("integer", 42),
             ("number", math.pi),
