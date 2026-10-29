@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_meltano import u as flext_meltano_u
-from flext_oracle_wms import u
+from flext_oracle_wms import u as flext_oracle_wms_u
 
 from flext_target_oracle_wms._utilities import (
     FlextTargetOracleWmsServiceRuntime,
@@ -19,7 +19,7 @@ from flext_target_oracle_wms._utilities import (
 )
 
 
-class FlextTargetOracleWmsUtilities(flext_meltano_u, u):
+class FlextTargetOracleWmsUtilities(flext_meltano_u, flext_oracle_wms_u):
     """Namespace exposing Singer-target Client and Helpers under TargetOracleWms.*."""
 
     class TargetOracleWms(
