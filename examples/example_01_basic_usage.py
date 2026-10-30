@@ -11,60 +11,88 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import os
+from collections.abc import Mapping
 from pathlib import Path
 from types import MappingProxyType
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, ClassVar
 
-from flext_target_oracle_wms import FlextTargetOracleWmsUtilities, t, u
+from examples import settings, t, u
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
-
-logger = u.fetch_logger(__name__)
+    from examples import p
 
 
-WMS_AUTH: Final[Mapping[str, str]] = MappingProxyType({
-    "base_url": "https://wms.example.oraclecloud.com",
-    "username": "wms_user",
-    "password": os.environ.get("FLEXT_DEMO_WMS_PASSWORD", "<demo>"),
-})
-BATCH_SIZE: Final[int] = 100
+class FlextTargetOracleWmsExampleBasicUsage:
+    """Basic Oracle WMS target usage: stream registration and Singer files."""
+
+    logger: ClassVar[p.Logger] = u.fetch_logger(__name__)
+    WMS_AUTH: ClassVar[Mapping[str, str]] = MappingProxyType({
+        "base_url": "https://wms.example.oraclecloud.com",
+        "username": "wms_user",
+        "password": settings.TargetOracleWms.password,
+    })
+    BATCH_SIZE: ClassVar[int] = 100
+    CONFIG_FILE_NAME: ClassVar[str] = "settings.json"
+    STREAM_NAME: ClassVar[str] = "orders"
+
+    @staticmethod
+    def run_basic_example() -> t.Scalar:
+        """Run basic Oracle WMS target example with REAL configuration.
+
+        Returns:
+            The resulting ``t.Scalar``.
+
+        """
+        example = FlextTargetOracleWmsExampleBasicUsage
+        example.logger.info("Starting basic Oracle WMS target example")
+        example.logger.info(
+            "Using base_url=%s, batch_size=%d",
+            example.WMS_AUTH["base_url"],
+            example.BATCH_SIZE,
+        )
+        manager = u.TargetOracleWms.WMSTableManager()
+        registered = manager.register_stream(example.STREAM_NAME)
+        lookup = manager.get_table_name(example.STREAM_NAME)
+        example.logger.info(
+            "Registered=%s, lookup=%s",
+            registered.success,
+            lookup.value if lookup.success else lookup.error,
+        )
+        example.logger.info("Example completed successfully")
+        return True
+
+    @staticmethod
+    def run_from_singer_files() -> t.Scalar:
+        """Run target from Singer JSON files - REAL Singer integration.
+
+        Returns:
+            The resulting ``t.Scalar``.
+
+        """
+        example = FlextTargetOracleWmsExampleBasicUsage
+        example.logger.info("Running target from Singer JSON files")
+        if Path(example.CONFIG_FILE_NAME).exists():
+            example.logger.info("Config file found")
+        else:
+            example.logger.info("Using default configuration")
+        example.logger.info("Singer file processing completed")
+        return True
+
+    @staticmethod
+    def main() -> t.Scalar:
+        """Run every basic usage step.
+
+        Returns:
+            ``True`` when every step completed.
+
+        """
+        example = FlextTargetOracleWmsExampleBasicUsage
+        basic = example.run_basic_example()
+        singer = example.run_from_singer_files()
+        return bool(basic) and bool(singer)
 
 
-def run_basic_example() -> t.Scalar:
-    """Run basic Oracle WMS target example with REAL configuration.
-
-    Returns:
-        The resulting ``t.Scalar``.
-
-    """
-    logger.info("Starting basic Oracle WMS target example")
-    logger.info("Using base_url=%s, batch_size=%d", WMS_AUTH["base_url"], BATCH_SIZE)
-    tm = FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTableManager()
-    tm.register_stream("orders")
-    logger.info("Example completed successfully")
-    return True
-
-
-def run_from_singer_files() -> t.Scalar:
-    """Run target from Singer JSON files - REAL Singer integration.
-
-    Returns:
-        The resulting ``t.Scalar``.
-
-    """
-    logger.info("Running target from Singer JSON files")
-    config_file = Path("settings.json")
-    if config_file.exists():
-        logger.info("Config file found")
-    else:
-        logger.info("Using default configuration")
-    logger.info("Singer file processing completed")
-    return True
-
+__all__: list[str] = ["FlextTargetOracleWmsExampleBasicUsage"]
 
 if __name__ == "__main__":
-    """Run the basic usage example."""
-    run_basic_example()
-    run_from_singer_files()
+    FlextTargetOracleWmsExampleBasicUsage.main()

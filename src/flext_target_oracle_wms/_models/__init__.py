@@ -13,14 +13,27 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import install_lazy_exports
 
 if TYPE_CHECKING:
+    from flext_target_oracle_wms._models.auth import FlextTargetOracleWmsModelsAuth
     from flext_target_oracle_wms._models.config import FlextTargetOracleWmsModelsConfig
+    from flext_target_oracle_wms._models.singer import FlextTargetOracleWmsModelsSinger
+    from flext_target_oracle_wms._models.target import FlextTargetOracleWmsModelsTarget
 
 
-__all__: tuple[str, ...] = ("FlextTargetOracleWmsModelsConfig",)
+__all__: tuple[str, ...] = (
+    "FlextTargetOracleWmsModelsAuth",
+    "FlextTargetOracleWmsModelsConfig",
+    "FlextTargetOracleWmsModelsSinger",
+    "FlextTargetOracleWmsModelsTarget",
+)
 
 install_lazy_exports(
     __name__,
     globals(),
-    MappingProxyType({"FlextTargetOracleWmsModelsConfig": ".config"}),
+    MappingProxyType({
+        "FlextTargetOracleWmsModelsAuth": ".auth",
+        "FlextTargetOracleWmsModelsConfig": ".config",
+        "FlextTargetOracleWmsModelsSinger": ".singer",
+        "FlextTargetOracleWmsModelsTarget": ".target",
+    }),
     public_exports=__all__,
 )

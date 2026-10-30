@@ -14,47 +14,60 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import os
+from collections.abc import Mapping
 from types import MappingProxyType
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, ClassVar
 
-from flext_target_oracle_wms import m, t, u
+from examples import m, settings, t, u
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
-
-_ = u  # Anchor flext_core import for example validation.
-
-logger = u.fetch_logger(__name__)
-
-TARGET_CONFIG: Final[Mapping[str, str]] = MappingProxyType({
-    "base_url": "https://wms.example.oraclecloud.com",
-    "username": "wms_target_user",
-    "password": os.environ.get("FLEXT_DEMO_WMS_PASSWORD", "<demo>"),
-})
+    from examples import p
 
 
-def run_target_creation_example() -> t.Scalar:
-    """Create an Oracle WMS target via the canonical utilities facade.
+class FlextTargetOracleWmsExampleFactoryUsage:
+    """Target construction from a validated ``WmsTargetConfig``."""
 
-    Returns:
-        The resulting ``t.Scalar``.
-
-    """
-    logger.info("Starting Oracle WMS target creation example")
-    config = m.TargetOracleWms.WmsTargetConfig.model_validate({
-        "wms_auth": {
-            "base_url": TARGET_CONFIG["base_url"],
-            "username": TARGET_CONFIG["username"],
-            "password": TARGET_CONFIG["password"],
-        },
+    logger: ClassVar[p.Logger] = u.fetch_logger(__name__)
+    TARGET_CONFIG: ClassVar[Mapping[str, str]] = MappingProxyType({
+        "base_url": "https://wms.example.oraclecloud.com",
+        "username": "wms_target_user",
+        "password": settings.TargetOracleWms.password,
     })
-    target = u.TargetOracleWms.Target(config)
-    logger.info("Created Oracle WMS target: %s", target.name)
-    logger.info("Target creation example completed successfully")
-    return True
 
+    @staticmethod
+    def run_target_creation_example() -> t.Scalar:
+        """Create an Oracle WMS target via the canonical utilities facade.
+
+        Returns:
+            The resulting ``t.Scalar``.
+
+        """
+        example = FlextTargetOracleWmsExampleFactoryUsage
+        example.logger.info("Starting Oracle WMS target creation example")
+        config = m.TargetOracleWms.WmsTargetConfig.model_validate({
+            "wms_auth": {
+                "base_url": example.TARGET_CONFIG["base_url"],
+                "username": example.TARGET_CONFIG["username"],
+                "password": example.TARGET_CONFIG["password"],
+            },
+        })
+        target = u.TargetOracleWms.Target(config)
+        example.logger.info("Created Oracle WMS target: %s", target.name)
+        example.logger.info("Target creation example completed successfully")
+        return True
+
+    @staticmethod
+    def main() -> t.Scalar:
+        """Run the target creation example.
+
+        Returns:
+            ``True`` when the example completed.
+
+        """
+        return FlextTargetOracleWmsExampleFactoryUsage.run_target_creation_example()
+
+
+__all__: list[str] = ["FlextTargetOracleWmsExampleFactoryUsage"]
 
 if __name__ == "__main__":
-    """Run the target creation example."""
-    run_target_creation_example()
+    FlextTargetOracleWmsExampleFactoryUsage.main()

@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import pytest
 
-from tests import m, tm, u
+from tests import c, m, tm, u
 
 
 class TestsFlextTargetOracleWmsCatalog:
@@ -20,12 +20,12 @@ class TestsFlextTargetOracleWmsCatalog:
         mgr = u.TargetOracleWms.CatalogManager()
         result = mgr.add_stream(
             m.Meltano.SingerSchemaMessage.model_validate({
-                "stream": "test_stream",
+                c.ProcessingMode.STREAM: "test_stream",
                 "schema": {"type": "object"},
             }),
         )
         tm.ok(result)
-        tm.that(result.value, eq=True)
+        tm.ok(result.value)
 
     @staticmethod
     def test_add_stream_makes_stream_retrievable() -> None:
@@ -33,7 +33,7 @@ class TestsFlextTargetOracleWmsCatalog:
         mgr = u.TargetOracleWms.CatalogManager()
         mgr.add_stream(
             m.Meltano.SingerSchemaMessage.model_validate({
-                "stream": "inventory",
+                c.ProcessingMode.STREAM: "inventory",
                 "schema": {"type": "object"},
             }),
         )
@@ -45,12 +45,12 @@ class TestsFlextTargetOracleWmsCatalog:
         """Test add stream overwrites existing."""
         mgr = u.TargetOracleWms.CatalogManager()
         schema_v1 = m.Meltano.SingerSchemaMessage.model_validate({
-            "stream": "s",
+            c.ProcessingMode.STREAM: "s",
             "schema": {"type": "object"},
             "key_properties": ("id",),
         })
         schema_v2 = m.Meltano.SingerSchemaMessage.model_validate({
-            "stream": "s",
+            c.ProcessingMode.STREAM: "s",
             "schema": {"type": "object"},
             "key_properties": ("id", "name"),
         })
@@ -76,7 +76,7 @@ class TestsFlextTargetOracleWmsCatalog:
         mgr = u.TargetOracleWms.CatalogManager()
         mgr.add_stream(
             m.Meltano.SingerSchemaMessage.model_validate({
-                "stream": "orders",
+                c.ProcessingMode.STREAM: "orders",
                 "schema": {"type": "object"},
             }),
         )
@@ -93,7 +93,7 @@ class TestsFlextTargetOracleWmsCatalog:
         mgr = u.TargetOracleWms.CatalogManager()
         mgr.add_stream(
             m.Meltano.SingerSchemaMessage.model_validate({
-                "stream": "items",
+                c.ProcessingMode.STREAM: "items",
                 "schema": {"type": "object"},
                 "key_properties": ("item_id", "lot"),
             }),
@@ -109,12 +109,7 @@ class TestsFlextTargetOracleWmsCatalog:
         """Test multiple independent streams."""
         mgr = u.TargetOracleWms.CatalogManager()
         for name in ("alpha", "beta", "gamma"):
-            mgr.add_stream(
-                m.Meltano.SingerSchemaMessage.model_validate({
-                    "stream": name,
-                    "schema": {"type": "object"},
-                }),
-            )
+            mgr.add_stream(u.TargetOracleWms.Tests.schema_msg(name))
         for name in ("alpha", "beta", "gamma"):
             tm.ok(mgr.get_stream(name))
 
@@ -128,7 +123,7 @@ class TestsFlextTargetOracleWmsCatalog:
         mgr = u.TargetOracleWms.CatalogManager()
         mgr.add_stream(
             m.Meltano.SingerSchemaMessage.model_validate({
-                "stream": stream_name,
+                c.ProcessingMode.STREAM: stream_name,
                 "schema": {"type": "object"},
             }),
         )

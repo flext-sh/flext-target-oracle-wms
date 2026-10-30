@@ -1,4 +1,4 @@
-"""Singer target client classes for Oracle WMS — u.TargetOracleWms.Client.*.
+"""Singer target client classes for Oracle WMS — u.TargetOracleWms.*.
 
 Copyright (c) 2026 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -7,19 +7,15 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import sys
+from collections.abc import MutableMapping, Sequence
 from typing import TYPE_CHECKING, ClassVar
 
-from flext_core import e, r
 from flext_meltano import u
 
-from flext_target_oracle_wms import c, m, t
-from flext_target_oracle_wms._utilities.helpers import (
-    FlextTargetOracleWmsUtilitiesHelpers,
-)
+from flext_target_oracle_wms import c, e, m, r, t
+from flext_target_oracle_wms._utilities import FlextTargetOracleWmsUtilitiesHelpers
 
 if TYPE_CHECKING:
-    from collections.abc import MutableMapping
-
     from flext_target_oracle_wms import p
 
 
@@ -27,7 +23,7 @@ class FlextTargetOracleWmsUtilitiesClient:
     """Public namespace class wrapping all WMS client implementations."""
 
     class CatalogManager:
-        """In-memory Singer catalog manager (u.TargetOracleWms.Client)."""
+        """In-memory Singer catalog manager (u.TargetOracleWms.CatalogManager)."""
 
         def __init__(self) -> None:
             """Initialize catalog storage for stream metadata."""
@@ -86,7 +82,7 @@ class FlextTargetOracleWmsUtilitiesClient:
     class StreamProcessor:
         """Process Singer records using table and transform helpers.
 
-        Accessible as u.TargetOracleWms.Client.StreamProcessor.
+        Accessible as u.TargetOracleWms.StreamProcessor.
         """
 
         def __init__(
@@ -148,7 +144,7 @@ class FlextTargetOracleWmsUtilitiesClient:
     class Target:
         """Singer target runtime with schema/record/state handlers.
 
-        Accessible as u.TargetOracleWms.Client.Target.
+        Accessible as u.TargetOracleWms.Target.
         """
 
         name = c.TargetOracleWms.TARGET_NAME
@@ -293,7 +289,7 @@ class FlextTargetOracleWmsUtilitiesClient:
                 case _:
                     return r[bool].ok(value=True)
 
-        def process_lines(self, input_lines: t.StrSequence) -> p.Result[bool]:
+        def process_lines(self, input_lines: Sequence[str]) -> p.Result[bool]:
             """Parse and process Singer JSON lines.
 
             Args:

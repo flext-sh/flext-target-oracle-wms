@@ -10,30 +10,53 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_target_oracle_wms import c, t, u
+from typing import TYPE_CHECKING, ClassVar
 
-_ = u  # Anchor flext_core import for example validation.
+from examples import c, t, u
 
-logger = u.fetch_logger(__name__)
-
-LOAD_METHOD: str = c.TargetOracleWms.LoadMethods.Method.UPSERT
-DEFAULT_BATCH: int = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
+if TYPE_CHECKING:
+    from examples import p
 
 
-def run_advanced_example() -> t.Scalar:
-    """Run advanced configuration example with Oracle WMS constants.
+class FlextTargetOracleWmsExampleAdvancedConfiguration:
+    """Advanced configuration read from the Oracle WMS constants."""
 
-    Returns:
-        The resulting ``t.Scalar``.
+    logger: ClassVar[p.Logger] = u.fetch_logger(__name__)
+    LOAD_METHOD: ClassVar[str] = c.TargetOracleWms.LoadMethods.Method.UPSERT
+    DEFAULT_BATCH: ClassVar[int] = c.TargetOracleWms.OracleWms.DEFAULT_BATCH_SIZE
 
-    """
-    logger.info("Starting advanced configuration example")
-    logger.info("Load method: %s, base_url: wms.example.oraclecloud.com", LOAD_METHOD)
-    logger.info("Default batch size: %d, password protected", DEFAULT_BATCH)
-    logger.info("Advanced configuration example completed successfully")
-    return True
+    @staticmethod
+    def run_advanced_example() -> t.Scalar:
+        """Run advanced configuration example with Oracle WMS constants.
 
+        Returns:
+            The resulting ``t.Scalar``.
+
+        """
+        example = FlextTargetOracleWmsExampleAdvancedConfiguration
+        example.logger.info("Starting advanced configuration example")
+        example.logger.info(
+            "Load method: %s, base_url: wms.example.oraclecloud.com",
+            example.LOAD_METHOD,
+        )
+        example.logger.info(
+            "Default batch size: %d, password protected", example.DEFAULT_BATCH
+        )
+        example.logger.info("Advanced configuration example completed successfully")
+        return True
+
+    @staticmethod
+    def main() -> t.Scalar:
+        """Run the advanced configuration example.
+
+        Returns:
+            ``True`` when the example completed.
+
+        """
+        return FlextTargetOracleWmsExampleAdvancedConfiguration.run_advanced_example()
+
+
+__all__: list[str] = ["FlextTargetOracleWmsExampleAdvancedConfiguration"]
 
 if __name__ == "__main__":
-    """Run the advanced configuration example."""
-    run_advanced_example()
+    FlextTargetOracleWmsExampleAdvancedConfiguration.main()

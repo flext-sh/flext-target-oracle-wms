@@ -25,8 +25,10 @@ src/flext_target_oracle_wms/
 ├── api.py            # FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase)
 ├── cli.py            # FlextTargetOracleWmsCli + main entry point
 ├── _utilities/
-│   ├── client.py     # FlextTargetOracleWmsUtilitiesClient (CatalogManager, StreamProcessor, Target)
-│   ├── helpers.py    # FlextTargetOracleWmsUtilitiesHelpers (WMSTableManager, WMSDataTransformer, etc.)
+│   ├── client.py     # FlextTargetOracleWmsUtilitiesClient
+│   │                 # (CatalogManager, StreamProcessor, Target)
+│   ├── helpers.py    # FlextTargetOracleWmsUtilitiesHelpers
+│   │                 # (WMSTableManager, WMSDataTransformer, etc.)
 │   └── service_runtime.py   # FlextTargetOracleWmsServiceRuntime — WMS target + sink creation
 ├── constants.py typings.py protocols.py models.py utilities.py   # AUTO-GENERATED facets
 ├── _config.py _settings.py   # private config/settings
@@ -44,7 +46,7 @@ src/flext_target_oracle_wms/
 
 - **One canonical service path** through `api.py` + `service_runtime.py` — no parallel
   `simple_api` branch. WMS config uses namespaced settings.
-- Config/settings canonical pattern: ADR-012.
+- Config/settings canonical pattern: ADR-005 (SSOT) and ADR-024 (DI config contract).
 - Codemod governance (ast-grep + make mod): ADR-014.
 
 ## Commands
@@ -52,7 +54,7 @@ src/flext_target_oracle_wms/
 ```bash
 make setup
 make check
-make test
+make tests
 ```
 
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->

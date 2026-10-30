@@ -6,42 +6,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import pytest
 
-from tests import _valid_config, m, tm, u
-
-if TYPE_CHECKING:
-    from tests import t
-
-
-def _schema_line(
-    stream_name: str,
-    field_defs: t.MappingKV[str, t.StrMapping],
-    key_fields: t.StrSequence,
-) -> str:
-    schema_fields = dict(field_defs.items())
-    return m.Meltano.SingerSchemaMessage.model_validate({
-        "stream": stream_name,
-        "schema": {"type": "object", "properties": schema_fields},
-        "key_properties": list(key_fields),
-    }).model_dump_json(by_alias=True, exclude_none=True)
-
-
-def _record_line(stream_name: str, record_data: t.JsonMapping) -> str:
-    return m.Meltano.SingerRecordMessage(
-        stream=stream_name,
-        record=record_data,
-        version=1,
-    ).model_dump_json(by_alias=True, exclude_none=True)
-
-
-def _state_line(value: t.JsonMapping) -> str:
-    return m.Meltano.SingerStateMessage(value=dict(value)).model_dump_json(
-        by_alias=True,
-        exclude_none=True,
-    )
+from tests import c, tm, u
 
 
 @pytest.mark.integration
@@ -54,16 +21,17 @@ class TestsFlextTargetOracleWmsOracle:
     @staticmethod
     def test_setup_process_cleanup() -> None:
         """Test setup process cleanup."""
-        target = u.TargetOracleWms.Target(_valid_config())
+        tests = u.TargetOracleWms.Tests
+        target = u.TargetOracleWms.Target(tests.valid_config())
         tm.ok(target.setup())
         lines = [
-            _schema_line(
-                "items",
-                {"id": {"type": "string"}, "name": {"type": "string"}},
-                ["id"],
-            ),
-            _record_line("items", {"id": "1", "name": "Widget"}),
-            _state_line({"bookmarks": {"items": "1"}}),
+            tests.schema_msg("items").model_dump_json(by_alias=True),
+            tests.record_msg(
+                "items", {"id": c.ParserBooleanToken.ONE, "name": "Widget"}
+            ).model_dump_json(),
+            tests.state_msg({
+                "bookmarks": {"items": c.ParserBooleanToken.ONE}
+            }).model_dump_json(),
         ]
         tm.ok(target.process_lines(lines))
         tm.ok(target.cleanup())
@@ -71,17 +39,18 @@ class TestsFlextTargetOracleWmsOracle:
     @staticmethod
     def test_multiple_batches() -> None:
         """Test multiple batches."""
-        target = u.TargetOracleWms.Target(_valid_config())
+        tests = u.TargetOracleWms.Tests
+        target = u.TargetOracleWms.Target(tests.valid_config())
         target.setup()
         batch1 = [
-            _schema_line("orders", {"order_id": {"type": "string"}}, ["order_id"]),
-            _record_line("orders", {"order_id": "ORD001"}),
-            _record_line("orders", {"order_id": "ORD002"}),
+            tests.schema_msg("orders", ["order_id"]).model_dump_json(by_alias=True),
+            tests.record_msg("orders", {"order_id": "ORD001"}).model_dump_json(),
+            tests.record_msg("orders", {"order_id": "ORD002"}).model_dump_json(),
         ]
         tm.ok(target.process_lines(batch1))
         batch2 = [
-            _record_line("orders", {"order_id": "ORD003"}),
-            _state_line({"bookmarks": {"orders": "3"}}),
+            tests.record_msg("orders", {"order_id": "ORD003"}).model_dump_json(),
+            tests.state_msg({"bookmarks": {"orders": "3"}}).model_dump_json(),
         ]
         tm.ok(target.process_lines(batch2))
         tm.ok(target.cleanup())
@@ -91,17 +60,17 @@ class TestsFlextTargetOracleWmsOracle:
     @staticmethod
     def test_three_streams_interleaved() -> None:
         """Test three streams interleaved."""
-        target = u.TargetOracleWms.Target(_valid_config())
+        tests = u.TargetOracleWms.Tests
+        target = u.TargetOracleWms.Target(tests.valid_config())
         target.setup()
+        streams = ("orders", "items", "tasks")
         lines = [
-            _schema_line("orders", {"id": {"type": "string"}}, ["id"]),
-            _schema_line("items", {"id": {"type": "string"}}, ["id"]),
-            _schema_line("tasks", {"id": {"type": "string"}}, ["id"]),
-            _record_line("orders", {"id": "O1"}),
-            _record_line("items", {"id": "I1"}),
-            _record_line("tasks", {"id": "T1"}),
-            _record_line("orders", {"id": "O2"}),
-            _state_line({"bookmarks": {}}),
+            *(tests.schema_msg(s).model_dump_json(by_alias=True) for s in streams),
+            tests.record_msg("orders", {"id": "O1"}).model_dump_json(),
+            tests.record_msg("items", {"id": "I1"}).model_dump_json(),
+            tests.record_msg("tasks", {"id": "T1"}).model_dump_json(),
+            tests.record_msg("orders", {"id": "O2"}).model_dump_json(),
+            tests.state_msg().model_dump_json(),
         ]
         tm.ok(target.process_lines(lines))
         tm.ok(target.cleanup())

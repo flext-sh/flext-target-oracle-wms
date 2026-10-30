@@ -9,9 +9,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from flext_cli import u
-from flext_core import r
 
-from flext_target_oracle_wms import c, m, t
+from flext_target_oracle_wms import c, m, r, t
 
 if TYPE_CHECKING:
     from flext_target_oracle_wms import p
@@ -40,7 +39,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
             """
             if singer_type in {"object", "array"}:
                 return r[t.JsonValue].ok(
-                    t
+                    u
                     .json_value_adapter()
                     .dump_json(u.normalize_to_json_value(value))
                     .decode(c.DEFAULT_ENCODING),
@@ -122,7 +121,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
             return r[m.Meltano.SingerRecordMessage].ok(
                 m.Meltano.SingerRecordMessage.model_validate({
                     "type": typed_record.type,
-                    "stream": typed_record.stream,
+                    c.ProcessingMode.STREAM: typed_record.stream,
                     "record": transformed,
                     "time_extracted": typed_record.time_extracted,
                     "version": typed_record.version,

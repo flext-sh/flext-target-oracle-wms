@@ -1,3 +1,4 @@
+# AUTO-GENERATED FILE — Regenerate with: make gen
 """Utility helpers for target Oracle WMS operations.
 
 Facade composing helpers from _utilities/ submodules into u.TargetOracleWms.* namespace.
@@ -8,34 +9,26 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_meltano import FlextMeltanoUtilities
-from flext_oracle_wms import FlextOracleWmsUtilities
+from flext_meltano import u as flext_meltano_u
+from flext_oracle_wms import u as flext_oracle_wms_u
 
-from flext_target_oracle_wms._utilities.client import (
+from flext_target_oracle_wms._utilities import (
+    FlextTargetOracleWmsServiceRuntime,
     FlextTargetOracleWmsUtilitiesClient,
-)
-from flext_target_oracle_wms._utilities.helpers import (
     FlextTargetOracleWmsUtilitiesHelpers,
 )
-from flext_target_oracle_wms._utilities.service_runtime import (
-    FlextTargetOracleWmsServiceRuntime,
-)
 
 
-class FlextTargetOracleWmsUtilities(FlextMeltanoUtilities, FlextOracleWmsUtilities):
+class FlextTargetOracleWmsUtilities(flext_meltano_u, flext_oracle_wms_u):
     """Namespace exposing Singer-target Client and Helpers under TargetOracleWms.*."""
 
     class TargetOracleWms(
+        FlextTargetOracleWmsServiceRuntime,
         FlextTargetOracleWmsUtilitiesClient,
         FlextTargetOracleWmsUtilitiesHelpers,
-        FlextTargetOracleWmsServiceRuntime,
     ):
-        """Project-local namespace aggregating Client and Helpers public classes."""
-
-        Client = FlextTargetOracleWmsUtilitiesClient
-        Helpers = FlextTargetOracleWmsUtilitiesHelpers
+        """Project-local namespace inheriting the Client and Helpers public classes."""
 
 
 u = FlextTargetOracleWmsUtilities
-
 __all__: list[str] = ["FlextTargetOracleWmsUtilities", "u"]

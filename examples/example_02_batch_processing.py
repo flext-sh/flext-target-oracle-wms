@@ -10,44 +10,66 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import os
 from types import MappingProxyType
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING, ClassVar
 
-from flext_target_oracle_wms import FlextTargetOracleWmsUtilities, u
+from examples import settings, t, u
 
 if TYPE_CHECKING:
-    from flext_core import t
-
-logger = u.fetch_logger(__name__)
-
-_BATCH_WMS_AUTH: t.JsonDict = {
-    "base_url": "https://wms.example.oraclecloud.com",
-    "username": "wms_batch_user",
-    "password": os.environ.get("FLEXT_DEMO_WMS_PASSWORD", "<demo>"),
-}
-BATCH_CONFIG: Final[t.JsonMapping] = MappingProxyType({
-    "wms_auth": _BATCH_WMS_AUTH,
-    "batch_size": 500,
-})
+    from examples import p
 
 
-def run_batch_example() -> t.Scalar:
-    """Run batch processing example with Oracle WMS table management.
+class FlextTargetOracleWmsExampleBatchProcessing:
+    """Batch processing over several Oracle WMS streams."""
 
-    Returns:
-        The resulting ``t.Scalar``.
+    logger: ClassVar[p.Logger] = u.fetch_logger(__name__)
+    BATCH_CONFIG: ClassVar[t.JsonMapping] = MappingProxyType({
+        "wms_auth": {
+            "base_url": "https://wms.example.oraclecloud.com",
+            "username": "wms_batch_user",
+            "password": settings.TargetOracleWms.password,
+        },
+        "batch_size": 500,
+    })
+    STREAMS: ClassVar[tuple[str, ...]] = ("orders", "items", "tasks")
 
-    """
-    logger.info("Starting batch processing example")
-    tm = FlextTargetOracleWmsUtilities.TargetOracleWms.WMSTableManager()
-    result = tm.register_stream("orders")
-    if result.success:
-        logger.info("Registered stream table: %s", result.value)
-    logger.info("Batch processing completed successfully")
-    return True
+    @staticmethod
+    def run_batch_example() -> t.Scalar:
+        """Run batch processing example with Oracle WMS table management.
 
+        Returns:
+            The resulting ``t.Scalar``.
+
+        """
+        example = FlextTargetOracleWmsExampleBatchProcessing
+        example.logger.info("Starting batch processing example")
+        batch_size = example.BATCH_CONFIG["batch_size"]
+        manager = u.TargetOracleWms.WMSTableManager()
+        for stream in example.STREAMS:
+            result = manager.register_stream(stream)
+            if result.success:
+                example.logger.info(
+                    "Registered stream table %s for batches of %s",
+                    result.value,
+                    batch_size,
+                )
+        example.logger.info(
+            "Batch processing completed: %d streams", len(example.STREAMS)
+        )
+        return True
+
+    @staticmethod
+    def main() -> t.Scalar:
+        """Run the batch processing example.
+
+        Returns:
+            ``True`` when the example completed.
+
+        """
+        return FlextTargetOracleWmsExampleBatchProcessing.run_batch_example()
+
+
+__all__: list[str] = ["FlextTargetOracleWmsExampleBatchProcessing"]
 
 if __name__ == "__main__":
-    """Run the batch processing example."""
-    run_batch_example()
+    FlextTargetOracleWmsExampleBatchProcessing.main()
