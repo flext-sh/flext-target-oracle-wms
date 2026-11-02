@@ -11,7 +11,7 @@ from typing import override
 
 from flext_tests import FlextTestsServiceBase
 
-from tests import TestsFlextTargetOracleWmsSettings, m
+from tests import TestsFlextTargetOracleWmsSettings, m, p
 
 
 class TestsFlextTargetOracleWmsServiceBase(FlextTestsServiceBase):
