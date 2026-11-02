@@ -137,7 +137,7 @@ class FlextTargetOracleWmsServiceRuntime:
         return cls.Sink.create(
             runtime_target=runtime_target,
             target=cls.SingerTarget(
-                config=t.json_dict_adapter().validate_python(normalized_target_config),
+                config=u.json_dict_adapter().validate_python(normalized_target_config),
                 validate_config=False,
             ),
             stream_name=stream_name,

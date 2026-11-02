@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import math
 
-from tests import _record_msg, _schema_msg, t, tm, u
+from tests import _record_msg, _schema_msg, tm, u
 
 
 class TestsFlextTargetOracleWmsWmsPatterns:
@@ -66,7 +66,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         )
         tm.ok(result)
         tm.that(result.value, none=False)
-        tm.that(t.str_adapter().validate_json(str(result.value)), eq=data)
+        tm.that(u.str_adapter().validate_json(str(result.value)), eq=data)
 
     @staticmethod
     def test_array_type_serializes_to_json() -> None:
@@ -78,7 +78,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         )
         tm.ok(result)
         tm.that(result.value, none=False)
-        tm.that(t.str_adapter().validate_json(str(result.value)), eq=data)
+        tm.that(u.str_adapter().validate_json(str(result.value)), eq=data)
 
     @staticmethod
     def test_boolean_type_becomes_string() -> None:
