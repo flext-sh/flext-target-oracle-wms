@@ -16,12 +16,9 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from types import MappingProxyType
-from typing import TYPE_CHECKING, ClassVar
+from typing import ClassVar
 
-from examples import m, settings, t, u
-
-if TYPE_CHECKING:
-    from examples import p
+from examples import m, p, settings, t, u
 
 
 class FlextTargetOracleWmsExampleFactoryUsage:

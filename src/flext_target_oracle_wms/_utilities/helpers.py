@@ -77,9 +77,9 @@ class FlextTargetOracleWmsUtilitiesHelpers:
 
         def transform_record(
             self,
-            record_message: m.Meltano.SingerRecordMessage | t.JsonMapping,
-            schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping | None = None,
-        ) -> p.Result[m.Meltano.SingerRecordMessage]:
+            record_message: p.Meltano.SingerRecordMessage | t.JsonMapping,
+            schema_message: p.Meltano.SingerSchemaMessage | t.JsonMapping | None = None,
+        ) -> p.Result[p.Meltano.SingerRecordMessage]:
             """Transform one typed Singer RECORD payload with optional typed schema.
 
             Args:
@@ -90,7 +90,7 @@ class FlextTargetOracleWmsUtilitiesHelpers:
                     conversion when omitted.
 
             Returns:
-                The resulting ``p.Result[m.Meltano.SingerRecordMessage]``.
+                The resulting ``p.Result[p.Meltano.SingerRecordMessage]``.
 
             """
             typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
@@ -116,9 +116,9 @@ class FlextTargetOracleWmsUtilitiesHelpers:
                     value,
                 )
                 if converted.failure:
-                    return r[m.Meltano.SingerRecordMessage].from_failure(converted)
+                    return r[p.Meltano.SingerRecordMessage].from_failure(converted)
                 transformed[key.upper()] = converted.value
-            return r[m.Meltano.SingerRecordMessage].ok(
+            return r[p.Meltano.SingerRecordMessage].ok(
                 m.Meltano.SingerRecordMessage.model_validate({
                     "type": typed_record.type,
                     c.ProcessingMode.STREAM: typed_record.stream,

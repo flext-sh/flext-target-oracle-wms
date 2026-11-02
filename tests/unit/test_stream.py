@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import override
 
-from tests import c, m, p, r, t, tm, u
+from tests import c, p, r, t, tm, u
 
 
 class TestsFlextTargetOracleWmsStream:
@@ -25,11 +25,11 @@ class TestsFlextTargetOracleWmsStream:
         @override
         def transform_record(
             self,
-            record_message: m.Meltano.SingerRecordMessage | t.JsonMapping,
-            schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping | None = None,
-        ) -> p.Result[m.Meltano.SingerRecordMessage]:
+            record_message: p.Meltano.SingerRecordMessage | t.JsonMapping,
+            schema_message: p.Meltano.SingerSchemaMessage | t.JsonMapping | None = None,
+        ) -> p.Result[p.Meltano.SingerRecordMessage]:
             _ = record_message, schema_message
-            return r[m.Meltano.SingerRecordMessage].fail("transformer error")
+            return r[p.Meltano.SingerRecordMessage].fail("transformer error")
 
     @staticmethod
     def test_initialize_stream_success() -> None:

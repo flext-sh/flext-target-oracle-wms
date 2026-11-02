@@ -33,7 +33,7 @@ class FlextTargetOracleWmsServiceRuntime:
         def create(
             cls,
             runtime_target: FlextTargetOracleWmsUtilitiesClient.Target,
-            target: m.Meltano.SingerTargetBase,
+            target: p.Meltano.SingerTargetBase,
             stream_name: str,
             schema: t.JsonDict,
         ) -> FlextTargetOracleWmsServiceRuntime.Sink:

@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING
 from flext_tests import FlextTestsUtilities
 
 from flext_target_oracle_wms import FlextTargetOracleWmsUtilities
-from tests import c, m, t
+from tests import c, m, p, t
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -83,7 +83,7 @@ class TestsFlextTargetOracleWmsUtilities(
             def schema_msg(
                 stream: str | None = None,
                 key_properties: Sequence[str] | None = None,
-            ) -> m.Meltano.SingerSchemaMessage:
+            ) -> p.Meltano.SingerSchemaMessage:
                 """Build a Singer SCHEMA message for ``stream``.
 
                 Returns:
@@ -102,7 +102,7 @@ class TestsFlextTargetOracleWmsUtilities(
             def record_msg(
                 stream: str | None = None,
                 record: t.JsonMapping | None = None,
-            ) -> m.Meltano.SingerRecordMessage:
+            ) -> p.Meltano.SingerRecordMessage:
                 """Build a Singer RECORD message for ``stream``.
 
                 Returns:
@@ -118,7 +118,7 @@ class TestsFlextTargetOracleWmsUtilities(
             @staticmethod
             def state_msg(
                 value: t.JsonMapping | None = None,
-            ) -> m.Meltano.SingerStateMessage:
+            ) -> p.Meltano.SingerStateMessage:
                 """Build a Singer STATE message; empty bookmarks when ``value`` is None.
 
                 Returns:

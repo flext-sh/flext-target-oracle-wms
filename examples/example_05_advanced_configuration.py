@@ -10,12 +10,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, ClassVar
+from typing import ClassVar
 
-from examples import c, t, u
-
-if TYPE_CHECKING:
-    from examples import p
+from examples import c, p, t, u
 
 
 class FlextTargetOracleWmsExampleAdvancedConfiguration:
