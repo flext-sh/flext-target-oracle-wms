@@ -17,13 +17,10 @@ class FlextTargetOracleWmsProtocolsSinger:
     """Own the structural contracts declared by its model source."""
 
     @runtime_checkable
-    class SingerFieldSchema(FlextMeltanoProtocols.Model, Protocol):
+    class SingerFieldSchema(FlextMeltanoProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
-        @property
-        def type(self) -> str:
-            """JSON schema type descriptor for the field."""
-            ...
+        type: str
 
 
 __all__: list[str] = [

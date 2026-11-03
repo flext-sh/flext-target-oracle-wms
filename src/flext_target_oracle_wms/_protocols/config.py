@@ -17,7 +17,7 @@ class FlextTargetOracleWmsProtocolsConfig:
     """Own the structural contracts declared by its model source."""
 
     @runtime_checkable
-    class TargetOracleWmsNamespace(FlextMeltanoProtocols.Model, Protocol):
+    class TargetOracleWmsNamespace(FlextMeltanoProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
 

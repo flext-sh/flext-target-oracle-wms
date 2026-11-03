@@ -13,9 +13,8 @@ from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 from flext_meltano import FlextMeltanoProtocols
 
-from flext_target_oracle_wms import t
-
 if TYPE_CHECKING:
+    from flext_target_oracle_wms import t
     from flext_target_oracle_wms._constants import FlextTargetOracleWmsConstantsValues
     from flext_target_oracle_wms._protocols import (
         FlextTargetOracleWmsProtocolsAuth,
@@ -27,7 +26,7 @@ class FlextTargetOracleWmsProtocolsTarget:
     """Own the structural contracts declared by its model source."""
 
     @runtime_checkable
-    class WmsTargetConfig(FlextMeltanoProtocols.Model, Protocol):
+    class WmsTargetConfig(FlextMeltanoProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -35,28 +34,18 @@ class FlextTargetOracleWmsProtocolsTarget:
             """WMS authentication and endpoint settings."""
             ...
 
-        @property
-        def stream_maps(self) -> MutableMapping[str, Mapping[str, str]]:
-            """Singer stream map configurations."""
-            ...
-
-        @property
-        def batch_size(self) -> t.BatchSize:
-            """Number of records per batch write."""
-            ...
+        stream_maps: MutableMapping[str, Mapping[str, str]]
+        batch_size: t.BatchSize
 
         @property
         def load_method(self) -> FlextTargetOracleWmsConstantsValues.LoadMethods.Method:
             """Load strategy for writing records to WMS."""
             ...
 
-        @property
-        def validate_records(self) -> bool:
-            """Whether to validate records before writing."""
-            ...
+        validate_records: bool
 
     @runtime_checkable
-    class SingerSchemaProperties(FlextMeltanoProtocols.Model, Protocol):
+    class SingerSchemaProperties(FlextMeltanoProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
