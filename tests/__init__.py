@@ -7,7 +7,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from types import MappingProxyType
 from typing import TYPE_CHECKING
 
 from flext_core.lazy import install_lazy_exports
@@ -68,7 +67,7 @@ __all__: tuple[str, ...] = (
 install_lazy_exports(
     __name__,
     globals(),
-    MappingProxyType({
+    {
         "TestsFlextTargetOracleWmsConstants": ".constants",
         "TestsFlextTargetOracleWmsModels": ".models",
         "TestsFlextTargetOracleWmsProtocols": ".protocols",
@@ -96,6 +95,6 @@ install_lazy_exports(
         "tm": "flext_tests",
         "u": ".utilities",
         "x": "flext_target_oracle_wms",
-    }),
+    },
     public_exports=__all__,
 )
