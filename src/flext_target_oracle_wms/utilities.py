@@ -23,9 +23,9 @@ class FlextTargetOracleWmsUtilities(flext_meltano_u, flext_oracle_wms_u):
     """Namespace exposing Singer-target Client and Helpers under TargetOracleWms.*."""
 
     class TargetOracleWms(
-        FlextTargetOracleWmsServiceRuntime,
         FlextTargetOracleWmsUtilitiesClient,
         FlextTargetOracleWmsUtilitiesHelpers,
+        FlextTargetOracleWmsServiceRuntime,
     ):
         """Project-local namespace inheriting the Client and Helpers public classes."""
 
