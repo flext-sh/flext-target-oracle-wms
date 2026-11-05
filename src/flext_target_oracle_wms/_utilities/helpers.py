@@ -6,16 +6,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from flext_meltano import r, u
 
-from flext_target_oracle_wms.constants import c
-from flext_target_oracle_wms.models import m
-from flext_target_oracle_wms.result import r
-from flext_target_oracle_wms.typings import t
-from flext_target_oracle_wms.utilities import u
-
-if TYPE_CHECKING:
-    from flext_target_oracle_wms import p
+from flext_target_oracle_wms import c, m, p, t
 
 
 class FlextTargetOracleWmsUtilitiesHelpers:

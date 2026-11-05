@@ -8,18 +8,12 @@ from __future__ import annotations
 
 import sys
 from collections.abc import MutableMapping, Sequence
-from typing import TYPE_CHECKING, ClassVar
+from typing import ClassVar
 
+from flext_meltano import e, r, u
+
+from flext_target_oracle_wms import c, m, p, t
 from flext_target_oracle_wms._utilities import FlextTargetOracleWmsUtilitiesHelpers
-from flext_target_oracle_wms.constants import c
-from flext_target_oracle_wms.exceptions import e
-from flext_target_oracle_wms.models import m
-from flext_target_oracle_wms.result import r
-from flext_target_oracle_wms.typings import t
-from flext_target_oracle_wms.utilities import u
-
-if TYPE_CHECKING:
-    from flext_target_oracle_wms import p
 
 
 class FlextTargetOracleWmsUtilitiesClient:

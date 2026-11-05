@@ -11,12 +11,11 @@ from typing import Annotated
 
 from flext_meltano import m
 
+from flext_target_oracle_wms import c, t
 from flext_target_oracle_wms._models import (
     FlextTargetOracleWmsModelsAuth,
     FlextTargetOracleWmsModelsSinger,
 )
-from flext_target_oracle_wms.constants import c
-from flext_target_oracle_wms.typings import t
 
 
 class FlextTargetOracleWmsModelsTarget:
