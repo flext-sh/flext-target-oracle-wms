@@ -10,7 +10,7 @@ from typing import Annotated, Literal
 
 from flext_meltano import m
 
-from flext_target_oracle_wms.typings import t
+from flext_target_oracle_wms import t
 
 
 class FlextTargetOracleWmsModelsAuth:

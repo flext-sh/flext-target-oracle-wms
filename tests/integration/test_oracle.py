@@ -6,12 +6,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import pytest
-
 from tests import c, tm, u
 
 
-@pytest.mark.integration
+@c.Tests.MARK.integration
 class TestsFlextTargetOracleWmsOracle:
     """Integration tests for full target lifecycle.
 

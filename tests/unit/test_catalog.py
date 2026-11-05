@@ -6,8 +6,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import pytest
-
 from tests import c, m, tm, u
 
 
@@ -114,7 +112,7 @@ class TestsFlextTargetOracleWmsCatalog:
             tm.ok(mgr.get_stream(name))
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "stream_name",
         ["simple", "with-dashes", "with_underscores", "CamelCase", "stream.dotted"],
     )
