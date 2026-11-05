@@ -13,7 +13,11 @@ from typing import Annotated, ClassVar
 
 from flext_meltano import FlextMeltanoTargetServiceBase
 
-from flext_target_oracle_wms import c, m, p, t, u
+from flext_target_oracle_wms.constants import c
+from flext_target_oracle_wms.models import m
+from flext_target_oracle_wms.protocols import p
+from flext_target_oracle_wms.typings import t
+from flext_target_oracle_wms.utilities import u
 
 
 class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):

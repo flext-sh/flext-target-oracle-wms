@@ -6,8 +6,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import pytest
-
 from tests import c, m, tm, u
 
 
@@ -27,7 +25,7 @@ class TestsFlextTargetOracleWmsTarget:
     @staticmethod
     def test_init_with_invalid_config_raises() -> None:
         """Test init with invalid config raises."""
-        with pytest.raises(c.ValidationError):
+        with u.Tests.raises(c.ValidationError):
             u.TargetOracleWms.Target({"bad": "settings"})
 
     @staticmethod
@@ -35,7 +33,7 @@ class TestsFlextTargetOracleWmsTarget:
         # load_method is typed as the LoadMethods.Method enum, so an unknown value
         # is rejected at construction (data-shape validation lives in the model).
         """Test invalid load method rejected."""
-        with pytest.raises(c.ValidationError):
+        with u.Tests.raises(c.ValidationError):
             m.TargetOracleWms.WmsTargetConfig.model_validate({
                 **u.TargetOracleWms.Tests.valid_config(),
                 "load_method": "BOGUS",

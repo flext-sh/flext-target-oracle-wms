@@ -12,8 +12,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import pytest
-
 from flext_target_oracle_wms import FlextTargetOracleWmsCli, __version__
 from tests import c, main, tm, u
 
@@ -53,7 +51,7 @@ class TestsFlextTargetOracleWmsOracleWmsCli:
     def test_execute_with_nonexistent_config_fails() -> None:
         """Test execute with nonexistent config fails."""
         cli = FlextTargetOracleWmsCli()
-        with pytest.raises(FileNotFoundError):
+        with u.Tests.raises(FileNotFoundError):
             cli.execute(message_lines=[], settings="/nonexistent/settings.json")
 
     @staticmethod
@@ -61,7 +59,7 @@ class TestsFlextTargetOracleWmsOracleWmsCli:
         """Test execute with non object config fails."""
         cli = FlextTargetOracleWmsCli()
         bad_path = u.TargetOracleWms.Tests.write_config_file("[1, 2, 3]", tmp_path)
-        with pytest.raises(c.ValidationError):
+        with u.Tests.raises(c.ValidationError):
             cli.execute(message_lines=[], settings=bad_path)
 
     @staticmethod
@@ -80,7 +78,7 @@ class TestsFlextTargetOracleWmsOracleWmsCli:
     @staticmethod
     def test_main_with_bad_config_raises() -> None:
         """Test main with bad config raises."""
-        with pytest.raises(FileNotFoundError):
+        with u.Tests.raises(FileNotFoundError):
             main(
                 argv=["target-oracle-wms", "--config", "/bad/path.json"],
                 message_lines=[],
