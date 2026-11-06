@@ -1,7 +1,7 @@
 """FLEXT service orchestrator for target-oracle-wms.
 
 Thin facade over ``meltano.Target`` — all infrastructure from the base via MRO.
-Only domain-specific sink creation defined here.
+The sink factory is declared, never overridden.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -9,14 +9,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Annotated, override
+from typing import Annotated, ClassVar
 
 from flext_meltano import FlextMeltanoTargetServiceBase
 
-from flext_target_oracle_wms import c, p, t, u
-from flext_target_oracle_wms._utilities.service_runtime import (
-    FlextTargetOracleWmsServiceRuntime,
-)
+from flext_target_oracle_wms import c, m, p, t, u
 
 
 class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
@@ -24,33 +21,10 @@ class FlextTargetOracleWmsService(FlextMeltanoTargetServiceBase):
 
     target_name: Annotated[
         t.NonEmptyStr,
-        u.Field(description="Canonical Singer target identifier."),
+        m.Field(description="Canonical Singer target identifier."),
     ] = c.TargetOracleWms.TARGET_NAME
 
-    @override
-    def create_sink(
-        self,
-        stream_name: str,
-        schema: t.JsonMapping,
-    ) -> p.Meltano.SingerDrainSink:
-        """Create an Oracle WMS sink for a stream.
-
-        Args:
-            stream_name: Name of the Singer stream the sink receives.
-            schema: Singer schema describing the stream's record structure.
-
-        Returns:
-            The resulting ``p.Meltano.SingerDrainSink``.
-
-        """
-        target_config: t.ScalarMapping = (
-            self.settings_overrides if self.settings_overrides is not None else {}
-        )
-        return FlextTargetOracleWmsServiceRuntime.create_sink(
-            stream_name=stream_name,
-            schema=schema,
-            target_config=target_config,
-        )
+    sink_factory: ClassVar[p.Meltano.SinkFactory] = u.TargetOracleWms.create_sink
 
 
 _service: FlextTargetOracleWmsService = FlextTargetOracleWmsService.fetch_global()

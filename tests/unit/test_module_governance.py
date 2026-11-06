@@ -7,12 +7,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tests import u
-
-from tests import m
+from tests import m, tm, u
 
 
-class TestsFlextTargetOracleWmsModuleGovernance(u.FlextTestsModuleGovernanceMixin):
+class TestsFlextTargetOracleWmsModuleGovernance(u.FlextTestsModuleGovernance):
     """Behavior contract for test_module_governance."""
 
     _test_file = __file__
@@ -20,8 +18,8 @@ class TestsFlextTargetOracleWmsModuleGovernance(u.FlextTestsModuleGovernanceMixi
     @staticmethod
     def test_namespace_does_not_define_local_singer_message_models() -> None:
         """The namespace does not define local Singer message models."""
-        assert hasattr(m.TargetOracleWms, "SingerFieldSchema")
-        assert hasattr(m.TargetOracleWms, "SingerSchemaProperties")
-        assert not hasattr(m.TargetOracleWms, "SingerSchemaMessage")
-        assert not hasattr(m.TargetOracleWms, "SingerRecordMessage")
-        assert not hasattr(m.TargetOracleWms, "SingerCatalogEntry")
+        tm.that(hasattr(m.TargetOracleWms, "SingerFieldSchema"))
+        tm.that(hasattr(m.TargetOracleWms, "SingerSchemaProperties"))
+        tm.that(hasattr(m.TargetOracleWms, "SingerSchemaMessage"), eq=False)
+        tm.that(hasattr(m.TargetOracleWms, "SingerRecordMessage"), eq=False)
+        tm.that(hasattr(m.TargetOracleWms, "SingerCatalogEntry"), eq=False)

@@ -7,13 +7,11 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import sys
+from collections.abc import Sequence
 from pathlib import Path
 
-from flext_core import r
-
-from flext_target_oracle_wms import c, m, p, settings, t, u
+from flext_target_oracle_wms import c, m, p, r, settings, u
 from flext_target_oracle_wms.__version__ import __version__
-from flext_target_oracle_wms._utilities import FlextTargetOracleWmsUtilitiesClient
 
 
 class FlextTargetOracleWmsCli:
@@ -30,7 +28,7 @@ class FlextTargetOracleWmsCli:
 
     def execute(
         self,
-        message_lines: t.StrSequence | None = None,
+        message_lines: Sequence[str] | None = None,
         settings: str | None = None,
     ) -> p.Result[bool]:
         """Execute target run.
@@ -46,7 +44,7 @@ class FlextTargetOracleWmsCli:
             The resulting ``p.Result[bool]``.
 
         """
-        lines: t.StrSequence = (
+        lines: Sequence[str] = (
             message_lines if message_lines is not None else list(sys.stdin)
         )
         return (
@@ -58,8 +56,8 @@ class FlextTargetOracleWmsCli:
 
     def _execute_target_pipeline(
         self,
-        settings: m.TargetOracleWms.WmsTargetConfig,
-        message_lines: t.StrSequence,
+        settings: p.TargetOracleWms.WmsTargetConfig,
+        message_lines: Sequence[str],
     ) -> p.Result[bool]:
         """Set up, process the message lines, and clean up the target runtime.
 
@@ -71,7 +69,7 @@ class FlextTargetOracleWmsCli:
             The resulting ``p.Result[bool]``.
 
         """
-        target = FlextTargetOracleWmsUtilitiesClient.Target(settings)
+        target = u.TargetOracleWms.Target(settings)
         setup_result = target.setup().map_error(lambda e: e or "Setup failed")
         if setup_result.failure:
             return setup_result
@@ -82,7 +80,7 @@ class FlextTargetOracleWmsCli:
 
     @staticmethod
     def _finalize_target(
-        target: FlextTargetOracleWmsUtilitiesClient.Target,
+        target: u.TargetOracleWms.Target,
     ) -> p.Result[bool]:
         """Finalize target processing.
 
@@ -119,7 +117,7 @@ class FlextTargetOracleWmsCli:
     def _prepare_config(
         self,
         config_path: str | None,
-    ) -> p.Result[m.TargetOracleWms.WmsTargetConfig]:
+    ) -> p.Result[p.TargetOracleWms.WmsTargetConfig]:
         """Load settings from file or build defaults.
 
         Args:
@@ -127,16 +125,16 @@ class FlextTargetOracleWmsCli:
                 built when omitted.
 
         Returns:
-            The resulting ``p.Result[m.TargetOracleWms.WmsTargetConfig]``.
+            The resulting ``p.Result[p.TargetOracleWms.WmsTargetConfig]``.
 
         """
         if config_path is not None:
-            return r[m.TargetOracleWms.WmsTargetConfig].ok(
+            return r[p.TargetOracleWms.WmsTargetConfig].ok(
                 m.TargetOracleWms.WmsTargetConfig.model_validate_json(
                     self._load_config(config_path),
                 ),
             )
-        return r[m.TargetOracleWms.WmsTargetConfig].ok(
+        return r[p.TargetOracleWms.WmsTargetConfig].ok(
             m.TargetOracleWms.WmsTargetConfig.model_validate({
                 "wms_auth": {
                     "base_url": c.TargetOracleWms.CLI_PLACEHOLDER_BASE_URL,
@@ -148,8 +146,8 @@ class FlextTargetOracleWmsCli:
 
 
 def main(
-    argv: t.StrSequence | None = None,
-    message_lines: t.StrSequence | None = None,
+    argv: Sequence[str] | None = None,
+    message_lines: Sequence[str] | None = None,
 ) -> None:
     """Run CLI command from process arguments.
 
@@ -163,7 +161,7 @@ def main(
         RuntimeError: If ``result.failure``.
 
     """
-    args: t.StrSequence = argv if argv is not None else sys.argv
+    args: Sequence[str] = argv if argv is not None else sys.argv
     cli_instance = FlextTargetOracleWmsCli()
     config_path: str | None = None
     if (

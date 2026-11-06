@@ -24,7 +24,7 @@ class FlextTargetOracleWmsSettings(FlextMeltanoSettings):
         extra="ignore",
     )
 
-    class _TargetOracleWms(m.BaseModel):
+    class _TargetOracleWms(m.StrictModel):
         """Namespaced Oracle WMS connection defaults."""
 
         username: Annotated[str, m.Field(description="Oracle WMS username")] = "oracle"

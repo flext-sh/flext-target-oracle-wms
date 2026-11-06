@@ -9,7 +9,7 @@ from __future__ import annotations
 from enum import StrEnum, unique
 from typing import Final
 
-from flext_meltano import FlextMeltanoConstants as meltano_c
+from flext_meltano import FlextMeltanoConstants
 
 
 class FlextTargetOracleWmsConstantsValues:
@@ -23,7 +23,7 @@ class FlextTargetOracleWmsConstantsValues:
         """Oracle WMS runtime scalar defaults."""
 
         DEFAULT_BATCH_SIZE: Final[int] = (
-            meltano_c.Meltano.BATCH_DEFAULT_DEFAULT_BATCH_SIZE
+            FlextMeltanoConstants.Meltano.BATCH_DEFAULT_DEFAULT_BATCH_SIZE
         )
 
     class LoadMethods:

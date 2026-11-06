@@ -1,4 +1,4 @@
-"""Singer target client classes for Oracle WMS — u.TargetOracleWms.Client.*.
+"""Singer target client classes for Oracle WMS — u.TargetOracleWms.*.
 
 Copyright (c) 2026 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -7,27 +7,20 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import sys
-from typing import TYPE_CHECKING, ClassVar
+from collections.abc import MutableMapping, Sequence
+from typing import ClassVar
 
-from flext_core import e, r
-from flext_meltano import u
+from flext_meltano import e, r, u
 
-from flext_target_oracle_wms import c, m, t
-from flext_target_oracle_wms._utilities.helpers import (
-    FlextTargetOracleWmsUtilitiesHelpers,
-)
-
-if TYPE_CHECKING:
-    from collections.abc import MutableMapping
-
-    from flext_target_oracle_wms import p
+from flext_target_oracle_wms import c, m, p, t
+from flext_target_oracle_wms._utilities import FlextTargetOracleWmsUtilitiesHelpers
 
 
 class FlextTargetOracleWmsUtilitiesClient:
     """Public namespace class wrapping all WMS client implementations."""
 
     class CatalogManager:
-        """In-memory Singer catalog manager (u.TargetOracleWms.Client)."""
+        """In-memory Singer catalog manager (u.TargetOracleWms.CatalogManager)."""
 
         def __init__(self) -> None:
             """Initialize catalog storage for stream metadata."""
@@ -38,7 +31,7 @@ class FlextTargetOracleWmsUtilitiesClient:
 
         def add_stream(
             self,
-            schema_message: m.Meltano.SingerSchemaMessage,
+            schema_message: p.Meltano.SingerSchemaMessage,
         ) -> p.Result[bool]:
             """Register one stream schema entry.
 
@@ -64,14 +57,14 @@ class FlextTargetOracleWmsUtilitiesClient:
         def get_stream(
             self,
             stream_name: str,
-        ) -> p.Result[m.Meltano.SingerCatalogEntry]:
+        ) -> p.Result[p.Meltano.SingerCatalogEntry]:
             """Return catalog entry for a stream or a failure.
 
             Args:
                 stream_name: Name of the stream to look up.
 
             Returns:
-                The resulting ``p.Result[m.Meltano.SingerCatalogEntry]``.
+                The resulting ``p.Result[p.Meltano.SingerCatalogEntry]``.
 
             """
             entry = self._catalog_entries.get(stream_name)
@@ -79,14 +72,14 @@ class FlextTargetOracleWmsUtilitiesClient:
                 return e.fail_not_found(
                     "WMS stream",
                     stream_name,
-                    result_type=r[m.Meltano.SingerCatalogEntry],
+                    result_type=r[p.Meltano.SingerCatalogEntry],
                 )
-            return r[m.Meltano.SingerCatalogEntry].ok(entry)
+            return r[p.Meltano.SingerCatalogEntry].ok(entry)
 
     class StreamProcessor:
         """Process Singer records using table and transform helpers.
 
-        Accessible as u.TargetOracleWms.Client.StreamProcessor.
+        Accessible as u.TargetOracleWms.StreamProcessor.
         """
 
         def __init__(
@@ -106,7 +99,7 @@ class FlextTargetOracleWmsUtilitiesClient:
 
         def initialize_stream(
             self,
-            schema_message: m.Meltano.SingerSchemaMessage,
+            schema_message: p.Meltano.SingerSchemaMessage,
         ) -> p.Result[bool]:
             """Register stream metadata in table manager.
 
@@ -125,9 +118,9 @@ class FlextTargetOracleWmsUtilitiesClient:
 
         def process_record(
             self,
-            record_message: m.Meltano.SingerRecordMessage,
-            schema_message: m.Meltano.SingerSchemaMessage | t.JsonMapping,
-        ) -> p.Result[m.Meltano.SingerRecordMessage]:
+            record_message: p.Meltano.SingerRecordMessage,
+            schema_message: p.Meltano.SingerSchemaMessage | t.JsonMapping,
+        ) -> p.Result[p.Meltano.SingerRecordMessage]:
             """Transform one typed Singer record.
 
             Args:
@@ -136,19 +129,19 @@ class FlextTargetOracleWmsUtilitiesClient:
                     resolve per-field types.
 
             Returns:
-                The resulting ``p.Result[m.Meltano.SingerRecordMessage]``.
+                The resulting ``p.Result[p.Meltano.SingerRecordMessage]``.
 
             """
             typed_record = m.Meltano.SingerRecordMessage.model_validate(record_message)
             table_lookup = self.table_manager.get_table_name(typed_record.stream)
             if table_lookup.failure:
-                return r[m.Meltano.SingerRecordMessage].from_failure(table_lookup)
+                return r[p.Meltano.SingerRecordMessage].from_failure(table_lookup)
             return self.data_transformer.transform_record(typed_record, schema_message)
 
     class Target:
         """Singer target runtime with schema/record/state handlers.
 
-        Accessible as u.TargetOracleWms.Client.Target.
+        Accessible as u.TargetOracleWms.Target.
         """
 
         name = c.TargetOracleWms.TARGET_NAME
@@ -198,7 +191,7 @@ class FlextTargetOracleWmsUtilitiesClient:
 
         def handle_record_message(
             self,
-            message: m.Meltano.SingerRecordMessage,
+            message: p.Meltano.SingerRecordMessage,
         ) -> p.Result[bool]:
             """Handle one RECORD message.
 
@@ -225,7 +218,7 @@ class FlextTargetOracleWmsUtilitiesClient:
 
         def handle_schema_message(
             self,
-            message: m.Meltano.SingerSchemaMessage,
+            message: p.Meltano.SingerSchemaMessage,
         ) -> p.Result[bool]:
             """Handle one SCHEMA message.
 
@@ -247,7 +240,7 @@ class FlextTargetOracleWmsUtilitiesClient:
 
         def handle_state_message(
             self,
-            message: m.Meltano.SingerStateMessage,
+            message: p.Meltano.SingerStateMessage,
         ) -> p.Result[bool]:
             """Handle one STATE message.
 
@@ -293,7 +286,7 @@ class FlextTargetOracleWmsUtilitiesClient:
                 case _:
                     return r[bool].ok(value=True)
 
-        def process_lines(self, input_lines: t.StrSequence) -> p.Result[bool]:
+        def process_lines(self, input_lines: Sequence[str]) -> p.Result[bool]:
             """Parse and process Singer JSON lines.
 
             Args:

@@ -8,7 +8,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import flext_target_oracle_wms
-from tests import c, tm
+from tests import c, tm, u
 
 
 class TestsFlextTargetOracleWmsOracleWmsInit:
@@ -18,15 +18,17 @@ class TestsFlextTargetOracleWmsOracleWmsInit:
     def test_version_import_success() -> None:
         """Test successful version import from importlib.metadata."""
         tm.that(flext_target_oracle_wms.__version__, is_=str)
-        assert flext_target_oracle_wms.__version__
+        tm.that(flext_target_oracle_wms.__version__, truth=True)
 
     @staticmethod
     def test_version_is_valid_semver() -> None:
         """Version string is a non-empty dotted semver."""
         version = flext_target_oracle_wms.__version__
         tm.that(version, is_=str)
-        assert version
-        assert version.count(".") >= c.TargetOracleWms.Tests.MIN_SEMVER_SEPARATOR_COUNT
+        tm.that(version, truth=True)
+        tm.that(
+            version.count("."), gte=c.TargetOracleWms.Tests.MIN_SEMVER_SEPARATOR_COUNT
+        )
 
     @staticmethod
     def test_module_exports() -> None:
@@ -42,4 +44,4 @@ class TestsFlextTargetOracleWmsOracleWmsInit:
         ]
         for export in expected_exports:
             tm.that(flext_target_oracle_wms.__all__, has=export)
-        tm.that(flext_target_oracle_wms.u.TargetOracleWms.Client, is_=type)
+        tm.that(u.TargetOracleWms.Target, is_=type)
