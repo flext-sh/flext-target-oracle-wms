@@ -14,8 +14,7 @@ from typing import TYPE_CHECKING, Protocol, runtime_checkable
 from flext_meltano import FlextMeltanoProtocols
 
 if TYPE_CHECKING:
-    from flext_target_oracle_wms import t
-    from flext_target_oracle_wms._constants import FlextTargetOracleWmsConstantsValues
+    from flext_target_oracle_wms import c, t
     from flext_target_oracle_wms._protocols import (
         FlextTargetOracleWmsProtocolsAuth,
         FlextTargetOracleWmsProtocolsSinger,
@@ -36,12 +35,7 @@ class FlextTargetOracleWmsProtocolsTarget:
 
         stream_maps: MutableMapping[str, Mapping[str, str]]
         batch_size: t.BatchSize
-
-        @property
-        def load_method(self) -> FlextTargetOracleWmsConstantsValues.LoadMethods.Method:
-            """Load strategy for writing records to WMS."""
-            ...
-
+        load_method: c.TargetOracleWms.LoadMethods.Method
         validate_records: bool
 
     @runtime_checkable

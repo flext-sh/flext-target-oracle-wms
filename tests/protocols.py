@@ -23,7 +23,7 @@ class TestsFlextTargetOracleWmsProtocols(
 ):
     """Test protocols combining TestsFlextProtocols and project-specific protocols."""
 
-    class TargetOracleWms:
+    class TargetOracleWms(FlextTargetOracleWmsProtocols.TargetOracleWms):
         """TargetOracleWms domain protocols extending project protocols."""
 
         class Tests:
