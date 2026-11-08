@@ -117,7 +117,7 @@ class FlextTargetOracleWmsCli:
     def _prepare_config(
         self,
         config_path: str | None,
-    ) -> p.Result[m.TargetOracleWms.WmsTargetConfig]:
+    ) -> p.Result[p.TargetOracleWms.WmsTargetConfig]:
         """Load settings from file or build defaults.
 
         Args:
@@ -125,16 +125,16 @@ class FlextTargetOracleWmsCli:
                 built when omitted.
 
         Returns:
-            The resulting ``p.Result[m.TargetOracleWms.WmsTargetConfig]``.
+            The resulting ``p.Result[p.TargetOracleWms.WmsTargetConfig]``.
 
         """
         if config_path is not None:
-            return r[m.TargetOracleWms.WmsTargetConfig].ok(
+            return r[p.TargetOracleWms.WmsTargetConfig].ok(
                 m.TargetOracleWms.WmsTargetConfig.model_validate_json(
                     self._load_config(config_path),
                 ),
             )
-        return r[m.TargetOracleWms.WmsTargetConfig].ok(
+        return r[p.TargetOracleWms.WmsTargetConfig].ok(
             m.TargetOracleWms.WmsTargetConfig.model_validate({
                 "wms_auth": {
                     "base_url": c.TargetOracleWms.CLI_PLACEHOLDER_BASE_URL,
