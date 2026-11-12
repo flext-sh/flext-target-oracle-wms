@@ -26,7 +26,7 @@ class FlextTargetOracleWmsUtilitiesClient:
             """Initialize catalog storage for stream metadata."""
             self._catalog_entries: MutableMapping[
                 str,
-                m.Meltano.SingerCatalogEntry,
+                p.Meltano.SingerCatalogEntry,
             ] = {}
 
         def add_stream(
