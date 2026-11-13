@@ -29,7 +29,7 @@
   `FlextTargetOracleWmsProtocols`, `FlextTargetOracleWmsService`,
   `FlextTargetOracleWmsSettings`, `FlextTargetOracleWmsTypes`,
   `FlextTargetOracleWmsUtilities`, `FlextTargetOracleWmsVersion` (+4 more)
-- Exported module shortcuts: _none_
+- Exported module shortcuts: *none*
 - Generated module pages: `7`
 
 ## Next Pages
