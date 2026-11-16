@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from enum import StrEnum, unique
-from typing import Final
+from typing import ClassVar
 
 from flext_meltano import FlextMeltanoConstants
 
@@ -15,14 +15,14 @@ from flext_meltano import FlextMeltanoConstants
 class FlextTargetOracleWmsConstantsValues:
     """Scalar constants mixed into ``c.TargetOracleWms``."""
 
-    TARGET_NAME: Final[str] = "target-oracle-wms"
-    CLI_MIN_CONFIG_ARG_COUNT: Final[int] = 3
-    CLI_PLACEHOLDER_BASE_URL: Final[str] = "https://invalid.wms.ocs.oraclecloud.com"
+    TARGET_NAME: ClassVar[str] = "target-oracle-wms"
+    CLI_MIN_CONFIG_ARG_COUNT: ClassVar[int] = 3
+    CLI_PLACEHOLDER_BASE_URL: ClassVar[str] = "https://invalid.wms.ocs.oraclecloud.com"
 
     class OracleWms:
         """Oracle WMS runtime scalar defaults."""
 
-        DEFAULT_BATCH_SIZE: Final[int] = (
+        DEFAULT_BATCH_SIZE: ClassVar[int] = (
             FlextMeltanoConstants.Meltano.BATCH_DEFAULT_DEFAULT_BATCH_SIZE
         )
 
