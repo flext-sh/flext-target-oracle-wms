@@ -35,4 +35,13 @@ install_lazy_exports(
         "FlextTargetOracleWmsModelsTarget": ".target",
     },
     public_exports=__all__,
+    deferred_members={
+        "FlextTargetOracleWmsModelsAuth": ("WmsAuthenticationConfig",),
+        "FlextTargetOracleWmsModelsConfig": ("TargetOracleWmsNamespace",),
+        "FlextTargetOracleWmsModelsSinger": ("SingerFieldSchema",),
+        "FlextTargetOracleWmsModelsTarget": (
+            "WmsTargetConfig",
+            "SingerSchemaProperties",
+        ),
+    },
 )
