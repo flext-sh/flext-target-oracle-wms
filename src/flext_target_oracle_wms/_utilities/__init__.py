@@ -38,22 +38,9 @@ install_lazy_exports(
         "FlextTargetOracleWmsUtilitiesHelpers": ".helpers",
     },
     public_exports=__all__,
-    deferred_members={
-        "FlextTargetOracleWmsServiceRuntime": (
-            "SingerTarget",
-            "Sink",
-            "create_sink",
-            "normalize_flat_schema",
-        ),
-        "FlextTargetOracleWmsUtilitiesClient": (
-            "CatalogManager",
-            "StreamProcessor",
-            "Target",
-        ),
-        "FlextTargetOracleWmsUtilitiesHelpers": (
-            "WMSTypeConverter",
-            "WMSDataTransformer",
-            "WMSTableManager",
-        ),
-    },
+    deferred_members=(
+        "FlextTargetOracleWmsServiceRuntime",
+        "FlextTargetOracleWmsUtilitiesClient",
+        "FlextTargetOracleWmsUtilitiesHelpers",
+    ),
 )
