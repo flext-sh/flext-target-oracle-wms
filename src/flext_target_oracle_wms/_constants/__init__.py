@@ -33,13 +33,5 @@ install_lazy_exports(
         "FlextTargetOracleWmsConstantsValues": ".values",
     },
     public_exports=__all__,
-    deferred_members={
-        "FlextTargetOracleWmsConstantsValues": (
-            "TARGET_NAME",
-            "CLI_MIN_CONFIG_ARG_COUNT",
-            "CLI_PLACEHOLDER_BASE_URL",
-            "OracleWms",
-            "LoadMethods",
-        ),
-    },
+    deferred_members=("FlextTargetOracleWmsConstantsValues",),
 )
