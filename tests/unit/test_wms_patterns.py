@@ -91,8 +91,8 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         """Test uppercases record keys."""
         transformer = u.TargetOracleWms.WMSDataTransformer()
         result = transformer.transform_record(
-            u.TargetOracleWms.Tests.record_msg("s", {"name": "alice", "age": "30"}),
-            u.TargetOracleWms.Tests.schema_msg("s"),
+            u.Tests.record_msg("s", {"name": "alice", "age": "30"}),
+            u.Tests.schema_msg("s"),
         )
         tm.ok(result)
         tm.that(result.value, none=False)
@@ -104,10 +104,8 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         """Test preserves stream name."""
         transformer = u.TargetOracleWms.WMSDataTransformer()
         result = transformer.transform_record(
-            u.TargetOracleWms.Tests.record_msg(
-                "orders", {"id": c.ParserBooleanToken.ONE}
-            ),
-            u.TargetOracleWms.Tests.schema_msg("orders"),
+            u.Tests.record_msg("orders", {"id": c.ParserBooleanToken.ONE}),
+            u.Tests.schema_msg("orders"),
         )
         tm.ok(result)
         tm.that(result.value, none=False)
@@ -119,8 +117,8 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         converter = u.TargetOracleWms.WMSTypeConverter()
         transformer = u.TargetOracleWms.WMSDataTransformer(type_converter=converter)
         result = transformer.transform_record(
-            u.TargetOracleWms.Tests.record_msg("s", {"qty": 10}),
-            u.TargetOracleWms.Tests.schema_msg("s"),
+            u.Tests.record_msg("s", {"qty": 10}),
+            u.Tests.schema_msg("s"),
         )
         tm.ok(result)
         tm.that(result.value, none=False)
@@ -131,7 +129,7 @@ class TestsFlextTargetOracleWmsWmsPatterns:
         """Test transform without schema."""
         transformer = u.TargetOracleWms.WMSDataTransformer()
         result = transformer.transform_record(
-            u.TargetOracleWms.Tests.record_msg("s", {"name": "bob"}), None
+            u.Tests.record_msg("s", {"name": "bob"}), None
         )
         tm.ok(result)
         tm.that(result.value, none=False)

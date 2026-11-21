@@ -12,8 +12,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from flext_target_oracle_wms import FlextTargetOracleWmsCli, __version__
-from tests import c, main, tm, u
+from flext_target_oracle_wms import __version__
+from tests import FlextTargetOracleWmsCli, c, main, tm, u
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -34,9 +34,7 @@ class TestsFlextTargetOracleWmsOracleWmsCli:
     def test_execute_with_config_file(tmp_path: Path) -> None:
         """Test execute with config file."""
         cli = FlextTargetOracleWmsCli()
-        config_path = u.TargetOracleWms.Tests.write_config_file(
-            u.TargetOracleWms.Tests.valid_config_json(), tmp_path
-        )
+        config_path = u.Tests.write_config_file(u.Tests.valid_config_json(), tmp_path)
         result = cli.execute(message_lines=[], settings=config_path)
         tm.ok(result)
 
@@ -58,7 +56,7 @@ class TestsFlextTargetOracleWmsOracleWmsCli:
     def test_execute_with_non_object_config_fails(tmp_path: Path) -> None:
         """Test execute with non object config fails."""
         cli = FlextTargetOracleWmsCli()
-        bad_path = u.TargetOracleWms.Tests.write_config_file("[1, 2, 3]", tmp_path)
+        bad_path = u.Tests.write_config_file("[1, 2, 3]", tmp_path)
         with u.Tests.raises(c.ValidationError):
             cli.execute(message_lines=[], settings=bad_path)
 
@@ -70,9 +68,7 @@ class TestsFlextTargetOracleWmsOracleWmsCli:
     @staticmethod
     def test_main_with_config_arg(tmp_path: Path) -> None:
         """Test main with config arg."""
-        config_path = u.TargetOracleWms.Tests.write_config_file(
-            u.TargetOracleWms.Tests.valid_config_json(), tmp_path
-        )
+        config_path = u.Tests.write_config_file(u.Tests.valid_config_json(), tmp_path)
         main(argv=["target-oracle-wms", "--config", config_path], message_lines=[])
 
     @staticmethod

@@ -38,7 +38,7 @@ class TestsFlextTargetOracleWmsStream:
             u.TargetOracleWms.WMSTableManager(),
             u.TargetOracleWms.WMSDataTransformer(),
         )
-        result = proc.initialize_stream(u.TargetOracleWms.Tests.schema_msg("orders"))
+        result = proc.initialize_stream(u.Tests.schema_msg("orders"))
         tm.ok(result)
         tm.ok(result.value)
 
@@ -50,7 +50,7 @@ class TestsFlextTargetOracleWmsStream:
             manager,
             u.TargetOracleWms.WMSDataTransformer(),
         )
-        proc.initialize_stream(u.TargetOracleWms.Tests.schema_msg("items"))
+        proc.initialize_stream(u.Tests.schema_msg("items"))
         table_result = manager.get_table_name("items")
         tm.ok(table_result, eq="ITEMS")
 
@@ -61,12 +61,10 @@ class TestsFlextTargetOracleWmsStream:
             u.TargetOracleWms.WMSTableManager(),
             u.TargetOracleWms.WMSDataTransformer(),
         )
-        schema = u.TargetOracleWms.Tests.schema_msg("orders")
+        schema = u.Tests.schema_msg("orders")
         proc.initialize_stream(schema)
         result = proc.process_record(
-            u.TargetOracleWms.Tests.record_msg(
-                "orders", {"id": c.ParserBooleanToken.ONE}
-            ),
+            u.Tests.record_msg("orders", {"id": c.ParserBooleanToken.ONE}),
             schema,
         )
         tm.ok(result)
@@ -79,10 +77,8 @@ class TestsFlextTargetOracleWmsStream:
             u.TargetOracleWms.WMSDataTransformer(),
         )
         result = proc.process_record(
-            u.TargetOracleWms.Tests.record_msg(
-                "orders", {"id": c.ParserBooleanToken.ONE}
-            ),
-            u.TargetOracleWms.Tests.schema_msg("orders"),
+            u.Tests.record_msg("orders", {"id": c.ParserBooleanToken.ONE}),
+            u.Tests.schema_msg("orders"),
         )
         error = tm.fail(result)
         tm.ok("not registered" in error.lower() or "lookup" in error.lower())
@@ -97,7 +93,7 @@ class TestsFlextTargetOracleWmsStream:
         )
         manager.register_stream("s")
         result = proc.process_record(
-            u.TargetOracleWms.Tests.record_msg("s"),
-            u.TargetOracleWms.Tests.schema_msg("s"),
+            u.Tests.record_msg("s"),
+            u.Tests.schema_msg("s"),
         )
         tm.fail(result)
