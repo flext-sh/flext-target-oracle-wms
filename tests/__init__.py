@@ -15,18 +15,6 @@ if TYPE_CHECKING:
     from flext_oracle_wms import e
     from flext_tests import api, td, tf, tk, tm
 
-    from examples import (
-        ExamplesFlextTargetOracleWmsConstants,
-        ExamplesFlextTargetOracleWmsModels,
-        ExamplesFlextTargetOracleWmsProtocols,
-        ExamplesFlextTargetOracleWmsTypes,
-        ExamplesFlextTargetOracleWmsUtilities,
-        FlextTargetOracleWmsExampleAdvancedConfiguration,
-        FlextTargetOracleWmsExampleBasicUsage,
-        FlextTargetOracleWmsExampleBatchProcessing,
-        FlextTargetOracleWmsExampleErrorHandling,
-        FlextTargetOracleWmsExampleFactoryUsage,
-    )
     from flext_target_oracle_wms import (
         FlextTargetOracleWmsCli,
         FlextTargetOracleWmsConfig,
@@ -57,19 +45,9 @@ if TYPE_CHECKING:
 
 
 __all__: tuple[str, ...] = (
-    "ExamplesFlextTargetOracleWmsConstants",
-    "ExamplesFlextTargetOracleWmsModels",
-    "ExamplesFlextTargetOracleWmsProtocols",
-    "ExamplesFlextTargetOracleWmsTypes",
-    "ExamplesFlextTargetOracleWmsUtilities",
     "FlextTargetOracleWmsCli",
     "FlextTargetOracleWmsConfig",
     "FlextTargetOracleWmsConstants",
-    "FlextTargetOracleWmsExampleAdvancedConfiguration",
-    "FlextTargetOracleWmsExampleBasicUsage",
-    "FlextTargetOracleWmsExampleBatchProcessing",
-    "FlextTargetOracleWmsExampleErrorHandling",
-    "FlextTargetOracleWmsExampleFactoryUsage",
     "FlextTargetOracleWmsModels",
     "FlextTargetOracleWmsProtocols",
     "FlextTargetOracleWmsService",
@@ -110,19 +88,9 @@ install_lazy_exports(
     __name__,
     globals(),
     {
-        "ExamplesFlextTargetOracleWmsConstants": "examples",
-        "ExamplesFlextTargetOracleWmsModels": "examples",
-        "ExamplesFlextTargetOracleWmsProtocols": "examples",
-        "ExamplesFlextTargetOracleWmsTypes": "examples",
-        "ExamplesFlextTargetOracleWmsUtilities": "examples",
         "FlextTargetOracleWmsCli": "flext_target_oracle_wms",
         "FlextTargetOracleWmsConfig": "flext_target_oracle_wms",
         "FlextTargetOracleWmsConstants": "flext_target_oracle_wms",
-        "FlextTargetOracleWmsExampleAdvancedConfiguration": "examples",
-        "FlextTargetOracleWmsExampleBasicUsage": "examples",
-        "FlextTargetOracleWmsExampleBatchProcessing": "examples",
-        "FlextTargetOracleWmsExampleErrorHandling": "examples",
-        "FlextTargetOracleWmsExampleFactoryUsage": "examples",
         "FlextTargetOracleWmsModels": "flext_target_oracle_wms",
         "FlextTargetOracleWmsProtocols": "flext_target_oracle_wms",
         "FlextTargetOracleWmsService": "flext_target_oracle_wms",
