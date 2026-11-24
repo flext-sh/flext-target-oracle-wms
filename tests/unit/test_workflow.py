@@ -6,8 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_target_oracle_wms import FlextTargetOracleWmsCli
-from tests import c, tm, u
+from tests import FlextTargetOracleWmsCli, c, tm, u
 
 
 class TestsFlextTargetOracleWmsWorkflow:
@@ -16,7 +15,7 @@ class TestsFlextTargetOracleWmsWorkflow:
     @staticmethod
     def test_single_stream_workflow() -> None:
         """Test single stream workflow."""
-        tests = u.TargetOracleWms.Tests
+        tests = u.Tests
         target = u.TargetOracleWms.Target(tests.valid_config())
         lines = [
             tests.schema_msg("inventory").model_dump_json(by_alias=True),
@@ -34,7 +33,7 @@ class TestsFlextTargetOracleWmsWorkflow:
     @staticmethod
     def test_schema_update_mid_stream() -> None:
         """Test schema update mid stream."""
-        tests = u.TargetOracleWms.Tests
+        tests = u.Tests
         target = u.TargetOracleWms.Target(tests.valid_config())
         lines = [
             tests.schema_msg("s").model_dump_json(by_alias=True),
@@ -48,7 +47,7 @@ class TestsFlextTargetOracleWmsWorkflow:
     @staticmethod
     def test_state_only_workflow() -> None:
         """Test state only workflow."""
-        tests = u.TargetOracleWms.Tests
+        tests = u.Tests
         target = u.TargetOracleWms.Target(tests.valid_config())
         result = target.process_lines([tests.state_msg().model_dump_json()])
         tm.ok(result)
@@ -65,7 +64,7 @@ class TestsFlextTargetOracleWmsWorkflow:
     @staticmethod
     def test_cli_execute_with_messages() -> None:
         """Test cli execute with messages."""
-        tests = u.TargetOracleWms.Tests
+        tests = u.Tests
         lines = [
             tests.schema_msg("test").model_dump_json(by_alias=True),
             tests.record_msg(
@@ -80,7 +79,7 @@ class TestsFlextTargetOracleWmsWorkflow:
     @staticmethod
     def test_malformed_json_stops_processing() -> None:
         """Test malformed json stops processing."""
-        tests = u.TargetOracleWms.Tests
+        tests = u.Tests
         target = u.TargetOracleWms.Target(tests.valid_config())
         lines = [
             tests.schema_msg("s").model_dump_json(by_alias=True),
@@ -92,7 +91,7 @@ class TestsFlextTargetOracleWmsWorkflow:
     @staticmethod
     def test_record_for_unknown_stream_fails() -> None:
         """Test record for unknown stream fails."""
-        tests = u.TargetOracleWms.Tests
+        tests = u.Tests
         target = u.TargetOracleWms.Target(tests.valid_config())
         lines = [
             tests.record_msg(

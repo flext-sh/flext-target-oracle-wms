@@ -19,7 +19,7 @@ class TestsFlextTargetOracleWmsOracle:
     @staticmethod
     def test_setup_process_cleanup() -> None:
         """Test setup process cleanup."""
-        tests = u.TargetOracleWms.Tests
+        tests = u.Tests
         target = u.TargetOracleWms.Target(tests.valid_config())
         tm.ok(target.setup())
         lines = [
@@ -37,7 +37,7 @@ class TestsFlextTargetOracleWmsOracle:
     @staticmethod
     def test_multiple_batches() -> None:
         """Test multiple batches."""
-        tests = u.TargetOracleWms.Tests
+        tests = u.Tests
         target = u.TargetOracleWms.Target(tests.valid_config())
         target.setup()
         batch1 = [
@@ -58,7 +58,7 @@ class TestsFlextTargetOracleWmsOracle:
     @staticmethod
     def test_three_streams_interleaved() -> None:
         """Test three streams interleaved."""
-        tests = u.TargetOracleWms.Tests
+        tests = u.Tests
         target = u.TargetOracleWms.Target(tests.valid_config())
         target.setup()
         streams = ("orders", "items", "tasks")

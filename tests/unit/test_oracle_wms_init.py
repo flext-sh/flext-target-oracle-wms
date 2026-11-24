@@ -26,9 +26,7 @@ class TestsFlextTargetOracleWmsOracleWmsInit:
         version = flext_target_oracle_wms.__version__
         tm.that(version, is_=str)
         tm.that(version, truth=True)
-        tm.that(
-            version.count("."), gte=c.TargetOracleWms.Tests.MIN_SEMVER_SEPARATOR_COUNT
-        )
+        tm.that(version.count("."), gte=c.Tests.MIN_SEMVER_SEPARATOR_COUNT)
 
     @staticmethod
     def test_module_exports() -> None:

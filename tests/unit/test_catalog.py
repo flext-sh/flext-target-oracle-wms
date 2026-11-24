@@ -107,7 +107,7 @@ class TestsFlextTargetOracleWmsCatalog:
         """Test multiple independent streams."""
         mgr = u.TargetOracleWms.CatalogManager()
         for name in ("alpha", "beta", "gamma"):
-            mgr.add_stream(u.TargetOracleWms.Tests.schema_msg(name))
+            mgr.add_stream(u.Tests.schema_msg(name))
         for name in ("alpha", "beta", "gamma"):
             tm.ok(mgr.get_stream(name))
 

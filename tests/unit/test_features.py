@@ -21,20 +21,20 @@ class TestsFlextTargetOracleWmsFeatures:
     @staticmethod
     def test_target_initialization() -> None:
         """Test target initialization."""
-        target = u.TargetOracleWms.Target(u.TargetOracleWms.Tests.valid_config())
+        target = u.TargetOracleWms.Target(u.Tests.valid_config())
         tm.that(target.name, eq=c.TargetOracleWms.TARGET_NAME)
 
     @staticmethod
     def test_target_setup_cleanup_lifecycle() -> None:
         """Test target setup cleanup lifecycle."""
-        target = u.TargetOracleWms.Target(u.TargetOracleWms.Tests.valid_config())
+        target = u.TargetOracleWms.Target(u.Tests.valid_config())
         tm.ok(target.setup())
         tm.ok(target.cleanup())
 
     @staticmethod
     def test_target_process_empty_lines() -> None:
         """Test target process empty lines."""
-        target = u.TargetOracleWms.Target(u.TargetOracleWms.Tests.valid_config())
+        target = u.TargetOracleWms.Target(u.Tests.valid_config())
         tm.ok(target.process_lines([]))
 
     @staticmethod

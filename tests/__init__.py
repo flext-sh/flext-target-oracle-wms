@@ -13,20 +13,8 @@ from flext_core.lazy import install_lazy_exports
 
 if TYPE_CHECKING:
     from flext_oracle_wms import e
-    from flext_tests import api, td, tf, tk, tm
+    from flext_tests import api, d, h, r, td, tf, tk, tm, x
 
-    from examples import (
-        ExamplesFlextTargetOracleWmsConstants,
-        ExamplesFlextTargetOracleWmsModels,
-        ExamplesFlextTargetOracleWmsProtocols,
-        ExamplesFlextTargetOracleWmsTypes,
-        ExamplesFlextTargetOracleWmsUtilities,
-        FlextTargetOracleWmsExampleAdvancedConfiguration,
-        FlextTargetOracleWmsExampleBasicUsage,
-        FlextTargetOracleWmsExampleBatchProcessing,
-        FlextTargetOracleWmsExampleErrorHandling,
-        FlextTargetOracleWmsExampleFactoryUsage,
-    )
     from flext_target_oracle_wms import (
         FlextTargetOracleWmsCli,
         FlextTargetOracleWmsConfig,
@@ -39,13 +27,9 @@ if TYPE_CHECKING:
         FlextTargetOracleWmsUtilities,
         FlextTargetOracleWmsVersion,
         config,
-        d,
-        h,
         main,
-        r,
         settings,
         target_oracle_wms,
-        x,
     )
     from tests.base import TestsFlextTargetOracleWmsServiceBase, s
     from tests.constants import TestsFlextTargetOracleWmsConstants, c
@@ -57,19 +41,9 @@ if TYPE_CHECKING:
 
 
 __all__: tuple[str, ...] = (
-    "ExamplesFlextTargetOracleWmsConstants",
-    "ExamplesFlextTargetOracleWmsModels",
-    "ExamplesFlextTargetOracleWmsProtocols",
-    "ExamplesFlextTargetOracleWmsTypes",
-    "ExamplesFlextTargetOracleWmsUtilities",
     "FlextTargetOracleWmsCli",
     "FlextTargetOracleWmsConfig",
     "FlextTargetOracleWmsConstants",
-    "FlextTargetOracleWmsExampleAdvancedConfiguration",
-    "FlextTargetOracleWmsExampleBasicUsage",
-    "FlextTargetOracleWmsExampleBatchProcessing",
-    "FlextTargetOracleWmsExampleErrorHandling",
-    "FlextTargetOracleWmsExampleFactoryUsage",
     "FlextTargetOracleWmsModels",
     "FlextTargetOracleWmsProtocols",
     "FlextTargetOracleWmsService",
@@ -110,19 +84,9 @@ install_lazy_exports(
     __name__,
     globals(),
     {
-        "ExamplesFlextTargetOracleWmsConstants": "examples",
-        "ExamplesFlextTargetOracleWmsModels": "examples",
-        "ExamplesFlextTargetOracleWmsProtocols": "examples",
-        "ExamplesFlextTargetOracleWmsTypes": "examples",
-        "ExamplesFlextTargetOracleWmsUtilities": "examples",
         "FlextTargetOracleWmsCli": "flext_target_oracle_wms",
         "FlextTargetOracleWmsConfig": "flext_target_oracle_wms",
         "FlextTargetOracleWmsConstants": "flext_target_oracle_wms",
-        "FlextTargetOracleWmsExampleAdvancedConfiguration": "examples",
-        "FlextTargetOracleWmsExampleBasicUsage": "examples",
-        "FlextTargetOracleWmsExampleBatchProcessing": "examples",
-        "FlextTargetOracleWmsExampleErrorHandling": "examples",
-        "FlextTargetOracleWmsExampleFactoryUsage": "examples",
         "FlextTargetOracleWmsModels": "flext_target_oracle_wms",
         "FlextTargetOracleWmsProtocols": "flext_target_oracle_wms",
         "FlextTargetOracleWmsService": "flext_target_oracle_wms",
@@ -140,13 +104,13 @@ install_lazy_exports(
         "api": "flext_tests",
         "c": ".constants",
         "config": "flext_target_oracle_wms",
-        "d": "flext_target_oracle_wms",
+        "d": "flext_tests",
         "e": "flext_oracle_wms",
-        "h": "flext_target_oracle_wms",
+        "h": "flext_tests",
         "m": ".models",
         "main": "flext_target_oracle_wms",
         "p": ".protocols",
-        "r": "flext_target_oracle_wms",
+        "r": "flext_tests",
         "s": ".base",
         "settings": "flext_target_oracle_wms",
         "t": ".typings",
@@ -156,7 +120,7 @@ install_lazy_exports(
         "tk": "flext_tests",
         "tm": "flext_tests",
         "u": ".utilities",
-        "x": "flext_target_oracle_wms",
+        "x": "flext_tests",
     },
     public_exports=__all__,
 )

@@ -1,0 +1,1 @@
+{"id":"exports--flext_target_oracle_wms._models","language":"Python","rule":{"regex":"^(?:FlextTargetOracleWmsModelsAuth|FlextTargetOracleWmsModelsConfig|FlextTargetOracleWmsModelsSinger|FlextTargetOracleWmsModelsTarget)$"}}
