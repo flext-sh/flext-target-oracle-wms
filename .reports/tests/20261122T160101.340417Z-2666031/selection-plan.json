@@ -1,0 +1,11 @@
+{
+  "manifest_path": "/home/marlonsc/flext/flext-target-oracle-wms/.reports/tests/20261122T160101.340417Z-2666031/testmon-inventory.json",
+  "node_ids": [
+    "tests/unit/test_module_governance.py::TestsFlextTargetOracleWmsModuleGovernance::test_package_modules_do_not_define_module_level_loggers",
+    "tests/unit/test_module_governance.py::TestsFlextTargetOracleWmsModuleGovernance::test_namespace_does_not_define_local_singer_message_models",
+    "tests/unit/test_module_governance.py::TestsFlextTargetOracleWmsModuleGovernance::test_package_modules_do_not_define_unapproved_top_level_functions"
+  ],
+  "whole_target": true,
+  "inventory_collected": true,
+  "owns_no_tests": false
+}
